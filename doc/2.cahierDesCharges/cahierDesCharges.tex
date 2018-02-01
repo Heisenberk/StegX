@@ -5,6 +5,8 @@
 \usepackage[francais]{babel}
 \usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{epsfig}
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
@@ -41,7 +43,6 @@ La stéganographie se différencie de la cryptographie, qui correspond à chiffr
 et du destinataire. 
 En effet, un message chiffré en cryptographie sera visible par tous mais illisible, tandis qu'un message caché dans un fichier $f$ en stéganographie ne sera vu que si un inconnu sait que $f$ contient un message et connaît l'algorithme pour l'interpréter. 
 
-
 La stéganalyse, quant à elle, est la recherche de données cachées dans des
 fichiers suspects. Si ces données sont identifiées, il faut ensuite réussir à les
 extraire pour les lire.
@@ -68,7 +69,56 @@ Le but de l'application est de permettre à un utilisateur $U_1$ d'envoyer des d
 La motivation du projet est venue par notre envie de la majorité des membres de ce groupe de projet d'obtenir le master Secrets. 
 En effet, nous voulions tous réaliser un projet en rapport à la cryptographie et c'est donc pour cela que nous nous sommes réunis afin de réaliser ce type de projet. 
 
+\section{Explications des algorithmes de stéganographie}
 
+L'application devra pouvoir cacher des données dans des fichiers de différents formats (texte, image, son, video). 
+Chaque format nécessite un algorithme différent.
+
+\subsection{Algorithme pour le format texte}
+
+\subsection{Algorithme LSB pour le format Image}
+
+Pour le format image, nous allons utilisé l'algorithme LSB : cela permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
+Chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255
+Le but de cet algorithme est donc de cacher des bits dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids faibles de chaque composante des pixels de l'image. 
+En effet, à l'oeil nu, l'homme ne discernera jamais le changement minime de composante. 
+Nous allons faire un exemple : 
+Prenons un exemple de couleur $C_1$ dont le triplet est $(219,27,91)$
+
+R : $219_{10} = 11011011_2$
+
+G : $27_{10} = 11011_2$
+
+B : $91_{10} = 1011011_2$
+
+
+Imaginons que la donnée à cacher dans le fichier composé de cet unique pixel de couleur $C_1$ correspond à la suite de bits $B = 000000_2$ et
+Ce qui donne une toute autre couleur $C_2$ en changeant les 2 bits de poids faibles de chaque composantes du pixel : 
+
+R : $216_{10} = 11011011_2$
+
+G : $24_{10} = 11000_2$
+
+B : $88_{10} = 1011000_2$
+
+
+Voici ici les deux couleurs $C_1$ et $C_2$, montrant ainsi qu'un humain ne pourra jamais détecter un changement de bit : 
+
+\begin{figure}[h]
+ \begin{minipage}{.46\linewidth}
+  \centering\epsfig{figure=219_27_91.png}
+  \caption{Couleur $C_1$}
+ \end{minipage} \hfill
+ \begin{minipage}{.46\linewidth}
+  \centering\epsfig{figure=216_24_88.png}
+  \caption{Couleur $C_2$}
+ \end{minipage}
+\end{figure}
+
+Pour la partie réception du fichier, il faut savoir si ce fichier a été utilisé pour un message caché et connaître combien de bits sont cachés. 
+Il faudra donc calculer la taille maximale du message à cacher qui sera une puissance de 2. En effet, en fonction de la taille du fichier, un certain nombre de bits sera réservé pour connaître la taille 
+des données à cacher. 
+En fonction de ces informations, la suite de bits cachée sera donc formée.
 
 \end{document}
 
