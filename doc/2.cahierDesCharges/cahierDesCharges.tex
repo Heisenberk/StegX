@@ -60,7 +60,7 @@ Par exemple, la stéganographie moderne a été utilisée dans des communication
 
 \section{Conducteurs du projet}
 
-\subsection{But du projet}
+\subsection{But du projet} % a revoir
 Le but du projet est de réaliser un logiciel de Stéganographie. Les utilisateurs ciblés sont des personnes lambdas qui veulent communiquer sans que l'on soupçonne que leurs communications sont en réalité compromettantes. 
 
 Le but de l'application est de permettre à un utilisateur $U_1$ d'envoyer des données cachées à un autre utilisateur $U_2$. Ce deuxième utiliseur devra pouvoir interpréter ces données en utilisant la même application que $U_1$. 
@@ -75,12 +75,10 @@ En effet, nous voulions tous réaliser un projet en rapport à la cryptographie 
 L'application devra pouvoir cacher des données dans des fichiers de différents formats (texte, image, son, video). 
 Chaque format nécessite un algorithme différent.
 
-\subsection{Algorithme pour le format texte}
-
-\subsection{Algorithme LSB pour le format Image}
+\subsection{Algorithme LSB (Least Significant Bit)}
 
 Pour le format image, nous allons utilisé l'algorithme LSB : cela permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
-Chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255
+Chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255. 
 Le but de cet algorithme est donc de cacher des bits dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids faibles de chaque composante des pixels de l'image. 
 En effet, à l'oeil nu, l'homme ne discernera jamais le changement minime de composante. 
 Nous allons faire un exemple : 
@@ -114,12 +112,18 @@ des données à cacher.
 En fonction de ces informations, la suite de bits cachée sera donc formée.
 
 \section{Contraintes du projet}
+
 \subsection{Calendrier}
+Le Cahier des Charges doit être remis le 14 mars. Le Cahier des Spécifications est à remettre le 18 avril. La remise du produit au client est le 25 mai. 
+La présentation du produit au client sera le 1 juin 2018. 
+
 \subsection{Contraintes imposées}
 
 \section{Exigences fonctionnelles}
 \subsection{Portée du produit}
 \subsection{Exigences du client}
+L'application doit respectée deux exigences pour le client : elle doit permettre à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement utiliser toutes les fonctionnalités de 
+l'application grâce à une interface graphique. De plus, une interface au terminal doit être également proposée pour les utilisateurs savant manipuler le terminal. En effet, ces utilisateurs pourront réaliser les mêmes fonctionnalités qu'avec l'interface graphique. 
 
 \section{Exigences non fonctionnelles}
 \subsection{Apparence et Perception : Ergonomie}
