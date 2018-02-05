@@ -111,6 +111,16 @@ Il faudra donc calculer la taille maximale du message à cacher qui sera une pui
 des données à cacher. 
 En fonction de ces informations, la suite de bits cachée sera donc formée.
 
+\subsection{Algorithme EOF (End Of File)}
+Chaque format de fichier a une mise en forme unique permettant de décrire facilement n'importe quelles données. 
+L'entête du fichier va contenir sa signature (Magic Number) ainsi que plusieurs octets décrivant ce fichier, puis, le réel contenu du fichier, visible par l'utilisateur grâce à un éditeur. 
+Cet éditeur de fichiers va donc lire les données contenues dans le fichier en les interprétant. 
+
+Pour que l'éditeur sache quand la lecture doit s'arrêter, le fichier va contenir, à la toute fin, un octet représentant la fin du fichier (EOF). 
+Si des données existent après ce EOF, elles ne seront pas interprétées par l'éditeur. 
+L'algorithme EOF est un algorithme très utilisé dans la stéganographie pour cacher des données : il consiste à écrire une suite de bits, représentant les données à cacher, dans le fichier où l'on va cacher ces dernières. 
+
+
 \section{Contraintes du projet}
 
 \subsection{Calendrier}
@@ -126,13 +136,23 @@ L'application doit respectée deux exigences pour le client : elle doit permettr
 l'application grâce à une interface graphique. De plus, une interface au terminal doit être également proposée pour les utilisateurs savant manipuler le terminal. En effet, ces utilisateurs pourront réaliser les mêmes fonctionnalités qu'avec l'interface graphique. 
 
 \section{Exigences non fonctionnelles}
-\subsection{Apparence et Perception : Ergonomie}
-\subsection{Facilités d'utilisation}
+\subsection{Apparence et Perception : Ergonomie et Facilités d'utilisation}
+Le logiciel doit permettre à n'importe quel utilisateur de pouvoir cacher ses données dans des fichiers. En effet, la facilité d'utilisation de l'application sera ciblée pour le développement. 
+Il sera facile de naviguer entre les deux menus : si l'utilisateur veut cacher ses données ou s'il veut découvrir les données cachées dans un fichier. 
+Il pourra naviguer dans son système de gestion de fichiers afin de choisir quelles données cachées et quel fichier contiendra ces données cachées. 
+
 \subsection{Performance}
 \subsection{Exigences culturelles, politiques et légales}
+L'application de stéganographie vise des clients en France. Il faut donc respecter les lois françaises concernant l'utilisation de cette application. 
+La loi du 21 juin 2004, pour la confiance dans l'économie numérique, définit cette application comme moyen de cryptologie car elle vise à transformer des données pour garantir la sécurité de la transmission de celles-ci. 
+Par ailleurs, l'article 30 de cette même loi oblige la déclaration de l'application si cette dernière est importée et/ou exportée. 
 
 \section{Autres aspects du projet}
 \subsection{Solutions sur étagère déjà existantes}
+Plusieurs applications de stéganographie existent déjà. En effet, elles peuvent cacher des données dans différents formats de fichiers image, audio et video. 
+Pourtant, nous avons recensé 23 applications de stéganographie et seulement une seule propose de cacher des données dans des fichiers image, son et video. 
+Tous les autres ne s'occupent que d'un seul format (souvent que le format image). 
+
 \subsection{Tâches à réaliser pour le développement de l'application}
 \subsection{Estimations des coûts du projet}
 \subsection{Améliorations pour les versions futures du projet}
