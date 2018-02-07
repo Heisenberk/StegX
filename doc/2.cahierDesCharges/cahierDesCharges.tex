@@ -30,7 +30,7 @@ Clément CAUMES, Damien DELAUNAY, Yassin DOUDOUH}
 	\begin{titlepage}
 		\maketitle
 		\vspace{20em}
-		%\begin{center}\includegraphics{logo.jpg}\end{center}
+		\begin{center}\includegraphics{application.png}\end{center}
 	\end{titlepage}
 
 \section{Préambule}
@@ -50,23 +50,23 @@ extraire pour les lire. Il s'agit donc de la méthode inverse à la stéganograp
 La stéganographie est une méthode très ancienne dont la première référence à cette utilisation date du premier siècle avant Jésus-Christ. 
 Elle apparaît dans un récit écrit par Hérodote qui raconte comment deux citoyens communiquaient secrètement : 
 le premier citoyen rasait la tête de son esclave et lui écrivait un message sur son crâne. Ensuite, il fallait attendre que les cheveux de l'esclave repousse puis envoyer ce dernier chez le deuxième citoyen. 
-Ce dernier devait de nouveau raser la tête de l'esclave pour découvrir le message qui lui était destiné. 
-Une autre utilisation de la stéganographie consistait à utiliser de l'encre ,invisible à l'oeil nu, mais qui était révélée à la chaleur. 
+Ce citoyen devait de nouveau raser la tête de l'esclave pour découvrir le message qui lui était destiné. 
+Une autre utilisation de la stéganographie consistait à utiliser de l'encre, invisible à l'oeil nu, mais qui était révélée à la chaleur. 
 
-Avec l'émergence de l'Informatique, les techniques de Stéganographie se sont renouvelées. En effet, il est désormais possible de cacher des données dans d'autres données. 
-Cette multiplicité de techniques stéganographiques grâce à l'Informatique montre l'étendue de cette application dans tous les domaines. 
+Avec l'émergence de l'informatique, les techniques de stéganographie se sont renouvelées. En effet, il est désormais possible de cacher des données dans d'autres données. 
+Cette multiplicité de techniques stéganographiques, grâce à l'informatique, montre l'étendue de cette application dans tous les domaines. 
 Par exemple, la stéganographie moderne a été utilisée dans des communications terroristes (transmission de messages) ou dans les signatures de fichiers multimedia (tatouage numérique) afin de protéger les droits d'auteurs. 
 
 \section{Conducteurs du projet}
 
 \subsection{But du projet}
-Le but du projet est de réaliser un logiciel de Stéganographie permettant à des personnes lambdas qui veulent communiquer sans que l'on soupçonne que leurs communications soient en réalité compromettantes. 
+Le but du projet est de réaliser un logiciel de stéganographie permettant à des personnes lambdas de communiquer sans que l'on soupçonne que leurs communications soient en réalité compromettantes. 
 
 Le but de l'application est de permettre à un utilisateur $U_1$ d'envoyer des données cachées à un autre utilisateur $U_2$. Ce deuxième utiliseur devra pouvoir interpréter ces données en utilisant la même application que $U_1$. 
 
 \subsection{Motivation du projet}
 
-La motivation du projet est venue par notre envie de la majorité des membres de ce groupe de projet d'obtenir le master Secrets. 
+La motivation du projet est venue par notre envie de la majorité des membres de ce groupe de projet d'obtenir le master SeCReTs. 
 En effet, nous voulions tous réaliser un projet en rapport à la cryptographie et c'est donc pour cela que nous nous sommes réunis afin de réaliser ce type de projet. 
 
 \section{Explications des algorithmes de stéganographie}
@@ -76,13 +76,12 @@ Plusieurs algorithmes seront utilisés dans notre logiciel.
 
 \subsection{Algorithme LSB (Least Significant Bit)}
 
-Pour le format image, nous allons utilisé l'algorithme LSB : cela permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
+L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
 Il permet de cacher des données dans un fichier sans en altérer sa taille. 
-Chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255. 
+Dans le cas de la stéganographie sur image, chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255. 
 Le but de cet algorithme est donc de cacher des bits dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids faibles de chaque composante des pixels de l'image. 
 En effet, à l'oeil nu, l'homme ne discernera jamais le changement minime de composante. 
-Nous allons faire un exemple : 
-Prenons un exemple de couleur $C_1$ dont le triplet est $(219,27,91)$
+Prenons un exemple de couleur $C_1$ dont le triplet est $(219,27,91)$. 
 
 R : $219_{10} = 11011011_2$	\qquad G : $27_{10} = 11011_2$ \qquad B : $91_{10} = 1011011_2$
 
@@ -106,7 +105,7 @@ Voici ici les deux couleurs $C_1$ et $C_2$, montrant ainsi qu'un humain ne pourr
  \end{minipage}
 \end{figure}
 
-Cet algorithme peut également s'appliquer à d'autres types de fichiers : pour le son, il est possible de modifier très peu les fréquences sonores sans altérer le bruit ; 
+Cet algorithme peut également s'appliquer à d'autres types de fichiers : pour le son, il est possible de modifier très peu les fréquences sonores sans en altérer le bruit ; 
 pour la video, un fichier video est composé de frames (images de la vidéo) et il est donc possible de manipuler les données pour pouvoir en cacher d'autres. 
 
 Pour la partie réception du fichier, il faut savoir si ce fichier a été utilisé pour un message caché et connaître combien de bits sont cachés. 
@@ -126,13 +125,17 @@ L'algorithme EOF est un algorithme très utilisé dans la stéganographie pour c
 \section{Contraintes du projet}
 
 \subsection{Calendrier}
-Le Cahier des Charges doit être remis le 14 mars. 
 
-Le Cahier des Spécifications est à remettre le 18 avril. 
+Le Calendrier est imposé et suit les étapes suivantes : 
 
-La remise du produit au client est le 25 mai. 
+- Le Cahier des Charges doit être remis le 14 mars. 
 
-La présentation du produit au client sera le 1 juin 2018. 
+- Le Cahier des Spécifications est à remettre le 18 avril. 
+
+- La remise du produit au client est le 25 mai. 
+
+- La présentation du produit au client sera le 1 juin 2018.  
+
 
 \subsection{Contraintes imposées} %a revoir car cest identique aux exigences du client
 Plusieurs contraintes sont imposées par l'utilisateur : 
@@ -146,6 +149,7 @@ Plusieurs contraintes sont imposées par l'utilisateur :
 \subsection{Portée du produit}
 L'application sera utilisée par des utilisateurs qui pourront tous faire les mêmes actions : dissimuler des données dans un fichier image, son et vidéo (partie stéganographie). 
 Il pourra également savoir si un fichier contient des données cachées et les extraire (stéganalyse). 
+Cela permettra à un utilisateur d'insérer des données cachées dans un fichier, afin de l'envoyer à un autre utilisateur. Ce dernier va ensuite faire la tâche inverse : extraire ces données cachées. 
 
 \subsection{Exigences du client}
 L'application doit respectée deux exigences pour le client : elle doit permettre à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement utiliser toutes les fonctionnalités de 
