@@ -62,19 +62,71 @@ Par exemple, la stéganographie moderne a été utilisée dans des communication
 \subsection{But du projet}
 Le but du projet est de réaliser un logiciel de stéganographie permettant à des personnes lambdas de communiquer sans que l'on soupçonne que leurs communications soient en réalité compromettantes. 
 
-Le but de l'application est de permettre à un utilisateur $U_1$ d'envoyer des données cachées à un autre utilisateur $U_2$. Ce deuxième utiliseur devra pouvoir interpréter ces données en utilisant la même application que $U_1$. 
+Le but de l'application est de permettre à un utilisateur $U_1$ d'envoyer des données cachées à un autre utilisateur $U_2$. Ce deuxième utilisateur devra pouvoir interpréter ces données en utilisant la même application que $U_1$. 
 
 \subsection{Motivation du projet}
 
 La motivation du projet est venue par notre envie de la majorité des membres de ce groupe de projet d'obtenir le master SeCReTs. 
 En effet, nous voulions tous réaliser un projet en rapport à la cryptographie et c'est donc pour cela que nous nous sommes réunis afin de réaliser ce type de projet. 
 
-\section{Explications des algorithmes de stéganographie}
+\section{Contraintes du projet}
+
+\subsection{Calendrier}
+
+Le Calendrier est imposé et suit les étapes suivantes : 
+
+- Le Cahier des Charges doit être remis le 14 mars. 
+
+- Le Cahier des Spécifications est à remettre le 18 avril. 
+
+- La remise du produit au client est le 25 mai. 
+
+- La présentation du produit au client sera le 1 juin 2018.  
+
+
+\subsection{Contraintes imposées} %a revoir car cest identique aux exigences du client
+Plusieurs contraintes sont imposées par l'utilisateur : 
+ 
+- l'application aura une interface graphique 
+
+- le logiciel proposera également une interface en ligne de commande
+
+
+\section{Exigences fonctionnelles}
+\subsection{Portée du produit}
+L'application sera utilisée par des utilisateurs qui pourront tous faire les mêmes actions : dissimuler des données dans un fichier image, son et vidéo (partie stéganographie). 
+Il pourra également savoir si un fichier contient des données cachées et les extraire (stéganalyse). 
+Cela permettra à un utilisateur d'insérer des données cachées dans un fichier, afin de l'envoyer à un autre utilisateur. Ce dernier va ensuite faire la tâche inverse : extraire ces données cachées. 
+
+\subsection{Exigences du client}
+L'application doit respectée deux exigences pour le client : elle doit permettre à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement utiliser toutes les fonctionnalités de 
+l'application grâce à une interface graphique. De plus, une interface au terminal doit être également proposée pour les utilisateurs savant manipuler le terminal. En effet, ces utilisateurs pourront réaliser les mêmes fonctionnalités qu'avec l'interface graphique. 
+
+\section{Exigences non fonctionnelles}
+\subsection{Apparence et Perception}
+Le logiciel doit permettre à n'importe quel utilisateur de pouvoir cacher ses données dans des fichiers. En effet, la facilité d'utilisation de l'application sera ciblée pour le développement. 
+Il sera facile de naviguer entre les deux menus : si l'utilisateur veut cacher ses données ou s'il veut découvrir les données cachées dans un fichier. 
+Il pourra naviguer dans son système de gestion de fichiers afin de choisir quelles données cachées et quel fichier contiendra ces données cachées. 
+
+\subsection{Performance}
+L'application devra être rapide pour l'utilisateur qui s'en sert. Bien entendu, la stéganographie sur certains fichiers lourds (tels que des fichiers de type video) rendra l'exécution plus lente 
+mais elle ne devra pas être trop importante pour l'utilisateur. 
+
+\subsection{Exigences culturelles, politiques et légales}
+L'application de stéganographie vise des clients en France. Il faut donc respecter les lois françaises concernant l'utilisation de cette application. 
+La loi du 21 juin 2004, pour la confiance dans l'économie numérique, définit cette application comme moyen de cryptologie car elle vise à transformer des données pour garantir la sécurité de la transmission de celles-ci. 
+Par ailleurs, l'article 30 de cette même loi oblige la déclaration de l'application si cette dernière est importée et/ou exportée. 
+
+\section{Modules du produit}
+
+\subsection{Organigramme}
+
+\subsection{Algorithmes des fonctionnalités}
 
 L'application permettra de cacher des données dans des fichiers de différents formats (image, son, video). 
 Plusieurs algorithmes seront utilisés dans notre logiciel.
 
-\subsection{Algorithme LSB (Least Significant Bit)}
+\subsubsection{Algorithme LSB (Least Significant Bit)}
 
 L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
 Il permet de cacher des données dans un fichier sans en altérer sa taille. 
@@ -113,7 +165,7 @@ Il faudra donc calculer la taille maximale du message à cacher qui sera une pui
 des données à cacher. 
 En fonction de ces informations, la suite de bits cachée sera donc formée.
 
-\subsection{Algorithme EOF (End Of File)}
+\subsubsection{Algorithme EOF (End Of File)}
 Chaque format de fichier a une mise en forme unique permettant de décrire facilement n'importe quelles données. 
 L'entête du fichier va contenir sa signature (Magic Number) ainsi que plusieurs octets décrivant ce fichier, puis, le réel contenu du fichier, visible par l'utilisateur grâce à un éditeur. 
 Cet éditeur de fichiers va donc lire les données contenues dans le fichier en les interprétant. 
@@ -122,50 +174,7 @@ Pour que l'éditeur sache quand la lecture doit s'arrêter, le fichier va conten
 Si des données existent après ce EOF, elles ne seront pas interprétées par l'éditeur. 
 L'algorithme EOF est un algorithme très utilisé dans la stéganographie pour cacher des données : il consiste à écrire une suite de bits, représentant les données à cacher, dans le fichier où l'on va cacher ces dernières. 
 
-\section{Contraintes du projet}
-
-\subsection{Calendrier}
-
-Le Calendrier est imposé et suit les étapes suivantes : 
-
-- Le Cahier des Charges doit être remis le 14 mars. 
-
-- Le Cahier des Spécifications est à remettre le 18 avril. 
-
-- La remise du produit au client est le 25 mai. 
-
-- La présentation du produit au client sera le 1 juin 2018.  
-
-
-\subsection{Contraintes imposées} %a revoir car cest identique aux exigences du client
-Plusieurs contraintes sont imposées par l'utilisateur : 
- 
-- l'application aura une interface graphique 
-
-- le logiciel proposera également une interface en ligne de commande
-
-
-\section{Exigences fonctionnelles}
-\subsection{Portée du produit}
-L'application sera utilisée par des utilisateurs qui pourront tous faire les mêmes actions : dissimuler des données dans un fichier image, son et vidéo (partie stéganographie). 
-Il pourra également savoir si un fichier contient des données cachées et les extraire (stéganalyse). 
-Cela permettra à un utilisateur d'insérer des données cachées dans un fichier, afin de l'envoyer à un autre utilisateur. Ce dernier va ensuite faire la tâche inverse : extraire ces données cachées. 
-
-\subsection{Exigences du client}
-L'application doit respectée deux exigences pour le client : elle doit permettre à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement utiliser toutes les fonctionnalités de 
-l'application grâce à une interface graphique. De plus, une interface au terminal doit être également proposée pour les utilisateurs savant manipuler le terminal. En effet, ces utilisateurs pourront réaliser les mêmes fonctionnalités qu'avec l'interface graphique. 
-
-\section{Exigences non fonctionnelles}
-\subsection{Apparence et Perception : Ergonomie et Facilités d'utilisation}
-Le logiciel doit permettre à n'importe quel utilisateur de pouvoir cacher ses données dans des fichiers. En effet, la facilité d'utilisation de l'application sera ciblée pour le développement. 
-Il sera facile de naviguer entre les deux menus : si l'utilisateur veut cacher ses données ou s'il veut découvrir les données cachées dans un fichier. 
-Il pourra naviguer dans son système de gestion de fichiers afin de choisir quelles données cachées et quel fichier contiendra ces données cachées. 
-
-\subsection{Performance}
-\subsection{Exigences culturelles, politiques et légales}
-L'application de stéganographie vise des clients en France. Il faut donc respecter les lois françaises concernant l'utilisation de cette application. 
-La loi du 21 juin 2004, pour la confiance dans l'économie numérique, définit cette application comme moyen de cryptologie car elle vise à transformer des données pour garantir la sécurité de la transmission de celles-ci. 
-Par ailleurs, l'article 30 de cette même loi oblige la déclaration de l'application si cette dernière est importée et/ou exportée. 
+\subsection{Estimations des coûts}
 
 \section{Autres aspects du projet}
 \subsection{Solutions sur étagère déjà existantes}
@@ -185,8 +194,6 @@ En effet, lors de l'interception d'un éventuel fichier cachant des données, il
 pour celui qui intercepte le fichier et qui tente de récupérer ces données cachées. 
 
 \subsection{Choix du langage et de l'interface}
-
-\subsection{Estimations des coûts du projet}
 
 \section{Conclusion}
 
