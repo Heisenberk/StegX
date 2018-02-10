@@ -7,6 +7,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{epsfig}
+\usepackage{array}
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
@@ -75,17 +76,16 @@ En effet, nous voulions tous réaliser un projet en rapport à la cryptographie 
 
 Le Calendrier est imposé et suit les étapes suivantes : 
 
-- Le Cahier des Charges doit être remis le 14 mars. 
-
-- Le Cahier des Spécifications est à remettre le 18 avril. 
-
-- La remise du produit au client est le 25 mai. 
-
-- La présentation du produit au client sera le 1 juin 2018.  
+\begin {itemize}
+\item Le Cahier des Charges doit être remis le 14 mars. 
+\item Le Cahier des Spécifications est à remettre le 18 avril. 
+\item La remise du produit au client est le 25 mai. 
+\item La présentation du produit au client sera le 1 juin 2018.  
+\end{itemize}
 
 
 \subsection{Contraintes imposées} %a revoir car cest identique aux exigences du client
-Plusieurs contraintes sont imposées par l'utilisateur : 
+Plusieurs contraintes sont imposées par le client : 
  
 - l'application aura une interface graphique 
 
@@ -175,6 +175,25 @@ Si des données existent après ce EOF, elles ne seront pas interprétées par l
 L'algorithme EOF est un algorithme très utilisé dans la stéganographie pour cacher des données : il consiste à écrire une suite de bits, représentant les données à cacher, dans le fichier où l'on va cacher ces dernières. 
 
 \subsection{Estimations des coûts}
+\begin{tabular}{|c|c|c|c|}
+  \hline
+  \textbf{Module} & \textbf{Coût en nombre} & \textbf{Coût en} & \textbf{Personnel(s) en charge} \\
+   \textbf{de l'application} & \textbf{de lignes} & \textbf{temps} & \textbf{du module} \\
+  \hline
+  Stéganographie \& Stéganalyse & X & X & CAUMES Clément \&\\
+   au format Image & lignes & heures & DOUDOUH Yassin\\
+  \hline
+  Stéganographie \& Stéganalyse & X & X & AYOUB Pierre \&\\
+   au format Audio & lignes & heures & DELAUNAY Damien\\
+  \hline
+  Stéganographie \& Stéganalyse & X & X & BASKEVITCH Claire \&\\
+   au format Video & lignes & heures & BESSAC Tristan\\
+  \hline
+  Interface en ligne de commande & X lignes & X heures & X\\ 
+  \hline
+  Interface graphique & X lignes & X heures & X\\
+  \hline
+\end{tabular}
 
 \section{Autres aspects du projet}
 \subsection{Solutions sur étagère déjà existantes}
@@ -182,8 +201,18 @@ Plusieurs applications de stéganographie existent déjà. En effet, elles peuve
 Pourtant, nous avons recensé 23 applications de stéganographie et seulement une seule propose de cacher des données dans des fichiers image, son et video. 
 Tous les autres ne s'occupent que des images. 
 
-\subsection{Tâches à réaliser pour le développement de l'application} %a revoir
-Un manuel d'utilisation sera créé et disponible lors du rendu de l'application au client. 
+\subsection{Tâches à réaliser pour le développement de l'application}
+
+\begin {enumerate}
+\item Identification du produit : étude des volontés et des demandes du client (énoncé du projet 24/01/18)
+\item Etude du produit : recherche des outils et des algorithmes pour répondre au produit demandé par le client ; 
+devis livré au client avec l'estimation des coûts du produit (cahier des charges 14/03/18)
+\item Mise en relation avec le client : présentation du produit et de ses différents modules et fonctionnalités (présentation orale 21/03/18)
+\item Etude spécifique du projet : identification précise des méthodes utilisées pour répondre aux demandes du client (spécifications 18/04/18)
+\item Remise du produit au client : finalisation du produit et rendu de manuel d'utilisation et du compte-rendu (remise du compte rendu 25/05/18)
+\item Démonstration du produit devant le client : explications fonctionnelles du produit (soutenance 01/06/18)
+
+\end{enumerate}
 
 \subsection{Améliorations pour les versions futures du projet}
 La stéganographie se distingue de la cryptographie par le fait que, dans l'un, le message caché est visible par tous si celui-ci est extrait ; tandis que, dans l'autre, 
@@ -196,6 +225,14 @@ pour celui qui intercepte le fichier et qui tente de récupérer ces données ca
 \subsection{Choix du langage et de l'interface}
 
 \section{Conclusion}
+
+\newpage
+\section{Bibliographie}
+
+\begin {itemize}
+\item Compréhension de la méthode Volere pour la rédaction du cahier des charges : \url{http://www.qualitystreet.fr/2007/07/02/specifications-exigences-et-cahier-des-charges-comment/}
+\end{itemize}
+
 
 \end{document}
 
