@@ -84,13 +84,15 @@ Le Calendrier est imposé et suit les étapes suivantes :
 \end{itemize}
 
 
-\subsection{Contraintes imposées} %a revoir car cest identique aux exigences du client
+\subsection{Contraintes imposées}
 Plusieurs contraintes sont imposées par le client : 
- 
-- l'application aura une interface graphique 
-
-- le logiciel proposera également une interface en ligne de commande
-
+\begin{itemize}
+\item le produit permettra à celui qui l'utilise de cacher des données dans des fichiers de différents types : les types Image, Audio et Video seront pris en charge. Les formats seront choisis par le concepteur de l'application. 
+\item l'application aura une interface graphique : elle sera manipulée par les utilisateurs voulant découvrir un message envoyé par quelqu'un (ayant utilisé cette même application), ou voulant cacher des données dans un fichier. 
+Il devra néanmoins choisir un fichier hôte que l'application puisse manipuler. 
+\item le logiciel proposera également une interface en ligne de commande : elle sera employée par le stéganalyste. En effet, l'interface en ligne de commandes permettra de cacher des données dans plusieurs fichiers à la fois, et d'analyser plusieurs fichiers. 
+En effet, cette interface se distingue de l'interface graphique par le fait qu'on puisse faire de la stéganographie/stéganalyse sur plusieurs fichiers à la fois. 
+\end{itemize}
 
 \section{Exigences fonctionnelles}
 \subsection{Portée du produit}
@@ -122,12 +124,10 @@ Par ailleurs, l'article 30 de cette même loi oblige la déclaration de l'applic
 \subsection{Organigramme}
 
 \subsection{Algorithmes des fonctionnalités}
-
 L'application permettra de cacher des données dans des fichiers de différents formats (image, son, video). 
 Plusieurs algorithmes seront utilisés dans notre logiciel.
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
-
 L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
 Il permet de cacher des données dans un fichier sans en altérer sa taille. 
 Dans le cas de la stéganographie sur image, chaque pixel d'une image correspond à un triplet de nombres : R,G,B qui correspondent aux composantes de couleurs Rouge-Vert-Bleu de 0 à 255. 
@@ -202,7 +202,6 @@ Pourtant, nous avons recensé 23 applications de stéganographie et seulement un
 Tous les autres ne s'occupent que des images. 
 
 \subsection{Tâches à réaliser pour le développement de l'application}
-
 \begin {enumerate}
 \item Identification du produit : étude des volontés et des demandes du client (énoncé du projet 24/01/18)
 \item Etude du produit : recherche des outils et des algorithmes pour répondre au produit demandé par le client ; 
@@ -211,7 +210,6 @@ devis livré au client avec l'estimation des coûts du produit (cahier des charg
 \item Etude spécifique du projet : identification précise des méthodes utilisées pour répondre aux demandes du client (spécifications 18/04/18)
 \item Remise du produit au client : finalisation du produit et rendu de manuel d'utilisation et du compte-rendu (remise du compte rendu 25/05/18)
 \item Démonstration du produit devant le client : explications fonctionnelles du produit (soutenance 01/06/18)
-
 \end{enumerate}
 
 \subsection{Améliorations pour les versions futures du projet}
@@ -225,14 +223,17 @@ pour celui qui intercepte le fichier et qui tente de récupérer ces données ca
 \subsection{Choix du langage et de l'interface}
 
 \section{Conclusion}
+Après l'étude des demandes du client, nous mettrons en avant l'application StegX. Ainsi, ce logiciel aura deux modules : d'une part, il permettra de cacher des fichiers de toute sorte dans 
+des fichiers de type Image, Audio et Video. D'autre part, il offrira la possibilité à ces utilisateurs d'analyser des fichiers (Image, Audio, Video) afin d'extraire les données cachées, s'ils en 
+contiennent. 
+
+Cette application sera implémentée par un groupe de six étudiants en Licence Informatique de l'Université de Versailles, ayant l'ambition d'obtenir un master en Cryptographie et Sécurité informatique (SeCReTs). 
 
 \newpage
 \section{Bibliographie}
-
 \begin {itemize}
 \item Compréhension de la méthode Volere pour la rédaction du cahier des charges : \url{http://www.qualitystreet.fr/2007/07/02/specifications-exigences-et-cahier-des-charges-comment/}
 \end{itemize}
-
 
 \end{document}
 
