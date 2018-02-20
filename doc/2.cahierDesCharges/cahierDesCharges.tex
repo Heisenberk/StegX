@@ -175,7 +175,7 @@ Si le fichier suspect contient des données cachées, l'utilisateur choisira le 
 
 \subsection{Algorithmes des fonctionnalités}
 L'application permettra de cacher des données dans des fichiers de différents formats (image, son, video). 
-Plusieurs algorithmes seront utilisés : 
+Plusieurs méthodes seront utilisées : 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront invisibles pour l'Homme. 
@@ -223,6 +223,17 @@ Cet éditeur de fichiers va donc lire les données contenues dans le fichier en 
 Pour que l'éditeur sache quand la lecture doit s'arrêter, le fichier va contenir, à la toute fin, un octet représentant la fin du fichier (EOF). 
 Si des données existent après ce EOF, elles ne seront pas interprétées par l'éditeur. 
 L'algorithme EOF est un algorithme très utilisé dans la stéganographie pour cacher des données : il consiste à écrire une suite de bits, représentant les données à cacher, dans le fichier où l'on va cacher ces dernières. 
+
+\subsubsection{Méthode manipulant les Métadonnées}
+Les fichiers multimédias, tels que les images, les sons et les vidéos, contiennent plusieurs types de données. 
+Tout d'abord, la majeure partie du fichier représente les données du fichier en elles-mêmes. Dans le cas d'une image, on pourrait donner l'exemple des données représentant chaque pixel de l'image. 
+
+De plus, souvent en amont du fichier, il existe des métadonnées, servant à décrire le fichier représenté. Par exemple, pour une image, il est utile de stocker la taille en pixels de l'image afin que l'éditeur sache la représenter correctement. 
+Il y a notamment des zones du fichier, réservées à l'utilisateur, afin qu'il mette des commentaires, par exemple pour représenter l'origine du fichier. 
+Ces métadonnées ne sont pas interprétées directement par l'éditeur du fichier car la manipulation de celles-ci reste "complexe" pour un non-informaticien. 
+
+De ce fait, les métadonnées sont très utilisées en stéganographie. Elles permettent d'insérer des données qui seront interprétées par le module de stéganalyse de l'application. 
+Pour pouvoir cacher des données en manipulant les métadonnées, il faut donc analyser chaque format pris en charge par l'application, afin de connaître les détails des différents morceaux de données présents dans le fichier. 
 
 \subsection{Estimations des coûts}
 \begin{tabular}{|c|c|c|c|}
