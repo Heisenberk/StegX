@@ -88,6 +88,7 @@ Le Calendrier est imposé et suit les étapes suivantes :
 Plusieurs contraintes sont imposées par le client : 
 \begin{itemize}
 \item le produit permettra à celui qui l'utilise de cacher des données dans des fichiers de différents types : les types Image, Audio et Video seront pris en charge. Les formats seront choisis par le concepteur de l'application. 
+\item le fichier à analyser sera déjà considéré comme suspect : on sait déjà que celui contient des données à extraire. 
 \item l'application aura une interface graphique : elle sera manipulée par les utilisateurs voulant découvrir un message envoyé par quelqu'un (ayant utilisé cette même application), ou voulant cacher des données dans un fichier. 
 Il devra néanmoins choisir un fichier hôte que l'application puisse manipuler. 
 \item le logiciel proposera également une interface en ligne de commande : elle sera employée par le stéganalyste. En effet, l'interface en ligne de commandes permettra de cacher des données dans plusieurs fichiers, et d'analyser plusieurs fichiers. 
@@ -143,10 +144,10 @@ Il peut dissimuler des données dans un fichier (dont le type et le format sont 
 \item[d)] \textbf{Extraction des données} : ce deuxième module implémente aussi plusieurs fonctionnalités : 
 \begin{itemize}
 \item Compatibilité : le format du fichier "suspect" choisi par l'utilisateur doit être examiné afin de vérifier sa compatibilité avec l'application. 
-\item Déterminisation : on recherche si le fichier suspect contient effectivement des données cachées. Cette déterminisation permet de savoir si un 
-fichier a été utilisé par notre application dans le module \textit{Dissimulation des données (c)}.
-Si le fichier suspect contient des données cachées, l'utilisateur choisira le chemin des données à extraire.
-\item Extraction : écriture des données cachées présentes dans le fichier analysé (si le fichier suspect en contenait véritablement). 
+%\item Déterminisation : on recherche si le fichier suspect contient effectivement des données cachées. Cette déterminisation permet de savoir si un 
+%fichier a été utilisé par notre application dans le module \textit{Dissimulation des données (c)}.
+%Si le fichier suspect contient des données cachées, l'utilisateur choisira le chemin des données à extraire.
+\item Extraction : écriture des données cachées présentes dans le fichier analysé. %(si le fichier suspect en contenait véritablement). 
 \end{itemize}
 
 \end{description}
