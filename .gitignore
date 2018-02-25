@@ -1,0 +1,6 @@
+# Temporary files
+.fuse_hidden*
+*.swp
+
+# Compiled files
+*.pdf
