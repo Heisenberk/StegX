@@ -119,60 +119,117 @@ L'application de stéganographie vise des clients en France. Il faut donc respec
 La loi du 21 juin 2004, pour la confiance dans l'économie numérique, définit cette application comme moyen de cryptologie car elle vise à transformer des données pour garantir la sécurité de la transmission de celles-ci. 
 Par ailleurs, l'article 30 de cette même loi oblige la déclaration de l'application si cette dernière est importée et/ou exportée. 
 
+\newpage
+
 \section{Modules du produit}
 
 \subsection{Organigramme}
 
 \hspace{1cm}
-\includegraphics[scale=0.70]{organigramme.png}
+\includegraphics[scale=0.55]{organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités}
 \begin{description}
-\item[a)] \textbf{Interface graphique} : interface permettant à l'utilisateur de choisir avec la souris parmi les deux fonctionnalités possibles de l'application. 
-Il peut dissimuler des données dans un fichier (dont le type et le format sont pris en charge par l'application). Ou bien, il peut extraire les données cachées dans un fichier (s'il en dissimule). 
+\item[a)] \textbf{Interface graphique / Interface en ligne de commande} : interfaces permettant à l'utilisateur de choisir parmi les deux fonctionnalités possibles de l'application. 
+Il peut dissimuler des données dans un fichier (dont le type et le format sont pris en charge par l'application). Ou bien, il peut extraire les données cachées dans un fichier. 
 
-\item[b)] \textbf{Interface en ligne de commande} : interface ressemblante à celle graphique mais qui permet à l'utilisateur de manipuler l'application avec le terminal. 
+\item[b)] \textbf{Compatibilité} : le format du fichier hôte (pour le module \textit{Dissimulation de données}) ou le format du fichier à analyser (pour le module \textit{Extraction de données cachées}), 
+choisis par l'utilisateur, sont vérifiés pour savoir s'il est bien pris en charge par l'application. 
 
-\item[c)] \textbf{Dissimulation des données} : ce premier module implémente plusieurs fonctionnalités : 
-\begin{itemize}
-\item Compatibilité : le format du fichier "hôte" choisi par l'utilisateur est vérifié, pour savoir s'il est bien pris en charge par l'application. 
-\item Proposition des algorithmes de stéganographie : en fonction du type et du format du fichier "hôte" ainsi que de la taille des données à cacher, un ou plusieurs algorithmes seront proposés. 
-\item Insertion des données cachées dans l'hôte : écriture du fichier hôte dans lequel les données du fichier à cacher ont été insérées selon l'algorithme choisi par l'utilisateur. 
-\end{itemize}
+\item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction du type et du format du fichier hôte, ainsi que de la taille des données à cacher, 
+un ou plusieurs algorithmes seront proposés. 
 
-\item[d)] \textbf{Extraction des données} : ce deuxième module implémente aussi plusieurs fonctionnalités : 
-\begin{itemize}
-\item Compatibilité : le format du fichier contenant les données cachées, choisi par l'utilisateur doit être examiné afin de vérifier sa compatibilité avec l'application. 
-%\item Déterminisation : on recherche si le fichier suspect contient effectivement des données cachées. Cette déterminisation permet de savoir si un 
-%fichier a été utilisé par notre application dans le module \textit{Dissimulation des données (c)}.
-%Si le fichier suspect contient des données cachées, l'utilisateur choisira le chemin des données à extraire.
-\item Extraction : écriture des données cachées présentes dans le fichier analysé. %(si le fichier suspect en contenait véritablement). 
-\end{itemize}
+\item[d)] \textbf{Détection de l'algorithme de stéganographie} : analyse du fichier pour découvrir quel algorithme a été utilisé afin de les extraire correctement par la suite. 
+
+\item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme choisi par l'utilisateur. 
+
+\item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser sont extraites. 
 
 \end{description}
 
 \paragraph{Liste des informations qui circulent entre les modules}
+
+\small
 \begin{description}
 \item[1)] 
 \begin{itemize}
-\item fichier hôte 
-\item fichier à cacher 
-\item chemin et nom du fichier à créer, qui dissimulera les données à cacher et ayant l'apparence de l'hôte. 
+\item utilisation de l'application (dissimulation ou extraction)
+\item nom du fichier hôte, nom du fichier à cacher et chemin du fichier à créer (pour la dissimulation)
+\item nom du fichier à analyser et chemin du fichier résultant de l'extraction des données cachées (pour l'extraction)
 \end{itemize}
 \item[2)] 
 \begin{itemize}
-\item fichier contenant les données cachées à analyser
+\item nom du fichier hôte 
+\item nom du fichier à cacher 
+\item chemin du fichier à créer, qui dissimulera les données à cacher et ayant l'apparence de l'hôte
 \end{itemize}
 \item[3)] 
 \begin{itemize}
-\item fichier hôte contenant les données cachées 
+\item nom du fichier contenant les données cachées à analyser
+\item chemin du fichier résultant de l'extraction des données cachées
 \end{itemize}
-\item[4)]
+\item[4)] 
 \begin{itemize}
-\item fichier résultant, représentant les données cachées 
+\item nom du fichier hôte et nom du fichier à cacher (pour la dissimulation)
+\item nom du fichier contenant les données cachées à analyser (pour l'extraction)
+\end{itemize}
+\item[5)]
+\begin{itemize}
+\item fichier hôte et fichier à cacher (pour la dissimulation)
+\item fichier contenant les données cachées à analyser (pour l'extraction)
+\end{itemize}
+\item[6)]
+\begin{itemize}
+\item fichier hôte 
+\item fichier à cacher 
+\item chemin du fichier à créer, qui dissimulera les données à cacher
+\end{itemize}
+\item[7)]
+\begin{itemize}
+\item fichier contenant les données cachées à analyser
+\item chemin du fichier résultant de l'extraction des données cachées
+\end{itemize}
+\item[8)]
+\begin{itemize}
+\item liste des algorithmes que l'utilisateur peut utiliser (selon le format du fichier hôte et la taille des données à cacher)
+\end{itemize}
+\item[9)]
+\begin{itemize}
+\item choix de l'algorithme par l'utilisateur
+\item mot de passe choisi par l'utilisateur (s'il a sélectionné la méthode cryptographique parmi les algorithmes de stéganographie)
+\end{itemize}
+\item[10)]
+\begin{itemize}
+\item choix de l'algorithme détecté dans le fichier à analyser
+\end{itemize}
+\item[11)]
+\begin{itemize}
+\item mot de passe pour déchiffrer les données à extraire (si l'algorithme de stéganographie utilise la méthode cryptographique)
+\end{itemize}
+\item[12)]
+\begin{itemize}
+\item fichier hôte
+\item fichier à cacher
+\item chemin du fichier à créer lors de la dissimulation de données
+\item nom de l'algorithme de stéganographie utilisé
+\end{itemize}
+\item[13)]
+\begin{itemize}
+\item fichier contenant les données cachées à analyser 
+\item chemin du fichier résultant de l'extraction des données cachées
+\item nom de l'algorithme détecté
+\end{itemize}
+\item[14)]
+\begin{itemize}
+\item données de l'hôte où les données à cacher ont été insérées en utilisant l'algorithme de stéganographie
+\end{itemize}
+\item[15)]
+\begin{itemize}
+\item données cachées extraites du fichier à analyser
 \end{itemize}
 \end{description}
 
+\normalsize
 \subsection{Algorithmes des fonctionnalités}
 L'application permettra de cacher des données dans des fichiers de différents formats (image, son, video). 
 Plusieurs méthodes seront utilisées : 
