@@ -1,6 +1,18 @@
+# Configuration files
+tags
+.gdbinit
+
+# Generated files
+*.pdf
+*.out
+*.log
+*.aux
+build
+
 # Temporary files
 .fuse_hidden*
 *.swp
 
-# Compiled files
-*.pdf
+# Output files (log)
+.gdb_history
+.valgrind.out
