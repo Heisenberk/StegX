@@ -2,8 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[francais]{babel}
-\usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage[french]{babel}
+\usepackage[top=3.2cm, bottom=3.2cm, left=3.2cm, right=3.2cm]{geometry}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -12,9 +12,9 @@
 }
 \parskip=5pt
 
-\title{Énoncé du projet de Steganogaphie}
-\author{Pierre AYOUB, Claire BASKEVITCH, Tristan BESSAC, \\
-Clément CAUMES, Damien DELAUNAY, Yassin DOUDOUH}
+\title{Énoncé du projet de Stéganogaphie}
+\author{AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, \\
+CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 \date\today
 
 \begin{document}
@@ -27,24 +27,26 @@ La stéganographie est l'art de la dissimulation, appliquée en informatique en
 cachant des données dans d'autres données. Cette dissimulation se fait
 généralement au sein de fichiers multimédias. Par exemple, le fait de cacher un
 mot de passe dans une image relève de la stéganographie. Plusieurs algorithmes
-peuvent être utilisés, dépendant à la fois du format, de la compression, etc...
-Les élèves proposeront une application permettant de dissimuler et de déchiffrer
-des messages dans différents formats qui seront spécifiés dans le cahier des
-charges.
+peuvent être utilisés, dépendant à la fois du format, de la compression et de
+beaucoup d'autres paramètres. Les élèves proposeront une application permettant
+de dissimuler et d'extraire des messages dans différents formats qui seront
+spécifiés dans le cahier des charges.
 
 La stéganalyse, quant à elle, est la recherche de données cachées dans des
-fichiers suspects. Si ces données sont identifiées, il faut ensuite réussir à les
-extraire pour les lire.
+fichiers suspects. Si ces données sont identifiées, il faut ensuite réussir à
+les extraire pour les lire.
 
 \section{Travail à fournir}
 
 \begin{itemize}
-    \item L'application doit permettre de cacher des données dans des fichiers de formats de type image, audio et vidéo.
+    \item L'application doit permettre de cacher des données dans des fichiers
+        de type image, audio et vidéo.
     \item Pour la dissimulation des messages, l'application détectera le format
         du fichier contenant et proposera à l'utilisateur de choisir parmi les
         algorithmes implémentés. 
-    \item Pour la réception de fichiers, on considèrera que les fichiers en entrée contiennent, par défaut, des données cachées. 
-    Ainsi, le programme fera l'extraction automatique de ces données cachées.
+    \item Pour la réception de fichiers, on considèrera que les fichiers en
+        entrée contiennent, par défaut, des données cachées. Ainsi, le
+        programme fera l'extraction automatique de ces données cachées.
     \item Plusieurs formats de fichier devront être gérés par l'application,
         ainsi qu'une diversité dans les algorithmes proposés.
     \item L'application se présentera sous forme d'une bibliothèque partagée par
@@ -53,18 +55,23 @@ extraire pour les lire.
 
 \section{Calendrier}
 
-\begin{tabular}{|l r|}
+\begin{tabular}{|l|r|}
   \hline
   Remise du cahier des charges & Mercredi 14 mars 2018 \\
-  Présentation orale & Mercredi 21 mars 2018\\
-  Remise des spécifications & Mercredi 18 avril 2018\\ 
-  Remise du compte rendu & Vendredi 25 mai 2018\\
-  Soutenance et démonstration & Vendredi 1 juin 2018\\
+  \hline
+  Présentation orale & Mercredi 21 mars 2018 \\
+  \hline
+  Remise des spécifications & Mercredi 18 avril 2018 \\ 
+  \hline
+  Remise du compte rendu & Vendredi 25 mai 2018 \\
+  \hline
+  Soutenance et démonstration & Vendredi 1 juin 2018 \\
   \hline
 \end{tabular}
 
 \vspace{1\baselineskip}
 
-Le cahier des charges ainsi que le compte rendu devront obligatoirement être tapés en \LaTeX
+Le cahier des charges ainsi que le compte rendu devront obligatoirement être
+tapés en \LaTeX
 
 \end{document}
