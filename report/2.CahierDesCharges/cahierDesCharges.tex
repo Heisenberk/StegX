@@ -282,12 +282,16 @@ dernière est importée et/ou exportée.
 \item Fichier à cacher.
 \item Chemin du fichier à créer lors de la dissimulation de données.
 \item Nom de l'algorithme de stéganographie utilisé.
+\item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
+    ses données précédemment).
 \end{itemize}
 \item[13)]
 \begin{itemize}
 \item Fichier contenant les données cachées à analyser.
 \item Chemin du fichier résultant de l'extraction des données cachées.
 \item Nom de l'algorithme détecté.
+\item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
+    ses données précédemment).
 \end{itemize}
 \item[14)]
 \begin{itemize}
@@ -402,6 +406,22 @@ il faut donc analyser chaque format pris en charge par l'application afin de
 connaître les détails des différents morceaux de données présents dans le
 fichier. 
 
+\subsubsection{Méthode de protection des données}
+
+La stéganographie consiste à cacher des données dans des fichiers. Mais, 
+si quelqu'un connaît la méthode pour cacher des données, il peut les extraire 
+puis les lire en clair. 
+Afin de renforcer la sécurité des communications utilisant le logiciel, 
+nous proposons une méthode de protection des données utilisant un mot de passe. 
+
+La méthode utilisée a pour but de cacher des données à des endroits différents
+à chaque mot de passe. 
+Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
+Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
+Le destinataire utilisera le même mot de passe pour extraire les données cachées. 
+
+ALGORITHME A ECRIRE
+
 \subsection{Estimations des coûts}
 \begin{tabular}{|c|c|c|c|}
   \hline
@@ -480,6 +500,8 @@ Après l'étude des demandes du client, nous mettrons en avant l'application
 étudiants en Licence Informatique de l'Université de Versailles
 Saint-Quentin-en-Yvelines (UVSQ), ayant l'ambition d'obtenir un master en
 Cryptographie et Sécurité informatique (SeCReTs). 
+
+\newpage
 
 \section{Bibliographie}
 
