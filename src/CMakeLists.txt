@@ -56,8 +56,16 @@ endif()
 add_custom_target (
     compil-infos
     COMMAND
-        ${CMAKE_COMMAND} -E echo "[  0%] Compilation mode is set to ${CMAKE_BUILD_TYPE}"
+    ${CMAKE_COMMAND} -E echo "[INFO] Compilation mode is set to ${CMAKE_BUILD_TYPE}"
     )
+
+# Installation =================================================================
+
+# Dossiers standards GNU pour l'installation
+include(GNUInstallDirs)
+
+# Assigne RPATH au dossier d'installation de la bibliothèque.
+set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 
 # Structure ====================================================================
 

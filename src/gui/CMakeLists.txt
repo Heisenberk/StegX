@@ -27,3 +27,9 @@ target_link_libraries (${EXE} ${LIB})
 
 add_dependencies(${EXE} tags-generate)
 add_dependencies(${EXE} compil-infos)
+
+# Installation =================================================================
+
+# Déclaration de l'installation
+install(TARGETS ${EXE}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
