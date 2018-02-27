@@ -21,7 +21,7 @@ add_executable (${EXE} ${SRC} ${INC})
 target_include_directories (${EXE} PUBLIC ${INC_DIRS} ${LIB_PUBLIC})
 
 # Bibliothèque à passer au linker.
-target_link_libraries (${EXE} stegx)
+target_link_libraries (${EXE} ${LIB})
 
 # Commandes ====================================================================
 

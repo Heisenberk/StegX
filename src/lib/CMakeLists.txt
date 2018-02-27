@@ -10,7 +10,8 @@ HEADER_DIRECTORIES(INC_DIRS)
 # Binaires =====================================================================
 
 # Nom de l'exécutable.
-set (LIB stegx)
+set (LIB stegx-lib)
+set (LIB stegx-lib PARENT_SCOPE)
 
 # Dépendances de l'exécutable.
 add_library (${LIB} SHARED ${SRC} ${INC})
@@ -18,7 +19,7 @@ add_library (${LIB} SHARED ${SRC} ${INC})
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${LIB} PUBLIC ${INC_DIRS} ${LIB_PUBLIC})
+target_include_directories (${LIB} PUBLIC ${INC_DIRS})
 
 # Commandes ====================================================================
 
