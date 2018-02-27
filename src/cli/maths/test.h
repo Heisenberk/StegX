@@ -4,5 +4,4 @@
 #define NUMBER 1
 void math1();
 
-
 #endif

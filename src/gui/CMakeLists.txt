@@ -18,9 +18,12 @@ add_executable (${EXE} ${SRC} ${INC})
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-include_directories (${INC_DIRS})
+target_include_directories (${EXE} PUBLIC ${INC_DIRS} ${LIB_PUBLIC})
+
+# Bibliothèque à passer au linker.
+target_link_libraries (${EXE} stegx)
 
 # Commandes ====================================================================
 
-add_dependencies(${EXE} generate-tags)
-add_dependencies(${EXE} info-compil)
+add_dependencies(${EXE} tags-generate)
+add_dependencies(${EXE} compil-infos)

@@ -42,7 +42,7 @@ file (GLOB_RECURSE INC_ALL *${INC_EXT})
 # Génération des tags.
 if (${TAG_GEN} STREQUAL true)
     add_custom_target (
-        generate-tags
+        tags-generate
         DEPENDS tags
         )
     add_custom_command (OUTPUT tags
@@ -54,12 +54,17 @@ endif()
 
 # Message d'information.
 add_custom_target (
-    info-compil
-    COMMAND 
+    compil-infos
+    COMMAND
         ${CMAKE_COMMAND} -E echo "[  0%] Compilation mode is set to ${CMAKE_BUILD_TYPE}"
     )
 
 # Structure ====================================================================
+
+# Bibliothèque
+set (LIB_PATH lib)
+set (LIB_PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_PATH}/inc)
+add_subdirectory (${LIB_PATH})
 
 # Interface en ligne de commande
 set (CLI_PATH cli)
@@ -68,7 +73,3 @@ add_subdirectory (${CLI_PATH})
 # Interface graphique
 set (GUI_PATH gui)
 add_subdirectory (${GUI_PATH})
-
-# Bibliothèque
-# set (LIB_PATH lib)
-# add_subdirectory (${LIB_PATH})
