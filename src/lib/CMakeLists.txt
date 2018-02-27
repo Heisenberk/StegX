@@ -10,11 +10,13 @@ HEADER_DIRECTORIES(INC_DIRS)
 
 # Binaires =====================================================================
 
-# Nom de la bibliothèque.
+# Nom de la cible.
 set (LIB stegx-lib)
 set (LIB stegx-lib PARENT_SCOPE)
+# Nom de la bibliothèque.
+set (LIB_NAME stegx)
 
-# Dépendances de l'exécutable.
+# Source et dépendances de la bibliothèque.
 add_library (${LIB} SHARED ${SRC} ${INC})
 
 # Compilation ==================================================================
@@ -28,6 +30,9 @@ add_dependencies(${LIB} tags-generate)
 add_dependencies(${LIB} compil-infos)
 
 # Installation =================================================================
+
+# Nom de la bibliothèque.
+set_target_properties (${LIB} PROPERTIES OUTPUT_NAME ${LIB_NAME})
 
 # Versionnement
 set_target_properties(${LIB} PROPERTIES VERSION ${PROJECT_VERSION})

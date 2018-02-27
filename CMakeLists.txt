@@ -9,14 +9,10 @@ project (StegX VERSION 0.1 DESCRIPTION "Projet de Stéganographie pour l'UVSQ")
 # Mode de compilation.
 set (CMAKE_BUILD_TYPE Debug)
 
-# Paramètres ===================================================================
-
-# Dosser d'installation
-# if (UNIX AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
-    # set (CMAKE_INSTALL_PREFIX /opt)
-# endif()
-
 # Structure ====================================================================
+
+# Configuration
+set (CONFIG_PATH config)
 
 # Sources
 set (SRC_PATH src)

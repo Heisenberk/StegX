@@ -67,6 +67,17 @@ include(GNUInstallDirs)
 # Assigne RPATH au dossier d'installation de la bibliothèque.
 set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 
+# Uninstall target
+if(NOT TARGET uninstall)
+    configure_file (
+        "${CMAKE_SOURCE_DIR}/${CONFIG_PATH}/cmake_uninstall.cmake.in"
+        "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY
+        )
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake)
+endif()
+
 # Structure ====================================================================
 
 # Bibliothèque

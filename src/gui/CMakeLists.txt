@@ -9,10 +9,10 @@ HEADER_DIRECTORIES(INC_DIRS)
 
 # Binaires =====================================================================
 
-# Nom de l'exécutable.
+# Nom de la cible et de l'exécutable.
 set (EXE stegx-gui)
 
-# Dépendances de l'exécutable.
+# Sources et dépendances de l'exécutable.
 add_executable (${EXE} ${SRC} ${INC})
 
 # Compilation ==================================================================
@@ -25,11 +25,11 @@ target_link_libraries (${EXE} ${LIB})
 
 # Commandes ====================================================================
 
-add_dependencies(${EXE} tags-generate)
-add_dependencies(${EXE} compil-infos)
+add_dependencies (${EXE} tags-generate)
+add_dependencies (${EXE} compil-infos)
 
 # Installation =================================================================
 
 # Déclaration de l'installation
-install(TARGETS ${EXE}
+install (TARGETS ${EXE}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
