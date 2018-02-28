@@ -1,7 +1,8 @@
 # Sources ======================================================================
 
-# Liste des fichiers sources.
+# Liste des fichiers sources et des headers.
 file (GLOB_RECURSE SRC *${SRC_EXT})
+file (GLOB_RECURSE INC *${INC_EXT})
 
 # Liste des dossiers contenant un header.
 HEADER_DIRECTORIES(INC_DIRS)
@@ -14,7 +15,7 @@ set (TARGET stegx-cli)
 set (EXE stegx)
 
 # Sources et dépendances de l'exécutable.
-add_executable (${TARGET} ${SRC})
+add_executable (${TARGET} ${SRC} ${INC})
 
 # Modules externes =============================================================
 

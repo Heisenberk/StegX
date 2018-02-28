@@ -18,6 +18,7 @@ if (NOT TAG_GENERATOR)
             add_custom_command (OUTPUT tags-${type}
                 COMMAND ${TAG_GENERATOR} ${SRC} ${INC}
                 COMMAND ${CMAKE_COMMAND} -E copy tags ${CMAKE_CURRENT_SOURCE_DIR}/${type}/tags
+                COMMAND ${CMAKE_COMMAND} -E touch tags-${type}
                 DEPENDS ${SRC} ${INC}
                 )
         endforeach()

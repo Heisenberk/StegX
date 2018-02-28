@@ -2,6 +2,7 @@
 
 # Liste des fichiers sources et des headers.
 file (GLOB_RECURSE SRC *${SRC_EXT})
+file (GLOB_RECURSE INC *${INC_EXT})
 file (GLOB_RECURSE INC_PUBLIC ${LIB_PUBLIC_INC_PATH}/*${INC_EXT})
 
 # Liste des dossiers contenant un header.
@@ -16,7 +17,7 @@ set (LIB_TARGET stegx-lib PARENT_SCOPE)
 set (LIB stegx)
 
 # Source et dépendances de la bibliothèque.
-add_library (${TARGET} SHARED ${SRC})
+add_library (${TARGET} SHARED ${SRC} ${INC})
 
 # Modules externes =============================================================
 
