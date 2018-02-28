@@ -22,12 +22,12 @@ add_library (${TARGET} SHARED ${SRC} ${INC})
 # Modules externes =============================================================
 
 # Génération des tags.
-if (${TAG_GEN} STREQUAL true)
-    add_dependencies (${TARGET} tags-gen)
+if (TAG_GEN)
+    add_dependencies (${TARGET} tags)
 endif()
 
 # Informations de compilation.
-add_dependencies (${TARGET} display-infos)
+add_dependencies (${TARGET} info)
 
 # Compilation ==================================================================
 

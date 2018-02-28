@@ -19,12 +19,13 @@ add_executable (${TARGET} ${SRC} ${INC})
 # Modules externes =============================================================
 
 # Génération des tags.
-if (${TAG_GEN} STREQUAL true)
-    add_dependencies (${TARGET} tags-gen)
-endif()
+if (TAG_GEN)
+    add_dependencies (${TARGET} tags)
+endif ()
 
 # Informations de compilation.
-add_dependencies (${TARGET} display-infos)
+add_dependencies (${TARGET} info)
+
 
 # Compilation ==================================================================
 
