@@ -11,17 +11,18 @@ set (CMAKE_BUILD_TYPE Debug)
 
 # Structure ====================================================================
 
-# Configuration
-set (CONFIG_PATH config)
+# Configuration.
+set (CONFIG_PATH config/cmake)
+set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/${CONFIG_PATH})
 
-# Sources
+# Sources.
 set (SRC_PATH src)
 add_subdirectory (${SRC_PATH})
 
-# Documentation
+# Documentation.
 # set (DOC_PATH doc)
 # add_subdirectory (${DOC_PATH})
 
-# Rapport
+# Rapport.
 # set (REPORT_PATH report)
 # add_subdirectory (${REPORT_PATH})

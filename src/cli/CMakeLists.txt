@@ -1,40 +1,44 @@
 # Sources ======================================================================
 
-# Liste des fichiers sources et des headers.
+# Liste des fichiers sources.
 file (GLOB_RECURSE SRC *${SRC_EXT})
-file (GLOB_RECURSE INC *${INC_EXT})
 
 # Liste des dossiers contenant un header.
 HEADER_DIRECTORIES(INC_DIRS)
 
-# Binaires =====================================================================
+# Binaire ======================================================================
 
 # Nom de la cible.
-set (EXE stegx-cli)
+set (TARGET stegx-cli)
 # Nom de l'exécutable.
-set (EXE_NAME stegx)
+set (EXE stegx)
 
 # Sources et dépendances de l'exécutable.
-add_executable (${EXE} ${SRC} ${INC})
+add_executable (${TARGET} ${SRC})
+
+# Modules externes =============================================================
+
+# Génération des tags.
+if (${TAG_GEN} STREQUAL true)
+    add_dependencies (${TARGET} tags-gen)
+endif()
+
+# Informations de compilation.
+add_dependencies (${TARGET} display-infos)
 
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${EXE} PUBLIC ${INC_DIRS} ${LIB_PUBLIC})
+target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${LIB_PUBLIC_INC_PATH})
 
 # Bibliothèque à passer au linker.
-target_link_libraries (${EXE} ${LIB})
-
-# Commandes ====================================================================
-
-add_dependencies (${EXE} tags-generate)
-add_dependencies (${EXE} compil-infos)
+target_link_libraries (${TARGET} ${LIB_TARGET})
 
 # Installation =================================================================
 
 # Nom de l'exécutable.
-set_target_properties (${EXE} PROPERTIES OUTPUT_NAME ${EXE_NAME})
+set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${EXE})
 
-# Déclaration de l'installation
-install (TARGETS ${EXE}
+# Déclaration de l'installation.
+install (TARGETS ${TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

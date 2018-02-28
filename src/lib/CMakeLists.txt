@@ -2,8 +2,7 @@
 
 # Liste des fichiers sources et des headers.
 file (GLOB_RECURSE SRC *${SRC_EXT})
-file (GLOB_RECURSE INC *${INC_EXT})
-file (GLOB_RECURSE INC_PUBLIC ${LIB_PUBLIC}/*${INC_EXT})
+file (GLOB_RECURSE INC_PUBLIC ${LIB_PUBLIC_INC_PATH}/*${INC_EXT})
 
 # Liste des dossiers contenant un header.
 HEADER_DIRECTORIES(INC_DIRS)
@@ -11,37 +10,42 @@ HEADER_DIRECTORIES(INC_DIRS)
 # Binaires =====================================================================
 
 # Nom de la cible.
-set (LIB stegx-lib)
-set (LIB stegx-lib PARENT_SCOPE)
+set (TARGET stegx-lib)
+set (LIB_TARGET stegx-lib PARENT_SCOPE)
 # Nom de la bibliothèque.
-set (LIB_NAME stegx)
+set (LIB stegx)
 
 # Source et dépendances de la bibliothèque.
-add_library (${LIB} SHARED ${SRC} ${INC})
+add_library (${TARGET} SHARED ${SRC})
+
+# Modules externes =============================================================
+
+# Génération des tags.
+if (${TAG_GEN} STREQUAL true)
+    add_dependencies (${TARGET} tags-gen)
+endif()
+
+# Informations de compilation.
+add_dependencies (${TARGET} display-infos)
 
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${LIB} PUBLIC ${INC_DIRS})
-
-# Commandes ====================================================================
-
-add_dependencies(${LIB} tags-generate)
-add_dependencies(${LIB} compil-infos)
+target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
 
 # Installation =================================================================
 
 # Nom de la bibliothèque.
-set_target_properties (${LIB} PROPERTIES OUTPUT_NAME ${LIB_NAME})
+set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${LIB})
 
-# Versionnement
-set_target_properties(${LIB} PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(${LIB} PROPERTIES SOVERSION 1)
+# Versionnement.
+set_target_properties(${TARGET} PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(${TARGET} PROPERTIES SOVERSION 1)
 
-# Headers publiques
-set_target_properties(${LIB} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
+# Headers publiques.
+set_target_properties(${TARGET} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
 
 # Déclaration de l'installation
-install(TARGETS ${LIB}
+install(TARGETS ${TARGET}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB})

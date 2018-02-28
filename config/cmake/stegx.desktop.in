@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=StegX
+GenericName=StegX
+Comment=Application de Stéganographie permettant de cacher ou extraire des données
+Exec=stegx-gui
+Icon=
+Terminal=false
+Type=Application
+Categories=Utility;
