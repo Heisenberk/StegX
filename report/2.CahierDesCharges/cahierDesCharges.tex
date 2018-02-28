@@ -7,7 +7,13 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{array}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
@@ -307,7 +313,22 @@ dernière est importée et/ou exportée.
 \subsection{Algorithmes proposés}
 
 L'application permettra de cacher des données dans des fichiers de différents
-types (image, son, video). Plusieurs méthodes seront utilisées : 
+types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
+$n$ pour la taille en octets du fichier à cacher et $m$ pour la taille en octets du fichier hôte. 
+
+\subsubsection{Méthode de protection des données}
+
+La stéganographie consiste à cacher des données dans des fichiers. Mais, 
+si quelqu'un connaît la méthode pour cacher des données, il peut les extraire 
+puis les lire en clair. 
+Afin de renforcer la sécurité des communications utilisant le logiciel, 
+nous proposons une méthode de protection des données utilisant un mot de passe. 
+
+La méthode utilisée a pour but de cacher des données à des endroits différents
+à chaque mot de passe. 
+Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
+Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
+Le destinataire utilisera le même mot de passe pour extraire les données cachées. 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 
@@ -320,33 +341,71 @@ valeurs allant de 0 à 255 si un pixel est codé sur 24 bits. Le but de cet
 algorithme est donc de cacher des bits dans cette image. Pour se faire, nous
 allons remplacer les 2 bits de poids faibles de chaque composante des pixels de
 l'image. En effet, à l'oeil nu, l'homme ne discernera jamais le changement
-minime de couleur induis par la modification.  Prenons un exemple de couleur
-$C_1$ dont le triplet est $(219,27,91)$. 
+minime de couleur induis par la modification. 
 
-R : $219_{10} = 11011011_2$ \qquad G : $27_{10} = 00011011_2$
-\qquad B : $91_{10} = 01011011_2$
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme LSB sans Mot De Passe}
+\begin{algorithmic}
+\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $b1 = $LECTURE 2 bits ($f1$)
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE $o1 = $CHANGEMENT\_BIT\_POIDS\_FAIBLE($o1$,$b1$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+\WHILE{(Fin de fichier $f2$ non atteinte)}
+\STATE $o1 =$LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme LSB avec Mot De Passe}
+\begin{algorithmic}
+\STATE ECRIRE ALGO
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
 
-Imaginons que la donnée à cacher dans le fichier composé de cet unique pixel de
-couleur $C_1$ correspond à la suite de bits $B = 000000_2$. Après modification
-des 2 bits de poids faibles de chaque composants du pixel, cela donne une
-autre couleur $C_2$ défini par le triplet suivant : 
+%Prenons un exemple de couleur
+%$C_1$ dont le triplet est $(219,27,91)$. 
 
-R : $216_{10} = 11011000_2$ \qquad G : $24_{10} = 00011000_2$
-\qquad B : $88_{10} = 01011000_2$
+%R : $219_{10} = 11011011_2$ \qquad G : $27_{10} = 00011011_2$
+%\qquad B : $91_{10} = 01011011_2$
 
-La figure suivantes illustres les deux couleurs $C_1$ et $C_2$ côte à côte,
-montrant ainsi qu'un humain ne pourra jamais détecter un changement de bit : 
+%Imaginons que la donnée à cacher dans le fichier composé de cet unique pixel de
+%couleur $C_1$ correspond à la suite de bits $B = 000000_2$. Après modification
+%des 2 bits de poids faibles de chaque composants du pixel, cela donne une
+%autre couleur $C_2$ défini par le triplet suivant : 
 
-\begin{figure}[h]
- \begin{minipage}{.46\linewidth}
-  \centering\epsfig{figure=pictures/219_27_91.png}
-  \caption{Couleur $C_1$}
- \end{minipage} \hfill
- \begin{minipage}{.46\linewidth}
-  \centering\epsfig{figure=pictures/216_24_88.png}
-  \caption{Couleur $C_2$}
- \end{minipage}
-\end{figure}
+%R : $216_{10} = 11011000_2$ \qquad G : $24_{10} = 00011000_2$
+%\qquad B : $88_{10} = 01011000_2$
+
+%La figure suivantes illustres les deux couleurs $C_1$ et $C_2$ côte à côte,
+%montrant ainsi qu'un humain ne pourra jamais détecter un changement de bit : 
+
+%\begin{figure}[h]
+% \begin{minipage}{.46\linewidth}
+%  \centering\epsfig{figure=pictures/219_27_91.png}
+%  \caption{Couleur $C_1$}
+% \end{minipage} \hfill
+% \begin{minipage}{.46\linewidth}
+%  \centering\epsfig{figure=pictures/216_24_88.png}
+%  \caption{Couleur $C_2$}
+% \end{minipage}
+%\end{figure}
+
+La complexité de cet algorithme se calcule de la manière suivante : 
+la première boucle TantQue a une complexité de $O(m-n)$, la deuxième $O(n)$. 
+\newline Donc la complexité de l'algorithme LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$
 
 Cet algorithme peut également s'appliquer à d'autres types de fichiers. Pour le
 son non compressé, il est possible de très peu modifier l'amplitude de chaque
@@ -356,11 +415,11 @@ un tel fichier est composé d'un enchaînement de multiples frames (images) et i
 est donc possible de manipuler les données pour pouvoir en cacher d'autres, de
 la même manière que pour les deux autres types de fichier cités précédemment.
 
-Pour la partie réception du fichier, il faut connaître combien de bits sont
-cachés  Il faudra donc calculer la taille maximale du message à cacher qui sera
-une puissance de 2. En effet, en fonction de la taille du fichier, un certain
-nombre de bits sera réservé pour connaître la taille des données à cacher. En
-fonction de ces informations, la suite de bits cachée sera donc formée.
+%Pour la partie réception du fichier, il faut connaître combien de bits sont
+%cachés. Il faudra donc calculer la taille maximale du message à cacher qui sera
+%une puissance de 2. En effet, en fonction de la taille du fichier, un certain
+%nombre de bits sera réservé pour connaître la taille des données à cacher. En
+%fonction de ces informations, la suite de bits cachée sera donc formée.
 
 \subsubsection{Algorithme EOF (End Of File)}
 
@@ -381,6 +440,40 @@ directement à la fin du fichier hôte.
 En revanche, cet algorithme souffre de nombreuses faiblessses : les données
 cachées sont facilement identifiable dans une stéganalyse et la taille du
 fichier hôte se voit incrémenté de la taille des données à cacher.
+
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme EOF sans Mot De Passe}
+\begin{algorithmic}
+\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{(Fin de fichier $f2$ non atteinte)}
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ ($f3$)
+\ENDWHILE
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $o1 =$LECTURE octet ($f1$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme EOF avec Mot De Passe}
+\begin{algorithmic}
+\STATE ECRIRE ALGO
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+
+Pour cet algorithme, la première boucle TantQue a une complexité de $O(m)$, 
+la deuxième $O(n)$. \newline Donc sa complexité globale pour l'algorithme 
+EOF est de $O(m)+O(n)=O(m+n)$
 
 \subsubsection{Méthode manipulant les métadonnées}
 
@@ -406,21 +499,41 @@ il faut donc analyser chaque format pris en charge par l'application afin de
 connaître les détails des différents morceaux de données présents dans le
 fichier. 
 
-\subsubsection{Méthode de protection des données}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme MetaData sans Mot De Passe}
+\begin{algorithmic}
+\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{Fin de fichier $f2$ non atteinte}
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ ($f3$)
+\IF{($o1 ==$ curseur où insérer MetaData)}
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $o2 = $LECTURE octet ($f1$)
+\STATE ECRITURE $o2$ dans $f3$
+\ENDWHILE
+\ENDIF
+\ENDWHILE
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Algorithme MetaData avec Mot De Passe}
+\begin{algorithmic}
+\STATE ECRIRE ALGO
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
 
-La stéganographie consiste à cacher des données dans des fichiers. Mais, 
-si quelqu'un connaît la méthode pour cacher des données, il peut les extraire 
-puis les lire en clair. 
-Afin de renforcer la sécurité des communications utilisant le logiciel, 
-nous proposons une méthode de protection des données utilisant un mot de passe. 
 
-La méthode utilisée a pour but de cacher des données à des endroits différents
-à chaque mot de passe. 
-Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
-Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
-Le destinataire utilisera le même mot de passe pour extraire les données cachées. 
-
-ALGORITHME A ECRIRE
+Pour l'algorithme MetaData, nous avons une complexité globale de 
+$O(m+n)$
 
 \subsection{Estimations des coûts}
 \begin{tabular}{|c|c|c|c|}
