@@ -12,7 +12,7 @@ HEADER_DIRECTORIES(INC_DIRS)
 
 # Nom de la cible.
 set (TARGET stegx-lib)
-set (LIB_TARGET stegx-lib PARENT_SCOPE)
+set (LIB_TARGET ${TARGET} PARENT_SCOPE)
 # Nom de la bibliothèque.
 set (LIB stegx)
 

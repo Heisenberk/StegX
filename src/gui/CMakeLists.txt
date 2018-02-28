@@ -11,6 +11,7 @@ HEADER_DIRECTORIES(INC_DIRS)
 
 # Nom de la cible et de l'exécutable.
 set (TARGET stegx-gui)
+set (GUI ${TARGET} PARENT_SCOPE)
 
 # Sources et dépendances de l'exécutable.
 add_executable (${TARGET} ${SRC} ${INC})

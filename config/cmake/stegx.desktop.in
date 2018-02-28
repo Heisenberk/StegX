@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=StegX
-GenericName=StegX
-Comment=Application de Stéganographie permettant de cacher ou extraire des données
-Exec=stegx-gui
+Name=@PROJECT_NAME@
+GenericName=@PROJECT_NAME@
+Comment=@PROJECT_DESCRIPTION@
+Exec=@GUI@
 Icon=
 Terminal=false
 Type=Application

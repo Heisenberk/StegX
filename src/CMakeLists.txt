@@ -40,3 +40,16 @@ add_subdirectory (${CLI_PATH})
 # Interface graphique
 set (GUI_PATH gui)
 add_subdirectory (${GUI_PATH})
+
+# Installation supplémentaires =================================================
+
+# Ajoute le raccourci de l'interface graphique.
+configure_file (
+    ${CMAKE_SOURCE_DIR}/${CONFIG_PATH}/stegx.desktop.in
+    ${CMAKE_BINARY_DIR}/stegx.desktop
+    @ONLY
+    )
+if (EXISTS /usr/share/applications)
+    install (FILES ${CMAKE_BINARY_DIR}/stegx.desktop
+        DESTINATION /usr/share/applications)
+endif()
