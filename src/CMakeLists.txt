@@ -52,4 +52,8 @@ configure_file (
 if (EXISTS /usr/share/applications)
     install (FILES ${CMAKE_BINARY_DIR}/stegx.desktop
         DESTINATION /usr/share/applications)
+    if (EXISTS /usr/share/pixmaps)
+        install (FILES ${CMAKE_SOURCE_DIR}/${CONFIG_PATH}/stegx.png
+            DESTINATION /usr/share/pixmaps)
+    endif()
 endif()
