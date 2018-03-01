@@ -180,18 +180,20 @@ dernière est importée et/ou exportée.
 
 \subsection{Organigramme}
 
+\hspace{1cm}
 \includegraphics[scale=0.55]{pictures/Organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités :}
 
 \begin{description}
-
+\small
 \item[a)] \textbf{Interface graphique / Interface en ligne de commande} :
     interfaces permettant à l'utilisateur de choisir parmi les deux
     fonctionnalités possibles de l'application. Il peut dissimuler des
     données dans un fichier (dont le type et le format sont pris en charge
     par l'application). Ou bien, il peut extraire les données cachées d'un
     fichier. 
+    
 
 \item[b)] \textbf{Compatibilité} : le format du fichier hôte (pour le module
     \textit{Dissimulation de données}) ou le format du fichier à analyser (pour
@@ -219,7 +221,7 @@ dernière est importée et/ou exportée.
 \paragraph{Liste des informations qui circulent entre les modules :}
 
 \begin{description}
-
+\small
 \item[1)] 
 \begin{itemize}
 \item Utilisation de l'application (dissimulation ou extraction).
@@ -310,7 +312,8 @@ dernière est importée et/ou exportée.
 \end{itemize}
 \end{description}
 
-\subsection{Algorithmes proposés}
+\normalsize
+\subsection{Algorithmes de dissimulation et d'extraction en stéganographie}
 
 L'application permettra de cacher des données dans des fichiers de différents
 types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
@@ -345,7 +348,7 @@ minime de couleur induis par la modification.
 
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme LSB sans Mot De Passe}
+\caption{Dissimulation Algorithme LSB}
 \begin{algorithmic}
 \STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
@@ -360,6 +363,7 @@ minime de couleur induis par la modification.
 \STATE $o1 =$LECTURE octet ($f2$)
 \STATE ECRITURE $o1$ dans $f3$
 \ENDWHILE
+\STATE ECRITURE suite d'octets ($f3$) $\rightarrow$ identification algo, nom fichier caché, taille données cachées
 \STATE Fermeture fichiers $f1$, $f2$, $f3$
 \end{algorithmic}
 \end{algorithm}
@@ -367,9 +371,18 @@ minime de couleur induis par la modification.
 \end{minipage}
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme LSB avec Mot De Passe}
+\caption{Extraction Algorithme LSB}
 \begin{algorithmic}
-\STATE ECRIRE ALGO
+\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\STATE Taille $\leftarrow$ 0
+\WHILE{(Taille < [taille bits fichier caché])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE $b1 = $2\_BITS\_POIDS\_FAIBLE($o1$)
+\STATE ECRITURE $b1$ ($f2$)
+\STATE Taille = Taille + 2
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -443,7 +456,7 @@ fichier hôte se voit incrémenté de la taille des données à cacher.
 
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme EOF sans Mot De Passe}
+\caption{Dissimulation Algorithme EOF}
 \begin{algorithmic}
 \STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
@@ -463,9 +476,18 @@ fichier hôte se voit incrémenté de la taille des données à cacher.
 \end{minipage}
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme EOF avec Mot De Passe}
+\caption{Extraction Algorithme EOF}
 \begin{algorithmic}
-\STATE ECRIRE ALGO
+\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\STATE Taille $\leftarrow$ 0
+\STATE Placement curseur EOF "officiel" fichier à analyser
+\WHILE{(Taille < [taille octets fichier caché])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE ECRITURE $o1$ ($f2$)
+\STATE Taille = Taille + 1
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -501,7 +523,7 @@ fichier.
 
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme MetaData sans Mot De Passe}
+\caption{Dissimulation Algorithme MetaData}
 \begin{algorithmic}
 \STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
@@ -523,9 +545,22 @@ fichier.
 \end{minipage}
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
-\caption{Algorithme MetaData avec Mot De Passe}
+\caption{Extraction Algorithme MetaData}
 \begin{algorithmic}
-\STATE ECRIRE ALGO
+\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\WHILE{Fin de fichier $f1$ non atteinte)}
+\STATE Taille $\leftarrow$ 0
+\STATE $o1 = $LECTURE octet (f1)
+\IF{($o1 == $ [debut chunk MetaData Stegano])}
+\WHILE{(Taille < [taille octets metadata])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE ECRITURE $o1$ ($f2$)
+\STATE Taille = Taille + 1
+\ENDWHILE
+\ENDIF
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
 \end{algorithmic}
 \end{algorithm}
 \normalsize
