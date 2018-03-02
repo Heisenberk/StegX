@@ -50,16 +50,16 @@ add_subdirectory (${GUI_PATH})
 
 # Ajoute le raccourci de l'interface graphique.
 configure_file (
-    ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${DESKTOP_NAME}.desktop.in
-    ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${DESKTOP_NAME}.desktop
+    ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop.in
+    ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
     @ONLY
     )
 if (EXISTS /usr/share/applications)
-    install (FILES ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${DESKTOP_NAME}.desktop
+    install (FILES ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
         DESTINATION /usr/share/applications)
     if (EXISTS /usr/share/pixmaps)
-        install (FILES ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${DESKTOP_NAME}-128x128.png
-            RENAME ${DESKTOP_NAME}.png
+        install (FILES ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
+            RENAME ${PROJECT_NAME_LC}.png
             DESTINATION /usr/share/pixmaps)
     endif()
 endif()

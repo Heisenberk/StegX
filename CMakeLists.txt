@@ -8,7 +8,7 @@ project (StegX VERSION 0.1 DESCRIPTION "Projet de Stéganographie pour l'UVSQ")
 set (PROJECT_NAME_LC stegx)
 
 # Mode de compilation.
-set (CMAKE_BUILD_TYPE Release)
+set (CMAKE_BUILD_TYPE Debug)
 
 # Structure ====================================================================
 
@@ -30,7 +30,6 @@ set (CMAKE_MODULE_PATH
 
 # Raccourcis (.desktop).
 set (DESKTOP_PATH ${CONFIG_PATH}/desktop)
-set (DESKTOP_NAME stegx)
 
 # Installation =================================================================
 
