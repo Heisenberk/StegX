@@ -10,7 +10,7 @@ else ()
     # Défini cette variable pour le fichier "Doxyfile.in".
     if (NOT TARGET Doxygen::dot)
         message ("-- Could NOT find dot for Doxygen")
-        message ("-- Diagrams for documentation will NOT be generated")
+        message ("-- Diagrams for documentation will NOT be generated with dot")
         set (DOXYGEN_HAVE_DOT NO)
     else ()
         set (DOXYGEN_HAVE_DOT YES)
