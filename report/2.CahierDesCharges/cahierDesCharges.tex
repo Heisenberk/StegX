@@ -32,6 +32,7 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 \vspace{20em}
 \begin{center}\includegraphics{pictures/Application.png}\end{center}
 
+\small
 \section{Préambule}
 
 \subsection{Définition des termes du sujet}
@@ -141,7 +142,7 @@ L'application doit respectée deux exigences pour le client : elle doit permettr
 utiliser toutes les fonctionnalités de l'application grâce à une interface
 graphique intuitive. De plus, une interface en ligne de commande doit être
 également proposée pour les utilisateurs sachant manipuler un programme dans un
-terminal. Cela permetra à ces utilisateurs plus exprimentés d'intégrer
+terminal. Cela permetra à ces utilisateurs plus expérimentés d'intégrer
 l'application dans des scripts et de l'utiliser conjointement à d'autre
 programme.
 
@@ -312,26 +313,13 @@ dernière est importée et/ou exportée.
 \end{itemize}
 \end{description}
 
-\normalsize
+%\normalsize
+\small
 \subsection{Algorithmes de dissimulation et d'extraction en stéganographie}
 
 L'application permettra de cacher des données dans des fichiers de différents
 types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
 $n$ pour la taille en octets du fichier à cacher et $m$ pour la taille en octets du fichier hôte. 
-
-\subsubsection{Méthode de protection des données}
-
-La stéganographie consiste à cacher des données dans des fichiers. Mais, 
-si quelqu'un connaît la méthode pour cacher des données, il peut les extraire 
-puis les lire en clair. 
-Afin de renforcer la sécurité des communications utilisant le logiciel, 
-nous proposons une méthode de protection des données utilisant un mot de passe. 
-
-La méthode utilisée a pour but de cacher des données à des endroits différents
-à chaque mot de passe. 
-Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
-Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
-Le destinataire utilisera le même mot de passe pour extraire les données cachées. 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 
@@ -556,7 +544,7 @@ fichier.
 \WHILE{(Taille < [taille octets metadata])}
 \STATE $o1 = $LECTURE octet (f1)
 \STATE ECRITURE $o1$ ($f2$)
-\STATE Taille = Taille + 1
+\STATE Taille $\leftarrow$ Taille + 1
 \ENDWHILE
 \ENDIF
 \ENDWHILE
@@ -570,27 +558,84 @@ fichier.
 Pour l'algorithme MetaData, nous avons une complexité globale de 
 $O(m+n)$
 
+\subsubsection{Méthode de protection des données}
+
+La stéganographie consiste à cacher des données dans des fichiers. Mais, 
+si quelqu'un connaît la méthode pour cacher des données, il peut les extraire 
+puis les lire en clair. 
+Afin de renforcer la sécurité des communications utilisant le logiciel, 
+nous proposons une méthode de protection des données utilisant un mot de passe. 
+
+La méthode utilisée a pour but de cacher les fractions de données à des pixels 
+différents à chaque fois (pour l'algorithme LSB) ou à mélanger les octets 
+à cacher (pour les algorithmes EOF et MetaData). 
+Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
+Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
+Le destinataire utilisera le même mot de passe pour extraire les données cachées.
+
+\begin{algorithm}
+\caption{Méthode de protection des données}
+\begin{algorithmic}
+\footnotesize
+\STATE TABLEAU resultat {octet} [taille]
+\STATE TABLEAU T STRUCT \{octet, bool\} [taille]
+\FOR{(i=0 ; i<[taille] ; i++)}
+\STATE $o1 = $LECTURE Fichier
+\STATE T[i] $\leftarrow$ \{$o1$, $false$\}
+\ENDFOR
+\STATE Initialisation de la suite pseudo-aleatoire (mdp)
+\STATE tailleRestant $\leftarrow$ [taille]+1
+\FOR{(i=0 ; i<[taille] ; i++)}
+\STATE reste $\leftarrow$ 0
+\STATE curseur $\leftarrow$ 0
+\STATE rang $\leftarrow$ rand()\%(tailleRestant-1)
+\STATE curseur $\leftarrow$ recherche position case [rang] encore non vue 
+en incrémentant pour chaque case non vue
+\color{red}
+\STATE result[curseur] $\leftarrow$ T.octet[i] /* pour la dissimulation */
+\color{black} OU \color{blue} result[i] $\leftarrow$ T.octet[curseur] /* pour l'extraction */
+\color{black}
+\STATE T.bool[curseur]=true
+\STATE tailleRestant $\leftarrow$ tailleRestant-1
+\ENDFOR
+\normalsize
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{Estimations des coûts}
+\small
 \begin{tabular}{|c|c|c|c|}
   \hline
   \textbf{Module} & \textbf{Coût en nombre} & \textbf{Coût en} & \textbf{Personnel(s) en charge} \\
    \textbf{de l'application} & \textbf{de lignes} & \textbf{temps} & \textbf{du module} \\
   \hline
-  Stéganographie des & X & X & CAUMES Clément \& \\
-   fichiers images & lignes & heures & DOUDOUH Yassin \\
-  \hline
-  Stéganographie des & X & X & AYOUB Pierre \& \\
-   fichiers audios & lignes & heures & DELAUNAY Damien \\
-  \hline
-  Stéganographie des & X & X & BASKEVITCH Claire \& \\
-   fichiers vidéos & lignes & heures & BESSAC Tristan \\
-  \hline
-    Interface en ligne & X & X & X \\ 
+    Interface en ligne &  &  &  \\ 
     de commande & lignes & heures & \\
   \hline
-  Interface graphique & X lignes & X heures & X \\
+  Interface &  &  &  \\
+  graphique & lignes & heures & \\
+  \hline
+  Vérification de la &  &  &  \\
+   compatibilité des fichiers & lignes & heures & \\
+  \hline
+    Proposition des algos &  &  &  \\
+   de stéganographie & lignes & heures & \\
+  \hline
+    Détection de l'algo &  &  &  \\
+   de stéganographie & lignes & heures & \\
+  \hline
+  Dissimulation \& Extraction &  &  & CAUMES Clément \& \\
+   fichiers images & lignes & heures & DOUDOUH Yassin \\
+  \hline
+  Dissimulation \& Extraction &  &  & AYOUB Pierre \& \\
+   fichiers audios & lignes & heures & DELAUNAY Damien \\
+     \hline
+  Dissimulation \& Extraction &  &  & BASKEVITCH Claire \& \\
+   fichiers vidéos & lignes & heures & BESSAC Tristan \\
   \hline
 \end{tabular}
+%\normalsize
+\small
 
 \section{Autres aspects du projet}
 
