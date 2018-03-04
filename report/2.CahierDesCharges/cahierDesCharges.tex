@@ -193,29 +193,38 @@ dernière est importée et/ou exportée.
     fonctionnalités possibles de l'application. Il peut dissimuler des
     données dans un fichier (dont le type et le format sont pris en charge
     par l'application). Ou bien, il peut extraire les données cachées d'un
-    fichier. 
+    fichier. \newline
+    Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
+    à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
+    fichier contenant les données cachées à analyser (pour l'extraction de 
+    données cachées). 
     
 
-\item[b)] \textbf{Compatibilité} : le format du fichier hôte (pour le module
-    \textit{Dissimulation de données}) ou le format du fichier à analyser (pour
-    le module \textit{Extraction de données cachées}), choisis par
-    l'utilisateur, est vérifié pour savoir s'il est bien pris en charge
-    par l'application. 
+\item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
+	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
+	le format du fichier à analyser (pour le module \textit{Extraction de données 
+	cachées}), choisis par l'utilisateur, est vérifié pour savoir s'il est 
+	bien pris en charge par l'application. \newline
+	Il aura un mécanisme de lecture du fichier hôte (pour la dissimulation 
+	des données) : selon les formats pris en charge, il y aura une batterie
+	de tests pour déterminer le format du fichier. 
 
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
-    cacher, un ou plusieurs algorithmes seront proposés. 
+    cacher, un mécanisme proposera un ou plusieurs algorithmes. 
 
-\item[d)] \textbf{Détection de l'algorithme de stéganographie} : analyse du
-    fichier pour découvrir quel algorithme a été utilisé afin de les extraire
-    correctement par la suite. 
+\item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
+	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
+	afin de les extraire correctement par la suite. 
 
 \item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
     sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
     choisi par l'utilisateur. 
 
 \item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
-    sont extraites. 
+    sont extraites. Les algorithmes utilisés pour l'insertion des données 
+    et l'extraction seront expliqués dans la sous-section \textit{"Algorithmes 
+    de dissimulation et d'extraction en stéganographie"}
 
 \end{description}
 
@@ -319,20 +328,20 @@ dernière est importée et/ou exportée.
 
 L'application permettra de cacher des données dans des fichiers de différents
 types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
-$n$ pour la taille en octets du fichier à cacher et $m$ pour la taille en octets du fichier hôte. 
+$n$ pour la taille en octets du fichier caché (ou à cacher) et $m$ pour la taille en octets du fichier hôte. 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 
 L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront
 invisibles pour l'Homme. Il permet de cacher des données dans un fichier sans en
-altérer sa taille. Dans le cas de la stéganographie sur une image non compressé,
+altérer sa taille. Dans le cas de la stéganographie sur une image non compressée,
 chaque pixel d'une image correspond à un triplet de nombres dit triplet RGB. Ce
 triplet correspond aux composantes de couleurs Rouge-Vert-Bleu, prenant des
-valeurs allant de 0 à 255 si un pixel est codé sur 24 bits. Le but de cet
-algorithme est donc de cacher des bits dans cette image. Pour se faire, nous
-allons remplacer les 2 bits de poids faibles de chaque composante des pixels de
-l'image. En effet, à l'oeil nu, l'homme ne discernera jamais le changement
-minime de couleur induis par la modification. 
+valeurs allant de 0 à 255. Le but de cet algorithme est donc de cacher des bits 
+dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids 
+faibles de chaque composante des pixels de l'image. En effet, à l'oeil nu, 
+l'homme ne discernera jamais le changement minime de couleur induis par la 
+modification. 
 
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
@@ -404,9 +413,10 @@ minime de couleur induis par la modification.
 % \end{minipage}
 %\end{figure}
 
-La complexité de cet algorithme se calcule de la manière suivante : 
+La complexité de la dissimulation se calcule de la manière suivante : 
 la première boucle TantQue a une complexité de $O(m-n)$, la deuxième $O(n)$. 
-\newline Donc la complexité de l'algorithme LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$
+\newline Donc la complexité de la dissimulation LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$. 
+\newline La complexité de l'extraction LSB est, quant à elle, de $O(n)$.
 
 Cet algorithme peut également s'appliquer à d'autres types de fichiers. Pour le
 son non compressé, il est possible de très peu modifier l'amplitude de chaque
@@ -438,9 +448,9 @@ algorithme très utilisé dans la stéganographie pour cacher des données : il
 consiste à écrire une suite de bits représentant les données à cacher
 directement à la fin du fichier hôte.
 
-En revanche, cet algorithme souffre de nombreuses faiblessses : les données
-cachées sont facilement identifiable dans une stéganalyse et la taille du
-fichier hôte se voit incrémenté de la taille des données à cacher.
+En revanche, cet algorithme souffre de plusieurs faiblesses, notamment 
+le fait que la taille du fichier hôte se voit incrémenté de la taille 
+des données à cacher.
 
 \begin{minipage}{.5\textwidth}
 \begin{algorithm}[H]
@@ -481,9 +491,11 @@ fichier hôte se voit incrémenté de la taille des données à cacher.
 \normalsize
 \end{minipage}
 
-Pour cet algorithme, la première boucle TantQue a une complexité de $O(m)$, 
+Pour la dissimulation EOF, la première boucle TantQue a une complexité de $O(m)$, 
 la deuxième $O(n)$. \newline Donc sa complexité globale pour l'algorithme 
-EOF est de $O(m)+O(n)=O(m+n)$
+EOF est de $O(m)+O(n)=O(m+n)$. \newline
+L'extraction EOF, la complexité dépend seulement de la taille du fichier 
+caché, soit $O(n)$.
 
 \subsubsection{Méthode manipulant les métadonnées}
 
@@ -516,7 +528,7 @@ fichier.
 \STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
 \STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
-\WHILE{Fin de fichier $f2$ non atteinte}
+\WHILE{(Fin de fichier $f2$ non atteinte)}
 \STATE $o1 = $LECTURE octet ($f2$)
 \STATE ECRITURE $o1$ ($f3$)
 \IF{($o1 ==$ curseur où insérer MetaData)}
@@ -537,7 +549,7 @@ fichier.
 \begin{algorithmic}
 \STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
-\WHILE{Fin de fichier $f1$ non atteinte)}
+\WHILE{(Fin de fichier $f1$ non atteinte)}
 \STATE Taille $\leftarrow$ 0
 \STATE $o1 = $LECTURE octet (f1)
 \IF{($o1 == $ [debut chunk MetaData Stegano])}
