@@ -38,7 +38,7 @@ include (tags)
 # Installation =================================================================
 
 # Assigne RPATH au dossier d'installation de la bibliothèque.
-set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
 
 # Lecture des sous-répertoires =================================================
 
@@ -63,3 +63,14 @@ if (EXISTS /usr/share/applications)
             DESTINATION /usr/share/pixmaps)
     endif()
 endif()
+
+# Package ======================================================================
+
+# Liste des générateurs.
+set (CPACK_GENERATOR STGZ;TGZ;DEB)
+
+# Configuration pour DEB.
+set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
+
+# Lance la configuration de CPack.
+include (CPack)
