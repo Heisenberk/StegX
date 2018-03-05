@@ -34,12 +34,14 @@ else ()
     # Commandes de génération de la documentation.
     foreach (type ${ALL_PATH})
         set (DOXYGEN_INPUT ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type})
+        file (GLOB_RECURSE SRC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type}/*${SRC_EXT})
+        file (GLOB_RECURSE INC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type}/*${INC_EXT})
         set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${type})
-        configure_file (Doxyfile.in Doxyfile-${type})
+        configure_file (Doxyfile.in Doxyfile-${type} @ONLY)
         add_custom_command (OUTPUT doc-${type}
             COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile-${type}
             COMMAND ${CMAKE_COMMAND} -E touch doc-${type}
-            DEPENDS ${SRC} ${INC}
+            DEPENDS ${SRC} ${INC} ${CMAKE_SOURCE_DIR/README.md}
             )
     endforeach()
 
