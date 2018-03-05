@@ -39,8 +39,13 @@ include (uninstall-target)
 # Dossiers standards GNU pour l'installation.
 include (GNUInstallDirs)
 
+# Macros =======================================================================
+
+# Sous-répertoires.
+include (subdirlist)
+
 # Lecture des sous-répertoires =================================================
 
 add_subdirectory (${SRC_PATH})
 add_subdirectory (${DOC_PATH})
-# add_subdirectory (${REPORT_PATH})
+add_subdirectory (${REPORT_PATH})
