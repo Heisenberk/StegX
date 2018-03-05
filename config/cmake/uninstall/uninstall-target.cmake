@@ -6,5 +6,7 @@ if (NOT TARGET uninstall)
         IMMEDIATE @ONLY
         )
     add_custom_target (uninstall
-        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake)
+        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Uninstalling the project..."
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/cmake_uninstall.cmake
+        )
 endif()
