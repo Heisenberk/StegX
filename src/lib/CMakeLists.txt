@@ -40,13 +40,13 @@ target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
 set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${LIB})
 
 # Versionnement.
-set_target_properties(${TARGET} PROPERTIES VERSION ${PROJECT_VERSION})
-set_target_properties(${TARGET} PROPERTIES SOVERSION 1)
+set_target_properties (${TARGET} PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties (${TARGET} PROPERTIES SOVERSION 1)
 
 # Headers publiques.
-set_target_properties(${TARGET} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
+set_target_properties (${TARGET} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
 
 # Déclaration de l'installation
-install(TARGETS ${TARGET}
+install (TARGETS ${TARGET}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${LIB})

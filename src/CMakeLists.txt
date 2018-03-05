@@ -54,13 +54,15 @@ configure_file (
     ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
     @ONLY
     )
-if (EXISTS /usr/share/applications)
+set (DESKTOP_INSTALL_DIR /usr/share/applications)
+set (ICON_INSTALL_DIR /usr/share/pixmaps)
+if (EXISTS ${DESKTOP_INSTALL_DIR})
     install (FILES ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
-        DESTINATION /usr/share/applications)
-    if (EXISTS /usr/share/pixmaps)
+        DESTINATION ${DESKTOP_INSTALL_DIR})
+    if (EXISTS ${ICON_INSTALL_DIR})
         install (FILES ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
             RENAME ${PROJECT_NAME_LC}.png
-            DESTINATION /usr/share/pixmaps)
+            DESTINATION ${ICON_INSTALL_DIR})
     endif()
 endif()
 
@@ -74,3 +76,12 @@ set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tr
 
 # Lance la configuration de CPack.
 include (CPack)
+
+# Cible personnalisée pour créer les packages.
+add_custom_target (package-custom
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Run CPack packaging tool..."
+    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR} ${CMAKE_CPACK_COMMAND} --config CPackConfig.cmake
+    )
+add_custom_target (all-package
+    DEPENDS package-custom package-cleanup
+    )
