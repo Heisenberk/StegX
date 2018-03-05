@@ -534,7 +534,7 @@ fichier.
 \IF{($o1 ==$ curseur où insérer MetaData)}
 \WHILE{(Fin de fichier $f1$ non atteinte)}
 \STATE $o2 = $LECTURE octet ($f1$)
-\STATE ECRITURE $o2$ dans $f3$
+\STATE ECRITURE $o2$  ($f3$)
 \ENDWHILE
 \ENDIF
 \ENDWHILE
@@ -566,9 +566,13 @@ fichier.
 \normalsize
 \end{minipage}
 
-
-Pour l'algorithme MetaData, nous avons une complexité globale de 
-$O(m+n)$
+Pour l'algorithme de dissimulation MetaData, nous avons une complexité de 
+$O(m_1+n+m_2)=O(m+n)$ avec $m=m_1+m_2$. En effet, on va recopier l'hôte 
+jusqu'à trouver l'emplacement où insérer les données cachées. Puis, on 
+continue à recopier le fichier hôte. \newline
+Pour l'extraction, sa complexité globale est de $O(m)$, avec $m$ la taille 
+du fichier hôte qui contient les données cachées, car on va lire jusqu'à 
+la fin du fichier, ce fichier. 
 
 \subsubsection{Méthode de protection des données}
 
@@ -585,19 +589,49 @@ Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléat
 Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
 Le destinataire utilisera le même mot de passe pour extraire les données cachées.
 
-\begin{algorithm}
+\begin{minipage}{.6\textwidth}
+Pour la dissimulation ainsi que pour l'extraction, la complexité de cet 
+algorithme est de \newline $O(n)+O(n*n)=O(n+n^2)$ avec $n$ la taille
+du fichier en entrée. \newline 
+Pour le cas de l'algorithme EOF et MetaData, ce fichier en entrée correspond 
+au fichier à cacher. \newline
+Avec cette méthode de protection des données, la dissimulation EOF a une 
+complexité de $O(m)+O(n^2+n)+O(n)=O(m+n^2+n)$ avec $O(m)$ l'écriture du 
+fichier hôte, $O(n^2+n)$ la lecture des données cachées et le calcul pour 
+mélanger ces octets à cacher, $O(n)$ la recopie des données mélangées. 
+\newline
+Aussi, l'utilisation de cette méthode pour l'extraction EOF amène à une 
+complexité de $O(n^2+n)$ avec la lecture et le réarrangement 
+des données cachées. 
+\newline \newline
+Dans le même principe, la protection des données pour la dissimulation/extraction 
+MetaData change la complexité initiale de l'algorithme à $O(n^2+n)+O(m+n)=O(m+n+n^2)$. 
+\newline \newline
+Pour la dissimulation LSB utilisant la méthode de protection 
+des données, on a une complexité de $O(m+n^2+m)=O(m+n^2)$. Le premier $O(m)$ 
+correspond à la lecture du fichier hôte, $O(n^2)$ à la lecture et au changement des
+octets aléatoires dans le fichier hôte, $O(m)$ à l'écriture des données résultantes. 
+Pour son extraction, sa complexité sera de $O(m+n^2+n)$ avec $O(n)$ la recopie des
+données réarrangées. 
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+ 
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+\begin{algorithm}[H]
 \caption{Méthode de protection des données}
 \begin{algorithmic}
 \footnotesize
 \STATE TABLEAU resultat {octet} [taille]
 \STATE TABLEAU T STRUCT \{octet, bool\} [taille]
-\FOR{(i=0 ; i<[taille] ; i++)}
-\STATE $o1 = $LECTURE Fichier
+\STATE Ouverture fichier (ECRITURE) $\rightarrow$ $f$
+\FOR{(i=0 ; i<[taille $f$] ; i++)}
+\STATE $o1 = $LECTURE $f$
 \STATE T[i] $\leftarrow$ \{$o1$, $false$\}
 \ENDFOR
 \STATE Initialisation de la suite pseudo-aleatoire (mdp)
-\STATE tailleRestant $\leftarrow$ [taille]+1
-\FOR{(i=0 ; i<[taille] ; i++)}
+\STATE tailleRestant $\leftarrow$ [taille $f$]+1
+\FOR{(i=0 ; i<[taille $f$] ; i++)}
 \STATE reste $\leftarrow$ 0
 \STATE curseur $\leftarrow$ 0
 \STATE rang $\leftarrow$ rand()\%(tailleRestant-1)
@@ -613,6 +647,7 @@ en incrémentant pour chaque case non vue
 \normalsize
 \end{algorithmic}
 \end{algorithm}
+\end{minipage}
 
 \subsection{Estimations des coûts}
 \small
