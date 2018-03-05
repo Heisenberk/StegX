@@ -181,8 +181,8 @@ dernière est importée et/ou exportée.
 
 \subsection{Organigramme}
 
-\hspace{1cm}
-\includegraphics[scale=0.55]{pictures/Organigramme.png}
+\hspace{0cm}
+\includegraphics[scale=0.75]{pictures/organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités :}
 
@@ -244,13 +244,13 @@ dernière est importée et/ou exportée.
 \begin{itemize}
 \item Nom du fichier hôte.
 \item Nom du fichier à cacher.
-\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
-    l'apparence du fichier hôte.
+%\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
+    %l'apparence du fichier hôte.
 \end{itemize}
 \item[3)] 
 \begin{itemize}
 \item Nom du fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \end{itemize}
 \item[4)] 
 \begin{itemize}
@@ -267,12 +267,12 @@ dernière est importée et/ou exportée.
 \begin{itemize}
 \item Fichier hôte.
 \item Fichier à cacher.
-\item Chemin du fichier à créer qui dissimulera les données à cacher.
+%\item Chemin du fichier à créer qui dissimulera les données à cacher.
 \end{itemize}
 \item[7)]
 \begin{itemize}
 \item Fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \end{itemize}
 \item[8)]
 \begin{itemize}
@@ -296,27 +296,36 @@ dernière est importée et/ou exportée.
 \end{itemize}
 \item[12)]
 \begin{itemize}
+\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
+    l'apparence du fichier hôte.
+\end{itemize}
+\item[13)]
+\begin{itemize}
+\item Chemin du fichier résultant de l'extraction des données cachées.
+\end{itemize}
+\item[14)]
+\begin{itemize}
 \item Fichier hôte.
 \item Fichier à cacher.
-\item Chemin du fichier à créer lors de la dissimulation de données.
+%\item Chemin du fichier à créer lors de la dissimulation de données.
 \item Nom de l'algorithme de stéganographie utilisé.
 \item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
     ses données précédemment).
 \end{itemize}
-\item[13)]
+\item[15)]
 \begin{itemize}
 \item Fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \item Nom de l'algorithme détecté.
 \item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
     ses données précédemment).
 \end{itemize}
-\item[14)]
+\item[16)]
 \begin{itemize}
 \item Données de l'hôte où les données à cacher ont été insérées en utilisant
     l'algorithme de stéganographie.
 \end{itemize}
-\item[15)]
+\item[17)]
 \begin{itemize}
 \item Données cachées extraites du fichier hôte.
 \end{itemize}
@@ -360,7 +369,7 @@ modification.
 \STATE $o1 =$LECTURE octet ($f2$)
 \STATE ECRITURE $o1$ dans $f3$
 \ENDWHILE
-\STATE ECRITURE suite d'octets ($f3$) $\rightarrow$ identification algo, nom fichier caché, taille données cachées
+%\STATE ECRITURE suite d'octets ($f3$) $\rightarrow$ identification algo, nom fichier caché, taille données cachées
 \STATE Fermeture fichiers $f1$, $f2$, $f3$
 \end{algorithmic}
 \end{algorithm}
@@ -506,13 +515,12 @@ image, on pourrait donner l'exemple des données représentant chaque pixel de
 l'image. 
 
 Mais souvent, en amont des données principales du fichier, il existe les
-métadonnées servant à décrire le fichier représenté. Par exemple, pour une
-image, il est utile de stocker la taille en pixels de l'image afin que la
-visionneuse d'image sache la représenter correctement. Il y a aussi des zones du
-fichier réservées à l'utilisateur afin qu'il y mette des << commentaires >>, par
-exemple pour représenter l'origine du fichier ou encore des informations sur la
-prise de vue dans le cas d'une photo. Les métadonnées sont affichés si
-l'utilisateur le demande, mais sont en général cachés par défaut.
+métadonnées servant à décrire le fichier représenté. Par exemple, il y a 
+aussi des zones du fichier réservées à l'utilisateur afin qu'il y mette des 
+<< commentaires >>, par exemple pour représenter l'origine du fichier ou 
+encore des informations sur la prise de vue dans le cas d'une photo. 
+Les métadonnées sont affichés si l'utilisateur le demande, mais sont en 
+général cachés par défaut.
 
 De ce fait, les métadonnées sont très utilisées en stéganographie. Elles
 permettent d'insérer des données qui seront à premère vue invisible pour
@@ -552,7 +560,7 @@ fichier.
 \WHILE{(Fin de fichier $f1$ non atteinte)}
 \STATE Taille $\leftarrow$ 0
 \STATE $o1 = $LECTURE octet (f1)
-\IF{($o1 == $ [debut chunk MetaData Stegano])}
+\IF{($o1 == $ [debut MetaData])}
 \WHILE{(Taille < [taille octets metadata])}
 \STATE $o1 = $LECTURE octet (f1)
 \STATE ECRITURE $o1$ ($f2$)
@@ -572,7 +580,7 @@ jusqu'à trouver l'emplacement où insérer les données cachées. Puis, on
 continue à recopier le fichier hôte. \newline
 Pour l'extraction, sa complexité globale est de $O(m)$, avec $m$ la taille 
 du fichier hôte qui contient les données cachées, car on va lire jusqu'à 
-la fin du fichier, ce fichier. 
+la fin de ce fichier. 
 
 \subsubsection{Méthode de protection des données}
 
@@ -591,7 +599,7 @@ Le destinataire utilisera le même mot de passe pour extraire les données cach�
 
 \begin{minipage}{.6\textwidth}
 Pour la dissimulation ainsi que pour l'extraction, la complexité de cet 
-algorithme est de \newline $O(n)+O(n*n)=O(n+n^2)$ avec $n$ la taille
+algorithme est de $O(n)+O(n*n)=O(n+n^2)$ avec $n$ la taille
 du fichier en entrée. \newline 
 Pour le cas de l'algorithme EOF et MetaData, ce fichier en entrée correspond 
 au fichier à cacher. \newline
