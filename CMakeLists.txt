@@ -21,6 +21,13 @@ set (DOC_PATH doc)
 # Rapport.
 set (REPORT_PATH report)
 
+# Test unitaires.
+enable_testing ()
+set (TEST_PATH test)
+
+# Bibliothèques statiques additionnelles.
+set (LIB_PATH lib)
+
 # Configuration.
 set (CONFIG_PATH config/cmake)
 set (CMAKE_MODULE_PATH
@@ -49,3 +56,4 @@ include (subdirlist)
 add_subdirectory (${SRC_PATH})
 add_subdirectory (${DOC_PATH})
 add_subdirectory (${REPORT_PATH})
+add_subdirectory (${TEST_PATH})
