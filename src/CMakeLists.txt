@@ -23,6 +23,9 @@ set (GUI ${GUI_PATH} PARENT_SCOPE)
 
 set (ALL_PATH ${LIB_PATH} ${CLI_PATH} ${GUI_PATH})
 set (ALL_PATH ${ALL_PATH} PARENT_SCOPE)
+set (ALL_TARGETS ${PROJECT_NAME_LC}-${CLI_PATH}
+    ${PROJECT_NAME_LC}-${GUI_PATH}
+    ${PROJECT_NAME_LC}-${LIB_PATH})
 
 # Modules externes =============================================================
 
@@ -77,11 +80,13 @@ set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tr
 # Lance la configuration de CPack.
 include (CPack)
 
-# Cible personnalisée pour créer les packages.
+# Cible personnalisée pour créer les packages (car on ne peut pas inclure
+# "package" en dépendance).
 add_custom_target (package-custom
     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Run CPack packaging tool..."
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR} ${CMAKE_CPACK_COMMAND} --config CPackConfig.cmake
+    DEPENDS ${ALL_TARGETS}
     )
-add_custom_target (all-package
+add_custom_target (dist
     DEPENDS package-custom package-cleanup
     )
