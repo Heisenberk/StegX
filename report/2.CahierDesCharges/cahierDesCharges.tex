@@ -11,6 +11,7 @@
 \usepackage{amsmath}
 \usepackage{array}
 \usepackage{subfig}
+\usepackage{multicol}
 \usepackage{caption}
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -137,14 +138,14 @@ ensuite faire la tâche inverse pour les récupérer.
 
 \subsection{Exigences du client}
 
-L'application doit respectée deux exigences pour le client : elle doit permettre
+L'application doit respecter deux exigences pour le client : elle doit permettre
 à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement
 utiliser toutes les fonctionnalités de l'application grâce à une interface
 graphique intuitive. De plus, une interface en ligne de commande doit être
 également proposée pour les utilisateurs sachant manipuler un programme dans un
-terminal. Cela permetra à ces utilisateurs plus expérimentés d'intégrer
-l'application dans des scripts et de l'utiliser conjointement à d'autre
-programme.
+terminal. 
+%Cela permettra à ces utilisateurs plus expérimentés d'intégrer
+%l'application dans des scripts.
 
 \section{Exigences non fonctionnelles}
 
@@ -175,14 +176,12 @@ pour garantir la sécurité de la transmission de celles-ci. Par ailleurs,
 l'article 30 de cette même loi oblige la déclaration de l'application si cette
 dernière est importée et/ou exportée. 
 
-\newpage
-
 \section{Modules du produit}
 
 \subsection{Organigramme}
 
 \hspace{0cm}
-\includegraphics[scale=0.75]{pictures/organigramme.png}
+\includegraphics[scale=0.71]{pictures/organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités :}
 
@@ -230,6 +229,7 @@ dernière est importée et/ou exportée.
 
 \paragraph{Liste des informations qui circulent entre les modules :}
 
+\begin{multicols}{2}
 \begin{description}
 \small
 \item[1)] 
@@ -330,6 +330,8 @@ dernière est importée et/ou exportée.
 \item Données cachées extraites du fichier hôte.
 \end{itemize}
 \end{description}
+  \ldots
+\end{multicols}
 
 %\normalsize
 \small
@@ -337,7 +339,8 @@ dernière est importée et/ou exportée.
 
 L'application permettra de cacher des données dans des fichiers de différents
 types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
-$n$ pour la taille en octets du fichier caché (ou à cacher) et $m$ pour la taille en octets du fichier hôte. 
+$n$ pour la taille en octets du fichier caché (ou à cacher) et $m$ pour la taille 
+en octets du fichier hôte ne contenant pas les données cachées. 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 
@@ -356,7 +359,10 @@ modification.
 \begin{algorithm}[H]
 \caption{Dissimulation Algorithme LSB}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE  Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
 \STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
 \WHILE{(Fin de fichier $f1$ non atteinte)}
@@ -371,6 +377,9 @@ modification.
 \ENDWHILE
 %\STATE ECRITURE suite d'octets ($f3$) $\rightarrow$ identification algo, nom fichier caché, taille données cachées
 \STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -379,7 +388,10 @@ modification.
 \begin{algorithm}[H]
 \caption{Extraction Algorithme LSB}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
 \STATE Taille $\leftarrow$ 0
 \WHILE{(Taille < [taille bits fichier caché])}
@@ -389,6 +401,9 @@ modification.
 \STATE Taille = Taille + 2
 \ENDWHILE
 \STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -424,7 +439,8 @@ modification.
 
 La complexité de la dissimulation se calcule de la manière suivante : 
 la première boucle TantQue a une complexité de $O(m-n)$, la deuxième $O(n)$. 
-\newline Donc la complexité de la dissimulation LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$. 
+\newline Donc la complexité de la dissimulation LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$, 
+puisqu'on intégre directement les données cachées dans les données de l'hôte. 
 \newline La complexité de l'extraction LSB est, quant à elle, de $O(n)$.
 
 Cet algorithme peut également s'appliquer à d'autres types de fichiers. Pour le
@@ -465,7 +481,10 @@ des données à cacher.
 \begin{algorithm}[H]
 \caption{Dissimulation Algorithme EOF}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
 \STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
 \WHILE{(Fin de fichier $f2$ non atteinte)}
@@ -477,6 +496,9 @@ des données à cacher.
 \STATE ECRITURE $o1$ dans $f3$
 \ENDWHILE
 \STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -485,7 +507,10 @@ des données à cacher.
 \begin{algorithm}[H]
 \caption{Extraction Algorithme EOF}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
 \STATE Taille $\leftarrow$ 0
 \STATE Placement curseur EOF "officiel" fichier à analyser
@@ -495,6 +520,9 @@ des données à cacher.
 \STATE Taille = Taille + 1
 \ENDWHILE
 \STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -503,7 +531,7 @@ des données à cacher.
 Pour la dissimulation EOF, la première boucle TantQue a une complexité de $O(m)$, 
 la deuxième $O(n)$. \newline Donc sa complexité globale pour l'algorithme 
 EOF est de $O(m)+O(n)=O(m+n)$. \newline
-L'extraction EOF, la complexité dépend seulement de la taille du fichier 
+La complexité de l'extraction EOF dépend seulement de la taille du fichier 
 caché, soit $O(n)$.
 
 \subsubsection{Méthode manipulant les métadonnées}
@@ -517,7 +545,7 @@ l'image.
 Mais souvent, en amont des données principales du fichier, il existe les
 métadonnées servant à décrire le fichier représenté. Par exemple, il y a 
 aussi des zones du fichier réservées à l'utilisateur afin qu'il y mette des 
-<< commentaires >>, par exemple pour représenter l'origine du fichier ou 
+ "commentaires", par exemple pour représenter l'origine du fichier ou 
 encore des informations sur la prise de vue dans le cas d'une photo. 
 Les métadonnées sont affichés si l'utilisateur le demande, mais sont en 
 général cachés par défaut.
@@ -533,7 +561,10 @@ fichier.
 \begin{algorithm}[H]
 \caption{Dissimulation Algorithme MetaData}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
 \STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
 \WHILE{(Fin de fichier $f2$ non atteinte)}
@@ -547,6 +578,9 @@ fichier.
 \ENDIF
 \ENDWHILE
 \STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -555,7 +589,10 @@ fichier.
 \begin{algorithm}[H]
 \caption{Extraction Algorithme MetaData}
 \begin{algorithmic}
-\STATE \footnotesize Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
 \STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
 \WHILE{(Fin de fichier $f1$ non atteinte)}
 \STATE Taille $\leftarrow$ 0
@@ -569,6 +606,9 @@ fichier.
 \ENDIF
 \ENDWHILE
 \STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
 \end{algorithmic}
 \end{algorithm}
 \normalsize
@@ -578,8 +618,8 @@ Pour l'algorithme de dissimulation MetaData, nous avons une complexité de
 $O(m_1+n+m_2)=O(m+n)$ avec $m=m_1+m_2$. En effet, on va recopier l'hôte 
 jusqu'à trouver l'emplacement où insérer les données cachées. Puis, on 
 continue à recopier le fichier hôte. \newline
-Pour l'extraction, sa complexité globale est de $O(m)$, avec $m$ la taille 
-du fichier hôte qui contient les données cachées, car on va lire jusqu'à 
+Pour l'extraction, sa complexité globale est de $O(m+n)$, avec $m+n$ la taille 
+du fichier hôte contenant les données cachées, car on va lire jusqu'à 
 la fin de ce fichier. 
 
 \subsubsection{Méthode de protection des données}
@@ -613,14 +653,14 @@ complexité de $O(n^2+n)$ avec la lecture et le réarrangement
 des données cachées. 
 \newline \newline
 Dans le même principe, la protection des données pour la dissimulation/extraction 
-MetaData change la complexité initiale de l'algorithme à $O(n^2+n)+O(m+n)=O(m+n+n^2)$. 
+MetaData change la complexité initiale de l'algorithme à $O(n^2+n)+O(m+n)=O(m+n^2+n)$. 
 \newline \newline
 Pour la dissimulation LSB utilisant la méthode de protection 
-des données, on a une complexité de $O(m+n^2+m)=O(m+n^2)$. Le premier $O(m)$ 
-correspond à la lecture du fichier hôte, $O(n^2)$ à la lecture et au changement des
-octets aléatoires dans le fichier hôte, $O(m)$ à l'écriture des données résultantes. 
-Pour son extraction, sa complexité sera de $O(m+n^2+n)$ avec $O(n)$ la recopie des
-données réarrangées. 
+des données, on a une complexité de $O(m+n+n*m+m)=O(2m+n+n*m)=O(m+n*m+n)$. Le premier $O(m)$ 
+correspond à la lecture du fichier hôte, $O(n)$ à la lecture du fichier à cacher, 
+$O(n*m)$ aux changements des octets aléatoires des données cachées dans le fichier hôte, 
+$O(m)$ à l'écriture des données résultantes. \newline
+De la même manière, pour son extraction, sa complexité sera la même. 
 \end{minipage}
 \begin{minipage}{.3\textwidth}
  
@@ -630,8 +670,8 @@ données réarrangées.
 \caption{Méthode de protection des données}
 \begin{algorithmic}
 \footnotesize
-\STATE TABLEAU resultat {octet} [taille]
-\STATE TABLEAU T STRUCT \{octet, bool\} [taille]
+\STATE TABLEAU resultat {octet} [taille $f$]
+\STATE TABLEAU T STRUCT \{octet, bool\} [taille $f$]
 \STATE Ouverture fichier (ECRITURE) $\rightarrow$ $f$
 \FOR{(i=0 ; i<[taille $f$] ; i++)}
 \STATE $o1 = $LECTURE $f$
@@ -661,8 +701,8 @@ en incrémentant pour chaque case non vue
 \small
 \begin{tabular}{|c|c|c|c|}
   \hline
-  \textbf{Module} & \textbf{Coût en nombre} & \textbf{Coût en} & \textbf{Personnel(s) en charge} \\
-   \textbf{de l'application} & \textbf{de lignes} & \textbf{temps} & \textbf{du module} \\
+  \footnotesize
+  \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
     Interface en ligne &  &  &  \\ 
     de commande & lignes & heures & \\
