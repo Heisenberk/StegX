@@ -702,28 +702,28 @@ en incrémentant pour chaque case non vue
   \hline
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
-    Interface en ligne &  &  &  \\ 
-    de commande & lignes & heures & \\
+    Interface en ligne & 200 & 30 & AYOUB Pierre \& \\ 
+    de commande & lignes & heures & DELAUNAY Damien \\
   \hline
-  Interface &  &  &  \\
-  graphique & lignes & heures & \\
+  Interface & 300 & 30 & BASKEVITCH Claire \& \\
+  graphique & lignes & heures & BESSAC Tristan \\
   \hline
-  Vérification de la &  &  &  \\
-   compatibilité des fichiers & lignes & heures & \\
+  Vérification de la & 300 & 30 & CAUMES Clément \& \\
+   compatibilité des fichiers & lignes & heures & DOUDOUH Yassin \\
   \hline
-    Proposition des algos &  &  &  \\
-   de stéganographie & lignes & heures & \\
+    Proposition des algos & 100 & 15 & CAUMES Clément \& \\
+   de stéganographie & lignes & heures & DOUDOUH Yassin \\
   \hline
-    Détection de l'algo &  &  &  \\
-   de stéganographie & lignes & heures & \\
+    Détection de l'algo & 100 & 15 & AYOUB Pierre \& \\
+   de stéganographie & lignes & heures & DELAUNAY Damien \\
   \hline
-  Dissimulation \& Extraction &  &  & CAUMES Clément \& \\
+  Dissimulation \& Extraction & 250 & 40 & CAUMES Clément \& \\
    fichiers images & lignes & heures & DOUDOUH Yassin \\
   \hline
-  Dissimulation \& Extraction &  &  & AYOUB Pierre \& \\
+  Dissimulation \& Extraction & 250 & 40 & AYOUB Pierre \& \\
    fichiers audios & lignes & heures & DELAUNAY Damien \\
      \hline
-  Dissimulation \& Extraction &  &  & BASKEVITCH Claire \& \\
+  Dissimulation \& Extraction & 250 & 40 & BASKEVITCH Claire \& \\
    fichiers vidéos & lignes & heures & BESSAC Tristan \\
   \hline
 \end{tabular}
@@ -776,7 +776,13 @@ logiciel.
 
 \subsection{Choix du langage et de l'interface}
 
-TODO.
+L'étude des besoins de l'application nous indique qu'un langage procédural 
+et modulaire est le choix le plus efficace. 
+Les structures que nous manipulerons seront simples et ne nécessitent pas 
+d'encapsulation. Le C, garantissant tous ces critères et étant très performant, 
+répond à nos besoins. Nous utiliserons donc ce langage pour StegX. \newline
+GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
+nous l'utiliserons pour notre interface graphique. 
 
 \section{Conclusion}
 
