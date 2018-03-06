@@ -1,6 +1,5 @@
 # Détection de la bibliothèque CMocka.
 set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_PATH}/cmocka)
-include_directories (${CMOCKA_PATH}/include)
 find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
 
 # Si CMocka est trouvé.
@@ -8,7 +7,7 @@ if (CMOCKA_LIBRARY)
     message ("-- Found CMocka: ${CMOCKA_LIBRARY}")
 
     # Liste des tests et de leurs flags.
-    list (APPEND tests_names "test_test")
+    list (APPEND tests_names "test_libsteg")
     list (APPEND tests_flags " ")
 
     # Cible personnalisée pour construire les tests puis les lancer.
@@ -25,10 +24,10 @@ if (CMOCKA_LIBRARY)
         list (GET tests_names ${i} test_name)
         list (GET tests_flags ${i} test_flags)
         add_executable (${test_name} EXCLUDE_FROM_ALL ${test_name}.c)
-        target_link_libraries (
-            ${test_name}
-            ${CMOCKA_LIBRARY}
-            )
+        target_include_directories (${test_name} PUBLIC ${CMOCKA_PATH}/include)
+        target_include_directories (${test_name} PUBLIC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${LIB}/inc)
+        target_link_libraries (${test_name} ${CMOCKA_LIBRARY})
+        target_link_libraries (${test_name} stegx-lib)
         if (test_flags STREQUAL " ")
         else ()
             target_link_libraries (
