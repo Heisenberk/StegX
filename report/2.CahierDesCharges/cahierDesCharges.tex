@@ -180,7 +180,7 @@ dernière est importée et/ou exportée.
 
 \subsection{Organigramme}
 
-\hspace{0cm}
+\hspace{1cm}
 \includegraphics[scale=0.71]{pictures/organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités :}
@@ -472,7 +472,6 @@ EOF, elles ne seront pas interprétées par l'application. L'algorithme EOF est 
 algorithme très utilisé dans la stéganographie pour cacher des données : il
 consiste à écrire une suite de bits représentant les données à cacher
 directement à la fin du fichier hôte.
-
 En revanche, cet algorithme souffre de plusieurs faiblesses, notamment 
 le fait que la taille du fichier hôte se voit incrémenté de la taille 
 des données à cacher.
@@ -701,7 +700,6 @@ en incrémentant pour chaque case non vue
 \small
 \begin{tabular}{|c|c|c|c|}
   \hline
-  \footnotesize
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
     Interface en ligne &  &  &  \\ 
@@ -774,8 +772,7 @@ cachées.
 
 De plus, pour la versatilité de l'application, nous pourrions prendre en charge
 de nouveaux formats de fichiers. Cela permettrait d'augmenter la portée du
-logiciel. La manipulation de données compressées serait également une
-amélioration conséquente. 
+logiciel. 
 
 \subsection{Choix du langage et de l'interface}
 
@@ -784,7 +781,13 @@ TODO.
 \section{Conclusion}
 
 Après l'étude des demandes du client, nous mettrons en avant l'application
-\textbf{StegX}. Cette application sera implémentée par un groupe de six
+\textbf{StegX}. 
+Ainsi, ce logiciel aura deux modules : d'une part, il permettra de cacher 
+des fichiers de toute sorte dans des fichiers de type Image, Audio et Video. 
+D'autre part, il offrira la possibilité à ces utilisateurs d'analyser des 
+fichiers contenant des données cachées afin d'extraire les données cachées. 
+
+Cette application sera implémentée par un groupe de six
 étudiants en Licence Informatique de l'Université de Versailles
 Saint-Quentin-en-Yvelines (UVSQ), ayant l'ambition d'obtenir un master en
 Cryptographie et Sécurité informatique (SeCReTs). 
