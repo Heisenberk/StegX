@@ -4,7 +4,10 @@
 cmake_minimum_required (VERSION 3.3)
 
 # Nom du projet et description.
-project (StegX VERSION 0.1 DESCRIPTION "Projet de Stéganographie pour l'UVSQ")
+project (StegX VERSION 0.1
+    DESCRIPTION "Projet de Stéganographie pour l'UVSQ" 
+    LANGUAGES C
+    )
 set (PROJECT_NAME_LC stegx)
 
 # Mode de compilation.
