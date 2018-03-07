@@ -712,11 +712,11 @@ en incrémentant pour chaque case non vue
   \hline
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
-    Interface en ligne & 200 & 30 & AYOUB Pierre \& \\ 
-    de commande & lignes & heures & DELAUNAY Damien \\
+    Interface en ligne & 200 & 30 & BASKEVITCH Claire \& \\ 
+    de commande & lignes & heures & BESSAC Tristan \\
   \hline
-  Interface & 300 & 30 & BASKEVITCH Claire \& \\
-  graphique & lignes & heures & BESSAC Tristan \\
+  Interface & 400 & 30 & AYOUB Pierre \& \\
+  graphique & lignes & heures & DELAUNAY Damien \\
   \hline
   Vérification de la & 300 & 30 & CAUMES Clément \& \\
    compatibilité des fichiers & lignes & heures & DOUDOUH Yassin \\
@@ -771,35 +771,33 @@ propose de cacher des données à la fois dans des images, du son et de la vidé
 
 La stéganographie se distingue de la cryptographie par le fait que, dans l'un,
 le message caché est visible par tous si celui-ci est extrait ; tandis que, dans
-l'autre, le message est transmis en étant chiffré sur un canal non-sûr. 
-
+l'autre, le message est transmis en étant chiffré sur un canal non-sûr. \newline
 Pour une projection à long terme, dans d'éventuelles versions du logiciel, nous
 pourrions améliorer l'application en chiffrant les données cachées. En effet,
 lors de l'interception d'un éventuel fichier cachant des données, il faudra, en
 plus de les extraire, les déchiffrer : ce qui rend la tâche beaucoup plus longue
 pour celui qui intercepte le fichier et qui tente de récupérer ces données
-cachées. 
-
+cachées. \newline
 De plus, pour la versatilité de l'application, nous pourrions prendre en charge
 de nouveaux formats de fichiers. Cela permettrait d'augmenter la portée du
 logiciel. 
 
-\subsection{Choix du langage et de l'interface}
+\subsection{Choix du langage et de l'interface} 
 
-%L'étude des besoins de l'application nous indique qu'un langage procédural 
-%et modulaire est le choix le plus efficace. 
-%Les structures que nous manipulerons seront simples et ne nécessitent pas 
-%d'encapsulation. Le C, garantissant tous ces critères et étant très performant, 
-%répond à nos besoins. Nous utiliserons donc ce langage pour StegX. \newline
-%GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
-%nous l'utiliserons pour notre interface graphique. 
-Tout d'abord, nous avions plusieurs choix concernant le langage : un langage 
-purement procédural, un langage purement orienté objet ou un langage hybride. 
-Notre logiciel applique des algorithmes stéganographiques sur des fichiers. 
-
-Notre application a besoin de structures simples afin de gérer les différents 
+L'application a besoin de structures simples afin de gérer les différents 
 formats de fichiers. Elle manipulera des fichiers binaires à l'aide de 
-différents algorithmes de stéganographie. 
+différents algorithmes fonctionnels de stéganographie. Le choix du langage 
+purement orienté objet est donc écarté. \newline
+Ensuite, l'implémentation du programme devra permettre de réutiliser le code 
+à plusieurs emplacements différents dans le logiciel : comme par exemple, 
+les algorithmes de stéganographie qui doivent être applicables pour les formats 
+pris en charge par l'application.
+C'est donc pour cette raison qu'un langage procédural et modulaire sera
+le choix le plus efficace. \newline 
+Le C, garantissant tous ces critères et étant très performant, 
+répond à nos besoins. Nous utiliserons donc ce langage pour StegX. 
+GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
+nous l'utiliserons pour notre interface graphique.
 
 \section{Conclusion}
 
@@ -808,11 +806,9 @@ Après l'étude des demandes du client, nous mettrons en avant l'application
 Ainsi, ce logiciel aura deux modules : d'une part, il permettra de cacher 
 des fichiers de toute sorte dans des fichiers de type Image, Audio et Video. 
 D'autre part, il offrira la possibilité à ces utilisateurs d'analyser des 
-fichiers contenant des données cachées afin d'extraire les données cachées. 
-
+fichiers contenant des données cachées afin d'extraire les données cachées. \newline
 Cette application sera implémentée par un groupe de six
-étudiants en Licence Informatique de l'Université de Versailles
-Saint-Quentin-en-Yvelines (UVSQ), ayant l'ambition d'obtenir un master en
+étudiants en Licence Informatique de l'UVSQ, ayant l'ambition d'obtenir un master en
 Cryptographie et Sécurité informatique (SeCReTs). 
 
 \newpage
