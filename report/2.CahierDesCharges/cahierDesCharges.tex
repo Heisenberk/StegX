@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-
+%\documentclass{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
@@ -18,7 +18,7 @@
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
-    urlcolor=red,
+    urlcolor=black,
 }
 \parskip=5pt
 
@@ -32,6 +32,9 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 \maketitle
 \vspace{20em}
 \begin{center}\includegraphics{pictures/Application.png}\end{center}
+\newpage
+
+\tableofcontents
 
 \small
 \section{Préambule}
@@ -93,16 +96,16 @@ nous nous sommes réunis afin de réaliser ce type de projet.
 
 \section{Contraintes du projet}
 
-\subsection{Calendrier}
+%\subsection{Calendrier}
 
-Le calendrier est imposé et suit les étapes suivantes : 
+%Le calendrier est imposé et suit les étapes suivantes : 
 
-\begin{itemize}
-\item Le cahier des charges doit être remis le 14 mars.
-\item Le cahier des spécifications est à remettre le 18 avril.
-\item La remise du produit au client est le 25 mai.
-\item La présentation du produit au client sera le 1 juin.
-\end{itemize}
+%\begin{itemize}
+%\item Le cahier des charges doit être remis le 14 mars.
+%\item Le cahier des spécifications est à remettre le 18 avril.
+%\item La remise du produit au client est le 25 mai.
+%\item La présentation du produit au client sera le 1 juin.
+%\end{itemize}
 
 
 \subsection{Contraintes imposées}
@@ -114,6 +117,13 @@ Plusieurs contraintes sont imposées par le client :
     fichiers de différents types : les images, le son et la vidéo seront pris
     en charge. Les formats seront choisis par le concepteurs de
     l'application. 
+\item Les formats pris en charge par l'application pour le type image sont : 
+le BMP et le PNG. Pour les formats de type audio, les concepteurs travailleront sur 
+le WAV-PCM et le MP3. Concernant le type video, l'AVI (non compressé) ainsi 
+que le FLV seron pris en charge. \newline
+Ces formats ont été choisis par le fait qu'ils sont très utilisés dans le
+monde multimedia ainsi qu'en stéganographie. 
+
 \item Le fichier à analyser est le fchier hôte : on sait à l'avance que celui-ci
     contient des données à extraire et il faut donc les prélever. 
 \item L'application aura une interface graphique : elle sera manipulée par les
@@ -776,13 +786,20 @@ logiciel.
 
 \subsection{Choix du langage et de l'interface}
 
-L'étude des besoins de l'application nous indique qu'un langage procédural 
-et modulaire est le choix le plus efficace. 
-Les structures que nous manipulerons seront simples et ne nécessitent pas 
-d'encapsulation. Le C, garantissant tous ces critères et étant très performant, 
-répond à nos besoins. Nous utiliserons donc ce langage pour StegX. \newline
-GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
-nous l'utiliserons pour notre interface graphique. 
+%L'étude des besoins de l'application nous indique qu'un langage procédural 
+%et modulaire est le choix le plus efficace. 
+%Les structures que nous manipulerons seront simples et ne nécessitent pas 
+%d'encapsulation. Le C, garantissant tous ces critères et étant très performant, 
+%répond à nos besoins. Nous utiliserons donc ce langage pour StegX. \newline
+%GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
+%nous l'utiliserons pour notre interface graphique. 
+Tout d'abord, nous avions plusieurs choix concernant le langage : un langage 
+purement procédural, un langage purement orienté objet ou un langage hybride. 
+Notre logiciel applique des algorithmes stéganographiques sur des fichiers. 
+
+Notre application a besoin de structures simples afin de gérer les différents 
+formats de fichiers. Elle manipulera des fichiers binaires à l'aide de 
+différents algorithmes de stéganographie. 
 
 \section{Conclusion}
 
