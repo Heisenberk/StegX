@@ -707,7 +707,9 @@ en incrémentant pour chaque case non vue
 \end{minipage}
 
 \subsection{Estimations des coûts}
-\small
+%\small
+\tiny
+\hspace{2cm}
 \begin{tabular}{|c|c|c|c|}
   \hline
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
@@ -751,6 +753,7 @@ propose de cacher des données à la fois dans des images, du son et de la vidé
 
 \subsection{Tâches à réaliser pour le développement de l'application}
 
+\footnotesize
 \begin {enumerate}
 \item Identification du produit : étude des volontés et des demandes du client
     (énoncé du projet 24/01/18).
@@ -766,6 +769,7 @@ propose de cacher des données à la fois dans des images, du son et de la vidé
 \item Démonstration du produit devant le client : explications fonctionnelles du
     produit (soutenance 01/06/18).
 \end{enumerate}
+\small
 
 \subsection{Améliorations pour les versions futures du projet}
 
@@ -784,20 +788,63 @@ logiciel.
 
 \subsection{Choix du langage et de l'interface} 
 
-L'application a besoin de structures simples afin de gérer les différents 
-formats de fichiers. Elle manipulera des fichiers binaires à l'aide de 
-différents algorithmes fonctionnels de stéganographie. Le choix du langage 
-purement orienté objet est donc écarté. \newline
-Ensuite, l'implémentation du programme devra permettre de réutiliser le code 
-à plusieurs emplacements différents dans le logiciel : comme par exemple, 
-les algorithmes de stéganographie qui doivent être applicables pour les formats 
-pris en charge par l'application.
-C'est donc pour cette raison qu'un langage procédural et modulaire sera
-le choix le plus efficace. \newline 
-Le C, garantissant tous ces critères et étant très performant, 
-répond à nos besoins. Nous utiliserons donc ce langage pour StegX. 
-GTK+, associé au langage C, propose une bibliothèque graphique. Ainsi, 
-nous l'utiliserons pour notre interface graphique.
+Afin de réaliser cette étape cruciale de notre projet, nous avons tout 
+d’abord commencé par définir les besoins de notre application. La tâche 
+principale de notre programme consistera en la manipulation de données 
+binaires afin d’y cacher des données, à travers l’implémentation de divers 
+algorithmes. Plusieurs de ces algorithmes possèdent une méthode commune dans
+le but de cacher des données, mais diffèrent légèrement en fonction du 
+format du fichier hôte. En conséquence, nous devrons donc avoir un objet
+ou une structure décrivant ces différentes structures de fichier. Enfin, 
+nous avons besoin d’une bibliothèque nous permettant de créer une interface 
+graphique multiplateforme. 
+
+Au vue de la relative simplicité de la construction de nos structures de 
+données et de nos algorithmes, nous avons éliminé d’office le Java qui ne 
+nous permettait que de faire de l’orientée-objet pure et imposait un trop 
+haut niveau d’abstraction. Il nous restait deux langages candidats pour notre 
+application : le C et le C++. Nous avons donc défini les avantages de ces 
+deux langages afin de n'en sélectionner qu'un.
+
+Le C est un langage n’offrant que, de base, le paradigme de la programmation 
+procédurale. Par rapport aux autres langages couramment utilisés, le C étant 
+un langage plus bas niveau nous permet d’avoir un développement direct, 
+concis et performant. Ce langage n’offre pas beaucoup de concept de base, 
+mais cela est une bonne chose lors d’un développement plus bas niveau que 
+la plupart des applications ; c’est-à-dire les applications où l’on parle 
+d’écriture/lecture de bit et d’accès mémoire plutôt que de messages entre 
+différents objets qui coopères entre eux. En revanche, ce langage est plus 
+propice aux erreurs de développement que les autres.
+Le C++ est un langage multiparadigme. En effet, il propose à la fois une 
+programmation procédurale, portant en lui l’héritage du langage C, ainsi 
+qu'un paradigme orienté-objet. Parmi les avantages de l’orientée-objet, 
+nous pouvons tout d’abord citer l’encapsulation et l’abstraction apportée 
+par les classes. La généricité, proposée entre autres par l’héritage de 
+classe, la surcharge et les templates sont aussi des fonctionnalités importantes. 
+Enfin, la bibliothèque standard du C++ ainsi que la STL propose d’emblée 
+une large variété de structure de données ainsi que d’algorithmes génériques. 
+Enfin, le C++, permettant une programmation procédurale, possède aussi la 
+plupart des avantages du C. Le C++ est donc un langage adapté à un développement 
+qui nécessite d’avoir certaines parties en orientée-objet, ainsi que d’autres 
+en procédurale.
+
+Après comparaison des apports du C++ (l’orientée-objet) par rapport à son 
+prédécesseur, le C : nous avons émis les conclusions suivantes. Le C++ introduirait 
+un overhead relativement conséquent par rapport à ce que pourraient être nos 
+structures de données. Comme vu précédemment, les structures de données 
+stockant le format d’un fichier ne sont pas compliquées par principe, en 
+conséquence les structures de données du C nous semblent suffisantes. 
+De plus, toutes les fonctionnalités apportées par la STL ne nous sont 
+d’aucune utilité : nous n’allons pas utiliser de structures de données 
+compliquées à implémenter ou encore d’algorithmes de tri, pour ne citer 
+qu’eux. Concernant la généricité des algorithmes à implémenter par rapport 
+aux différences entre les formats des fichiers, nous avons imaginé des 
+solutions valables pour le C.
+Pour conclure, nous avons donc choisi le C car les possibilités offertes 
+par ce langage nous suffisaient. Choisir le C++ nous semble "s’encombrer" 
+de concepts et de principes non nécessaires dans le cadre de notre projet. 
+De plus, le choix du C nous permet d’utiliser la bibliothèque GTK+, 
+permettant de réaliser notre interface graphique.
 
 \section{Conclusion}
 
