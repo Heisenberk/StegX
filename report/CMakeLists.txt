@@ -37,5 +37,4 @@ else ()
                 DEPENDS ${LATEX_INPUT}
                 )
     endforeach()
-
 endif()

@@ -28,14 +28,14 @@ else ()
 
     # Cible de génération de la documentation.
     add_custom_target (doc ${MODE}
-        DEPENDS doc-${CLI} doc-${GUI} doc-${LIB}
+        DEPENDS doc-${SRC_CLI_DIR} doc-${SRC_GUI_DIR} doc-${SRC_LIB_DIR}
         )
 
     # Commandes de génération de la documentation.
-    foreach (type ${ALL_PATH})
-        set (DOXYGEN_INPUT ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type})
-        file (GLOB_RECURSE SRC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type}/*${SRC_EXT})
-        file (GLOB_RECURSE INC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${type}/*${INC_EXT})
+    foreach (type ${SRC_ALL_DIR})
+        set (DOXYGEN_INPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type})
+        file (GLOB_RECURSE SRC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${SRC_EXT})
+        file (GLOB_RECURSE INC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${INC_EXT})
         set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${type})
         configure_file (Doxyfile.in Doxyfile-${type} @ONLY)
         add_custom_command (OUTPUT doc-${type}
@@ -46,8 +46,9 @@ else ()
     endforeach()
 
     # Installation de la documentation.
-    get_filename_component(CMAKE_INSTALL_DOC ${CMAKE_INSTALL_DOCDIR} DIRECTORY)
-    install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${LIB}
+    include (GNUInstallDirs)
+    get_filename_component (CMAKE_INSTALL_DOC ${CMAKE_INSTALL_DOCDIR} DIRECTORY)
+    install (DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${SRC_LIB_DIR}
         DESTINATION ${CMAKE_INSTALL_DOC}/${PROJECT_NAME_LC}
         OPTIONAL)
 endif()

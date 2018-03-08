@@ -1,73 +1,59 @@
-# Sources ======================================================================
-
-# Extension des fichiers sources et des headers.
-set (SRC_EXT .c)
-set (SRC_EXT ${SRC_EXT} PARENT_SCOPE)
-set (INC_EXT .h)
-set (INC_EXT ${INC_EXT} PARENT_SCOPE)
-
-# Structure ====================================================================
-
-# Bibliothèque
-set (LIB_PATH lib)
-set (LIB ${LIB_PATH} PARENT_SCOPE)
-set (LIB_PUBLIC_INC_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${LIB_PATH}/inc)
-
-# Interface en ligne de commande
-set (CLI_PATH cli)
-set (CLI ${CLI_PATH} PARENT_SCOPE)
-
-# Interface graphique
-set (GUI_PATH gui)
-set (GUI ${GUI_PATH} PARENT_SCOPE)
-
-set (ALL_PATH ${LIB_PATH} ${CLI_PATH} ${GUI_PATH})
-set (ALL_PATH ${ALL_PATH} PARENT_SCOPE)
-set (ALL_TARGETS ${PROJECT_NAME_LC}-${CLI_PATH}
-    ${PROJECT_NAME_LC}-${GUI_PATH}
-    ${PROJECT_NAME_LC}-${LIB_PATH})
-
 # Modules externes =============================================================
-
-# Créer une liste de répertoires contenant des headers.
-include (headers-directories)
 
 # Informations sur la compilation.
 include (info)
-
-# Génération des tags.
+# Génération des tags des fichiers sources.
 include (tags)
 
 # Installation =================================================================
 
+# Cible de désinstallation.
+include (uninstall-target)
+
+# Dossiers standards GNU pour l'installation.
+include (GNUInstallDirs)
+
 # Assigne RPATH au dossier d'installation de la bibliothèque.
 set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
 
-# Lecture des sous-répertoires =================================================
-
-add_subdirectory (${LIB_PATH})
-add_subdirectory (${CLI_PATH})
-add_subdirectory (${GUI_PATH})
-
-# Installation supplémentaire ==================================================
-
 # Ajoute le raccourci de l'interface graphique.
-configure_file (
-    ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop.in
-    ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
-    @ONLY
-    )
-set (DESKTOP_INSTALL_DIR /usr/share/applications)
-set (ICON_INSTALL_DIR /usr/share/pixmaps)
-if (EXISTS ${DESKTOP_INSTALL_DIR})
-    install (FILES ${CMAKE_BINARY_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop
-        DESTINATION ${DESKTOP_INSTALL_DIR})
-    if (EXISTS ${ICON_INSTALL_DIR})
-        install (FILES ${CMAKE_SOURCE_DIR}/${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
-            RENAME ${PROJECT_NAME_LC}.png
-            DESTINATION ${ICON_INSTALL_DIR})
+if (UNIX)
+    set (DESKTOP_PATH_OUTPUT
+        ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})
+    configure_file (
+        ${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop.in
+        ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
+        @ONLY
+        )
+    set (DESKTOP_INSTALL_DIR /usr/share/applications)
+    set (ICON_INSTALL_DIR /usr/share/pixmaps)
+    if (EXISTS ${DESKTOP_INSTALL_DIR})
+        install (FILES ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
+            DESTINATION ${DESKTOP_INSTALL_DIR})
+        if (EXISTS ${ICON_INSTALL_DIR})
+            install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
+                RENAME ${PROJECT_NAME_LC}.png
+                DESTINATION ${ICON_INSTALL_DIR})
+        endif()
     endif()
 endif()
+
+# Communs ======================================================================
+
+# Lecture des sous-répertoires.
+add_subdirectory (${SRC_LIB_DIR})
+add_subdirectory (${SRC_CLI_DIR})
+add_subdirectory (${SRC_GUI_DIR})
+
+# Ajout des modules externes en dépendances sur les cibles.
+foreach (target ${SRC_ALL_TARGETS})
+    # Génération des tags.
+    if (TAG_GEN)
+        add_dependencies (${target} tags)
+    endif()
+    # Informations de compilation.
+    add_dependencies (${target} info)
+endforeach ()
 
 # Package ======================================================================
 
@@ -80,13 +66,12 @@ set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tr
 # Lance la configuration de CPack.
 include (CPack)
 
-# Cible personnalisée pour créer les packages (car on ne peut pas inclure
-# "package" en dépendance).
-add_custom_target (package-custom
+# Cible personnalisée pour créer les packages (pour mettre les cibles en
+# dépendances et lancer une désinstallation complète contre les fichiers
+# résidus).
+add_custom_target (dist
     COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Run CPack packaging tool..."
     COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR} ${CMAKE_CPACK_COMMAND} --config CPackConfig.cmake
-    DEPENDS ${ALL_TARGETS}
-    )
-add_custom_target (dist
-    DEPENDS package-custom package-cleanup
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target dist-cleanup
+    DEPENDS ${SRC_ALL_TARGETS}
     )

@@ -13,14 +13,15 @@ if (NOT TAG_GENERATOR)
     endif()
 endif()
 
-# Refait à chaque configuration de CMake pour redéfinir les variables.
+# Si Ctags est trouvé, il faut repasser ici à chaque configuration de CMake pour
+# redéfinir les variables.
 if (NOT ${TAG_GENERATOR} STREQUAL "TAG_GENERATOR-NOTFOUND")
     set (TAG_GEN true)
     add_custom_target (
         tags
-        DEPENDS tags-${CLI_PATH} tags-${GUI_PATH} tags-${LIB_PATH}
+        DEPENDS tags-${SRC_CLI_DIR} tags-${SRC_GUI_DIR} tags-${SRC_LIB_DIR}
         )
-    foreach (type ${ALL_PATH})
+    foreach (type ${SRC_ALL_DIR})
         file (GLOB_RECURSE SRC ${CMAKE_CURRENT_SOURCE_DIR}/${type}/*${SRC_EXT})
         file (GLOB_RECURSE INC ${CMAKE_CURRENT_SOURCE_DIR}/${type}/*${INC_EXT})
         add_custom_command (OUTPUT tags-${type}

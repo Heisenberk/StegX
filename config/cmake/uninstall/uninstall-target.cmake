@@ -1,14 +1,15 @@
+# S'il n'y a pas de cible uninstall présente, alors on lance la configuration.
 if (NOT TARGET uninstall)
     # Variables.
     set (UNINSTALL_CMAKE_SCRIPT
-        "${CMAKE_SOURCE_DIR}/${CONFIG_PATH}/uninstall/uninstall-command.cmake.in")
+        "${CMAKE_CONFIG_PATH}/uninstall/uninstall-command.cmake.in")
     set (UNINSTALL_SH_SCRIPT
-        "${CMAKE_SOURCE_DIR}/${CONFIG_PATH}/uninstall/uninstall-command.sh.in")
+        "${CMAKE_CONFIG_PATH}/uninstall/uninstall-command.sh.in")
     set (UNINSTALL_SILENT_OUTPUT "${CMAKE_BINARY_DIR}/cmake_uninstall_silent.cmake")
     set (UNINSTALL_VERBOSE_OUTPUT "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake")
     set (UNINSTALL_SH_OUTPUT "${CMAKE_BINARY_DIR}/cmake_uninstall.sh")
     set (UNINSTALL_TARGET_1 uninstall)
-    set (UNINSTALL_TARGET_3 package-cleanup)
+    set (UNINSTALL_TARGET_3 dist-cleanup)
 
     # Cas spécial pour les UNIX, voir la cible plus bas.
     if (UNIX)

@@ -4,7 +4,8 @@
 #include "test.h"
 #include "libsteg.h"
 
-void math1 () {
+int math1 () {
     printf("Math %d.\n", NUMBER);
     hello_libsteg();
+    return 0;
 }

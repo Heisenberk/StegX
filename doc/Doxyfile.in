@@ -51,7 +51,7 @@ PROJECT_BRIEF          = "@PROJECT_DESCRIPTION@"
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = "@CMAKE_SOURCE_DIR@/@DESKTOP_PATH@/@PROJECT_NAME_LC@-55x55.png"
+PROJECT_LOGO           = "@DESKTOP_PATH@/@PROJECT_NAME_LC@-55x55.png"
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
@@ -162,7 +162,7 @@ FULL_PATH_NAMES        = YES
 # will be relative from the directory where doxygen is started.
 # This tag requires that the tag FULL_PATH_NAMES is set to YES.
 
-STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/@SRC_PATH@"
+STRIP_FROM_PATH        = "@CMAKE_SOURCE_DIR@/@SRC_DIR@"
 
 # The STRIP_FROM_INC_PATH tag can be used to strip a user-defined part of the
 # path mentioned in the documentation of a class, which tells the reader which

@@ -4,36 +4,24 @@
 file (GLOB_RECURSE SRC *${SRC_EXT})
 file (GLOB_RECURSE INC *${INC_EXT})
 
-# Liste des dossiers contenant un header.
-HEADER_DIRECTORIES(INC_DIRS)
+# Dossiers contenant un header.
+# HEADER_DIRECTORIES(INC_DIRS)
+set (INC_DIRS ./)
 
 # Binaire ======================================================================
 
 # Nom de la cible et de l'exécutable.
-set (TARGET stegx-gui)
-set (GUI ${TARGET} PARENT_SCOPE)
-
+set (TARGET ${SRC_GUI_TARGET})
 # Sources et dépendances de l'exécutable.
 add_executable (${TARGET} ${SRC} ${INC})
-
-# Modules externes =============================================================
-
-# Génération des tags.
-if (TAG_GEN)
-    add_dependencies (${TARGET} tags)
-endif ()
-
-# Informations de compilation.
-add_dependencies (${TARGET} info)
-
 
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${LIB_PUBLIC_INC_PATH})
+target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${SRC_LIB_INC_PATH})
 
 # Bibliothèque à passer au linker.
-target_link_libraries (${TARGET} ${LIB_TARGET})
+target_link_libraries (${TARGET} ${SRC_LIB_TARGET})
 
 # Installation =================================================================
 

@@ -1,45 +1,48 @@
 # Détection de la bibliothèque CMocka.
-set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_PATH}/cmocka)
-find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
+if (NOT CMOCKA_LIBRARY)
+    # Variables.
+    set (CMOCKA_DIR cmocka)
+    set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR})
+    set (CMOCKA_INC_DIR include)
+    # Recherche de la bibliothèque.
+    find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
+    # Messages d'informations.
+    if (${CMOCKA_LIBRARY} STREQUAL "CMOCKA_LIBRARY-NOTFOUND")
+        message ("-- Could NOT find CMocka")
+        message ("-- Unit Tests will NOT be available")
+    else ()
+        message ("-- Found CMocka: ${CMOCKA_LIBRARY}")
+    endif()
+endif()
 
 # Si CMocka est trouvé.
 if (CMOCKA_LIBRARY)
-    message ("-- Found CMocka: ${CMOCKA_LIBRARY}")
+    # Extension des fichiers contenant les flags persos.
+    set (FLAG_EXT flag)
+    # Nom de la cible de test.
+    set (TEST_TARGET check)
+    # Liste des répertoires contenant les tests.
+    SUBDIRLIST (TEST_ALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-    # Liste des tests et de leurs flags.
-    list (APPEND tests_names "test_libsteg")
-    list (APPEND tests_flags " ")
-
+    # Listes des sous-cibles de test.
+    foreach (dir ${TEST_ALL_DIR})
+        list (APPEND TEST_TARGETS ${TEST_TARGET}-${dir})
+    endforeach ()
     # Cible personnalisée pour construire les tests puis les lancer.
-    add_custom_target (check
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Running tests..."
-        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-        DEPENDS ${tests_names}
+    add_custom_target (${TEST_TARGET}
+        DEPENDS ${TEST_TARGETS}
         )
 
-    # Déclaration de toutes les cibles correspondant aux tests.
-    list (LENGTH tests_names count)
-    math (EXPR count "${count} - 1")
-    foreach (i RANGE ${count})
-        list (GET tests_names ${i} test_name)
-        list (GET tests_flags ${i} test_flags)
-        add_executable (${test_name} EXCLUDE_FROM_ALL ${test_name}.c)
-        target_include_directories (${test_name} PUBLIC ${CMOCKA_PATH}/include)
-        target_include_directories (${test_name} PUBLIC ${CMAKE_SOURCE_DIR}/${SRC_PATH}/${LIB}/inc)
-        target_link_libraries (${test_name} ${CMOCKA_LIBRARY})
-        target_link_libraries (${test_name} stegx-lib)
-        if (test_flags STREQUAL " ")
-        else ()
-            target_link_libraries (
-                ${test_name}
-                ${test_flags}
-                )
-        endif()
-        add_test (NAME ${test_name} COMMAND ${test_name})
+    # Création des sous-cibles de test, puis lecture des tests.
+    foreach (dir ${TEST_ALL_DIR})
+        # Lecture du répertoire.
+        add_subdirectory (${dir})
+        # Sous-cible personnalisée avec dépendances sur les cibles de test exécutable.
+        add_custom_command (OUTPUT ${TEST_TARGET}-${dir}
+            COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Running tests for ${dir}..."
+            COMMAND ${CMAKE_COMMAND} -E chdir ${dir} ${CMAKE_CTEST_COMMAND} --output-on-failure
+            COMMAND ${CMAKE_COMMAND} -E touch ${TEST_TARGET}-${dir}
+            DEPENDS ${TEST_NAMES}
+            )
     endforeach ()
-
-# Si CMocka n'est pas trouvé.
-else ()
-    message ("-- Could NOT find CMocka")
-    message ("-- Tests will NOT be available")
 endif()

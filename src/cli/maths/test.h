@@ -2,6 +2,6 @@
 #define TEST_H
 
 #define NUMBER 1
-void math1();
+int math1();
 
 #endif
