@@ -4,7 +4,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
-\usepackage{hyperref}
+\usepackage[linktocpage,colorlinks=false]{hyperref}
 \usepackage{graphicx}
 \usepackage{epsfig}
 \usepackage{amssymb}
@@ -18,7 +18,7 @@
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
-    urlcolor=black,
+    urlcolor=red,
 }
 \parskip=5pt
 
@@ -115,16 +115,15 @@ Plusieurs contraintes sont imposées par le client :
 \begin{itemize}
 \item Le produit permettra à celui qui l'utilise de cacher des données dans des
     fichiers de différents types : les images, le son et la vidéo seront pris
-    en charge. Les formats seront choisis par le concepteurs de
-    l'application. 
-\item Les formats pris en charge par l'application pour le type image sont : 
+    en charge. 
+\item Les formats pris en charge par l'application pour le type image sont 
 le BMP et le PNG. Pour les formats de type audio, les concepteurs travailleront sur 
 le WAV-PCM et le MP3. Concernant le type video, l'AVI (non compressé) ainsi 
 que le FLV seron pris en charge. \newline
 Ces formats ont été choisis par le fait qu'ils sont très utilisés dans le
-monde multimedia ainsi qu'en stéganographie. 
+monde multimédia ainsi qu'en stéganographie. 
 
-\item Le fichier à analyser est le fchier hôte : on sait à l'avance que celui-ci
+\item Le fichier à analyser est le fichier hôte : on sait à l'avance que celui-ci
     contient des données à extraire et il faut donc les prélever. 
 \item L'application aura une interface graphique : elle sera manipulée par les
     utilisateurs voulant découvrir un message envoyé par quelqu'un ayant
@@ -214,13 +213,14 @@ dernière est importée et/ou exportée.
 	le format du fichier à analyser (pour le module \textit{Extraction de données 
 	cachées}), choisis par l'utilisateur, est vérifié pour savoir s'il est 
 	bien pris en charge par l'application. \newline
-	Il aura un mécanisme de lecture du fichier hôte (pour la dissimulation 
-	des données) : selon les formats pris en charge, il y aura une batterie
-	de tests pour déterminer le format du fichier. 
+	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
+	pris en charge, il y aura une batterie de tests pour déterminer le 
+	format du fichier. 
 
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
-    cacher, un mécanisme proposera un ou plusieurs algorithmes. 
+    cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
+    sécurité supplémentaire). 
 
 \item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
 	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
@@ -362,7 +362,7 @@ triplet correspond aux composantes de couleurs Rouge-Vert-Bleu, prenant des
 valeurs allant de 0 à 255. Le but de cet algorithme est donc de cacher des bits 
 dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids 
 faibles de chaque composante des pixels de l'image. En effet, à l'oeil nu, 
-l'homme ne discernera jamais le changement minime de couleur induis par la 
+l'homme ne discernera jamais le changement minime de couleur induit par la 
 modification. 
 
 \begin{minipage}{.5\textwidth}
@@ -456,7 +456,7 @@ puisqu'on intégre directement les données cachées dans les données de l'hôt
 Cet algorithme peut également s'appliquer à d'autres types de fichiers. Pour le
 son non compressé, il est possible de très peu modifier l'amplitude de chaque
 échantillon de son, de telle manière que l'on peut y cacher des données sans
-altérer le son original pour la perception humaine. Pour la vidéo non compressé,
+altérer le son original pour la perception humaine. Pour la vidéo non compressée,
 un tel fichier est composé d'un enchaînement de multiples frames (images) et il
 est donc possible de manipuler les données pour pouvoir en cacher d'autres, de
 la même manière que pour les deux autres types de fichier cités précédemment.
@@ -476,14 +476,14 @@ fichier. Le reste du fichier contient le contenu visible par l'utilisateur grâc
 à l'application appropriée. 
 
 Pour que l'application utilisée par l'utilisateur sache quand la lecture du
-fichier doit s'arrêter, certains formats de fichier continnent, à la toute fin,
+fichier doit s'arrêter, certains formats de fichier contiennent, à la toute fin,
 un octet représentant la fin du fichier (EOF). Si des données existent après ce
 EOF, elles ne seront pas interprétées par l'application. L'algorithme EOF est un
 algorithme très utilisé dans la stéganographie pour cacher des données : il
 consiste à écrire une suite de bits représentant les données à cacher
 directement à la fin du fichier hôte.
 En revanche, cet algorithme souffre de plusieurs faiblesses, notamment 
-le fait que la taille du fichier hôte se voit incrémenté de la taille 
+le fait que la taille du fichier hôte se voit incrémenter de la taille 
 des données à cacher.
 
 \begin{minipage}{.5\textwidth}
@@ -553,14 +553,14 @@ l'image.
 
 Mais souvent, en amont des données principales du fichier, il existe les
 métadonnées servant à décrire le fichier représenté. Par exemple, il y a 
-aussi des zones du fichier réservées à l'utilisateur afin qu'il y mette des 
+des zones du fichier réservées à l'utilisateur afin qu'il y mette des 
  "commentaires", par exemple pour représenter l'origine du fichier ou 
 encore des informations sur la prise de vue dans le cas d'une photo. 
-Les métadonnées sont affichés si l'utilisateur le demande, mais sont en 
-général cachés par défaut.
+Les métadonnées sont affichées si l'utilisateur le demande, mais sont en 
+général cachées par défaut.
 
 De ce fait, les métadonnées sont très utilisées en stéganographie. Elles
-permettent d'insérer des données qui seront à premère vue invisible pour
+permettent d'insérer des données qui seront à première vue invisible pour
 l'utilisateur. Pour pouvoir cacher des données en manipulant les métadonnées,
 il faut donc analyser chaque format pris en charge par l'application afin de
 connaître les détails des différents morceaux de données présents dans le
@@ -625,7 +625,7 @@ fichier.
 
 Pour l'algorithme de dissimulation MetaData, nous avons une complexité de 
 $O(m_1+n+m_2)=O(m+n)$ avec $m=m_1+m_2$. En effet, on va recopier l'hôte 
-jusqu'à trouver l'emplacement où insérer les données cachées. Puis, on 
+jusqu'à trouver l'emplacement où insérer les données cachées. On les insère, puis, on 
 continue à recopier le fichier hôte. \newline
 Pour l'extraction, sa complexité globale est de $O(m+n)$, avec $m+n$ la taille 
 du fichier hôte contenant les données cachées, car on va lire jusqu'à 
@@ -642,7 +642,7 @@ nous proposons une méthode de protection des données utilisant un mot de passe
 La méthode utilisée a pour but de cacher les fractions de données à des pixels 
 différents à chaque fois (pour l'algorithme LSB) ou à mélanger les octets 
 à cacher (pour les algorithmes EOF et MetaData). 
-Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
+Elle va utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
 Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
 Le destinataire utilisera le même mot de passe pour extraire les données cachées.
 
@@ -679,7 +679,7 @@ De la même manière, pour son extraction, sa complexité sera la même.
 \caption{Méthode de protection des données}
 \begin{algorithmic}
 \footnotesize
-\STATE TABLEAU resultat {octet} [taille $f$]
+\STATE TABLEAU result {octet} [taille $f$]
 \STATE TABLEAU T STRUCT \{octet, bool\} [taille $f$]
 \STATE Ouverture fichier (ECRITURE) $\rightarrow$ $f$
 \FOR{(i=0 ; i<[taille $f$] ; i++)}
@@ -692,13 +692,13 @@ De la même manière, pour son extraction, sa complexité sera la même.
 \STATE reste $\leftarrow$ 0
 \STATE curseur $\leftarrow$ 0
 \STATE rang $\leftarrow$ rand()\%(tailleRestant-1)
-\STATE curseur $\leftarrow$ recherche position case [rang] encore non vue 
-en incrémentant pour chaque case non vue
+\STATE curseur $\leftarrow$ recherche position \textit{rang} encore non vue 
+dans result en incrémentant pour chaque case non vue
 \color{red}
 \STATE result[curseur] $\leftarrow$ T.octet[i] /* pour la dissimulation */
 \color{black} OU \color{blue} result[i] $\leftarrow$ T.octet[curseur] /* pour l'extraction */
 \color{black}
-\STATE T.bool[curseur]=true
+\STATE T.bool[curseur] $\leftarrow$ true
 \STATE tailleRestant $\leftarrow$ tailleRestant-1
 \ENDFOR
 \normalsize
@@ -747,8 +747,8 @@ en incrémentant pour chaque case non vue
 \subsection{Solutions sur étagère déjà existantes}
 
 Plusieurs applications de stéganographie existent déjà, permettant de cacher des
-données dans différents formats de fichiers multimédia. Pourtant, parmis les 23
-applications de stéganographie que nous avons recensés, seulement une seule
+données dans différents formats de fichiers multimédia. Pourtant, parmi les 23
+applications de stéganographie que nous avons recensées, seulement une 
 propose de cacher des données à la fois dans des images, du son et de la vidéo.
 
 \subsection{Tâches à réaliser pour le développement de l'application}
@@ -787,7 +787,6 @@ de nouveaux formats de fichiers. Cela permettrait d'augmenter la portée du
 logiciel. 
 
 \subsection{Choix du langage et de l'interface} 
-
 Afin de réaliser cette étape cruciale de notre projet, nous avons tout 
 d’abord commencé par définir les besoins de notre application. La tâche 
 principale de notre programme consistera en la manipulation de données 
@@ -799,7 +798,7 @@ ou une structure décrivant ces différentes structures de fichier. Enfin,
 nous avons besoin d’une bibliothèque nous permettant de créer une interface 
 graphique multiplateforme. 
 
-Au vue de la relative simplicité de la construction de nos structures de 
+Au vu de la relative simplicité de la construction de nos structures de 
 données et de nos algorithmes, nous avons éliminé d’office le Java qui ne 
 nous permettait que de faire de l’orientée-objet pure et imposait un trop 
 haut niveau d’abstraction. Il nous restait deux langages candidats pour notre 
@@ -811,7 +810,7 @@ procédurale. Par rapport aux autres langages couramment utilisés, le C étant
 un langage plus bas niveau nous permet d’avoir un développement direct, 
 concis et performant. Ce langage n’offre pas beaucoup de concept de base, 
 mais cela est une bonne chose lors d’un développement plus bas niveau que 
-la plupart des applications ; c’est-à-dire les applications où l’on parle 
+la plupart des applications ; c’est-à-dire les applications 
 d’écriture/lecture de bit et d’accès mémoire plutôt que de messages entre 
 différents objets qui coopères entre eux. En revanche, ce langage est plus 
 propice aux erreurs de développement que les autres.
@@ -819,17 +818,17 @@ Le C++ est un langage multiparadigme. En effet, il propose à la fois une
 programmation procédurale, portant en lui l’héritage du langage C, ainsi 
 qu'un paradigme orienté-objet. Parmi les avantages de l’orientée-objet, 
 nous pouvons tout d’abord citer l’encapsulation et l’abstraction apportée 
-par les classes. La généricité, proposée entre autres par l’héritage de 
-classe, la surcharge et les templates sont aussi des fonctionnalités importantes. 
-Enfin, la bibliothèque standard du C++ ainsi que la STL propose d’emblée 
-une large variété de structure de données ainsi que d’algorithmes génériques. 
+par les classes. La généricité, l’héritage de classe, la surcharge et les 
+templates sont aussi des fonctionnalités importantes. 
+Enfin, la bibliothèque standard du C++ ainsi que la STL proposent d’emblée 
+une large variété de structures de données ainsi que d’algorithmes génériques. 
 Enfin, le C++, permettant une programmation procédurale, possède aussi la 
 plupart des avantages du C. Le C++ est donc un langage adapté à un développement 
 qui nécessite d’avoir certaines parties en orientée-objet, ainsi que d’autres 
 en procédurale.
 
 Après comparaison des apports du C++ (l’orientée-objet) par rapport à son 
-prédécesseur, le C : nous avons émis les conclusions suivantes. Le C++ introduirait 
+prédécesseur le C : nous avons émis les conclusions suivantes. Le C++ introduirait 
 un overhead relativement conséquent par rapport à ce que pourraient être nos 
 structures de données. Comme vu précédemment, les structures de données 
 stockant le format d’un fichier ne sont pas compliquées par principe, en 
@@ -845,13 +844,14 @@ par ce langage nous suffisaient. Choisir le C++ nous semble "s’encombrer"
 de concepts et de principes non nécessaires dans le cadre de notre projet. 
 De plus, le choix du C nous permet d’utiliser la bibliothèque GTK+, 
 permettant de réaliser notre interface graphique.
+\small
 
 \section{Conclusion}
 
 Après l'étude des demandes du client, nous mettrons en avant l'application
 \textbf{StegX}. 
 Ainsi, ce logiciel aura deux modules : d'une part, il permettra de cacher 
-des fichiers de toute sorte dans des fichiers de type Image, Audio et Video. 
+des fichiers de toute sorte de type Image, Audio et Video. 
 D'autre part, il offrira la possibilité à ces utilisateurs d'analyser des 
 fichiers contenant des données cachées afin d'extraire les données cachées. \newline
 Cette application sera implémentée par un groupe de six
