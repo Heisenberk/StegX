@@ -8,7 +8,7 @@ if (NOT CMOCKA_LIBRARY)
     find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
     # Messages d'informations.
     if (${CMOCKA_LIBRARY} STREQUAL "CMOCKA_LIBRARY-NOTFOUND")
-        message ("-- Could NOT find CMocka")
+        message ("-- Could NOT find CMocka (missing: CMOCKA_LIBRARY)")
         message ("-- Unit Tests will NOT be available")
     else ()
         message ("-- Found CMocka: ${CMOCKA_LIBRARY}")

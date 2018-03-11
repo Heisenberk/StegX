@@ -32,7 +32,16 @@ set_target_properties (${TARGET} PROPERTIES SOVERSION 1)
 # Headers publiques.
 set_target_properties (${TARGET} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
 
-# Déclaration de l'installation
-install (TARGETS ${TARGET}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME_LC})
+# Regroupe les headers publiques dans un dossier portant le nom de la bibliothèque
+# sur les UNIX.
+if (UNIX)
+    set (CMAKE_INSTALL_PUBLIC_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME_LC})
+else ()
+    set (CMAKE_INSTALL_PUBLIC_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
+endif()
+
+# Déclaration de l'installation.
+install (TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PUBLIC_INCLUDEDIR}
+		)

@@ -5,6 +5,13 @@ include (info)
 # Génération des tags des fichiers sources.
 include (tags)
 
+# Configuration ================================================================
+
+# Exporte les symboles de la DLL dans un fichier LIB/DEF (requis pour MVSC).
+if (WIN32)
+    set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+endif ()
+
 # Installation =================================================================
 
 # Cible de désinstallation.
@@ -16,7 +23,7 @@ include (GNUInstallDirs)
 # Assigne RPATH au dossier d'installation de la bibliothèque.
 set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
 
-# Ajoute le raccourci de l'interface graphique.
+# Ajoute un raccourci pour l'interface graphique sur les UNIX.
 if (UNIX)
     set (DESKTOP_PATH_OUTPUT
         ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})

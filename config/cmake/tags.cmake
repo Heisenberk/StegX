@@ -4,7 +4,7 @@
 if (NOT TAG_GENERATOR)
     find_program (TAG_GENERATOR ctags)
     if (${TAG_GENERATOR} STREQUAL "TAG_GENERATOR-NOTFOUND")
-        message ("-- Could NOT find Ctags")
+        message ("-- Could NOT find Ctags (missing: CTAGS_EXECUTABLE)")
         message ("-- Tags will NOT be generated")
         set (TAG_GEN false)
     else ()

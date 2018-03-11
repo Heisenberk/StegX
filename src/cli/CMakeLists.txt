@@ -30,4 +30,5 @@ set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_LC})
 
 # Déclaration de l'installation.
 install (TARGETS ${TARGET}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)

@@ -27,4 +27,5 @@ target_link_libraries (${TARGET} ${SRC_LIB_TARGET})
 
 # Déclaration de l'installation.
 install (TARGETS ${TARGET}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
