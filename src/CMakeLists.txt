@@ -14,7 +14,10 @@ include (uninstall-target)
 include (GNUInstallDirs)
 
 # Assigne RPATH au dossier d'installation de la bibliothèque.
-set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
+if (UNIX)
+    set (CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR};
+    ./${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
+endif()
 
 # Ajoute un raccourci pour l'interface graphique sur les UNIX.
 if (UNIX)
