@@ -5,13 +5,6 @@ include (info)
 # Génération des tags des fichiers sources.
 include (tags)
 
-# Configuration ================================================================
-
-# Exporte les symboles de la DLL dans un fichier LIB/DEF (requis pour MVSC).
-if (WIN32)
-    set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
-endif ()
-
 # Installation =================================================================
 
 # Cible de désinstallation.
@@ -47,6 +40,14 @@ endif()
 
 # Communs ======================================================================
 
+# Noms des différents composants :
+# Bibliothèque StegX.
+set (SRC_LIB_COMP "library_stegx")
+# Interface en ligne de commande.
+set (SRC_CLI_COMP "interface_command_line")
+# Interface graphique.
+set (SRC_GUI_COMP "interface_graphical")
+
 # Lecture des sous-répertoires.
 add_subdirectory (${SRC_LIB_DIR})
 add_subdirectory (${SRC_CLI_DIR})
@@ -64,21 +65,50 @@ endforeach ()
 
 # Package ======================================================================
 
-# Liste des générateurs.
-set (CPACK_GENERATOR STGZ;TGZ;DEB)
+if (UNIX)
+    # Liste des générateurs.
+    set (CPACK_GENERATOR TGZ;DEB;STGZ)
+    # Configuration pour DEB.
+    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
+elseif (WIN32)
+    # Liste des générateurs.
+    set (CPACK_GENERATOR ZIP;NSIS)
+    # Configuration pour NSIS.
+    
+endif ()
 
-# Configuration pour DEB.
-set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
+if (UNIX OR WIN32)
+    # Variables.
+    set (PACKAGE_TARGET dist)
+    set (CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/${PACKAGE_TARGET})
 
-# Lance la configuration de CPack.
-include (CPack)
-
-# Cible personnalisée pour créer les packages (pour mettre les cibles en
-# dépendances et lancer une désinstallation complète contre les fichiers
-# résidus).
-add_custom_target (dist
-    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Run CPack packaging tool..."
-    COMMAND ${CMAKE_COMMAND} -E chdir ${CMAKE_BINARY_DIR} ${CMAKE_CPACK_COMMAND} --config CPackConfig.cmake
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target dist-cleanup
-    DEPENDS ${SRC_ALL_TARGETS}
-    )
+    # Lance la configuration de CPack.
+    include (CPack)
+    
+    # Composants :
+    # Bibliothèque StegX.
+    cpack_add_component(${SRC_LIB_COMP}
+        DISPLAY_NAME "Bibliotheque StegX"
+        DESCRIPTION "Bibliotheque StegX de Steganographie."
+        REQUIRED
+        )
+    # Interface en ligne de commande.
+    cpack_add_component(${SRC_CLI_COMP}
+        DISPLAY_NAME "Interface en ligne de commande"
+        DESCRIPTION "Interface en ligne de commande permettant d'utiliser la bibliotheque StegX."
+        )
+    # Interface graphique.
+    cpack_add_component(${SRC_GUI_COMP}
+        DISPLAY_NAME "Interface graphique"
+        DESCRIPTION "Interface graphique permettant d'utiliser la bibliotheque StegX."
+        )
+    
+    # Cible personnalisée pour créer les packages (pour mettre les cibles en
+    # dépendances et lancer une désinstallation complète contre les fichiers
+    # résidus).
+    add_custom_target (${PACKAGE_TARGET}
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target package
+        COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target dist-cleanup
+        DEPENDS ${SRC_ALL_TARGETS}
+        )
+endif ()

@@ -1,9 +1,10 @@
+# Variables.
+set (CMOCKA_DIR cmocka)
+set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR})
+set (CMOCKA_INC_DIR include)
+
 # Détection de la bibliothèque CMocka.
 if (NOT CMOCKA_LIBRARY)
-    # Variables.
-    set (CMOCKA_DIR cmocka)
-    set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR})
-    set (CMOCKA_INC_DIR include)
     # Recherche de la bibliothèque.
     find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
     # Messages d'informations.

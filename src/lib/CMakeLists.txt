@@ -1,3 +1,10 @@
+# Configuration ================================================================
+
+# Exporte les symboles de la DLL dans un fichier LIB/DEF (requis pour MVSC).
+if (WIN32)
+    set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+endif ()
+
 # Sources ======================================================================
 
 # Liste des fichiers sources et des headers.
@@ -42,6 +49,7 @@ endif()
 
 # Déclaration de l'installation.
 install (TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PUBLIC_INCLUDEDIR}
-		)
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PUBLIC_INCLUDEDIR}
+    COMPONENT ${SRC_LIB_COMP}
+	)
