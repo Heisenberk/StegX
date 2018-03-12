@@ -2,11 +2,11 @@
 if (NOT TARGET uninstall)
     # Fichiers en entré.
     set (UNINSTALL_CMAKE_SCRIPT
-        "${CMAKE_CONFIG_PATH}/uninstall/uninstall-command.cmake.in")
+        "${CMAKE_TARGET_UNINSTALL_PATH}/uninstall-command.cmake.in")
     set (UNINSTALL_SH_SCRIPT
-        "${CMAKE_CONFIG_PATH}/uninstall/uninstall-command.sh.in")
+        "${CMAKE_TARGET_UNINSTALL_PATH}/uninstall-command.sh.in")
     set (UNINSTALL_BAT_SCRIPT
-        "${CMAKE_CONFIG_PATH}/uninstall/uninstall-command.bat.in")
+        "${CMAKE_TARGET_UNINSTALL_PATH}/uninstall-command.bat.in")
         
     # Fichiers en sortit.
     set (UNINSTALL_SILENT_OUTPUT "${CMAKE_BINARY_DIR}/cmake_uninstall_silent.cmake")

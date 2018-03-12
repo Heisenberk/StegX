@@ -1,7 +1,9 @@
 # Configuration ================================================================
 
-# Exporte les symboles de la DLL dans un fichier LIB/DEF (requis pour MVSC).
+# Windows.
 if (WIN32)
+    # Exporte automatiquement les symboles du .DLL dans une bibliothèque
+    # d'importation .LIB.
     set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
 endif ()
 
