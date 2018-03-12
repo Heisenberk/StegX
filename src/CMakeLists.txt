@@ -78,9 +78,13 @@ elseif (WIN32)
 endif ()
 
 if (UNIX OR WIN32)
-    # Variables.
+    # Répertoire de destination.
     set (PACKAGE_TARGET dist)
     set (CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/${PACKAGE_TARGET})
+
+    # License.
+    set (PROJECT_FILE_LICENSE COPYING)
+    set (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/${PROJECT_FILE_LICENSE})
 
     # Lance la configuration de CPack.
     include (CPack)
