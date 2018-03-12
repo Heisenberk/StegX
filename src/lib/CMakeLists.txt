@@ -30,6 +30,11 @@ add_library (${TARGET} SHARED ${SRC} ${INC})
 # Dossiers des headers à inclure pour le préprocesseur.
 target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
 
+# Dossier de sortie sur Windows.
+if (WIN32)
+    set_target_properties (${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SRC_DIR})
+endif()
+
 # Installation =================================================================
 
 # Propriétés :

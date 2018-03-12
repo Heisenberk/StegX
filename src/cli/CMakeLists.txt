@@ -23,6 +23,11 @@ target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${SRC_LIB_INC_PATH})
 # Bibliothèque à passer au linker.
 target_link_libraries (${TARGET} ${SRC_LIB_TARGET})
 
+# Dossier de sortie sur Windows.
+if (WIN32)
+    set_target_properties (${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SRC_DIR})
+endif()
+
 # Installation =================================================================
 
 # Nom de l'exécutable.
