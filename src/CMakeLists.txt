@@ -5,6 +5,16 @@ include (info)
 # Génération des tags des fichiers sources.
 include (tags)
 
+# Communs ======================================================================
+
+# Noms des différents composants :
+# Bibliothèque StegX.
+set (SRC_LIB_COMP "library_stegx")
+# Interface en ligne de commande.
+set (SRC_CLI_COMP "interface_command_line")
+# Interface graphique.
+set (SRC_GUI_COMP "interface_graphical")
+
 # Installation =================================================================
 
 # Cible de désinstallation.
@@ -19,7 +29,7 @@ if (UNIX)
     ./${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
 endif()
 
-# Ajoute un raccourci pour l'interface graphique sur les UNIX.
+# Ajoute un raccourci pour l'interface graphique.
 if (UNIX)
     set (DESKTOP_PATH_OUTPUT
         ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})
@@ -39,17 +49,14 @@ if (UNIX)
                 DESTINATION ${ICON_INSTALL_DIR})
         endif()
     endif()
-endif()
+elseif (WIN32)
+    install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico
+        RENAME ${PROJECT_NAME_LC}.ico
+        DESTINATION ./
+        COMPONENT ${SRC_GUI_COMP})
+endif ()
 
 # Communs ======================================================================
-
-# Noms des différents composants :
-# Bibliothèque StegX.
-set (SRC_LIB_COMP "library_stegx")
-# Interface en ligne de commande.
-set (SRC_CLI_COMP "interface_command_line")
-# Interface graphique.
-set (SRC_GUI_COMP "interface_graphical")
 
 # Lecture des sous-répertoires.
 add_subdirectory (${SRC_LIB_DIR})
@@ -77,13 +84,46 @@ endforeach ()
 if (UNIX)
     # Liste des générateurs.
     set (CPACK_GENERATOR TGZ;DEB;STGZ)
-    # Configuration pour DEB.
+    # Configuration pour DEB :
+    # Auteurs du programme.
     set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
 elseif (WIN32)
+    # Cherche si le générateur NSIS est installé.
+    find_program (NSIS_EXECUTABLE makensisw HINTS "C:\\Program Files (x86)\\NSIS")
+    if (NSIS_EXECUTABLE)
+        set (NSIS_GEN NSIS)
+    endif ()
     # Liste des générateurs.
-    set (CPACK_GENERATOR ZIP;NSIS)
-    # Configuration pour NSIS.
-    
+    set (CPACK_GENERATOR ZIP;${NSIS_GEN})
+    message (CPACK_GENERATOR ${CPACK_GENERATOR})
+    # Configuration pour NSIS :
+    # Icônes de l'installateur/désinstallateur.
+    set (CPACK_NSIS_MUI_ICON "${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico")
+    set (CPACK_NSIS_MUI_UNIICON "${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico")
+    set (CPACK_PACKAGE_ICON "${DESKTOP_PATH}\\\\${PROJECT_NAME_LC}-128x320.bmp")
+    set (CPACK_NSIS_INSTALLED_ICON_NAME Uninstall.exe)
+    # Permet d'ajouter le répertoire contenant les binaires dans la variable
+    # d'environment PATH.
+    set (CPACK_NSIS_MODIFY_PATH ON)
+    # Créé/supprime les raccourcis du menu démarrer et du bureau vers l'interface graphique.
+    set (CPACK_NSIS_CREATE_ICONS
+        "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
+            '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \n \
+         CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
+            '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \
+        ")
+    set (CPACK_NSIS_DELETE_ICONS
+        "Delete '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' \n \
+         Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk' \
+        ")
+    # Permet de lancer le programme à la fin de l'installation.
+    set (CPACK_NSIS_EXECUTABLES_DIRECTORY "${CMAKE_INSTALL_BINDIR}")
+    set (CPACK_NSIS_MUI_FINISHPAGE_RUN "${SRC_GUI_TARGET}.exe")
+    # Désinstalle une version précédente si présente.
+    set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+    # Nom de l'installateur.
+    set (CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
+    set (CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
 endif ()
 
 if (UNIX OR WIN32)
@@ -91,9 +131,15 @@ if (UNIX OR WIN32)
     set (PACKAGE_TARGET dist)
     set (CPACK_PACKAGE_DIRECTORY ${CMAKE_BINARY_DIR}/${PACKAGE_TARGET})
 
+    # Configuration :
     # License.
     set (PROJECT_FILE_LICENSE COPYING)
     set (CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/${PROJECT_FILE_LICENSE})
+    # Éditeur.
+    set (CPACK_PACKAGE_VENDOR "StegX Team")
+    # Description :
+    set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "StegX est un logiciel de steganographie, compose de deux interfaces ainsi que d'une bibliotheque. \
+        Le logiciel prend en charge de multiples formats de fichier, de type image, son et video.")
 
     # Lance la configuration de CPack.
     include (CPack)
