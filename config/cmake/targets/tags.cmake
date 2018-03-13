@@ -1,7 +1,7 @@
 # Génération des tags des sources du projet.
 
 # Initialisation.
-if (NOT TAG_GENERATOR)
+if (NOT DEFINED TAG_GENERATOR)
     find_program (TAG_GENERATOR ctags)
     if (${TAG_GENERATOR} STREQUAL "TAG_GENERATOR-NOTFOUND")
         message ("-- Could NOT find Ctags (missing: CTAGS_EXECUTABLE)")

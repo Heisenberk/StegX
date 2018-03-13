@@ -95,7 +95,6 @@ elseif (WIN32)
     endif ()
     # Liste des générateurs.
     set (CPACK_GENERATOR ZIP;${NSIS_GEN})
-    message (CPACK_GENERATOR ${CPACK_GENERATOR})
     # Configuration pour NSIS :
     # Icônes de l'installateur/désinstallateur.
     set (CPACK_NSIS_MUI_ICON "${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico")

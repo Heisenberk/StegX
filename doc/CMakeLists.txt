@@ -1,20 +1,31 @@
-# Recherche de Doxygen.
-find_package (Doxygen OPTIONAL_COMPONENTS dot)
+# Génération de la documentation du projet.
 
-# Si Doxygen est trouvé, on génère la documentation, sinon, on affiche un
-# message d'erreur.
-if (NOT DOXYGEN_FOUND)
-    message ("-- Documentation will NOT be generated")
-else ()
+# Répertoire contenant les variables de configuration.
+set (DOXYGEN_VAR_DIR var)
+set (DOXYGEN_VAR_PATH ${CMAKE_CURRENT_BINARY_DIR}/var)
+
+# Initialisation.
+if (NOT DEFINED DOXYGEN_EXECUTABLE)
+    # Recherche de Doxygen.
+    find_package (Doxygen OPTIONAL_COMPONENTS dot)
+    if (NOT DOXYGEN_EXECUTABLE)
+        message ("-- Documentation will NOT be generated")
     # Test si le composant "dot" est présent pour la génération des graphiques.
     # Défini cette variable pour le fichier "Doxyfile.in".
-    if (NOT TARGET Doxygen::dot)
+    elseif (NOT TARGET Doxygen::dot)
         message ("-- Could NOT find dot for Doxygen")
         message ("-- Diagrams for documentation will NOT be generated with dot")
-        set (DOXYGEN_HAVE_DOT NO)
+        file (WRITE ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT NO)
     else ()
-        set (DOXYGEN_HAVE_DOT YES)
+        file (WRITE ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT YES)
     endif()
+endif ()
+
+# Si Doxygen est trouvé.
+if (DOXYGEN_EXECUTABLE)
+    # Lecture des variables (nécéssaire car si elles sont initalisées dans le
+    # bloc d'initalisation, elles sont supprimées lors d'une regénération de CMake).
+    file (READ ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT DOXYGEN_HAVE_DOT)
 
     # Si on est en mode Release, la documentation est générée automatiquement et
     # les messages de warnings/d'errurs sont désactivés. Si on est en mode

@@ -1,11 +1,16 @@
-# Recherche de LaTeX.
-find_package (LATEX COMPONENTS PDFLATEX)
+# Génération des rapports du projet.
 
-# Si LaTeX est trouvé, on génère le rapport, sinon, on affiche un message
-# d'erreur.
-if (NOT LATEX_FOUND OR NOT LATEX_PDFLATEX_FOUND)
-    message ("-- Report will NOT be generated")
-else ()
+# Initialisation.
+if (NOT DEFINED PDFLATEX_COMPILER)
+    # Recherche de LaTeX.
+    find_package (LATEX COMPONENTS PDFLATEX)
+    if (NOT PDFLATEX_COMPILER)
+        message ("-- Report will NOT be generated")
+    endif()
+endif ()
+
+# Si LaTeX est trouvé.
+if (PDFLATEX_COMPILER)
     # Si compilation en mode Release, alors le rapport sera généré
     # automatiquement lorsque l'on fait make et les détailes ne seront pas
     # affichés.
