@@ -30,16 +30,19 @@ add_library (${TARGET} SHARED ${SRC} ${INC})
 # Dossiers des headers à inclure pour le préprocesseur.
 target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
 
-# Dossier de sortie sur Windows.
+# Copie la DLL de la bibliothèque dans le dossier contenant les tests
+# pour le linkage lors de l'exécution.
 if (WIN32)
-    set_target_properties (${TARGET} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${SRC_DIR})
-endif()
+    add_custom_command(TARGET ${SRC_LIB_TARGET} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_LIB_TARGET}> ${TEST_OUTPUT_PATH}/$<IF:$<CONFIG:Debug>,Debug,Release>/${SRC_LIB_NAME}.dll
+        )
+endif ()
 
 # Installation =================================================================
 
 # Propriétés :
 # Nom de la bibliothèque.
-set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${PROJECT_NAME_LC})
+set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${SRC_LIB_NAME})
 # Versionnement.
 set_target_properties (${TARGET} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties (${TARGET} PROPERTIES SOVERSION 1)

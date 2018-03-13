@@ -56,14 +56,20 @@ add_subdirectory (${SRC_LIB_DIR})
 add_subdirectory (${SRC_CLI_DIR})
 add_subdirectory (${SRC_GUI_DIR})
 
-# Ajout des modules externes en dépendances sur les cibles.
+# Configuration pour toutes les cibles.
 foreach (target ${SRC_ALL_TARGETS})
+    # Ajout des modules externes en dépendances sur les cibles :
     # Génération des tags.
     if (TAG_GEN)
         add_dependencies (${target} tags)
     endif()
     # Informations de compilation.
     add_dependencies (${target} info)
+
+    # Dossier de sortie sur Windows.
+    if (WIN32)
+        set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_DIR})
+    endif()
 endforeach ()
 
 # Package ======================================================================

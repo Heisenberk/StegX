@@ -11,7 +11,8 @@ project (StegX VERSION 0.1
 string (TOLOWER ${PROJECT_NAME} PROJECT_NAME_LC)
 string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UC)
 
-# Mode de compilation.
+# Modes de compilation.
+set (CMAKE_CONFIGURATION_TYPES Debug;Release)
 set (CMAKE_BUILD_TYPE Debug)
 
 # Configuration ================================================================
@@ -52,6 +53,9 @@ set (LIB_DIR lib)
 set (SRC_EXT .c)
 set (INC_EXT .h)
 
+# Répertoire des fichiers sources des tests unitaires.
+set (TEST_DIR test)
+
 # Répertoires des différentes cibles :
 # Bibliothèque StegX.
 set (SRC_LIB_DIR lib)
@@ -77,10 +81,17 @@ set (SRC_LIB_INC_PATH
 set (SRC_LIB_SRC_DIR src)
 set (SRC_LIB_SRC_PATH
     ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${SRC_LIB_DIR}/${SRC_LIB_SRC_DIR})
+# Nom de la bibliothèque.
+set (SRC_LIB_NAME ${PROJECT_NAME_LC})
 
 # Variables communes.
 set (SRC_ALL_DIR ${SRC_LIB_DIR} ${SRC_CLI_DIR} ${SRC_GUI_DIR})
 set (SRC_ALL_TARGETS ${SRC_LIB_TARGET} ${SRC_CLI_TARGET} ${SRC_GUI_TARGET})
+# Dossiers de sortie sur Windows.
+if (WIN32)
+    set (SRC_RUNTIME_OUTPUT_DIR ${CMAKE_BINARY_DIR}/${SRC_DIR})
+    set (TEST_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${TEST_DIR})
+endif()
 # Lecture.
 add_subdirectory (${SRC_DIR})
 
@@ -101,5 +112,4 @@ add_subdirectory (${REPORT_DIR})
 # Activation des tests unitaires, puis lecture du répertoire contenant la
 # configuration des tests.
 enable_testing ()
-set (TEST_DIR test)
 add_subdirectory (${TEST_DIR})

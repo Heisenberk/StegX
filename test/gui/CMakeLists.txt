@@ -16,7 +16,7 @@ foreach (test_file ${TEST_FILES})
     # Déclaration du fichier source comme cible exécutable et comme test.
     add_executable (${TEST_NAME} EXCLUDE_FROM_ALL ${test_file})
     add_test (NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-
+    
     # Inclusion et linkage de CMocka.
     target_include_directories (${TEST_NAME} PUBLIC ${CMOCKA_PATH}/${CMOCKA_INC_DIR})
     target_link_libraries (${TEST_NAME} ${CMOCKA_LIBRARY})

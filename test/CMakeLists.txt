@@ -1,12 +1,19 @@
-# Variables.
+# Répertoires concernant CMocka.
 set (CMOCKA_DIR cmocka)
-set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR})
+if (WIN32)
+    set (CMOCKA_DIR_OS win)
+else()
+    set (CMOCKA_DIR_OS unix)
+endif()
+set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR}/${CMOCKA_DIR_OS})
 set (CMOCKA_INC_DIR include)
+set (CMOCKA_LIB_DIR lib)
+set (CMOCKA_BIN_DIR bin)
 
 # Détection de la bibliothèque CMocka.
 if (NOT CMOCKA_LIBRARY)
     # Recherche de la bibliothèque.
-    find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/src)
+    find_library (CMOCKA_LIBRARY cmocka HINTS ${CMOCKA_PATH}/${CMOCKA_LIB_DIR})
     # Messages d'informations.
     if (${CMOCKA_LIBRARY} STREQUAL "CMOCKA_LIBRARY-NOTFOUND")
         message ("-- Could NOT find CMocka (missing: CMOCKA_LIBRARY)")
@@ -33,6 +40,16 @@ if (CMOCKA_LIBRARY)
     add_custom_target (${TEST_TARGET}
         DEPENDS ${TEST_TARGETS}
         )
+    
+    # Windows : Copie la DLL de CMocka dans le répertoire des tests pour le
+    # linkage à l'exécution.
+    if (WIN32)
+        get_filename_component (CMOCKA_LIBRARY_NAME ${CMOCKA_LIBRARY} NAME_WE)
+        set (CMOCKA_LIB_DLL_PATH "${CMOCKA_PATH}/${CMOCKA_BIN_DIR}/${CMOCKA_LIBRARY_NAME}.dll")
+        add_custom_command(TARGET ${TEST_TARGET} PRE_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy ${CMOCKA_LIB_DLL_PATH} ${TEST_OUTPUT_PATH}/$<IF:$<CONFIG:Debug>,Debug,Release>/${CMOCKA_LIBRARY_NAME}.dll
+            )
+    endif ()
 
     # Création des sous-cibles de test, puis lecture des tests.
     foreach (dir ${TEST_ALL_DIR})
@@ -41,9 +58,15 @@ if (CMOCKA_LIBRARY)
         # Sous-cible personnalisée avec dépendances sur les cibles de test exécutable.
         add_custom_command (OUTPUT ${TEST_TARGET}-${dir}
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Running tests for ${dir}..."
-            COMMAND ${CMAKE_COMMAND} -E chdir ${dir} ${CMAKE_CTEST_COMMAND} --output-on-failure
+            COMMAND ${CMAKE_COMMAND} -E chdir ${dir} ${CMAKE_CTEST_COMMAND} -C $<IF:$<CONFIG:Debug>,Debug,Release> --output-on-failure
             COMMAND ${CMAKE_COMMAND} -E touch ${TEST_TARGET}-${dir}
             DEPENDS ${TEST_NAMES}
             )
+        # Windows : Regroupement des tests dans un même dossier.
+        if (WIN32)
+            foreach (target ${TEST_NAMES})
+                set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH})
+            endforeach ()
+        endif()
     endforeach ()
 endif()
