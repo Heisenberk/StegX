@@ -1,7 +1,7 @@
 # Projet =======================================================================
 
 # Version de CMake.
-cmake_minimum_required (VERSION 3.3)
+cmake_minimum_required (VERSION 3.6)
 
 # Nom du projet et description.
 project (StegX VERSION 0.1
