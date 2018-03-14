@@ -30,7 +30,7 @@ if (DOXYGEN_EXECUTABLE)
     # Dossier et nom du logo de la documentation.
     set (DOC_LOGO_DIR rsc)
     set (DOC_LOGO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${DOC_LOGO_DIR})
-    set (DOC_LOGO_NAME doc-logo.png)
+    set (DOC_LOGO_NAME logo-doc.png)
 
     # Si on est en mode Release, la documentation est générée automatiquement et
     # les messages de warnings/d'errurs sont désactivés. Si on est en mode
