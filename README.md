@@ -31,16 +31,16 @@ Installation
 Binaires
 --------------------------------------------------------------------------------
 
-### - Unix (Debian-like)
+### -- Unix (Debian-like)
 
-#### -- Installateur
+#### - Installateur
 
 1. Dans la section `Release`, téléchargez le fichier `StegX-xxx.deb`.
 2. Installer le en utilisant une interface à APT (par exemple en double cliquant
 dessus), ou en utilisant la commande `sudo apt-get install ./StegX-xxx.deb`
 depuis le répertoire de téléchargement.
 
-#### -- Portable
+#### - Portable
 
 1. Dans la section `Release`, téléchargez le fichier `StegX-xxx.tar.gz` (archive
 tar) ou `StegX-xxx.sh` (exécutable auto extractible).
@@ -49,9 +49,9 @@ l'extraction de l'exécutable avec la commande `./StegX-xxx.sh` en fonction de
 votre choix de téléchargement.
 3. Vous trouverez un dossier contenant l'application. 
 
-### - Windows
+### -- Windows
 
-#### -- Installateur
+#### - Installateur
 
 1. Dans la section `Release`, téléchargez le fichier `StegX-xxx.exe`.
 2. Installer le en double cliquant dessus.
@@ -59,7 +59,7 @@ votre choix de téléchargement.
 terminal avec la commande `stegx`, alors sélectionner `Ajouter le répertoire
 d'installation au PATH` lorsque cela vous sera demandé lors de l'installation.
 
-#### -- Portable
+#### - Portable
 
 1. Dans la section `Release`, téléchargez le fichier `StegX-xxx.zip` (archive
 compressée).
@@ -76,23 +76,19 @@ l'intérieur de ce dossier, puis enfin de lancer l'installation.
 Exécuter les commandes suivantes en tant qu'*administrateur* depuis le répertoire
 racine de projet (ce qui est entre [  ] est optionnel) :
 
-### - Unix (Debian-like)
+### -- Unix (Debian-like)
 
     mkdir build && cd build
     cmake .. [-G "Unix Makefiles"]
-    make
+    make [all]
     sudo make install
 
-### - Windows
+### -- Windows
 
     mkdir build && cd build
     cmake .. [-G "Visual Studio 15 2017"]
     cmake --build . --target ALL_BUILD
     cmake --build . --target INSTALL
-
-* Note : les cibles (target) exécutées par CMake peuvent aussi êtres générées
-  dans MSVC sous forme de solution portant le même nom.
-
 
 ---
 
@@ -102,12 +98,12 @@ Désinstallation
 Binaires
 --------------------------------------------------------------------------------
 
-### - Unix (Debian-like)
+### -- Unix (Debian-like)
 
 Exécuter la commande `sudo apt remove stegx` pour supprimer le paquet de votre
 système.
 
-### - Windows
+### -- Windows
 
 Accéder au panneau de configuration, cliquer sur désinstaller un programme,
 sélectionner `StegX` et cliquer sur désinstaller.
@@ -123,19 +119,15 @@ procéder à l'installation comme ci-dessus.
 
 Exécuter les commandes suivantes depuis le répertoire source du projet :
 
-### - Unix (Debian-like)
+### -- Unix (Debian-like)
 
     cd build
     sudo make uninstall
 
-### - Windows
+### -- Windows
 
     cd build
     cmake --build . --target UNINSTALL
-
-* Note : les cibles (target) exécutées par CMake peuvent aussi êtres générées
-  dans MSVC sous forme de solution portant le même nom.
-
 
 ---
 
@@ -154,12 +146,124 @@ Après décompression de la version portable
 --------------------------------------------------------------------------------
 
 Placez vous dans le répertoire racine de l'application ou dans le répertoire
-`bin`, puis exécutez dans votre terminal `./stegx` pour l'interface en ligne de commande ou
-`./stegx-gui` pour l'interface graphique.
+`bin`, puis exécutez dans votre terminal `./stegx` pour l'interface en ligne de
+commande ou `./stegx-gui` pour l'interface graphique.
 
 Aide
 --------------------------------------------------------------------------------
 
 Pour obtenir de l'aide, consulter le manuel de l'interface graphique (PDF), ou
 taper dans votre terminal `man stegx` pour lire le manuel de l'interface en
-ligne de commande sur Unix si l'installation à été effectuée par l'installateur.
+ligne de commande sur **Unix** si l'installation à été effectuée par l'installateur.
+
+---
+
+Développement
+================================================================================
+
+Dépendances
+--------------------------------------------------------------------------------
+
+### -- Requises
+
+* *Compilateur* : **GNU Compiler Collection** (GCC) (Unix) ou **Microsoft Visual
+  Studio C** (MSVC) (Windows)
+* *Moteur de production* : **CMake** (Unix & Windows) et **GNU Make** (Unix)
+* *Interface graphique* : **GTK** (Unix & Windows)
+
+### -- Optionnelles
+
+* *Générateur de documentation* : **Doxygen** (Unix & Windows)
+* *Distribution LaTeX* : **TeX Live** (Unix & Windows)
+* *Test unitaire* : **CMocka** (Unix & Windows)
+
+Commandes et cibles
+--------------------------------------------------------------------------------
+
+* Les commandes entre [  ] sont optionnelles.
+* Les cibles (targets) exécutées par **CMake** peuvent aussi êtres générées dans **MSVC**
+  sous forme de solution portant le même nom.
+
+### -- Configuration de la compilation
+
+#### - Unix
+
+    mkdir build
+    cd build
+    cmake .. [-G "Unix Makefiles"]
+
+#### - Windows
+
+    mkdir build
+    cd build
+    cmake .. [-G "Visual Studio 15 2017"]
+
+### -- Compilation des modules principaux
+
+#### - Unix
+
+    make [all] [stegx stegx-gui stegx-lib]
+
+#### - Windows
+
+    cmake --build . --target ALL_BUILD [STEGX STEGX-GUI STEGX-LIB]
+
+### -- Génération de la documentation
+
+#### - Unix
+
+    make doc
+
+#### - Windows
+
+    cmake --build . --target DOC
+
+### -- Génération des rapports
+
+#### - Unix
+
+    make report
+
+#### - Windows
+
+    cmake --build . --target REPORT
+
+### -- Lancement des tests unitaires
+
+#### - Unix
+
+    make check
+
+#### - Windows
+
+    cmake --build . --target CHECK
+
+### -- Création des binaires de distribution
+
+#### - Unix
+
+    sudo make dist
+
+#### - Windows
+
+    cmake --build . --target DIST // En tant qu'administrateur
+
+### -- Installation
+
+#### - Unix
+
+    sudo make install
+
+#### - Windows
+
+    cmake --build . --target INSTALL // En tant qu'administrateur
+
+### -- Désinstallation
+
+#### - Unix
+
+    sudo make uninstall
+
+#### - Windows
+
+    cmake --build . --target UNINSTALL // En tant qu'administrateur
