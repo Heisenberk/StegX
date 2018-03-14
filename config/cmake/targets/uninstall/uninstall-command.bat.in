@@ -1,0 +1,2 @@
+rmdir /Q /S "@CMAKE_INSTALL_PREFIX@"
+exit 0

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=@PROJECT_NAME@
+GenericName=@PROJECT_NAME@
+Comment=@PROJECT_DESCRIPTION@
+Exec=@SRC_GUI_TARGET@
+Icon=stegx
+Terminal=false
+Type=Application
+Categories=Utility;
