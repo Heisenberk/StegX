@@ -27,6 +27,11 @@ if (DOXYGEN_EXECUTABLE)
     # bloc d'initalisation, elles sont supprimées lors d'une regénération de CMake).
     file (READ ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT DOXYGEN_HAVE_DOT)
 
+    # Dossier et nom du logo de la documentation.
+    set (DOC_LOGO_DIR rsc)
+    set (DOC_LOGO_PATH ${CMAKE_CURRENT_SOURCE_DIR}/${DOC_LOGO_DIR})
+    set (DOC_LOGO_NAME doc-logo.png)
+
     # Si on est en mode Release, la documentation est générée automatiquement et
     # les messages de warnings/d'errurs sont désactivés. Si on est en mode
     # Debug, les messages de warnings/d'erreurs sont activés.
@@ -52,7 +57,7 @@ if (DOXYGEN_EXECUTABLE)
         add_custom_command (OUTPUT doc-${type}
             COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile-${type}
             COMMAND ${CMAKE_COMMAND} -E touch doc-${type}
-            DEPENDS ${SRC} ${INC} ${CMAKE_SOURCE_DIR/README.md}
+            DEPENDS ${SRC} ${INC} ${CMAKE_SOURCE_DIR}/README.md
             )
     endforeach()
 
