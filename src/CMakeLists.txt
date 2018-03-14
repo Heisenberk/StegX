@@ -81,20 +81,35 @@ endforeach ()
 
 # Package ======================================================================
 
+# Configuration par système d'exploitation :
+# Unix.
 if (UNIX)
     # Liste des générateurs.
     set (CPACK_GENERATOR TGZ;DEB;STGZ)
+
     # Configuration pour DEB :
     # Auteurs du programme.
-    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
+    set (CPACK_DEBIAN_PACKAGE_MAINTAINER "AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, \n \
+        CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin")
+    # Site du logiciel.
+    set (CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/Heisenberk/StegX")
+    # Résolution des dépendances.
+    set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+    # Liste des dépendances.
+    set (CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libgcc1, libgtk-3-0, \
+        libgtk-3-common, libgtk-3-bin")
+
+# Windows.
 elseif (WIN32)
     # Cherche si le générateur NSIS est installé.
     find_program (NSIS_EXECUTABLE makensisw HINTS "C:\\Program Files (x86)\\NSIS")
     if (NSIS_EXECUTABLE)
         set (NSIS_GEN NSIS)
     endif ()
+
     # Liste des générateurs.
     set (CPACK_GENERATOR ZIP;${NSIS_GEN})
+
     # Configuration pour NSIS :
     # Icônes de l'installateur/désinstallateur.
     set (CPACK_NSIS_MUI_ICON "${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico")
@@ -125,6 +140,7 @@ elseif (WIN32)
     set (CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
 endif ()
 
+# Configuration générale puis lancement de CPack.
 if (UNIX OR WIN32)
     # Répertoire de destination.
     set (PACKAGE_TARGET dist)
@@ -137,26 +153,30 @@ if (UNIX OR WIN32)
     # Éditeur.
     set (CPACK_PACKAGE_VENDOR "StegX Team")
     # Description :
-    set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "StegX est un logiciel de steganographie, compose de deux interfaces ainsi que d'une bibliotheque. \
-        Le logiciel prend en charge de multiples formats de fichier, de type image, son et video.")
+    set (CPACK_PACKAGE_DESCRIPTION ${PROJECT_DESCRIPTION})
+    set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "\t \n \
+        StegX est un logiciel de steganographie, \n \
+        compose de deux interfaces ainsi que d'une bibliotheque. \n \
+        Le logiciel prend en charge de multiples formats de fichier \n \
+        de type image, son et video.")
 
     # Lance la configuration de CPack.
     include (CPack)
     
     # Composants :
     # Bibliothèque StegX.
-    cpack_add_component(${SRC_LIB_COMP}
+    cpack_add_component (${SRC_LIB_COMP}
         DISPLAY_NAME "Bibliotheque StegX"
         DESCRIPTION "Bibliotheque StegX de Steganographie."
         REQUIRED
         )
     # Interface en ligne de commande.
-    cpack_add_component(${SRC_CLI_COMP}
+    cpack_add_component (${SRC_CLI_COMP}
         DISPLAY_NAME "Interface en ligne de commande"
         DESCRIPTION "Interface en ligne de commande permettant d'utiliser la bibliotheque StegX."
         )
     # Interface graphique.
-    cpack_add_component(${SRC_GUI_COMP}
+    cpack_add_component (${SRC_GUI_COMP}
         DISPLAY_NAME "Interface graphique"
         DESCRIPTION "Interface graphique permettant d'utiliser la bibliotheque StegX."
         )
