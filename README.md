@@ -79,14 +79,14 @@ racine de projet (ce qui est entre [  ] est optionnel) :
 ### -- Unix (Debian-like)
 
     mkdir build && cd build
-    cmake .. [-G "Unix Makefiles"]
+    cmake .. [-G "Unix Makefiles"] [-DCMAKE_INSTALL_PREFIX=/usr/local]
     make [all]
     sudo make install
 
 ### -- Windows
 
     mkdir build && cd build
-    cmake .. [-G "Visual Studio 15 2017"]
+    cmake .. [-G "Visual Studio 15 2017"] [-DCMAKE_INSTALL_PREFIX=/usr/local]
     cmake --build . --target ALL_BUILD
     cmake --build . --target INSTALL
 
@@ -169,7 +169,7 @@ Dépendances
 * *Compilateur* : **GNU Compiler Collection** (GCC) (Unix) ou **Microsoft Visual
   Studio C** (MSVC) (Windows)
 * *Moteur de production* : **CMake** (Unix & Windows) et **GNU Make** (Unix)
-* *Interface graphique* : **GTK** (Unix & Windows)
+* *Interface graphique* : <b> GTK+ </b> (Unix & Windows)
 
 ### -- Optionnelles
 
@@ -181,8 +181,14 @@ Commandes et cibles
 --------------------------------------------------------------------------------
 
 * Les commandes entre [  ] sont optionnelles.
-* Les cibles (targets) exécutées par **CMake** peuvent aussi êtres générées dans **MSVC**
-  sous forme de solution portant le même nom.
+* Les cibles (targets) exécutées par **CMake** peuvent aussi êtres générées dans
+  **MSVC** sous forme de solution portant le même nom sous **Windows**.
+* L'option -DVarName=VarValue de **CMake** permet de configurer une variable.
+  Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
+  1. Description : VarName = VarValue1, VarValue2 etc...
+  2. Chemin vers un dossier existant pour l'installation :
+  CMAKE_INSTALL_PREFIX = /usr/local, /opt/stegx
+  3. Mode de compilation : CMAKE_BUILD_TYPE = Release, Debug
 
 ### -- Configuration de la compilation
 
@@ -190,23 +196,23 @@ Commandes et cibles
 
     mkdir build
     cd build
-    cmake .. [-G "Unix Makefiles"]
+    cmake .. [-G "Unix Makefiles"] [-DVarName=VarValue]
 
 #### - Windows
 
     mkdir build
     cd build
-    cmake .. [-G "Visual Studio 15 2017"]
+    cmake .. [-G "Visual Studio 15 2017"] [-DVarName=VarValue]
 
 ### -- Compilation des modules principaux
 
 #### - Unix
 
-    make [all] [stegx stegx-gui stegx-lib]
+    make [all] [stegx-cli stegx-gui stegx-lib]
 
 #### - Windows
 
-    cmake --build . --target ALL_BUILD [STEGX STEGX-GUI STEGX-LIB]
+    cmake --build . --target ALL_BUILD [STEGX-CLI STEGX-GUI STEGX-LIB]
 
 ### -- Génération de la documentation
 
