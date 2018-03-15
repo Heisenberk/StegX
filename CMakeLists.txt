@@ -1,7 +1,13 @@
+# Empêche de lancer une compilation in-source.
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message (FATAL_ERROR "In-source builds not allowed. Please make a new \
+    directory (called a build directory) and run CMake from there (cmake ..).")
+endif()
+
 # Projet =======================================================================
 
 # Version de CMake.
-cmake_minimum_required (VERSION 3.6)
+cmake_minimum_required (VERSION 3.6 FATAL_ERROR)
 
 # Nom du projet et description.
 project (StegX VERSION 0.1
