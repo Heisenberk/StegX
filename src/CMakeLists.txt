@@ -17,9 +17,6 @@ set (SRC_GUI_COMP "interface_graphical")
 
 # Installation =================================================================
 
-# Cible de désinstallation.
-include (uninstall-target)
-
 # Dossiers standards GNU pour l'installation.
 include (GNUInstallDirs)
 
@@ -190,3 +187,8 @@ if (UNIX OR WIN32)
         DEPENDS ${SRC_ALL_TARGETS}
         )
 endif ()
+
+# Désinstallation ==============================================================
+
+# Cible de désinstallation.
+include (uninstall-target)

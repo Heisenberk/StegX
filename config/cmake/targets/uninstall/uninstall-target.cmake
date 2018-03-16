@@ -37,7 +37,10 @@ if (NOT TARGET uninstall)
     if (UNIX)
         configure_file (${UNINSTALL_SH_SCRIPT} ${UNINSTALL_SH_OUTPUT} @ONLY)
         add_custom_target (${UNINSTALL_TARGET_2} COMMAND ${UNINSTALL_SH_OUTPUT})
-        add_custom_target (${UNINSTALL_TARGET_3} COMMAND ${UNINSTALL_SH_OUTPUT})
+        # Donne à l'utilisateur les permissions sur les fichiers crées lors de
+        # la création des packages en plus de désinstaller les résidus.
+        add_custom_target (${UNINSTALL_TARGET_3} COMMAND ${UNINSTALL_SH_OUTPUT}
+            COMMAND sudo chown $ENV{USER}:$ENV{USER} -R ${CPACK_PACKAGE_DIRECTORY} ${CMAKE_BINARY_DIR}/install_manifest.txt)
         add_dependencies (${UNINSTALL_TARGET_2} ${UNINSTALL_TARGET_1})
     # Cible de désinstallation silencieuse uniquement pour Windows (cible 2).
     # Désinstalle les fichiers et les dossiers installés.
