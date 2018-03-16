@@ -180,6 +180,11 @@ Dépendances
 Commandes et cibles
 --------------------------------------------------------------------------------
 
+* La configuration de la compilation est à faire en première. Toutes les autres
+  commandes sont à effectuer dans le dossier _build_. Lors d'un ajout d'un
+  fichier source au projet, ou lors d'une rencontre avec un bug lors de la
+  configuration/compilation, supprimez le dossier _build_ et recommencez la
+  configuration.
 * Les commandes entre [  ] sont optionnelles.
 * Les cibles (targets) exécutées par **CMake** peuvent aussi êtres générées dans
   **MSVC** sous forme de solution portant le même nom sous **Windows**.
@@ -273,3 +278,13 @@ Commandes et cibles
 #### - Windows
 
     cmake --build . --target UNINSTALL // En tant qu'administrateur
+
+### -- Nettoyage
+
+#### - Unix
+
+    make clean
+
+#### - Windows
+
+    cmake --build . --target CLEAN

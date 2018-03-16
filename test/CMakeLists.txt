@@ -68,5 +68,9 @@ if (CMOCKA_LIBRARY)
                 set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TEST_OUTPUT_PATH})
             endforeach ()
         endif()
+        # Nettoyage.
+        set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+            ${dir}/Testing
+            )
     endforeach ()
 endif()

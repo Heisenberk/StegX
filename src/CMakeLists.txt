@@ -186,6 +186,11 @@ if (UNIX OR WIN32)
         COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target dist-cleanup
         DEPENDS ${SRC_ALL_TARGETS}
         )
+
+    # Nettoyage.
+    set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        ${CPACK_PACKAGE_DIRECTORY}
+        )
 endif ()
 
 # Désinstallation ==============================================================

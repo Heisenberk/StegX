@@ -50,9 +50,11 @@ if (DOXYGEN_EXECUTABLE)
     # Commandes de génération de la documentation.
     foreach (type ${SRC_ALL_DIR})
         set (DOXYGEN_INPUT ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type})
+        set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${type})
         file (GLOB_RECURSE SRC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${SRC_EXT})
         file (GLOB_RECURSE INC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${INC_EXT})
-        set (DOXYGEN_OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${type})
+        set (DOC_LOG_ERROR_NAME errors-${type}.log)
+        list (APPEND DOC_LOG_ERROR_LIST ${DOC_LOG_ERROR_NAME})
         configure_file (Doxyfile.in Doxyfile-${type} @ONLY)
         add_custom_command (OUTPUT doc-${type}
             COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile-${type}
@@ -60,6 +62,11 @@ if (DOXYGEN_EXECUTABLE)
             DEPENDS ${SRC} ${INC} ${CMAKE_SOURCE_DIR}/README.md
             )
     endforeach()
+
+    # Nettoyage.
+    set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        ${DOC_LOG_ERROR_LIST} ${SRC_ALL_DIR}
+        )
 
     # Installation de la documentation.
     include (GNUInstallDirs)

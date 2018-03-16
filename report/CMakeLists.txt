@@ -42,4 +42,9 @@ if (PDFLATEX_COMPILER)
                 DEPENDS ${LATEX_INPUT}
                 )
     endforeach()
+
+    # Nettoyage.
+    set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        ${LATEX_DIRS}
+        )
 endif()

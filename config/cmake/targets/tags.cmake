@@ -31,4 +31,9 @@ if (NOT ${TAG_GENERATOR} STREQUAL "TAG_GENERATOR-NOTFOUND")
             DEPENDS ${SRC} ${INC}
             )
     endforeach ()
+
+    # Nettoyage.
+    set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        tags
+        )
 endif ()
