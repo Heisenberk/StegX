@@ -26,8 +26,33 @@ if (UNIX)
     ./${CMAKE_INSTALL_LIBDIR};../${CMAKE_INSTALL_LIBDIR})
 endif()
 
+# Communs ======================================================================
+
+# Lecture des sous-répertoires.
+add_subdirectory (${SRC_LIB_DIR})
+add_subdirectory (${SRC_CLI_DIR})
+add_subdirectory (${SRC_GUI_DIR})
+
+# Configuration pour toutes les cibles.
+foreach (target ${SRC_ALL_TARGETS})
+    if (TARGET ${target})
+        # Génération des tags.
+        if (TAG_GEN)
+            add_dependencies (${target} tags)
+        endif()
+        # Informations de compilation.
+        add_dependencies (${target} info)
+        # Dossier de sortie sur Windows.
+        if (WIN32)
+            set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_DIR})
+        endif()
+    endif ()
+endforeach ()
+
+# Installation pour l'interface graphique ======================================
+
 # Ajoute un raccourci pour l'interface graphique.
-if (UNIX)
+if (TARGET ${SRC_GUI_TARGET} AND UNIX)
     set (DESKTOP_PATH_OUTPUT
         ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})
     configure_file (
@@ -46,35 +71,12 @@ if (UNIX)
                 DESTINATION ${ICON_INSTALL_DIR})
         endif()
     endif()
-elseif (WIN32)
+elseif (TARGET ${SRC_GUI_TARGET} AND WIN32)
     install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico
         RENAME ${PROJECT_NAME_LC}.ico
         DESTINATION ./
         COMPONENT ${SRC_GUI_COMP})
 endif ()
-
-# Communs ======================================================================
-
-# Lecture des sous-répertoires.
-add_subdirectory (${SRC_LIB_DIR})
-add_subdirectory (${SRC_CLI_DIR})
-add_subdirectory (${SRC_GUI_DIR})
-
-# Configuration pour toutes les cibles.
-foreach (target ${SRC_ALL_TARGETS})
-    # Ajout des modules externes en dépendances sur les cibles :
-    # Génération des tags.
-    if (TAG_GEN)
-        add_dependencies (${target} tags)
-    endif()
-    # Informations de compilation.
-    add_dependencies (${target} info)
-
-    # Dossier de sortie sur Windows.
-    if (WIN32)
-        set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_DIR})
-    endif()
-endforeach ()
 
 # Package ======================================================================
 
@@ -116,20 +118,22 @@ elseif (WIN32)
     # Permet d'ajouter le répertoire contenant les binaires dans la variable
     # d'environment PATH.
     set (CPACK_NSIS_MODIFY_PATH ON)
-    # Créé/supprime les raccourcis du menu démarrer et du bureau vers l'interface graphique.
-    set (CPACK_NSIS_CREATE_ICONS
-        "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
-            '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \n \
-         CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
-            '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \
-        ")
-    set (CPACK_NSIS_DELETE_ICONS
-        "Delete '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' \n \
-         Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk' \
-        ")
-    # Permet de lancer le programme à la fin de l'installation.
-    set (CPACK_NSIS_EXECUTABLES_DIRECTORY "${CMAKE_INSTALL_BINDIR}")
-    set (CPACK_NSIS_MUI_FINISHPAGE_RUN "${SRC_GUI_TARGET}.exe")
+    if (TARGET ${SRC_GUI_TARGET})
+        # Créé/supprime les raccourcis du menu démarrer et du bureau vers l'interface graphique.
+        set (CPACK_NSIS_CREATE_ICONS
+            "CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
+                '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \n \
+             CreateShortCut '$DESKTOP\\\\${PROJECT_NAME}.lnk' '\$INSTDIR\\\\${CMAKE_INSTALL_BINDIR}\\\\${SRC_GUI_TARGET}.exe' \
+                '' '\$INSTDIR\\\\${PROJECT_NAME_LC}.ico' \
+            ")
+        set (CPACK_NSIS_DELETE_ICONS
+            "Delete '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PROJECT_NAME}.lnk' \n \
+             Delete '$DESKTOP\\\\${PROJECT_NAME}.lnk' \
+            ")
+        # Permet de lancer le programme à la fin de l'installation.
+        set (CPACK_NSIS_EXECUTABLES_DIRECTORY "${CMAKE_INSTALL_BINDIR}")
+        set (CPACK_NSIS_MUI_FINISHPAGE_RUN "${SRC_GUI_TARGET}.exe")
+    endif ()
     # Désinstalle une version précédente si présente.
     set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     # Nom de l'installateur.
@@ -173,10 +177,12 @@ if (UNIX OR WIN32)
         DESCRIPTION "Interface en ligne de commande permettant d'utiliser la bibliotheque StegX."
         )
     # Interface graphique.
-    cpack_add_component (${SRC_GUI_COMP}
-        DISPLAY_NAME "Interface graphique"
-        DESCRIPTION "Interface graphique permettant d'utiliser la bibliotheque StegX."
-        )
+    if (TARGET ${SRC_GUI_TARGET})
+        cpack_add_component (${SRC_GUI_COMP}
+            DISPLAY_NAME "Interface graphique"
+            DESCRIPTION "Interface graphique permettant d'utiliser la bibliotheque StegX."
+            )
+    endif ()
     
     # Cible personnalisée pour créer les packages (pour mettre les cibles en
     # dépendances et lancer une désinstallation complète contre les fichiers
