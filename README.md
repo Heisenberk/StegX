@@ -73,6 +73,10 @@ Ces commandes auront pour effet de créer un nouveau répertoire et de s'y place
 de générer les fichiers de production du projet, de lancer la compilation à
 l'intérieur de ce dossier, puis enfin de lancer l'installation.
 
+Si une erreur survient sur **Windows**, faites attention de placer le dossier
+dans un chemin qui ne contient pas d'espaces. Certains modules de **CMake** pour
+**Windows** gèrent mal les espaces.
+
 Exécuter les commandes suivantes en tant qu'*administrateur* depuis le répertoire
 racine de projet (ce qui est entre [  ] est optionnel) :
 
@@ -127,7 +131,7 @@ Exécuter les commandes suivantes depuis le répertoire source du projet :
 ### -- Windows
 
     cd build
-    cmake --build . --target UNINSTALL
+    cmake --build . --target uninstall
 
 ---
 
@@ -186,14 +190,17 @@ Commandes et cibles
   configuration/compilation, supprimez le dossier _build_ et recommencez la
   configuration.
 * Les commandes entre [  ] sont optionnelles.
+* Si une erreur survient sur **Windows**, faites attention de placer le dossier
+  dans un chemin qui ne contient pas d'espaces. Certains modules de **CMake**
+  pour **Windows** gèrent mal les espaces.
 * Les cibles (targets) exécutées par **CMake** peuvent aussi êtres générées dans
   **MSVC** sous forme de solution portant le même nom sous **Windows**.
 * L'option -DVarName=VarValue de **CMake** permet de configurer une variable.
   Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
-  1. Description : VarName = VarValue1, VarValue2 etc...
-  2. Chemin vers un dossier existant pour l'installation :
-  CMAKE_INSTALL_PREFIX = /usr/local, /opt/stegx
-  3. Mode de compilation : CMAKE_BUILD_TYPE = Release, Debug
+  1. *Description* : **VarName** = VarValue1, VarValue2 etc...
+  2. *Chemin vers un dossier existant pour l'installation* :
+  **CMAKE_INSTALL_PREFIX** = /usr/local, /opt/stegx
+  3. *Mode de compilation* : **CMAKE_BUILD_TYPE** = Release, Debug
 
 ### -- Configuration de la compilation
 
@@ -217,7 +224,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target ALL_BUILD [STEGX-CLI STEGX-GUI STEGX-LIB]
+    cmake --build . --target ALL_BUILD [stegx-cli stegx-gui stegx-lib]
 
 ### -- Génération de la documentation
 
@@ -227,7 +234,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target DOC
+    cmake --build . --target doc
 
 ### -- Génération des rapports
 
@@ -237,7 +244,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target REPORT
+    cmake --build . --target report
 
 ### -- Lancement des tests unitaires
 
@@ -247,7 +254,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target CHECK
+    cmake --build . --target check
 
 ### -- Création des binaires de distribution
 
@@ -257,7 +264,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target DIST // En tant qu'administrateur
+    cmake --build . --target dist // En tant qu'administrateur
 
 ### -- Installation
 
@@ -277,7 +284,7 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target UNINSTALL // En tant qu'administrateur
+    cmake --build . --target uninstall // En tant qu'administrateur
 
 ### -- Nettoyage
 
@@ -287,4 +294,4 @@ Commandes et cibles
 
 #### - Windows
 
-    cmake --build . --target CLEAN
+    cmake --build . --target clean
