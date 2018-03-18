@@ -1,3 +1,9 @@
+# GTK ==========================================================================
+
+# Initialise Pkg-Config et cherche GTK avec Pkg-Config.
+include (FindPkgConfig)
+pkg_check_modules (GTK REQUIRED "gtk+-3.0")
+
 # Sources ======================================================================
 
 # Liste des fichiers sources et des headers.
@@ -17,11 +23,15 @@ add_executable (${TARGET} ${SRC} ${INC})
 
 # Compilation ==================================================================
 
+# Flags de compilation.
+target_compile_options (${TARGET} PUBLIC ${GTK_CFLAGS})
+
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${SRC_LIB_INC_PATH})
+target_include_directories (${TARGET} PUBLIC
+    ${INC_DIRS} ${SRC_LIB_INC_PATH} ${GTK_INCLUDE_DIRS})
 
 # Bibliothèque à passer au linker.
-target_link_libraries (${TARGET} ${SRC_LIB_TARGET})
+target_link_libraries (${TARGET} ${SRC_LIB_TARGET} ${GTK_LDFLAGS})
 
 # Installation =================================================================
 
