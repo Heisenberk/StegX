@@ -13,8 +13,7 @@ if (NOT DEFINED DOXYGEN_EXECUTABLE)
     # Test si le composant "dot" est présent pour la génération des graphiques.
     # Défini cette variable pour le fichier "Doxyfile.in".
     elseif (NOT TARGET Doxygen::dot)
-        message ("-- Could NOT find dot for Doxygen")
-        message ("-- Diagrams for documentation will NOT be generated with dot")
+        message ("-- Diagrams for documentation will be generated but NOT with dot")
         file (WRITE ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT NO)
     else ()
         file (WRITE ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT YES)
@@ -25,7 +24,11 @@ endif ()
 if (DOXYGEN_EXECUTABLE)
     # Lecture des variables (nécéssaire car si elles sont initalisées dans le
     # bloc d'initalisation, elles sont supprimées lors d'une regénération de CMake).
+    ## Variables concernant le composant dot.
     file (READ ${DOXYGEN_VAR_PATH}/DOXYGEN_HAVE_DOT DOXYGEN_HAVE_DOT)
+    if (${DOXYGEN_HAVE_DOT} STREQUAL NO)
+        set (DOXYGEN_DOT_EXECUTABLE "")
+    endif ()
 
     # Dossier et nom du logo de la documentation.
     set (DOC_LOGO_DIR rsc)
