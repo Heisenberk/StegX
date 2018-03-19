@@ -1,3 +1,6 @@
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
 #include "../types.h"
 #include "commandes.h"
 
