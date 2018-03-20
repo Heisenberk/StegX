@@ -65,8 +65,19 @@ void commande_extraction_avec_mdp(int num,char** chaineCarac){
  * \brief Fonction qui presente l'application stegx.
  */
 void affiche_presentation_stegx(){
-	//ecrire un message pr presenter stegx
-	printf("presnetation stegx");
+	printf("   _____ _            __   __\n");
+	printf("  / ____| |           \\ \\ / /\n");
+	printf(" | (___ | |_ ___  __ _ \\ V / \n");
+	printf("  \\___ \\| __/ _ \\/ _` | > <  \n");
+	printf("  ____) | ||  __/ (_| |/ . \\ \n");
+	printf(" |_____/ \\__\\___|\\__, /_/ \\_\\\n");
+	printf("                  __/ |      \n");
+	printf("                 |___/   \n\n");
+	printf("StegX - Steganographie & Steganalyse \n");
+	printf("Université Versailles Saint Quentin en Yvelines - 2018 \n");
+	printf("AYOUB Pierre - BASKEVITCH Claire - BESSAC Tristan - CAUMES Clément - ");
+	printf("DELAUNAY Damien - DOUDOUH Yassin\n\n");
+	printf("Faire \033[01m\033[31mstegx -help\033[0m ou \033[01m\033[31mstegx -h \033[0m pour un rappel des commandes. \n");
 }
 
 /**
