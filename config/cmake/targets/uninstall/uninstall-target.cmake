@@ -47,7 +47,7 @@ if (NOT TARGET uninstall)
     elseif (WIN32)
         configure_file (${UNINSTALL_BAT_SCRIPT} ${UNINSTALL_BAT_OUTPUT} @ONLY)
         add_custom_target (${UNINSTALL_TARGET_2} COMMAND ${UNINSTALL_BAT_OUTPUT})
-        add_custom_target (${UNINSTALL_TARGET_3} COMMAND ${UNINSTALL_BAT_OUTPUT})
+        add_custom_target (${UNINSTALL_TARGET_3})
         add_dependencies (${UNINSTALL_TARGET_2} ${UNINSTALL_TARGET_1})
     # Cible de désinstallation silencieuse multiplate-forme (cible 3). Ne
     # désinstalle que les fichiers installés, mais pas les dossiers. Utile
