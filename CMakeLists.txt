@@ -97,10 +97,11 @@ set (SRC_ALL_DIR ${SRC_LIB_DIR} ${SRC_CLI_DIR} ${SRC_GUI_DIR})
 set (SRC_ALL_TARGETS ${SRC_LIB_TARGET} ${SRC_CLI_TARGET} ${SRC_GUI_TARGET})
 # Dossiers de sortie sur Windows.
 if (WIN32)
-    set (SRC_RUNTIME_OUTPUT_DIR ${CMAKE_BINARY_DIR}/${SRC_DIR})
+    set (SRC_RUNTIME_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${SRC_DIR})
     set (TEST_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${TEST_DIR})
 endif()
-# Lecture.
+
+# Lecture des sources.
 add_subdirectory (${SRC_DIR})
 
 # Documentation ================================================================
@@ -119,5 +120,7 @@ add_subdirectory (${REPORT_DIR})
 
 # Activation des tests unitaires, puis lecture du répertoire contenant la
 # configuration des tests.
-enable_testing ()
-add_subdirectory (${TEST_DIR})
+if (NOT MINGW AND NOT MSYS)
+    enable_testing ()
+    add_subdirectory (${TEST_DIR})
+endif ()

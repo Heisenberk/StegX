@@ -1,7 +1,7 @@
 # Configuration ================================================================
 
-# Windows.
-if (WIN32)
+# Windows et MSVC.
+if (WIN32 AND MSVC)
     # Exporte automatiquement les symboles du .DLL dans une bibliothèque
     # d'importation .LIB.
     set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
@@ -32,8 +32,8 @@ target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
 
 # Copie la DLL de la bibliothèque dans le dossier contenant les tests
 # pour le linkage lors de l'exécution.
-if (WIN32)
-    add_custom_command(TARGET ${SRC_LIB_TARGET} POST_BUILD
+if (WIN32 AND NOT MINGW AND NOT MSYS)
+    add_custom_command (TARGET ${SRC_LIB_TARGET} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${SRC_LIB_TARGET}> ${TEST_OUTPUT_PATH}/$<IF:$<CONFIG:Debug>,Debug,Release>/${SRC_LIB_NAME}.dll
         )
 endif ()
@@ -62,6 +62,6 @@ endif()
 # Déclaration de l'installation.
 install (TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
     COMPONENT ${SRC_LIB_COMP}
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR_CUSTOM}
-	)
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR_CUSTOM}
+    )

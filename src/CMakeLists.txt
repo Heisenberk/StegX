@@ -31,7 +31,9 @@ endif()
 # Lecture des sous-répertoires.
 add_subdirectory (${SRC_LIB_DIR})
 add_subdirectory (${SRC_CLI_DIR})
-add_subdirectory (${SRC_GUI_DIR})
+if (NOT MSVC)
+    add_subdirectory (${SRC_GUI_DIR})
+endif ()
 
 # Configuration pour toutes les cibles.
 foreach (target ${SRC_ALL_TARGETS})
@@ -44,39 +46,10 @@ foreach (target ${SRC_ALL_TARGETS})
         add_dependencies (${target} info)
         # Dossier de sortie sur Windows.
         if (WIN32)
-            set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_DIR})
+            set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_PATH})
         endif()
     endif ()
 endforeach ()
-
-# Installation pour l'interface graphique ======================================
-
-# Ajoute un raccourci pour l'interface graphique.
-if (TARGET ${SRC_GUI_TARGET} AND UNIX)
-    set (DESKTOP_PATH_OUTPUT
-        ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})
-    configure_file (
-        ${DESKTOP_PATH}/${PROJECT_NAME_LC}.desktop.in
-        ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
-        @ONLY
-        )
-    set (DESKTOP_INSTALL_DIR /usr/share/applications)
-    set (ICON_INSTALL_DIR /usr/share/pixmaps)
-    if (EXISTS ${DESKTOP_INSTALL_DIR})
-        install (FILES ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
-            DESTINATION ${DESKTOP_INSTALL_DIR})
-        if (EXISTS ${ICON_INSTALL_DIR})
-            install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
-                RENAME ${PROJECT_NAME_LC}.png
-                DESTINATION ${ICON_INSTALL_DIR})
-        endif()
-    endif()
-elseif (TARGET ${SRC_GUI_TARGET} AND WIN32)
-    install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico
-        RENAME ${PROJECT_NAME_LC}.ico
-        DESTINATION ./
-        COMPONENT ${SRC_GUI_COMP})
-endif ()
 
 # Package ======================================================================
 
@@ -136,9 +109,10 @@ elseif (WIN32)
     endif ()
     # Désinstalle une version précédente si présente.
     set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
-    # Nom de l'installateur.
+    # Nom de l'installateur et du dossier d'installation
     set (CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
     set (CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
+    set (CPACK_PACKAGE_INSTALL_DIRECTORY ${PROJECT_NAME})
 endif ()
 
 # Configuration générale puis lancement de CPack.
