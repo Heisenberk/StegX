@@ -154,14 +154,16 @@ La configuration de la compilation est à faire en première. Toutes les autres
 commandes sont à effectuer dans le dossier _build_. Lors d'un ajout d'un fichier
 source au projet, ou lors d'une rencontre avec un bug lors de la
 configuration/compilation, supprimez le dossier _build_ et recommencez la
-configuration. Les commandes entre _[  ]_ sont optionnelles et le _pipe_ ( | )
-signifie "OU".
+configuration. Les commandes entre _[  ]_ sont optionnelles.
 
 Sur **Windows**, si une erreur survient, faites attention de placer le dossier
 dans un chemin qui ne contient pas d'espaces. Certains modules de **CMake** pour
 **Windows** gèrent mal les espaces. Les cibles (targets) exécutées par **CMake**
 peuvent aussi êtres générées directement par l'interface graphique de **MSVC**
 sous forme de solution.
+
+Pour chaque commande avec **Make**, vous pouvez utiliser *VERBOSE=1* pour
+afficher toutes les actions effectuées.
 
 L'option _-DVarName=VarValue_ de **CMake** permet de configurer une variable.
 Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
@@ -170,118 +172,113 @@ Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
 **CMAKE_INSTALL_PREFIX** = /usr/local, /opt/stegx
 3. *Mode de compilation* : **CMAKE_BUILD_TYPE** = Release, Debug
 
-### - Configuration de la compilation
+### - Unix
 
-#### -- Unix
+#### -- Configuration de la compilation
 
     mkdir build
     cd build
     cmake .. [-G "Unix Makefiles"] [-DVarName=VarValue]
+    
+#### -- Compilation des modules principaux
 
-#### -- Windows (MinGW-w64/GCC & MSYS2)
-
-    mkdir build
-    cd build
-    cmake .. [-G "MinGW Makefiles | MSYS Makefiles"] [-DVarName=VarValue]
-
-#### -- Windows (MSVC)
-
-    mkdir build
-    cd build
-    cmake .. [-G "Visual Studio 15 2017"] [-DVarName=VarValue]
-
-### - Compilation des modules principaux
-
-#### -- Unix & Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
-
-    make [all] [stegx-cli stegx-gui stegx-lib]
-
-#### -- Windows (MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target all [stegx-cli stegx-gui stegx-lib]
-
-#### -- Windows (MSVC)
-
-    cmake --build . --target ALL_BUILD [stegx-cli stegx-gui stegx-lib]
-
-### - Génération de la documentation
-
-#### -- Unix & Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
+    make [all] [stegx-cli stegx-gui stegx-lib] [VERBOSE=1]
+    
+#### -- Génération de la documentation
 
     make doc
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target doc
-
-### - Génération des rapports
-
-#### -- Unix & Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
+    
+#### -- Génération des rapports
 
     make report
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target report
-
-### - Lancement des tests unitaires
-
-#### -- Unix & Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
+    
+#### -- Lancement des tests unitaires
 
     make check
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target check
-
-### - Création des binaires de distribution
-
-#### -- Unix
+ 
+#### -- Création des binaires de distribution
 
     sudo make dist
-
-#### -- Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
-
-    make dist // En tant qu'administrateur
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target dist // En tant qu'administrateur
-
-### - Installation
-
-#### -- Unix
+    
+#### -- Installation
 
     sudo make install
-
-#### -- Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
-
-    make install // En tant qu'administrateur
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target INSTALL // En tant qu'administrateur
-
-### -- Désinstallation
-
-#### - Unix
+    
+#### -- Désinstallation
 
     sudo make uninstall
-
-#### -- Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
-
-    make uninstall // En tant qu'administrateur
-
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
-
-    cmake --build . --target uninstall // En tant qu'administrateur
-
-### - Nettoyage
-
-#### -- Unix & Windows (MinGW-w64/GCC & MSYS2 avec MinGW Makefiles)
+    
+#### -- Nettoyage
 
     make clean
+    
+### - Windows
 
-#### -- Windows (MSVC | MinGW-w64/GCC & MSYS2 avec MSYS Makefiles)
+#### -- Configuration de la compilation
 
-    cmake --build . --target clean
+    mkdir build
+    cd build
+    MSYS :
+        cmake .. -G "MSYS Makefiles" [-DVarName=VarValue]
+    MinGW :
+        cmake .. -G "MinGW Makefiles" [-DVarName=VarValue]
+    MSVC :
+        cmake .. [-G "Visual Studio 15 2017"] [-DVarName=VarValue]
+    
+#### -- Compilation des modules principaux
+
+    MSYS :
+        make [all] [stegx-cli stegx-gui stegx-lib] [VERBOSE=1]
+    MinGW :
+        cmake --build . --target all [stegx-cli stegx-gui stegx-lib]
+    MSVC : Interface graphique (GTK+) non disponible.
+        cmake --build . --target ALL_BUILD [stegx-cli stegx-lib]
+    
+#### -- Génération de la documentation
+
+    MSYS :
+        make doc
+    MinGW & MSVC:
+        cmake --build . --target doc
+    
+#### -- Génération des rapports
+
+    MSYS :
+        make report
+    MinGW & MSVC :
+        cmake --build . --target report
+    
+#### -- Lancement des tests unitaires
+
+    MSYS & MinGW :
+        Tests unitaires non disponibles.
+    MSVC :
+        cmake --build . --target check
+ 
+#### -- Création des binaires de distribution
+
+    MSYS :
+        make dist
+    MinGW & MSVC : à lancer en tant qu'administrateur.
+        cmake --build . --target dist
+    
+#### -- Installation
+
+    MSYS : à lancer en tant qu'administrateur.
+        make install
+    MinGW & MSVC : à lancer en tant qu'administrateur.
+        cmake --build . --target INSTALL
+    
+#### -- Désinstallation
+
+    MSYS : à lancer en tant qu'administrateur.
+        make uninstall
+    MinGW & MSVC : à lancer en tant qu'administrateur.
+        cmake --build . --target uninstall
+    
+#### -- Nettoyage
+
+    MSYS :
+        make clean
+    MinGW & MSVC :
+        cmake --build . --target clean
