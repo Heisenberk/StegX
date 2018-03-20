@@ -44,7 +44,7 @@ foreach (target ${SRC_ALL_TARGETS})
         add_dependencies (${target} info)
         # Dossier de sortie sur Windows.
         if (WIN32)
-            set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_DIR})
+            set_target_properties (${target} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${SRC_RUNTIME_OUTPUT_PATH})
         endif()
     endif ()
 endforeach ()

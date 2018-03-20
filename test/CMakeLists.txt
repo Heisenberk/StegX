@@ -2,9 +2,9 @@
 set (CMOCKA_DIR cmocka)
 if (WIN32)
     set (CMOCKA_DIR_OS win)
-else()
+else ()
     set (CMOCKA_DIR_OS unix)
-endif()
+endif ()
 set (CMOCKA_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${CMOCKA_DIR}/${CMOCKA_DIR_OS})
 set (CMOCKA_INC_DIR include)
 set (CMOCKA_LIB_DIR lib)
@@ -46,7 +46,7 @@ if (CMOCKA_LIBRARY)
     if (WIN32)
         get_filename_component (CMOCKA_LIBRARY_NAME ${CMOCKA_LIBRARY} NAME_WE)
         set (CMOCKA_LIB_DLL_PATH "${CMOCKA_PATH}/${CMOCKA_BIN_DIR}/${CMOCKA_LIBRARY_NAME}.dll")
-        add_custom_command(TARGET ${TEST_TARGET} PRE_BUILD
+        add_custom_command (TARGET ${TEST_TARGET} PRE_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy ${CMOCKA_LIB_DLL_PATH} ${TEST_OUTPUT_PATH}/$<IF:$<CONFIG:Debug>,Debug,Release>/${CMOCKA_LIBRARY_NAME}.dll
             )
     endif ()

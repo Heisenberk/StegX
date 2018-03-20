@@ -1,7 +1,7 @@
 # Configuration ================================================================
 
-# Windows.
-if (WIN32)
+# Windows et MSVC.
+if (WIN32 AND MSVC)
     # Exporte automatiquement les symboles du .DLL dans une bibliothèque
     # d'importation .LIB.
     set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
@@ -62,6 +62,6 @@ endif()
 # Déclaration de l'installation.
 install (TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
     COMPONENT ${SRC_LIB_COMP}
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
-	PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR_CUSTOM}
-	)
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR_CUSTOM}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR_CUSTOM}
+    )
