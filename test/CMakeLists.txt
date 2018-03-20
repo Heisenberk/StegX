@@ -1,7 +1,7 @@
 # Répertoires concernant CMocka.
 set (CMOCKA_DIR cmocka)
 if (WIN32)
-    set (CMOCKA_DIR_OS win)
+    set (CMOCKA_DIR_OS win/msvc)
 else ()
     set (CMOCKA_DIR_OS unix)
 endif ()
