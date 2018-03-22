@@ -16,7 +16,7 @@ void dessine_fenetre(int argc,char **argv){
     gtk_window_set_title(GTK_WINDOW(fenetre), "StegX");
     gtk_window_set_default_size(GTK_WINDOW(fenetre), 300, 300);
     gtk_window_set_position(GTK_WINDOW (fenetre), GTK_WIN_POS_CENTER);
-	gtk_window_set_icon_from_file(GTK_WINDOW(fenetre), "../pic/stegx-55x55.png", NULL);
+	gtk_window_set_icon_from_file(GTK_WINDOW(fenetre), "../src/gui/pic/stegx-55x55.png", NULL);
     
     g_signal_connect(G_OBJECT(fenetre), "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
@@ -153,8 +153,8 @@ void dessine_fenetre(int argc,char **argv){
         /* Insertion de la page */
         gtk_notebook_append_page(GTK_NOTEBOOK(note_book), pTable, pTabLabel1);
  
-        g_free(sLabel1);
-        g_free(sTabLabel1);
+        //g_free(sLabel1);
+        //g_free(sTabLabel1);
         
         ///////////////////////////////
         
@@ -173,8 +173,8 @@ void dessine_fenetre(int argc,char **argv){
         /* Insertion de la page */
         gtk_notebook_append_page(GTK_NOTEBOOK(note_book), pLabel2, pTabLabel2);
  
-        g_free(sLabel2);
-        g_free(sTabLabel2);
+        //g_free(sLabel2);
+        //g_free(sTabLabel2);
     
     gtk_widget_show_all(fenetre);
     
