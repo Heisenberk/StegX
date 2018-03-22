@@ -3,9 +3,11 @@
 
 #include <gtk/gtk.h>
 
+#include "interface/fenetre.h"
+
 int main(int argc, char *argv[])
 {
-    GtkWidget* p_Window;
+    /*GtkWidget* p_Window;
     GtkWidget* p_Label;
     gchar* sUtf8;
 
@@ -25,5 +27,11 @@ int main(int argc, char *argv[])
     gtk_widget_show_all(p_Window);
 
     gtk_main();
-    return 0;
+    
+    return 0;*/
+    
+    
+	dessine_fenetre(argc,argv);
+
+    return EXIT_SUCCESS;
 }
