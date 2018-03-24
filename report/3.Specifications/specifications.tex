@@ -13,6 +13,7 @@
 \usepackage{subfig}
 \usepackage{multicol}
 \usepackage{caption}
+\usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \hypersetup{
@@ -217,6 +218,106 @@ choisi le langage C pour implémenter l'application.
 \end{description}
   \ldots
 \end{multicols}
+
+\section{Description des structures et des types}
+
+\section{Description des fonctions des différents modules}
+
+\subsection{Module Interface graphique}
+\subsection{Module Interface en ligne de commande}
+
+\subsection{Module Vérification de la compatibilité des fichiers}
+
+Ce module prend en entrée les chemins du fichier hôte et du fichier à 
+cacher (pour la dissimulation) ; le chemin du fichier à analyser (pour 
+l'extraction). Il va interagir avec le système de fichiers pour pouvoir 
+vérifier la compatibilité des fichiers en entrée. 
+Enfin, après sa vérification, ce module va envoyer les fichiers aux modules 
+suivants. 
+\newline
+
+\begin{lstlisting}[language=c]
+stegx_dissimulation stegx_check_compatibility_dissimulation 
+                (char* host_name, char* hidden_name);
+\end{lstlisting}
+
+Cette fonction analyse la compatibilité des fichiers hôte et à cacher pour
+la dissimulation. 
+Pour cela, elle vérifie que les fichier hôte et à cacher existent et qu'ils 
+ne sont pas vides. Ensuite, la fonction vérifie le format du fichier hôte. 
+Elle va remplir les champs \textit{host}, \textit{hidden} et \textit{host\_type} 
+de la structure \textit{stegx\_dissimulation} en entrée. 
+\newline
+\underline{Entrées :} \newline
+\textit{host\_name :} chaine de caractères représentant le nom du fichier hôte. \newline
+\textit{hidden\_name :} chaine de caractères représentant le nom du fichier à cacher. 
+\newline
+\underline{Sortie :} \newline
+\textit{stegx\_dissimulation :} structure initialisée partiellement pour insérer les 
+informations nécessaires à la vérification de la compatibilité des fichiers 
+en entrée. 
+\newline 
+
+\begin{lstlisting}[language=c]
+stegx_extraction stegx_check_compatibility_extraction (char* analysis_name);
+\end{lstlisting}
+
+Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
+Pour cela, elle vérifie si le fichier à analyser existe et n'est pas vide. 
+Ensuite, la fonction vérifie le format du fichier à analyser. 
+Elle va remplir les champs \textit{analysis} et \textit{analysis\_type} 
+de la structure \textit{stegx\_extraction} en entrée. 
+\newline
+\underline{Entrée :} \newline
+\textit{analysis\_name :} chaine de caractères représentant le nom du fichier 
+à analyser. \newline
+\underline{Sortie :} \newline
+\textit{stegx\_extraction :} structure initialisée partiellement pour insérer les 
+informations nécessaires à la vérification de la compatibilité des fichiers 
+en entrée. 
+\newline 
+
+\begin{lstlisting}[language=c]
+int stegx_test_file_not_empty (stegx_file file);
+\end{lstlisting}
+
+Cette fonction teste si le fichier (représenté par la structure \textit{stegx\_file}
+n'est pas vide. 
+\newline
+\underline{Entrée :} \newline
+\textit{file :} structure représentant le fichier à tester. \newline
+\underline{Sortie :} \newline
+\textit{int :} renvoie 0 si le fichier est vide ou qu'il n'existe pas ; 1 sinon. 
+\newline 
+
+\begin{lstlisting}[language=c]
+enum type stegx_test_file_bmp (stegx_file file);
+enum type stegx_test_file_png (stegx_file file);
+enum type stegx_test_file_wav (stegx_file file);
+enum type stegx_test_file_mp3 (stegx_file file);
+enum type stegx_test_file_avi (stegx_file file);
+enum type stegx_test_file_flv (stegx_file file);
+\end{lstlisting}
+
+Ces fonctions testent le format du fichier en lisant le fichier en entrée 
+(Magic Number notamment). 
+\newline
+\underline{Entrée :} \newline
+\textit{file :} structure représentant le fichier à tester. \newline
+\underline{Sortie :} \newline
+\textit{int :} renvoie UNKNOWN si le format du fichier n'est pas pris en 
+charge par l'application ; sinon, en fonction du format et des particularités 
+du fichier, il peut renvoyer \textit{COMPRESSED\_BMP}, \textit{UNCOMPRESSED\_BMP}, 
+\textit{PNG}, \textit{WAV\_PCM}, \textit{MP3}, \textit{COMPRESSED\_AVI}, 
+\textit{UNCOMPRESSED\_AVI} ou \textit{FLV}. 
+\newline 
+
+\subsection{Module Proposition des algorithmes 
+de stéganographie}
+\subsection{Module Détection de l'algorithme de
+stéganographie}
+\subsection{Module Insertion des données}
+\subsection{Module Extraction}
 
 \section{Conclusion}
 
