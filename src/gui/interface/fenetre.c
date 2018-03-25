@@ -1,148 +1,90 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
+#define ALGO_NB 3
+
 void dessine_fenetre(GtkWidget *window)
 {
-    GtkWidget *vertical_box;
-    GtkWidget *note_book;
-    GtkWidget *pButton;
-    GtkWidget *pTable;
-	
-	vertical_box = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(window), vertical_box);
-    
-    // Creation du GtkNotebook 
-    note_book = gtk_notebook_new();
-    gtk_box_pack_start(GTK_BOX(vertical_box), note_book, TRUE, TRUE, 0);
-    gtk_notebook_set_tab_pos(GTK_NOTEBOOK(note_book), GTK_POS_TOP);
-    gtk_notebook_set_scrollable(GTK_NOTEBOOK(note_book), TRUE);
-    
-    pTable=gtk_table_new(12,8,TRUE);
-    //gtk_container_add(GTK_CONTAINER(pWindow), GTK_WIDGET(pTable));
- 
-        GtkWidget *pLabel1;
-        GtkWidget *pTabLabel1;
-        gchar *sLabel1;
-        gchar *sTabLabel1;
- 
-        //sLabel1 = g_strdup_printf("Je suis la dissimulation");
-        sTabLabel1 = g_strdup_printf("Dissimulation");
- 
-        /* Creation des differents GtkLabel */
-        pLabel1 = gtk_label_new(sLabel1);
-        pTabLabel1 = gtk_label_new(sTabLabel1);
-        
-        ////////////
-        GtkWidget* emplacement_fichier_hote;
-    GtkWidget* emplacement_fichier_a_cacher;
-    GtkWidget* emplacement_fichier_resultat;
-    GtkWidget* mot_de_passe;
-    GtkWidget* nom_fichier_resultat;
-    GtkWidget *bouton_dissimuler;
-    GtkWidget* proposition_algos;
-    
+    /* Conteneur principal de la fenêtre proposant plusieurs onglets. */
+    GtkWidget *tabs = gtk_notebook_new();
+    gtk_container_add(GTK_CONTAINER(window), tabs);
 
-    mot_de_passe = gtk_entry_new();
-    bouton_dissimuler = gtk_button_new_with_label("Dissimuler");
-    gtk_entry_set_visibility(GTK_ENTRY(mot_de_passe),FALSE);
-    //gtk_box_pack_start(GTK_BOX(vertical_box), pEntry, TRUE, FALSE, 0);
-    nom_fichier_resultat=gtk_entry_new();
-    
-    /*proposition_algos=gtk_combo_box_text_new();
-    const char *distros[] = {"Select distribution", "Fedora", "Mint", "Suse"};
-    int i;
-    for (i = 0; i < 4; i++){
-		gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (proposition_algos), distros[i]);
-	}
-	gtk_combo_box_set_active (GTK_COMBO_BOX (proposition_algos), 0);*/
-    
+    /* Onglet de la dissimulation. */
 
-    emplacement_fichier_hote = gtk_file_chooser_button_new (("Sélectionne le fichier hôte"),
-                                        GTK_FILE_CHOOSER_ACTION_OPEN);
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (emplacement_fichier_hote),"/user");
-    
-    emplacement_fichier_a_cacher = gtk_file_chooser_button_new (("Sélectionne le fichier à cacher"),
-                                        GTK_FILE_CHOOSER_ACTION_OPEN);
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (emplacement_fichier_hote),"/user");
-    
-    emplacement_fichier_resultat = gtk_file_chooser_button_new (("Sélectionne l'emplacement du résultat"),
-                                        GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
-    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (emplacement_fichier_hote),"/user");
-  	
-	GtkWidget* label_fichier_hote=gtk_label_new("Fichier hôte");
-    GtkWidget* label_fichier_a_cacher=gtk_label_new("Fichier à cacher");
-    GtkWidget* label_emplacement=gtk_label_new("Emplacement du fichier à créer");
-    GtkWidget* label_mot_de_passe=gtk_label_new("Mot de Passe"); 
-    GtkWidget* label_nom_resultat=gtk_label_new("Nom du fichier à créer");
-    GtkWidget* label_algos=gtk_label_new("Algorithme(s) disponible(s)");
-    
-    // Insertion des boutons
-    gtk_table_attach(GTK_TABLE(pTable), label_fichier_hote,
-        1, 3, 1, 2,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-    gtk_table_attach(GTK_TABLE(pTable), emplacement_fichier_hote,
-        1, 3, 2, 3,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0);
-        
-        gtk_table_attach(GTK_TABLE(pTable), label_fichier_a_cacher,
-        5, 7, 1, 2,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0);        
-    gtk_table_attach(GTK_TABLE(pTable), emplacement_fichier_a_cacher,
-        5, 7, 2, 3,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0);
-        
-        gtk_table_attach(GTK_TABLE(pTable), label_emplacement,
-        1, 3, 5, 6,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0);        
-    gtk_table_attach(GTK_TABLE(pTable), emplacement_fichier_resultat,
-        1, 3, 6, 7,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0);   
+    /* Grille contenant les widgets l'onglet. */
+    GtkWidget *tab_dissi_title = gtk_label_new("Dissimulation");
+    GtkWidget *tab_dissi = gtk_grid_new();
+    gtk_grid_set_row_spacing(GTK_GRID(tab_dissi), 10);
+    gtk_grid_set_row_homogeneous(GTK_GRID(tab_dissi), TRUE);
+    gtk_grid_set_column_spacing(GTK_GRID(tab_dissi), 10);
+    gtk_grid_set_column_homogeneous(GTK_GRID(tab_dissi), TRUE);
+    gtk_widget_set_margin_bottom(tab_dissi, 20);
+    gtk_widget_set_margin_top(tab_dissi, 20);
+    gtk_widget_set_margin_start(tab_dissi, 20);
+    gtk_widget_set_margin_end(tab_dissi, 20);
 
-        gtk_table_attach(GTK_TABLE(pTable), label_mot_de_passe,
-        5, 7, 5, 6,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        gtk_table_attach(GTK_TABLE(pTable), mot_de_passe,
-        5, 7, 6, 7,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        
-        gtk_table_attach(GTK_TABLE(pTable), label_nom_resultat,
-        1, 3, 8, 9,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        gtk_table_attach(GTK_TABLE(pTable), nom_fichier_resultat,
-        1, 3, 9, 10,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        
-        /*gtk_table_attach(GTK_TABLE(pTable), label_algos,
-        5, 7, 8, 9,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        gtk_table_attach(GTK_TABLE(pTable), proposition_algos,
-        5, 7, 9, 10,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); */
+    /* Widgets. */
 
-        
-        gtk_table_attach(GTK_TABLE(pTable), bouton_dissimuler,
-        3, 5, 11, 12,
-        GTK_EXPAND | GTK_FILL, GTK_EXPAND,
-        0, 0); 
-        /////////////////
+    GtkWidget* lbl_file_orig = gtk_label_new("Fichier hôte");
+    GtkWidget* fc_file_orig = gtk_file_chooser_button_new (
+            ("Sélectionner le fichier hôte"), GTK_FILE_CHOOSER_ACTION_OPEN);
+    gtk_grid_attach(GTK_GRID(tab_dissi), lbl_file_orig, 1, 1, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), fc_file_orig, lbl_file_orig,
+            GTK_POS_BOTTOM, 1, 1);
+
+    GtkWidget* lbl_file_to_hide = gtk_label_new("Fichier à cacher");
+    GtkWidget* fc_file_to_hide = gtk_file_chooser_button_new(
+            ("Sélectionner le fichier à cacher"), GTK_FILE_CHOOSER_ACTION_OPEN);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), lbl_file_to_hide,
+            lbl_file_orig, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), fc_file_to_hide, fc_file_orig,
+            GTK_POS_RIGHT, 1, 1);
+
+    GtkWidget* lbl_file_out_dir = gtk_label_new(
+            "Emplacement du fichier à créer");
+    GtkWidget* fc_file_out_dir = gtk_file_chooser_button_new (
+            ("Sélectionner le dossier de sortie"),
+            GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), lbl_file_out_dir,
+            fc_file_orig, GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), fc_file_out_dir,
+            lbl_file_out_dir, GTK_POS_BOTTOM, 1, 1);
+
+    GtkWidget* lbl_file_out_name = gtk_label_new("Nom du fichier à créer");
+    GtkWidget* ent_file_out = gtk_entry_new();
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), lbl_file_out_name,
+            lbl_file_out_dir, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), ent_file_out,
+            lbl_file_out_name, GTK_POS_BOTTOM, 1, 1);
+
+    GtkWidget* lbl_passwd = gtk_label_new("Mot de passe"); 
+    GtkWidget* ent_passwd = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(ent_passwd), FALSE);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), lbl_passwd,
+            fc_file_out_dir, GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), ent_passwd,
+            lbl_passwd, GTK_POS_BOTTOM, 1, 1);
  
-        /* Insertion de la page */
-        gtk_notebook_append_page(GTK_NOTEBOOK(note_book), pTable, pTabLabel1);
- 
-        //g_free(sLabel1);
-        //g_free(sTabLabel1);
+    GtkWidget *lbl_algos = gtk_label_new("Algorithme(s) disponible(s)");
+    GtkWidget *cb_algos = gtk_combo_box_text_new();
+    const char *lst_algos[] = {"LSB", "EOF", "Metadonnées"};
+    for (int i = 0; i < ALGO_NB; i++) {
+        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(cb_algos),
+                lst_algos[i]);
+    }
+    gtk_combo_box_set_active(GTK_COMBO_BOX(cb_algos), 0);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), lbl_algos, lbl_passwd,
+            GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), cb_algos, lbl_algos,
+            GTK_POS_BOTTOM, 1, 1);
+    
+    GtkWidget *but_dissi = gtk_button_new_with_label("Dissimuler");
+    gtk_grid_attach_next_to(GTK_GRID(tab_dissi), but_dissi, ent_passwd,
+            GTK_POS_BOTTOM, 2, 1);
+
+    /* Insertion de la page. */
+    gtk_notebook_append_page(GTK_NOTEBOOK(tabs), tab_dissi, tab_dissi_title);
+
         
         ///////////////////////////////
         
@@ -159,7 +101,7 @@ void dessine_fenetre(GtkWidget *window)
         pTabLabel2 = gtk_label_new(sTabLabel2);
  
         /* Insertion de la page */
-        gtk_notebook_append_page(GTK_NOTEBOOK(note_book), pLabel2, pTabLabel2);
+        gtk_notebook_append_page(GTK_NOTEBOOK(tabs), pLabel2, pTabLabel2);
  
         //g_free(sLabel2);
         //g_free(sTabLabel2);
