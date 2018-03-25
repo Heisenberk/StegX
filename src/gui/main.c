@@ -1,37 +1,53 @@
+/**
+ * @file main.c
+ * @brief Programme principal
+ * @details Coeur de l'interface graphique, gérant tout ce qui ne concerne pas
+ * directement ce qui est affiché sur la fenêtre principale.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
-
 #include <gtk/gtk.h>
-
-#include "interface/fenetre.h"
-
-int main(int argc, char *argv[])
+    
+/**
+ * @brief Signal d'activation
+ * @details Signal de l'initialisation et lancement de la fenêtre principale.
+ * @param app Pointeur vers l'application à laquelle est liée ce signal.
+ * @param user_data Pointeur vers des données supplémentaires à traiter.
+ */
+static void activate(GtkApplication* app, gpointer user_data)
 {
-    /*GtkWidget* p_Window;
-    GtkWidget* p_Label;
-    gchar* sUtf8;
+    /* Fenêtre principale. */
+    GtkWidget *window;
 
-    gtk_init(&argc,&argv);
+    /* Initialisation de la fenêtre. */
+    window = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window), "StegX");
+    gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+    gtk_widget_show_all(window);
+}
 
-    p_Window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(p_Window), "GTK+");
-    gtk_window_set_default_size(GTK_WINDOW(p_Window), 260, 40);
-    gtk_window_set_position (GTK_WINDOW (p_Window), GTK_WIN_POS_CENTER);
-    g_signal_connect(G_OBJECT(p_Window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+/**
+ * @brief Initialisation de l'application.
+ * @details Initialisation de l'application GTK+, puis passe la main au signal
+ * "activate" censé initialiser la fenêtre.
+ * @param argc Nombre d'arguments passés à l'application.
+ * @param argv Tableau de chaîne de caractères contenant les arguments passés à
+ * l'application.
+ * @return Code de retour de l'application (0 si aucune erreur).
+ */
+int main(int argc, char **argv)
+{
+    /* Application principale et statut de retour. */
+    GtkApplication *app;
+    int ret;
 
-    sUtf8 = g_locale_to_utf8("Hello GTK !", -1, NULL, NULL, NULL);
-    p_Label = gtk_label_new(sUtf8);
-    g_free(sUtf8);
-    gtk_container_add(GTK_CONTAINER(p_Window), p_Label);
+    /* Initialisation de GTK+ et connection du signal "activate". */
+    app = gtk_application_new("org.stegx.gui", G_APPLICATION_FLAGS_NONE);
+    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
 
-    gtk_widget_show_all(p_Window);
-
-    gtk_main();
-    
-    return 0;*/
-    
-    
-	dessine_fenetre(argc,argv);
-
-    return EXIT_SUCCESS;
+    /* Lancement puis fin du programme. */
+    ret = g_application_run(G_APPLICATION(app), argc, argv);
+    g_object_unref(app);
+    return ret;
 }
