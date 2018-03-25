@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
+#include "interface/fenetre.h"
     
 /**
  * @brief Signal d'activation
@@ -17,13 +18,29 @@
  */
 static void activate(GtkApplication* app, gpointer user_data)
 {
-    /* Fenêtre principale. */
+    /* Initialisation de la fenêtre principale. */
     GtkWidget *window;
-
-    /* Initialisation de la fenêtre. */
     window = gtk_application_window_new(app);
+
+    /* Propriétés de la fenêtre principale. */
     gtk_window_set_title(GTK_WINDOW(window), "StegX");
     gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_window_set_icon_from_file(GTK_WINDOW(window),
+            "../src/gui/pic/stegx-55x55.png", NULL); /* A REFAIRE. */
+
+    /* GtkWidget *button = gtk_button_new_with_label("Hello World test"); */
+    /* g_signal_connect(button, "clicked", G_CALLBACK(print_hello), NULL); */
+    /* g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), */
+            /* window); */
+
+    /* GtkWidget *button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL); */
+    /* gtk_container_add(GTK_CONTAINER(button_box), button); */
+    /* gtk_container_add(GTK_CONTAINER(window), button_box); */
+
+    dessine_fenetre(window);
+
+    /* Affichage. */
     gtk_widget_show_all(window);
 }
 

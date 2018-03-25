@@ -1,27 +1,15 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 
-void dessine_fenetre(int argc,char **argv){
-	
-	GtkWidget *fenetre;
+void dessine_fenetre(GtkWidget *window)
+{
     GtkWidget *vertical_box;
     GtkWidget *note_book;
     GtkWidget *pButton;
     GtkWidget *pTable;
 	
-    gtk_init(&argc,&argv);
-    
-    fenetre = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    
-    gtk_window_set_title(GTK_WINDOW(fenetre), "StegX");
-    gtk_window_set_default_size(GTK_WINDOW(fenetre), 300, 300);
-    gtk_window_set_position(GTK_WINDOW (fenetre), GTK_WIN_POS_CENTER);
-	gtk_window_set_icon_from_file(GTK_WINDOW(fenetre), "../src/gui/pic/stegx-55x55.png", NULL);
-    
-    g_signal_connect(G_OBJECT(fenetre), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-
 	vertical_box = gtk_vbox_new(FALSE, 0);
-    gtk_container_add(GTK_CONTAINER(fenetre), vertical_box);
+    gtk_container_add(GTK_CONTAINER(window), vertical_box);
     
     // Creation du GtkNotebook 
     note_book = gtk_notebook_new();
@@ -175,9 +163,4 @@ void dessine_fenetre(int argc,char **argv){
  
         //g_free(sLabel2);
         //g_free(sTabLabel2);
-    
-    gtk_widget_show_all(fenetre);
-    
-
-    gtk_main(); 
 }
