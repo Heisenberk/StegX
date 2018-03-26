@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
-#include "interface/fenetre.h"
+#include "ui/ui.h"
     
 /**
  * @brief Signal d'activation
@@ -29,18 +29,8 @@ static void activate(GtkApplication* app, gpointer user_data)
     gtk_window_set_icon_from_file(GTK_WINDOW(window),
             "../src/gui/pic/stegx-55x55.png", NULL); /* A REFAIRE. */
 
-    /* GtkWidget *button = gtk_button_new_with_label("Hello World test"); */
-    /* g_signal_connect(button, "clicked", G_CALLBACK(print_hello), NULL); */
-    /* g_signal_connect_swapped(button, "clicked", G_CALLBACK(gtk_widget_destroy), */
-            /* window); */
-
-    /* GtkWidget *button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL); */
-    /* gtk_container_add(GTK_CONTAINER(button_box), button); */
-    /* gtk_container_add(GTK_CONTAINER(window), button_box); */
-
-    dessine_fenetre(window);
-
-    /* Affichage. */
+    /* Population de la fenêtre par les widgets puis lancement de l'affichage. */
+    ui_populate(window);
     gtk_widget_show_all(window);
 }
 
