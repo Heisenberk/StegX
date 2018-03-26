@@ -107,6 +107,81 @@ static void ui_dissi_populate(GtkWidget *tab)
             GTK_POS_BOTTOM, 2, 1);
 }
 
+/**
+ * @brief Crée l'onglet d'extraction
+ * @details Construit et place les widgets de l'onglet de l'extraction.
+ * @param tab Pointeur vers un widget GTK+ sur lequel lier les widgets
+ * construits.
+ */
+static void ui_extrac_populate(GtkWidget *tab)
+{
+    /* Widgets pour le fichier hôte (sélection de fichier). */
+    GtkWidget* lbl_file_orig = gtk_label_new("Fichier hôte");
+    GtkWidget* fc_file_orig = gtk_file_chooser_button_new (
+            ("Sélectionner le fichier hôte"), GTK_FILE_CHOOSER_ACTION_OPEN);
+    gtk_grid_attach(GTK_GRID(tab), lbl_file_orig, 1, 1, 2, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab), fc_file_orig, lbl_file_orig,
+            GTK_POS_BOTTOM, 2, 1);
+
+    /* Widgets pour le fichier de sortie (sélection de dossier). */
+    GtkWidget* lbl_file_out_dir = gtk_label_new(
+            "Emplacement du fichier à créer");
+    GtkWidget* fc_file_out_dir = gtk_file_chooser_button_new (
+            ("Sélectionner le dossier de sortie"),
+            GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
+    gtk_grid_attach_next_to(GTK_GRID(tab), lbl_file_out_dir,
+            fc_file_orig, GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab), fc_file_out_dir,
+            lbl_file_out_dir, GTK_POS_BOTTOM, 1, 1);
+
+    /* Widgets pour le fichier de sortie (champ de texte pour nom
+     * du fichier). */
+    GtkWidget* lbl_file_out_name = gtk_label_new("Nom du fichier à créer");
+    GtkWidget* ent_file_out = gtk_entry_new();
+    gtk_grid_attach_next_to(GTK_GRID(tab), lbl_file_out_name,
+            lbl_file_out_dir, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab), ent_file_out,
+            lbl_file_out_name, GTK_POS_BOTTOM, 1, 1);
+
+    /* Widgets pour le mot de passe (champ de texte). */
+    GtkWidget* lbl_passwd = gtk_label_new("Mot de passe");
+    GtkWidget* ent_passwd = gtk_entry_new();
+    gtk_entry_set_visibility(GTK_ENTRY(ent_passwd), FALSE);
+    gtk_grid_attach_next_to(GTK_GRID(tab), lbl_passwd,
+            fc_file_out_dir, GTK_POS_BOTTOM, 2, 1);
+    gtk_grid_attach_next_to(GTK_GRID(tab), ent_passwd,
+            lbl_passwd, GTK_POS_BOTTOM, 2, 1);
+
+    /* Widget pour lancer l'extraction (widget). */
+    GtkWidget *but_extrac = gtk_button_new_with_label("Extraire");
+    gtk_grid_attach_next_to(GTK_GRID(tab), but_extrac, ent_passwd,
+            GTK_POS_BOTTOM, 2, 1);
+}
+
+/**
+ * @brief Crée l'onglet d'information
+ * @details Construit et place les widgets de l'onglet d'information.
+ * @param tab Pointeur vers un widget GTK+ sur lequel lier les widgets
+ * construits.
+ */
+static void ui_about_populate(GtkWidget *tab)
+{
+    /* Auteurs. */
+    GtkWidget* lbl_info = gtk_label_new("Auteurs : \n"
+            "- AYOUB Pierre \n"
+            "- BASKEVITCH Claire \n"
+            "- BESSAC Tristan \n"
+            "- CAUMES Clément \n"
+            "- BASKEVITCH Claire \n"
+            "- DELAUNAY Damien \n"
+            "- DOUDOUH Yassine \n\n"
+            "Version : TODO \n"
+            "Bibliothèque graphique : GTK+ 3 \n"
+            "Bibliothèque de stéganographie : StegX \n"
+            );
+    gtk_grid_attach(GTK_GRID(tab), lbl_info, 1, 1, 1, 1);
+}
+
 void ui_populate(GtkWidget *window)
 {
     /* Conteneur principal de la fenêtre proposant plusieurs onglets. */
@@ -122,6 +197,12 @@ void ui_populate(GtkWidget *window)
     /* Création et insertion de l'onglet extraction. */
     GtkWidget *tab_extrac_title = gtk_label_new("Extraction");
     GtkWidget *tab_extrac = ui_grid_init();
-    ui_dissi_populate(tab_extrac);
+    ui_extrac_populate(tab_extrac);
     gtk_notebook_append_page(GTK_NOTEBOOK(tabs), tab_extrac, tab_extrac_title);
+
+    /* Création et insertion de l'onglet d'information. */
+    GtkWidget *tab_about_title = gtk_label_new("À propos");
+    GtkWidget *tab_about = ui_grid_init();
+    ui_about_populate(tab_about);
+    gtk_notebook_append_page(GTK_NOTEBOOK(tabs), tab_about, tab_about_title);
 }
