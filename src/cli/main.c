@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 	com->mdp = "\0";
 	com->algo = -1;
 	com->d_e = -1;
+	we_are_stegx();
 	remplir_info(com, argc, argv);
 	verif_infos(com);
 	return 0;
