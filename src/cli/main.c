@@ -3,17 +3,18 @@
 
 #include "maths/test.h"
 #include "types.h"
-#include "commandes/commandes.h"
+#include "commandes/cli.h"
 
 int main(int argc, char *argv[])
 {
-    // determine quelle commande l'utilisateur a choisi.
-	int mode=teste_commande_generale(argc,argv);
-	
-	/* en fonction de la commande choisi, l'application va faire ce que 
-	 * l'utilisateur veut faire. 
-	 */
-	realise_commande_generale(argc,argv,mode);
-	
+	struct info *com = malloc(sizeof(struct info));
+	com->hote = "\0";
+	com->cache = "\0";
+	com->resultat = "\0";
+	com->mdp = "\0";
+	com->algo = -1;
+	com->d_e = -1;
+	remplir_info(com, argc, argv);
+	verif_infos(com);
 	return 0;
 }
