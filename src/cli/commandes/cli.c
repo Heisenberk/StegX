@@ -16,11 +16,23 @@ void we_are_stegx(){
   printf("Université Versailles Saint Quentin en Yvelines - 2018 \n");
   printf("AYOUB Pierre - BASKEVITCH Claire - BESSAC Tristan - CAUMES Clément - ");
   printf("DELAUNAY Damien - DOUDOUH Yassin\n\n");
-  printf("Faire \033[01m\033[31mstegx -help\033[0m ou \033[01m\033[31mstegx -h \033[0m pour un rappel des commandes. \n");
+  printf("Faire \033[01m\033[31mstegx --help\033[0m ou \033[01m\033[31mstegx -h \033[0m pour un rappel des commandes.\n\n\n");
 }
 
 void besoin_d_aide(){
-	printf("VOILA LES INFO\n");
+    printf("Manuel d'utilisation de stegx\n\n");
+    printf("\033[01m\033[32m-d, --dissimule \033[0m\n\t Option de dissimultation.\n\n"
+		    "\033[01m\033[32m-e, --extraire \033[0m\n\t Option d'extraction.\n\n"
+		    "\033[01m\033[32m-o, --hote [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
+		    "\033[01m\033[32m-c, --cache [nom_fichier]\033[0m\n\t Le nom du fichier à cacher.\n\n"
+		    "\033[01m\033[32m-r, --resultat [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat.\n\n"
+		    "\033[01m\033[32m-p, --password [password]\033[0m\n\t Pour ajouter un mot de passe permettant "
+		    "de rajouter une protection à la dissimulation.\n\n"
+		    "Voici les différents algorithmes que propose l'application :\n"
+		    "\t\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
+		    "\t\033[01m\033[32m--metadata\033[0m \n"
+		    "\t\033[01m\033[32m--EOF\033[0m : end of file.\n");
+   printf("\n"); 
 }
 
 void ligne_non_valide(){
@@ -37,7 +49,7 @@ void remplir_info(struct info* com,const int argc,char* const* argv){
                   //c: pour l'option -c suivi du fichier à cacher 
                   //r: pour l'option -r suivi du fichier resultat
                   //p: pour l'option -p suivi du mot de passe 
-                  //a: pour l'option -a suivi de l'algo à utiliser   !!! à voir avec groupe
+                  	//a: pour l'option -a suivi de l'algo à utiliser   !!! à voir avec groupe
                   //d pour l'option -d pour signifier la dissimulation
                   //e pour l'option -e pour signifier l'extraction
                   //h pour l'option -h qui affiche l'aide
@@ -45,6 +57,8 @@ void remplir_info(struct info* com,const int argc,char* const* argv){
         {"hote", 1, NULL, 'o'},
         {"cache", 1, NULL, 'c'},
         {"resultat", 1, NULL, 'r'},
+	{"dissimule", 0, NULL, 'd'},
+	{"extraire", 0, NULL, 'e'}, 
         {"lsb",0, NULL,ALGO_LSB},
         {"metadata",0,NULL,ALGO_METADATA},
         {"EOF",0,NULL, ALGO_EOF},
