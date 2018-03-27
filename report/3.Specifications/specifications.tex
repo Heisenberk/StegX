@@ -227,19 +227,27 @@ des différents modules de l'application.
 \subsection{Description des énumérations}
 
 \begin{lstlisting}[language=c]
-enum algo {LSB_STEGX, EOF_STEGX, METADATA_STEGX};
-typedef enum algo ALGO;
+enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
+typedef enum mode mode_e;
+\end{lstlisting}
+
+L'énumération mode permet de distinguer les deux outils proposés par 
+l'application : extraire ou dissimuler. 
+\newline
+
+\begin{lstlisting}[language=c]
+enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA};
+typedef enum algo algo_e;
 \end{lstlisting}
 
 L'énumération algo distingue les différents algorithmes proposés par 
-l'application. Elle comprend les algorithmes avec ou sans méthode de 
-protection des données (présence d'un mot de passe ou non). 
+l'application. 
 \newline 
 
 \begin{lstlisting}[language=c]
 enum type {BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM, 
         MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN};
-typedef enum type TYPE;
+typedef enum type type_e;
 \end{lstlisting}
 
 L'énumération type expose les différents formats de fichiers avec leurs 
@@ -250,114 +258,148 @@ est inconnu, cela sera représenté par le type UNKNOWN.
 
 \subsection{Description des structures}
 
+%\begin{lstlisting}[language=c]
+%struct stegx_infos {
+%    enum type type;
+%    union{
+%        stegx_bmp bmp;
+%        stegx_png png;
+%        stegx_wav wav;
+%        stegx_mp3 mp3;
+%        stegx_avi avi;
+%        stegx_flv flv;
+%    } infos;
+%};
+%typedef struct stegx_infos STEGX_INFOS;
+%\end{lstlisting}
+
+%Cette première structure stegx\_infos permet de stocker les informations 
+%utiles pour chaque format différent afin de le manipuler convenablement 
+%par la suite. 
+%\newline
+%\underline{Paramètres :}
+%\begin{itemize}
+%\item \textit{type} permet de distinguer quel champ il faut manipuler pour l'union 
+%infos. Pour chaque format, il y un ou plusieurs types possibles.
+%\item \textit{infos} est une union en C. Elle permet de choisir un champ parmi
+%ceux qui sont définis. Ainsi, si le fichier hôte est un fichier BMP par exemple, 
+%seul la structure bmp de infos sera initialisée et manipulée par la suite.
+%\newline
+%\end{itemize}
+
 \begin{lstlisting}[language=c]
-struct stegx_infos {
-    enum type type;
-    union{
-        stegx_bmp bmp;
-        stegx_png png;
-        stegx_wav wav;
-        stegx_mp3 mp3;
-        stegx_avi avi;
-        stegx_flv flv;
-    } infos;
+struct stegx_info_ins {
+    char* hidden_path;
+    algo_e algo;
 };
-typedef struct stegx_infos STEGX_INFOS;
+typedef struct stegx_info_ins stegx_info_ins_t;
 \end{lstlisting}
 
-Cette première structure stegx\_infos permet de stocker les informations 
+La structure stegx\_info\_ins permet de représenter les informations 
+nécessaire sur le fichier à cacher, c'est-à-dire son chemin et l'algo que 
+l'on utilisera pour dissimuler ce dernier. \newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{hidden\_path} est une chaine de caractères représentant le nom du fichier 
+à cacher. 
+\item \textit{algo} représente l'algorithme qui sera utilisé pour dissimuler. 
+\newline
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+struct stegx_info {
+    char* host_path;
+    char* res_path;                         
+    char* passwd;                           
+    mode_e mode;                            
+    stegx_info_ins_t* ins_info;             
+};
+typedef struct stegx_info stegx_info_t;
+\end{lstlisting}
+
+La structure stegx\_info représente la structure publique (de la bibliothèque
+de StegX). Elle représente les données choisies par l'utilisateur s'il veut 
+dissimuler ou extraire des données. \newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{host\_path} est une chaine de caractères représentant le chemin
+du fichier à analyser (pour l'extraction) ou hôte (pour la dissimulation). 
+\item \textit{res\_path} est une chaine de caractères représentant le chemin
+du fichier résultant (pour l'extraction ou pour la dissimulation). 
+\item \textit{passwd} est une chaine de caractères représentant le mot de passe 
+choisi par l'utilisateur. Celui-ci est optionnel et si l'utilisateur choisit 
+de ne pas en mettre, passwd vaudra NULL. 
+\item \textit{mode} est une variable d'énumération représentant le mode que 
+l'utilisateur a choisi : dissimulation (STEGX\_MODE\_INSERT)ou extraction 
+(STEGX\_MODE\_EXTRACT). 
+\item \textit{* ins\_info} est un pointeur sur la structure stockant les informations 
+sur le fichier à cacher. Elle est requise si le champ mode est à STEGX\_MODE\_INSERT. 
+\newline
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+struct host_info {
+    FILE* host;
+    type_e type;
+    union {
+        struct bmp bmp;
+        struct png png;
+        struct wav wav;
+        struct mp3 mp3;
+        struct avi avi;
+        struct flv flv;
+    } file_type;
+};
+typedef struct host_info host_info_s;
+\end{lstlisting}
+
+Cette structure stegx\_infos permet de stocker les informations 
 utiles pour chaque format différent afin de le manipuler convenablement 
 par la suite. 
 \newline
 \underline{Paramètres :}
 \begin{itemize}
+\item \textit{host} représente le fichier hôte pour le cas de la dissimulation 
+et le fichier à analyser pour le cas de l'extraction. 
 \item \textit{type} permet de distinguer quel champ il faut manipuler pour l'union 
 infos. Pour chaque format, il y un ou plusieurs types possibles.
 \item \textit{infos} est une union en C. Elle permet de choisir un champ parmi
 ceux qui sont définis. Ainsi, si le fichier hôte est un fichier BMP par exemple, 
-seul la structure bmp de infos sera initialisée et manipulée par la suite.
+seule la structure bmp de infos sera initialisée et manipulée par la suite.
 \newline
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-struct stegx_file {
-    char* name;
-    FILE* file;
+struct info {
+    mode_e mode;                
+    host_info_s host;           
+    FILE* res;                 
+    FILE* hidden;              
+    char* hidden_name;
+    char* passwd;
 };
-typedef struct stegx_file STEGX_FILE;
+typedef struct info info_s;
 \end{lstlisting}
 
-La structure stegx\_file permet de stocker les informations d'un fichier. 
+La structure info\_s correspond à la structure privée de la bibliothèque. 
+Elle va contenir toutes les informations utiles pour la dissimulation ou 
+l'extraction des données. 
 \newline
 \underline{Paramètres :}
 \begin{itemize}
-\item \textit{name} est une chaine de caractères représentant le nom du fichier. 
-\item \textit{file} représente le descripteur du fichier. \newline
-\end{itemize}
-
-\begin{lstlisting}[language=c]
-struct stegx_dissimulation {
-    STEGX_FILE host;
-    STEGX_FILE hidden;
-    FILE* result;
-    STEGX_INFOS host_infos;
-    ALGO stegano_algo;
-    char* password;
-};
-typedef struct stegx_dissimulation STEGX_DISSIM;
-\end{lstlisting}
-
-Cette structure représente toutes les informations concernant la dissimulation 
-de données dans un fichier. Pour cela, il va devoir stocker les fichiers en 
-entrée, ainsi que l'algorithme utilisé. \newline
-\underline{Paramètres :} 
-\begin{itemize}
-\item \textit{host} représente le nom et le descripteur du fichier hôte.  
-\item \textit{hidden} représente le nom et le descripteur du fichier à cacher. 
-\item \textit{result} constitue le descripteur du fichier à créer. Il n'est pas 
-nécessaire d'utiliser le nom du fichier car il est possible que l'utilisateur 
-écrive directement dans la sortie standard (au moyen d'un pipe).
-\item \textit{host\_infos} est l'union représentant les informations utiles pour 
-les spécifications du fichier hôte. Ces informations seront d'ailleurs 
-nécessaires pour le module dissimulation. 
-\item \textit{stegano\_algo} représente l'algorithme que l'utilisateur a choisi 
-pour la dissimulation. 
-\item \textit{password} représente le mot de passe choisi par l'utilisateur si 
-celui-ci veut utiliser la méthode de protection de données. Si ce n'est 
-pas le cas, ce champ vaut NULL.
-\newline
-\end{itemize}
-
-\begin{lstlisting}[language=c]
-struct stegx_extraction {
-    STEGX_FILE analysis;
-    STEGX_INFOS analysis_infos;
-    STEGX_FILE extract;
-    int length_extract;
-    ALGO stegano_algo;
-    char* password;
-};
-typedef struct stegx_extraction STEGX_EXTRACT;
-\end{lstlisting}
-
-Cette structure représente toutes les informations concernant l'extraction
-de données d'un fichier possédant des données cachées. Il va donc devoir 
-stocker les fichiers en entrée, ainsi que l'algorithme détecté. \newline
-\underline{Paramètres :}
-\begin{itemize}
-\item \textit{analysis} représente le nom et le descripteur du fichier à analyser.  
-\item \textit{analysis\_infos} est l'union représentant les informations utiles pour 
-les spécifications du fichier à analyser. Ces informations seront d'ailleurs 
-nécessaires pour le module extraction. 
-\item \textit{extract} représente le nom et le descripteur du fichier à extraire. 
-\item \textit{length\_extract} représente la taille des données à extraire. Cette 
-information sera initialisée dans le module Détection de l'algorithme de 
-stéganographie. 
-\item \textit{stegano\_algo} représente l'algorithme que l'utilisateur a choisi 
-pour la dissimulation.
-\item \textit{password} représente le mot de passe choisi par l'utilisateur si 
-celui-ci veut utiliser la méthode de protection de données. Si ce n'est 
-pas le cas, ce champ vaut NULL. 
+\item \textit{mode} est une variable d'énumération représentant le mode que 
+l'utilisateur a choisi : dissimulation (STEGX\_MODE\_INSERT)ou extraction 
+(STEGX\_MODE\_EXTRACT). 
+\item \textit{host} va contenir le détail du fichier hôte pour le bon déroulement 
+de la dissimulation/extraction (selon les cas d'utilisation). 
+\item \textit{res} représente le fichier résultat qui va être créé pour la 
+dissimulation ou l'extraction.  
+\item \textit{hidden} représente le fichier à cacher dans le cas de l'insertion. 
+Il est donc requis si mode vaut STEGX\_MODE\_INSERT. 
+\item \textit{hidden\_name} représente le nom du fichier à cacher/caché selon 
+les cas. 
+\item \textit{passwd} est la chaine de caractères représentant le mot de passe 
+choisi par l'utilisateur. 
 \newline
 \end{itemize}
 
@@ -377,64 +419,61 @@ suivants.
 \newline
 
 \begin{lstlisting}[language=c]
-STEGX_DISSIM* stegx_check_compatibility_dissimulation 
-                (char* host_name, char* hidden_name);
+info_s* stegx_check_compatibility_dissimulation (stegx_info_t* info);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité des fichiers hôte et à cacher pour
-la dissimulation. 
+la dissimulation. Ces données sont dans la structure info mis en paramètre. 
 Pour cela, elle vérifie que les fichier hôte et à cacher existent et qu'ils 
 ne sont pas vides. Ensuite, la fonction vérifie le format du fichier hôte. 
-Elle va remplir les champs \textit{host}, \textit{hidden} et \textit{host\_type} 
-de la structure \textit{stegx\_dissimulation} en sortie. 
+Elle va remplir les champs \textit{mode}, \textit{passwd}, \textit{hidden\_name}, \textit{hidden},
+\textit{res} et \textit{host} (partiellement) de la structure
+\textit{info\_s*} en sortie. 
 \newline
-\underline{Entrées :}
+\underline{Entrée :}
 \begin{itemize}
-\item \textit{host\_name :} chaine de caractères représentant le nom du fichier hôte.
-\item \textit{hidden\_name :} chaine de caractères représentant le nom du 
-fichier à cacher. 
+\item \textit{*info :} structure publique que les interfaces vont initialiser.
 \end{itemize}
 \underline{Sortie :}
 \begin{itemize}
-\item \textit{STEGX\_DISSIM* :} pointeur sur une structure initialisée 
+\item \textit{info\_s* :} pointeur sur une structure initialisée 
 partiellement pour insérer les informations nécessaires à la vérification 
 de la compatibilité des fichiers en entrée. 
 \newline 
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-STEGX_EXTRACT* stegx_check_compatibility_extraction (char* analysis_name);
+info_s* stegx_check_compatibility_extraction (stegx_info_t* info);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
 Pour cela, elle vérifie si le fichier à analyser existe et n'est pas vide. 
 Ensuite, la fonction vérifie le format du fichier à analyser. 
-Elle va remplir les champs \textit{analysis} et \textit{analysis\_type} 
-de la structure \textit{stegx\_extraction} en sortie. 
+Elle va remplir les champs \textit{mode}, \textit{passwd}, \textit{hidden\_name}, \textit{hidden},
+\textit{res} et \textit{host} (partiellement) de la structure
+\textit{info\_s*} en sortie. 
 \newline
 \underline{Entrée :}
 \begin{itemize}
-\item \textit{analysis\_name :} chaine de caractères représentant le nom du fichier 
-à analyser.
+\item \textit{*info :} structure publique que les interfaces vont initialiser.
 \end{itemize}
 \underline{Sortie :}
 \begin{itemize}
-\item \textit{STEGX\_EXTRACT* :} pointeur sur une structure initialisée 
+\item \textit{info\_s* :} pointeur sur une structure initialisée 
 partiellement pour insérer les informations nécessaires à la vérification 
 de la compatibilité des fichiers en entrée. 
 \newline 
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_test_file_not_empty (stegx_file file);
+int stegx_test_file_not_empty (FILE* file);
 \end{lstlisting}
 
-Cette fonction teste si le fichier (représenté par la structure \textit{stegx\_file})
-n'est pas vide. 
+Cette fonction teste si le fichier n'est pas vide. 
 \newline
 \underline{Entrée :}
 \begin{itemize}
-\item \textit{file :} structure représentant le fichier à tester.
+\item \textit{file :} fichier à tester.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -442,12 +481,12 @@ n'est pas vide.
 \newline \end{itemize}
 
 \begin{lstlisting}[language=c]
-TYPE stegx_test_file_bmp (stegx_file file);
-TYPE stegx_test_file_png (stegx_file file);
-TYPE stegx_test_file_wav (stegx_file file);
-TYPE stegx_test_file_mp3 (stegx_file file);
-TYPE stegx_test_file_avi (stegx_file file);
-TYPE stegx_test_file_flv (stegx_file file);
+type_e stegx_test_file_bmp (FILE* file);
+type_e stegx_test_file_png (FILE* file);
+type_e stegx_test_file_wav (FILE* file);
+type_e stegx_test_file_mp3 (FILE* file);
+type_e stegx_test_file_avi (FILE* file);
+type_e stegx_test_file_flv (FILE* file);
 \end{lstlisting}
 
 Ces fonctions testent le format du fichier en lisant le fichier en entrée 
@@ -455,11 +494,11 @@ Ces fonctions testent le format du fichier en lisant le fichier en entrée
 \newline
 \underline{Entrée :} 
 \begin{itemize}
-\item \textit{file :} structure représentant le fichier à tester. 
+\item \textit{file :} fichier à tester. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{TYPE :} renvoie UNKNOWN si le format du fichier n'est pas pris en 
+\item \textit{type\_e :} renvoie UNKNOWN si le format du fichier n'est pas pris en 
 charge par l'application ; sinon, en fonction du format et des particularités 
 du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED}, 
 \textit{PNG}, \textit{WAV\_PCM}, \textit{MP3}, \textit{AVI\_COMPRESSED}, 
@@ -468,22 +507,22 @@ du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-TYPE check_file_format (stegx_file file);
+type_e check_file_format (FILE* file);
 \end{lstlisting}
 
 Cette fonction récupère le fichier dont le format est à trouver. Elle établit une 
 batterie de tests pour déterminer si le format du fichier est pris en charge 
 par l'application. 
 Pour cela, on utilisera les fonctions 
-$TYPE$ $stegx\_test\_file\_XXX (stegx\_file file)$ comme vu précedemment. 
+$type\_e$ $stegx\_test\_file\_XXX (FILE* file)$ comme vu précedemment. 
 \newline
 \underline{Entrée :} 
 \begin{itemize}
-\item \textit{file :} structure représentant le fichier à tester. 
+\item \textit{file :} fichier à tester. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{TYPE :} renvoie UNKNOWN si le format du fichier n'est pas pris en 
+\item \textit{type\_e :} renvoie UNKNOWN si le format du fichier n'est pas pris en 
 charge par l'application ; sinon, en fonction du format et des particularités 
 du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED}, 
 \textit{PNG}, \textit{WAV\_PCM}, \textit{MP3}, \textit{AVI\_COMPRESSED}, 
