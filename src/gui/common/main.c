@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "ui/ui.h"
-    
+
 /**
  * @brief Signal d'activation
  * @details Signal de l'initialisation et lancement de la fenêtre principale.
@@ -29,8 +29,9 @@ static void activate(GtkApplication* app, gpointer user_data)
     gtk_window_set_icon_from_file(GTK_WINDOW(window),
             "../src/gui/pic/stegx-55x55.png", NULL); /* A REFAIRE. */
 
-    /* Population de la fenêtre par les widgets puis lancement de l'affichage. */
-    ui_populate(window);
+    /* Construction de la fenêtre avec les widgets puis lancement de
+     * l'affichage. */
+    ui_create(window);
     gtk_widget_show_all(window);
 }
 

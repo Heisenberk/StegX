@@ -1,22 +1,20 @@
 /**
  * @file ui.h
- * @brief Affichage de l'interface utilisateur
- * @details Affichage de l'interface utilisateur gérant tout ce qui concerne
- * directement ce qui est affiché sur la fenêtre principale. Ne gère que
- * l'affichage et ne concerne pas les signaux, les interfactions et les
- * entrées/sorties.
+ * @brief Gestion de l'interface utilisateur
+ * @details Gère l'interface utilisateur. Appel les différentes fonctions
+ * permettants de construire l'interface utilisateur et contient les structures
+ * de l'interface.
  */
 
 #ifndef UI_H_
 #define UI_H_
 
 /**
- * @brief Construit la fenêtre principale
- * @details Construit la fenêtre principale en ajoutant les conteneurs et les
- * widgets. Ne connecte aucun signaux.
- * @param window Pointeur vers la fenêtre sur laquelle il faut construire
- * l'affichage.
+ * @brief Création de l'interface utilisateur
+ * @details Permet de créer entièrement l'interface utilisateur sur une fenêtre
+ * donnée. Construit les widgets et configure les signaux.
+ * @param window Fenêtre sur laquelle construire l'interface utilisateur.
  */
-void ui_populate();
+void ui_create(GtkWidget *window);
 
 #endif /* UI_H_ */
