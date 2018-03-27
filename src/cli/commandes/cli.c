@@ -2,6 +2,8 @@
 #include "stdio.h"
 #include "getopt.h"
 #include "cli.h"
+#include "libsteg.h"
+
 
 void we_are_stegx(){
   printf("   _____ _            __   __\n");
@@ -33,16 +35,18 @@ void help(){
 		    "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
 		    "\033[01m\033[32m--metadata\033[0m \n"
 		    "\033[01m\033[32m--EOF\033[0m : end of file.\n");
-   printf("\n"); 
+   printf("\n");
+   exit(0); 
 }
 
 void unvalid_line(){
-  //quelque chose à afficher +
+  printf("la ligne de commande est invalide\n\n\n");
   help();
+  exit(0);
 }
 
 
-void remplir_info( stegx_info_t* com,const int argc,char* const* argv){
+void fill_info( stegx_info_t* com,const int argc,char* const* argv){
     int optch;
     extern int opterr;
 
@@ -102,11 +106,9 @@ void remplir_info( stegx_info_t* com,const int argc,char* const* argv){
              break;
         case 'h':
              help();
-             exit(0); // à changer (?)
-              break;
+             break;
         case '?':
               unvalid_line();
-              exit(0); // à changer (?)
               break;
         
 
@@ -114,15 +116,14 @@ void remplir_info( stegx_info_t* com,const int argc,char* const* argv){
  
 }
 
-void verif_infos(stegx_info_t* com){
+void check_info(stegx_info_t* com){
   if (com->mode==STEGX_MODE_INSERT){
     if((com->ins_info->hidden_path!="\0") && (com->ins_info->algo!=-1)){
-     // lancement_stegx(com);
-     printf("c'est ok\n");
+     stegx_check_compatibility_dissimulation(com);
+     
     }
     else if (com->mode==STEGX_MODE_EXTRACT){
-      //lancement_stegx(com);
-      printf("c'est ok");
+      stegx_check_compatibility_extraction(com);
     }
 
   }
