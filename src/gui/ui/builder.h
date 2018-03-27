@@ -15,8 +15,8 @@
  * @brief Construit la fenêtre principale
  * @details Construit la fenêtre principale en ajoutant les conteneurs et les
  * widgets. Ne connecte aucun signal.
- * @param window Pointeur vers la fenêtre sur laquelle il faut construire
- * l'affichage.
+ * @param ui Pointeur vers la structure de l'interface utilisateur sur laquelle
+ * il faut construire l'affichage.
  */
 void ui_build(struct ui *ui);
 

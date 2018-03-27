@@ -10,14 +10,15 @@
 #include <gtk/gtk.h>
 #include "struct.h"
 #include "builder.h"
+#include "signals.h"
 
 void ui_create(GtkWidget *window)
 {
     /* Initialisation de la structure de l'interface. */
     struct ui ui;
     ui.window = window;
-
     /* Construction de l'interface. */
     ui_build(&ui);
     /* Configuration des signaux. */
+    ui_signal_connect(&ui);
 }

@@ -7,6 +7,7 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 #include <gtk/gtk.h>
 #include "struct.h"
 
@@ -41,6 +42,7 @@ static GtkWidget* ui_grid_init()
  */
 static void ui_build_insert(struct ui_insert *ins)
 {
+    assert(ins->tab);
     /* Widgets pour le fichier hôte (sélection de fichier). */
     ins->file_orig_lbl = gtk_label_new("Fichier hôte");
     ins->file_orig_fc = gtk_file_chooser_button_new (
@@ -115,6 +117,7 @@ static void ui_build_insert(struct ui_insert *ins)
  */
 static void ui_build_extrac(struct ui_extrac *extr)
 {
+    assert(extr->tab);
     /* Widgets pour le fichier hôte (sélection de fichier). */
     extr->file_orig_lbl = gtk_label_new("Fichier hôte");
     extr->file_orig_fc = gtk_file_chooser_button_new (
@@ -157,6 +160,7 @@ static void ui_build_extrac(struct ui_extrac *extr)
  */
 static void ui_build_about(struct ui_about *abt)
 {
+    assert(abt->tab);
     abt->info_lbl = gtk_label_new("Auteurs : \n"
             "- AYOUB Pierre \n"
             "- BASKEVITCH Claire \n"
@@ -174,6 +178,7 @@ static void ui_build_about(struct ui_about *abt)
 
 void ui_build(struct ui *ui)
 {
+    assert(ui->window);
     /* Conteneur principal de la fenêtre proposant plusieurs onglets. */
     ui->tabs = gtk_notebook_new();
     gtk_container_add(GTK_CONTAINER(ui->window), ui->tabs);

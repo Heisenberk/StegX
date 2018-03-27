@@ -8,4 +8,14 @@
 #ifndef UI_SIGNALS_H_
 #define UI_SIGNALS_H_
 
+#include "struct.h"
+
+/**
+ * @brief Configure les signaux
+ * @details Connecte les signaux aux widgets de la fenêtre principale.
+ * @param ui Pointeur vers la structure de l'interface utilisateur sur laquelle
+ * il faut configurer les signaux.
+ */
+void ui_signal_connect(struct ui *ui);
+
 #endif /* UI_SIGNALS_H_ */
