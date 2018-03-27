@@ -102,8 +102,13 @@ void remplir_info( stegx_info_t* com,const int argc,char* const* argv){
              break;
         case 'h':
              help();
-             exit(0);
+             exit(0); // à changer (?)
               break;
+        case '?':
+              unvalid_line();
+              exit(0); // à changer (?)
+              break;
+        
 
 };
  
@@ -115,7 +120,10 @@ void verif_infos(stegx_info_t* com){
      // lancement_stegx(com);
      printf("c'est ok\n");
     }
-    else{unvalid_line();}
+    else if (com->mode==STEGX_MODE_EXTRACT){
+      //lancement_stegx(com);
+      printf("c'est ok");
+    }
 
   }
     else {unvalid_line();}
