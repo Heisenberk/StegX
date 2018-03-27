@@ -1,7 +1,7 @@
 # GTK+ ==========================================================================
 
 # Initialisation.
-if (NOT DEFINED PKG_CONFIG_FOUND)
+if (NOT DEFINED PKG_CONFIG_FOUND AND NOT GTK_FOUND)
     # Initialise Pkg-Config.
     include (FindPkgConfig)
     # Si Pkg-Config est trouvé, on l'utilise pour trouver GTK+.
