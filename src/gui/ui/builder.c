@@ -104,7 +104,9 @@ static void ui_build_insert(struct ui_insert *ins)
             ins->passwd_lbl, GTK_POS_BOTTOM, 1, 1);
     
     /* Widget pour lancer la dissimulation (widget). */
-    ins->but = gtk_button_new_with_label("Dissimuler");
+    ins->but_lbl_orig = "Dissimuler";
+    ins->but_lbl_proc = "Insertion des données en cours...";
+    ins->but = gtk_button_new_with_label(ins->but_lbl_orig);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->but, ins->algos_cb,
             GTK_POS_BOTTOM, 2, 1);
 }

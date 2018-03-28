@@ -6,6 +6,7 @@
  */
 
 #include <stdlib.h>
+#include <assert.h>
 #include <gtk/gtk.h>
 #include "struct.h"
 
@@ -13,22 +14,24 @@
  * @brief Configure le signal d'insertion
  * @details Configure le signal d'insertion des données.
  * @param widget Pointeur vers le widget connecté à ce signal.
- * @param data Pointeur vers la structure de l'onglet insertion qui contient
+ * @param ui Pointeur vers la structure de l'onglet insertion qui contient
  * les informations.
  */
-static void ui_signal_insert(GtkWidget *widget, gpointer data)
+static void ui_signal_insert(GtkWidget *widget, struct ui_insert *ui)
 {
-    gtk_button_set_label(GTK_BUTTON(widget), "Insertion des données en cours...");
+    assert(ui->but_lbl_orig);
+    assert(ui->but_lbl_proc);
+    gtk_button_set_label(GTK_BUTTON(widget), ui->but_lbl_proc);
 }
 
 /**
  * @brief Configure le signal d'extraction
  * @details Configure le signal d'extraction des données.
  * @param widget Pointeur vers le widget connecté à ce signal.
- * @param data Pointeur vers la structure de l'onglet extraction qui contient
+ * @param ui Pointeur vers la structure de l'onglet insertion qui contient
  * les informations.
  */
-static void ui_signal_extrac(GtkWidget *widget, gpointer data)
+static void ui_signal_extrac(GtkWidget *widget, struct ui_insert *ui)
 {
     gtk_button_set_label(GTK_BUTTON(widget), "Extraction des données en cours...");
 }

@@ -14,9 +14,10 @@
  * @brief Signal d'activation
  * @details Signal de l'initialisation et lancement de la fenêtre principale.
  * @param app Pointeur vers l'application à laquelle est liée ce signal.
- * @param user_data Pointeur vers des données supplémentaires à traiter.
+ * @param ui Pointeur vers la structure de l'interface utilisateur à laquelle
+ * sera liée l'application.
  */
-static void activate(GtkApplication* app, gpointer user_data)
+static void activate(GtkApplication *app, ui_t *ui)
 {
     /* Initialisation de la fenêtre principale. */
     GtkWidget *window;
@@ -31,7 +32,7 @@ static void activate(GtkApplication* app, gpointer user_data)
 
     /* Construction de la fenêtre avec les widgets puis lancement de
      * l'affichage. */
-    ui_create(window);
+    ui_create(window, ui);
     gtk_widget_show_all(window);
 }
 
@@ -46,16 +47,19 @@ static void activate(GtkApplication* app, gpointer user_data)
  */
 int main(int argc, char **argv)
 {
-    /* Application principale et statut de retour. */
+    /* Application principale, structure de l'interface et statut de retour. */
     GtkApplication *app;
+    ui_t *ui = ui_init();
     int ret;
 
-    /* Initialisation de GTK+ et connection du signal "activate". */
+    /* Initialisation de GTK+ et connection du signal "activate", puis lancement
+     * du programme. */
     app = gtk_application_new("org.stegx.gui", G_APPLICATION_FLAGS_NONE);
-    g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-
-    /* Lancement puis fin du programme. */
+    g_signal_connect(app, "activate", G_CALLBACK(activate), ui);
     ret = g_application_run(G_APPLICATION(app), argc, argv);
+
+    /* Libération de la mémoire, puis renvoie le code de retour de GTK+. */
     g_object_unref(app);
+    ui_delete(ui);
     return ret;
 }

@@ -27,7 +27,9 @@ struct ui_insert
     GtkWidget *algos_cb;          /*!< Bouton de sélection des algorithmes. */
     GtkWidget *passwd_lbl;        /*!< Label de l'entrée de texte du mot de passe. */
     GtkWidget *passwd_ent;        /*!< Entrée de texte du mot de passe. */
-    GtkWidget *but;               /*!< Bouton de lancement de la dissimulation. */
+    GtkWidget *but;               /*!< bouton de lancement de la dissimulation. */
+    gchar *but_lbl_orig;          /*!< Label original du bouton de lancement de la dissimulation. */
+    gchar *but_lbl_proc;          /*!< Label pendant le traitement de la dissimulation. */
 };
 
 /**
