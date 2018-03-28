@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "getopt.h"
 #include "cli.h"
+
 #include "libsteg.h"
 
 
@@ -35,6 +36,7 @@ void help(){
 		    "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
 		    "\033[01m\033[32m--metadata\033[0m \n"
 		    "\033[01m\033[32m--EOF\033[0m : end of file.\n");
+
    printf("\n");
    exit(0); 
 }
@@ -42,11 +44,15 @@ void help(){
 void unvalid_line(){
   printf("la ligne de commande est invalide\n\n\n");
   help();
-  exit(0);
 }
 
 
+
+
+
+
 void fill_info( stegx_info_t* com,const int argc,char* const* argv){
+
     int optch;
     extern int opterr;
 
@@ -63,8 +69,8 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
         {"hote", 1, NULL, 'o'},
         {"cache", 1, NULL, 'c'},
         {"resultat", 1, NULL, 'r'},
-  {"dissimule", 0, NULL, 'd'},
-  {"extraire", 0, NULL, 'e'}, 
+        {"dissimule", 0, NULL, 'd'},
+        {"extraire", 0, NULL, 'e'}, 
         {"lsb",0, NULL,STEGX_ALGO_LSB},
         {"metadata",0,NULL,STEGX_ALGO_METADATA},
         {"EOF",0,NULL, STEGX_ALGO_EOF},
@@ -105,14 +111,15 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
              com->ins_info->algo=STEGX_ALGO_EOF;
              break;
         case 'h':
-             help();
+             help()
              break;
         case '?':
               unvalid_line();
+             
               break;
         
 
-};
+  };
  
 }
 
@@ -126,7 +133,8 @@ void check_info(stegx_info_t* com){
       stegx_check_compatibility_extraction(com);
     }
 
-  }
+
     else {unvalid_line();}
+  }
 }
 
