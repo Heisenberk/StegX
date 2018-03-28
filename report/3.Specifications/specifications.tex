@@ -92,8 +92,7 @@ des différents modules de l'application.
     Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
     à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
     fichier contenant les données cachées à analyser (pour l'extraction de 
-    données cachées). 
-    
+    données cachées), grâce à une interaction avec le gestionnaire Entrée/Sorties. 
 
 \item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
 	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
@@ -103,124 +102,38 @@ des différents modules de l'application.
 	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
 	pris en charge, il y aura une batterie de tests pour déterminer le 
 	format du fichier. 
+	Il prendra en entrée les chemins de fichiers en entrée. Ce module interagira
+	avec le gestionnaire de Gestion de Fichiers. 
 
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
     cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
-    sécurité supplémentaire). 
+    sécurité supplémentaire). Si il y a un mot de passe, l'interface va 
+    donner le mot de passe à ce module, ainsi que l'algorithme choisi. 
 
 \item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
 	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
-	afin de les extraire correctement par la suite. 
+	afin de les extraire correctement par la suite. S'il est nécessaire 
+	d'utiliser un mot de passe pour déchiffrer les données cachées, le module 
+	récupèrera le champ mot de passe de l'interface. 
 
 \item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
     sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
     choisi par l'utilisateur. 
+    Il prendra en entrée le fichier à cacher, le fichier hôte, le chemin du 
+    fichier résultant, l'algorithme à utiliser ainsi que le mot de passe 
+    s'il y en a un. 
 
 \item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
     sont extraites. Les algorithmes utilisés pour l'insertion des données 
     et l'extraction seront expliqués dans la sous-section \textit{"Algorithmes 
-    de dissimulation et d'extraction en stéganographie"}
+    de dissimulation et d'extraction en stéganographie"}. 
+    Ce module prendra en entrée le fichier à analyser, le chemin du fichier 
+    à extraire et l'algorithme détecté. 
 
 \end{description}
 
-\subsection{Liste des informations qui circulent entre les modules}
-
-\begin{multicols}{2}
-\begin{description}
-\item[1)] 
-\begin{itemize}
-\item Utilisation de l'application (dissimulation ou extraction).
-\item Nom du fichier hôte, nom du fichier à cacher et chemin du fichier à créer
-    (pour la dissimulation).
-\item Nom du fichier à analyser et chemin du fichier résultant de l'extraction
-    des données cachées (pour l'extraction).
-\end{itemize}
-\item[2)] 
-\begin{itemize}
-\item Nom du fichier hôte.
-\item Nom du fichier à cacher.
-\end{itemize}
-\item[3)] 
-\begin{itemize}
-\item Nom du fichier contenant les données cachées à analyser.
-\end{itemize}
-\item[4)] 
-\begin{itemize}
-\item Nom du fichier hôte et nom du fichier à cacher (pour la dissimulation).
-\item Nom du fichier contenant les données cachées à analyser (pour
-    l'extraction).
-\end{itemize}
-\item[5)]
-\begin{itemize}
-\item Fichier hôte et fichier à cacher (pour la dissimulation).
-\item Fichier contenant les données cachées à analyser (pour l'extraction).
-\end{itemize}
-\item[6)]
-\begin{itemize}
-\item Fichier hôte.
-\item Fichier à cacher.
-\end{itemize}
-\item[7)]
-\begin{itemize}
-\item Fichier contenant les données cachées à analyser.
-\end{itemize}
-\item[8)]
-\begin{itemize}
-\item Liste des algorithmes que l'utilisateur peut utiliser (selon le format du
-    fichier hôte et la taille des données à cacher).
-\end{itemize}
-\item[9)]
-\begin{itemize}
-\item Choix de l'algorithme par l'utilisateur.
-\item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
-    ses données par mot de passe).
-\end{itemize}
-\item[10)]
-\begin{itemize}
-\item Choix de l'algorithme détecté dans le fichier à analyser.
-\end{itemize}
-\item[11)]
-\begin{itemize}
-\item Mot de passe pour extraire les données (s'il a choisi l'option de
-    protéger ses données par mot de passe).
-\end{itemize}
-\item[12)]
-\begin{itemize}
-\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
-    l'apparence du fichier hôte.
-\end{itemize}
-\item[13)]
-\begin{itemize}
-\item Chemin du fichier résultant de l'extraction des données cachées.
-\end{itemize}
-\item[14)]
-\begin{itemize}
-\item Fichier hôte.
-\item Fichier à cacher.
-\item Nom de l'algorithme de stéganographie utilisé.
-\item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
-    ses données précédemment).
-\end{itemize}
-\item[15)]
-\begin{itemize}
-\item Fichier contenant les données cachées à analyser.
-\item Nom de l'algorithme détecté.
-\item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
-    ses données précédemment).
-\end{itemize}
-\item[16)]
-\begin{itemize}
-\item Données de l'hôte où les données à cacher ont été insérées en utilisant
-    l'algorithme de stéganographie.
-\end{itemize}
-\item[17)]
-\begin{itemize}
-\item Données cachées extraites du fichier hôte.
-\end{itemize}
-\end{description}
-  \ldots
-\end{multicols}
+\newpage
 
 \section{Description des structures de données}
 
@@ -292,7 +205,7 @@ struct stegx_info_ins {
     char* hidden_path;
     algo_e algo;
 };
-typedef struct stegx_info_ins stegx_info_ins_t;
+typedef struct stegx_info_ins stegx_info_ins_s;
 \end{lstlisting}
 
 La structure stegx\_info\_ins permet de représenter les informations 
@@ -312,9 +225,9 @@ struct stegx_info {
     char* res_path;                         
     char* passwd;                           
     mode_e mode;                            
-    stegx_info_ins_t* ins_info;             
+    stegx_info_ins_s* ins_info;             
 };
-typedef struct stegx_info stegx_info_t;
+typedef struct stegx_info stegx_info_s;
 \end{lstlisting}
 
 La structure stegx\_info représente la structure publique (de la bibliothèque
@@ -406,6 +319,10 @@ choisi par l'utilisateur.
 \section{Description des fonctions des différents modules}
 
 \subsection{Module Interface graphique}
+
+Pour l'interface graphique, on utilisera la librairie GTK+. Pour l'implémentation 
+de l'interface graphique, il faudra donc étudier les widgets, 
+
 \subsection{Module Interface en ligne de commande}
 
 \subsection{Module Vérification de la compatibilité des fichiers}
@@ -419,7 +336,7 @@ suivants.
 \newline
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_dissimulation (stegx_info_t* info);
+info_s* stegx_check_compatibility_dissimulation (stegx_info_s* info);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité des fichiers hôte et à cacher pour
@@ -443,7 +360,7 @@ de la compatibilité des fichiers en entrée.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_extraction (stegx_info_t* info);
+info_s* stegx_check_compatibility_extraction (stegx_info_s* info);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
