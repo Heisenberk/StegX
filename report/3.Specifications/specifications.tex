@@ -289,6 +289,7 @@ struct info {
     FILE* res;                 
     FILE* hidden;              
     char* hidden_name;
+    int hidden_length; %longueur du fichier caché important pour l'extraction
     char* passwd;
 };
 typedef struct info info_s;
@@ -321,18 +322,23 @@ choisi par l'utilisateur.
 \subsection{Module Interface graphique}
 
 Pour l'interface graphique, on utilisera la librairie GTK+. Pour l'implémentation 
-de l'interface graphique, il faudra donc étudier les widgets, 
+de l'interface graphique, il faudra donc étudier quels widgets utilisés 
+ainsi que les signaux pour mettre en relation ces derniers avec les 
+actions de l'utilisateur. 
 
 \subsection{Module Interface en ligne de commande}
 
 \subsection{Module Vérification de la compatibilité des fichiers}
 
-Ce module prend en entrée les chemins du fichier hôte et du fichier à 
-cacher (pour la dissimulation) ; le chemin du fichier à analyser (pour 
-l'extraction). Il va interagir avec le système de fichiers pour pouvoir 
-vérifier la compatibilité des fichiers en entrée. 
+D'après l'organigramme créé lors du cahier des charges, ce module prend en 
+entrée les chemins du fichier hôte et du fichier à cacher (pour la dissimulation) ; 
+le chemin du fichier à analyser (pour l'extraction). Il va interagir avec 
+le système de fichiers pour pouvoir vérifier la compatibilité des fichiers en entrée. 
 Enfin, après sa vérification, ce module va envoyer les fichiers aux modules 
-suivants. 
+\textit{Proposition des algorithmes de stéganographie} (pour dissimuler) ou 
+\textit{Détection de l'algorithme de stéganographie} (pour extraire). 
+Ainsi, cette communication se fera à l'aide de la structure privée de la 
+bibliothèque \textit{info\_s}. 
 \newline
 
 \begin{lstlisting}[language=c]
