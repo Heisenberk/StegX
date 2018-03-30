@@ -90,28 +90,33 @@ static void ui_build_insert(struct ui_insert *ins)
                 algos_lst[i]);
     }
     gtk_combo_box_set_active(GTK_COMBO_BOX(ins->algos_cb), 0);
-    gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->algos_lbl, ins->file_out_dir_fc,
-            GTK_POS_BOTTOM, 1, 1);
+    gtk_grid_attach(GTK_GRID(ins->tab), ins->algos_lbl, 1, 1, 2, 1);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->algos_cb, ins->algos_lbl,
-            GTK_POS_BOTTOM, 1, 1);
+            GTK_POS_BOTTOM, 2, 1);
+    gtk_widget_set_no_show_all(ins->algos_lbl, TRUE);
+    gtk_widget_set_no_show_all(ins->algos_cb, TRUE);
 
     /* Widgets pour le mot de passe (champ de texte). */
     ins->passwd_lbl = gtk_label_new("Mot de passe"); 
     ins->passwd_ent = gtk_entry_new();
     gtk_entry_set_visibility(GTK_ENTRY(ins->passwd_ent), FALSE);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->passwd_lbl,
-            ins->algos_lbl, GTK_POS_RIGHT, 1, 1);
+            ins->file_out_dir_fc, GTK_POS_BOTTOM, 2, 1);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->passwd_ent,
-            ins->passwd_lbl, GTK_POS_BOTTOM, 1, 1);
+            ins->passwd_lbl, GTK_POS_BOTTOM, 2, 1);
     
-    /* Bouton. */
+    /* Boutons. */
     ins->but_txt_anal = "Analyser";
     ins->but_txt_anal_proc = "Analyse en cours...";
     ins->but_txt_dissi = "Dissimuler";
     ins->but_txt_dissi_proc = "Dissimulation en cours...";
+    ins->but_txt_reset = "Réinitialisation";
+    ins->but_reset = gtk_button_new_with_label(ins->but_txt_reset);
+    gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->but_reset, ins->passwd_ent,
+            GTK_POS_BOTTOM, 1, 1);
     ins->but = gtk_button_new_with_label(ins->but_txt_anal);
-    gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->but, ins->algos_cb,
-            GTK_POS_BOTTOM, 2, 1);
+    gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->but, ins->but_reset,
+            GTK_POS_RIGHT, 1, 1);
 
     /* Dialogues. */
     ins->dial_anal_proc = "Analyse des fichiers en cours... \nVeuillez patienter.";

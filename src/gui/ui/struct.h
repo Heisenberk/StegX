@@ -29,7 +29,8 @@ struct ui_insert
     GtkWidget *passwd_lbl;        /*!< Label de l'entrée de texte du mot de passe. */
     GtkWidget *passwd_ent;        /*!< Entrée de texte du mot de passe. */
     /* Dynamique. */
-    GtkWidget *but;               /*!< Bouton de lancement de l'étape en cours. */
+    GtkWidget *but;               /*!< Bouton de lancement du traitement de l'étape en cours. */
+    GtkWidget *but_reset;         /*!< Bouton de réinitialisation. */
     GtkWidget *dial;              /*!< Dialogue en cours d'affichage. */
     gchar *dial_anal_proc;        /*!< Message du dialogue d'information d'analyse pendant le traitement. */
     gchar *dial_anal_end;         /*!< Message du dialogue d'information d'analyse terminé. */
@@ -41,6 +42,7 @@ struct ui_insert
     gchar *but_txt_anal_proc;     /*!< Texte du bouton de lancement de l'analyse pendant le traitement. */
     gchar *but_txt_dissi;         /*!< Texte du bouton de lancement de la dissimilation. */
     gchar *but_txt_dissi_proc;    /*!< Texte du bouton de lancement de la dissimilation pendant le traitement. */
+    gchar *but_txt_reset;         /*!< Texte du bouton de réinitialisation. */
 };
 
 /**
