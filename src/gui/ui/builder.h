@@ -1,9 +1,9 @@
 /**
  * @file builder.h
- * @brief Construction de l'interface utilisateur
+ * @brief Construction des wigets et des structures
  * @details Construction de l'interface utilisateur gérant tout ce qui concerne
- * directement ce qui est affiché sur la fenêtre principale de manière statique.
- * Ne gère pas les signaux, les interfactions et les entrées/sorties.
+ * directement ce qui est affiché sur la fenêtre principale. Ne gère pas les
+ * signaux, les interfactions et les entrées/sorties.
  */
 
 #ifndef UI_BUILDER_H_

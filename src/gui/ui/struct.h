@@ -1,5 +1,5 @@
 /**
- * @file ui_struct.h
+ * @file struct.h
  * @brief Structure de l'interface utilisateur
  */
 
@@ -13,6 +13,7 @@
  */
 struct ui_insert
 {
+    /* Statique. */
     GtkWidget *tab;               /*!< Grille contenant les widgets de l'onglet. */
     GtkWidget *tab_title;         /*!< Titre de l'onglet. */
     GtkWidget *file_orig_lbl;     /*!< Label du bouton de sélection du fichier hôte. */
@@ -27,9 +28,19 @@ struct ui_insert
     GtkWidget *algos_cb;          /*!< Bouton de sélection des algorithmes. */
     GtkWidget *passwd_lbl;        /*!< Label de l'entrée de texte du mot de passe. */
     GtkWidget *passwd_ent;        /*!< Entrée de texte du mot de passe. */
-    GtkWidget *but;               /*!< bouton de lancement de la dissimulation. */
-    gchar *but_lbl_orig;          /*!< Label original du bouton de lancement de la dissimulation. */
-    gchar *but_lbl_proc;          /*!< Label pendant le traitement de la dissimulation. */
+    /* Dynamique. */
+    GtkWidget *but;               /*!< Bouton de lancement de l'étape en cours. */
+    GtkWidget *dial;              /*!< Dialogue en cours d'affichage. */
+    gchar *dial_anal_proc;        /*!< Message du dialogue d'information d'analyse pendant le traitement. */
+    gchar *dial_anal_end;         /*!< Message du dialogue d'information d'analyse terminé. */
+    gchar *dial_anal_err;         /*!< Message du dialogue d'information d'analyse interrompu par une erreur. */
+    gchar *dial_dissi_proc;       /*!< Message du dialogue d'information de dissimulation pendant le traitement. */
+    gchar *dial_dissi_end;        /*!< Message du dialogue d'information de dissimulation terminé. */
+    gchar *dial_dissi_err;        /*!< Message du dialogue d'information de dissimulation interrompu par une erreur. */
+    gchar *but_txt_anal;          /*!< Texte du bouton de lancement de l'analyse. */
+    gchar *but_txt_anal_proc;     /*!< Texte du bouton de lancement de l'analyse pendant le traitement. */
+    gchar *but_txt_dissi;         /*!< Texte du bouton de lancement de la dissimilation. */
+    gchar *but_txt_dissi_proc;    /*!< Texte du bouton de lancement de la dissimilation pendant le traitement. */
 };
 
 /**

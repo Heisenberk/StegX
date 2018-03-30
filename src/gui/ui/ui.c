@@ -19,7 +19,7 @@ void ui_create(GtkWidget *window, struct ui *ui)
     /* Construction de l'interface. */
     ui_build(ui);
     /* Configuration des signaux. */
-    ui_signal_connect(ui);
+    ui_signal_init(ui);
 }
 
 struct ui* ui_init()

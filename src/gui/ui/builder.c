@@ -1,9 +1,9 @@
 /**
  * @file builder.c
- * @brief Construction de l'interface utilisateur
+ * @brief Construction des wigets et des structures
  * @details Construction de l'interface utilisateur gérant tout ce qui concerne
- * directement ce qui est affiché sur la fenêtre principale de manière statique.
- * Ne gère pas les signaux, les interfactions et les entrées/sorties.
+ * directement ce qui est affiché sur la fenêtre principale. Ne gère pas les
+ * signaux, les interfactions et les entrées/sorties.
  */
 
 #include <stdlib.h>
@@ -36,7 +36,8 @@ static GtkWidget* ui_grid_init()
 
 /**
  * @brief Crée l'onglet de dissimulation
- * @details Construit et place les widgets de l'onglet dissimulation.
+ * @details Construit et place les widgets de l'onglet dissimulation. Initialise
+ * aussi les messages utilisés pendant les différentes étapes de l'insertion.
  * @param ins Pointeur vers une structure d'onglet de dissimulation vers laquel
  * lier les widgets construits.
  */
@@ -103,12 +104,25 @@ static void ui_build_insert(struct ui_insert *ins)
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->passwd_ent,
             ins->passwd_lbl, GTK_POS_BOTTOM, 1, 1);
     
-    /* Widget pour lancer la dissimulation (widget). */
-    ins->but_lbl_orig = "Dissimuler";
-    ins->but_lbl_proc = "Insertion des données en cours...";
-    ins->but = gtk_button_new_with_label(ins->but_lbl_orig);
+    /* Bouton. */
+    ins->but_txt_anal = "Analyser";
+    ins->but_txt_anal_proc = "Analyse en cours...";
+    ins->but_txt_dissi = "Dissimuler";
+    ins->but_txt_dissi_proc = "Dissimulation en cours...";
+    ins->but = gtk_button_new_with_label(ins->but_txt_anal);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->but, ins->algos_cb,
             GTK_POS_BOTTOM, 2, 1);
+
+    /* Dialogues. */
+    ins->dial_anal_proc = "Analyse des fichiers en cours... \nVeuillez patienter.";
+    ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
+        "terminé. \nVous pouvez désormais sélectionner un algorithme à utiliser "
+        "lors de la dissimulation dans le menu déroulant prévu à cet effet.";
+    ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n"
+        "Veuillez sélectionner un fichier compatible avec l'application.";
+    ins->dial_dissi_proc = "\nDissimulation des données en cours... \nVeuillez patienter.";
+    ins->dial_dissi_end = "Dissimulation des données terminé avec succès.";
+    ins->dial_dissi_err = "Dissimulation des données interrompu par une erreur.";
 }
 
 /**

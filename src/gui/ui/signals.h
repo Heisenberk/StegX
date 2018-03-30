@@ -11,11 +11,11 @@
 #include "struct.h"
 
 /**
- * @brief Configure les signaux
+ * @brief Initialise les signaux
  * @details Connecte les signaux aux widgets de la fenêtre principale.
  * @param ui Pointeur vers la structure de l'interface utilisateur sur laquelle
  * il faut configurer les signaux.
  */
-void ui_signal_connect(struct ui *ui);
+void ui_signal_init(struct ui *ui);
 
 #endif /* UI_SIGNALS_H_ */
