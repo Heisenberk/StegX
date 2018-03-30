@@ -11,9 +11,6 @@
 #include <gtk/gtk.h>
 #include "struct.h"
 
-/** Nombre d'algorithme à proposer. */
-#define ALGO_NB 3
-
 /**
  * @brief Crée une grille
  * @details Crée un widget une grille et l'initialise avec les propriétés voulus
@@ -84,12 +81,6 @@ static void ui_build_insert(struct ui_insert *ins)
     /* Widgets pour la sélection des algorithmes (menu déroulant). */
     ins->algos_lbl = gtk_label_new("Algorithme(s) disponible(s)");
     ins->algos_cb = gtk_combo_box_text_new();
-    const char *algos_lst[] = {"LSB", "EOF", "Metadonnées"};
-    for (int i = 0; i < ALGO_NB; i++) {
-        gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ins->algos_cb),
-                algos_lst[i]);
-    }
-    gtk_combo_box_set_active(GTK_COMBO_BOX(ins->algos_cb), 0);
     gtk_grid_attach(GTK_GRID(ins->tab), ins->algos_lbl, 1, 1, 2, 1);
     gtk_grid_attach_next_to(GTK_GRID(ins->tab), ins->algos_cb, ins->algos_lbl,
             GTK_POS_BOTTOM, 2, 1);
@@ -119,12 +110,18 @@ static void ui_build_insert(struct ui_insert *ins)
             GTK_POS_RIGHT, 1, 1);
 
     /* Dialogues. */
+    ins->dial_anal_cond = "Un des paramètres requis n'a pas été rempli !\nVeuillez "
+        "vérifier que le fichier hôte et le fichier à cacher ont bien étés "
+        "choisis.";
     ins->dial_anal_proc = "Analyse des fichiers en cours... \nVeuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
         "terminé. \nVous pouvez désormais sélectionner un algorithme à utiliser "
         "lors de la dissimulation dans le menu déroulant prévu à cet effet.";
     ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n"
         "Veuillez sélectionner un fichier compatible avec l'application.";
+    ins->dial_dissi_cond = "Un des paramètres requis n'a pas été rempli !\nVeuillez "
+        "vérifier que le dossier et le nom du fichier à créer ont bien étés "
+        "choisis.";
     ins->dial_dissi_proc = "\nDissimulation des données en cours... \nVeuillez patienter.";
     ins->dial_dissi_end = "Dissimulation des données terminé avec succès.";
     ins->dial_dissi_err = "Dissimulation des données interrompu par une erreur.";

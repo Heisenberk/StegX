@@ -32,9 +32,11 @@ struct ui_insert
     GtkWidget *but;               /*!< Bouton de lancement du traitement de l'étape en cours. */
     GtkWidget *but_reset;         /*!< Bouton de réinitialisation. */
     GtkWidget *dial;              /*!< Dialogue en cours d'affichage. */
+    gchar *dial_anal_cond;        /*!< Message du dialogue d'information d'analyse si les conditions initiales ne sont pas remplies. */
     gchar *dial_anal_proc;        /*!< Message du dialogue d'information d'analyse pendant le traitement. */
     gchar *dial_anal_end;         /*!< Message du dialogue d'information d'analyse terminé. */
     gchar *dial_anal_err;         /*!< Message du dialogue d'information d'analyse interrompu par une erreur. */
+    gchar *dial_dissi_cond;       /*!< Message du dialogue d'information de dissimulation si les conditions initiales ne sont pas remplies. */
     gchar *dial_dissi_proc;       /*!< Message du dialogue d'information de dissimulation pendant le traitement. */
     gchar *dial_dissi_end;        /*!< Message du dialogue d'information de dissimulation terminé. */
     gchar *dial_dissi_err;        /*!< Message du dialogue d'information de dissimulation interrompu par une erreur. */
