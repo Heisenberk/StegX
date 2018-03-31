@@ -1,0 +1,20 @@
+/**
+ * @file @INC_CONFIG_NAME@
+ * @brief Configuration par CMake
+ * @details Contient des variables et des définitions communes au programme
+ * définies par CMake au moment de la compilation ou de l'installation.
+ */
+
+#ifndef CONFIG_H_
+#define CONFIG_H_
+
+/** Nom du programme. */
+static const char *program_name = "@PROJECT_NAME@";
+/** Version du programme. */
+static const char *program_ver = "Version @PROJECT_VERSION@";
+/** Description du programme. */
+static const char *program_desc = "@PROJECT_DESCRIPTION@";
+/** License du programme. */
+static const char *program_license = "@PROJECT_LICENSE_FULL_TEXT@";
+
+#endif /* CONFIG_H_ */

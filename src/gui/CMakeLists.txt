@@ -17,6 +17,14 @@ endif ()
 
 # Si on à trouvé GTK+.
 if (GTK_FOUND)
+    # Configuration ============================================================
+
+    # Header commun.
+    set (INC_CONFIG_NAME config.h)
+    set (INC_CONFIG_IN_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME}.in)
+    set (INC_CONFIG_OUT_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME})
+    configure_file (${INC_CONFIG_IN_FPATH} ${INC_CONFIG_OUT_FPATH} @ONLY)
+
     # Sources ==================================================================
 
     # Liste des fichiers sources et des headers.

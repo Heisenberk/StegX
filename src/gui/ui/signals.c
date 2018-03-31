@@ -9,6 +9,7 @@
 #include <string.h>
 #include <assert.h>
 #include <gtk/gtk.h>
+#include "common/config.h"
 #include "struct.h"
 
 /** Nombre d'algorithme à proposer. */
@@ -378,20 +379,16 @@ static void about(GtkWidget *widget, struct ui *ui)
         "AYOUB Pierre", "BASKEVITCH Claire", "BESSAC Tristan",
         "CAUMES Clément", "DELAUNAY Damien", "DOUDOUH Yassin",
         NULL};
-    static const gchar *program_name = "StegX";
-    static const gchar *program_version = "0.1.1";
     static const gchar *copyright = "© 2018 StegX Team";
-    static const gchar *comments = "Application de Stéganographie pour l'UVSQ";
-    static const gchar *license = "GNU General Public License v3";
     static const gchar *website = "https://github.com/Heisenberk/StegX";
     static const gchar *logo_path = "../src/gui/pic/stegx-55x55.png";
     GdkPixbuf *logo = gdk_pixbuf_new_from_file(logo_path, NULL);
     /* Initilisation et affichage. */
     gtk_show_about_dialog(GTK_WINDOW(ui->window),
             "authors", authors, "logo", logo,
-            "license", license, "website", website,
-            "comments", comments, "copyright", copyright,
-            "version", program_version, "program_name", program_name,
+            "license", program_license, "website", website,
+            "comments", program_desc, "copyright", copyright,
+            "version", program_ver, "program_name", program_name,
             NULL);
     gtk_menu_item_deselect(GTK_MENU_ITEM(widget));
 }
