@@ -89,6 +89,33 @@ static void insert_dissi_end(struct ui *ui);
  */
 static void insert_reset(GtkWidget *widget, struct ui *ui);
 
+/**
+ * @brief Lancement de l'extraction
+ * @details Lance l'extraction du fichier caché. Met à jour l'interface pendant
+ * le traitement et lance le thread chargé de de l'extraction.
+ * @param widget Bouton qui a émis le signal.
+ * @param ui Structure de l'interface utilisateur.
+ */
+static void insert_extrac_start(GtkWidget *widget, struct ui *ui);
+
+/** 
+ * @brief Exécution de l'extraction
+ * @details Exécute l'extraction des données du fichier caché dans le fichier
+ * hôte. Met à jour la variable "ret" avec le code de retour de l'insertion.
+ * @param data Structure de l'interface utilisateur.
+ * @return gboolean Code indiquant de supprimer le thread.
+ */
+static gboolean extrac_do(gpointer data);
+
+/**
+ * @brief Termine l'extraction
+ * @details Récupère le code de retour de la fonction de la bibliothèque. La
+ * fonction met à jours les widgets et affiche les messages de dialogue en
+ * conséquence.
+ * @param ui Structure de l'interface utilisateur.
+ */
+static void extrac_end(struct ui *ui);
+
 static void insert_anal_start(GtkWidget *widget, struct ui *ui)
 {
     /* Si les conditions nécéssaires ne sont pas remplies. */
@@ -194,7 +221,7 @@ static void insert_dissi_start(GtkWidget *widget, struct ui *ui)
                 GTK_MESSAGE_INFO, GTK_BUTTONS_NONE, ui->insert.dial_dissi_proc, NULL);
         /* Lancement du thread de travaille. */
         gdk_threads_add_idle(insert_dissi_do, ui);
-        /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé . */
+        /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->insert.but_txt_dissi_proc);
         gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
     }
@@ -267,6 +294,77 @@ static void insert_reset(GtkWidget *widget, struct ui *ui)
     g_signal_handlers_disconnect_by_func(ui->insert.but, insert_dissi_start, ui);
 }
 
+static void insert_extrac_start(GtkWidget *widget, struct ui *ui)
+{
+    /* Si les conditions nécéssaires ne sont pas remplies. */
+    if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
+            || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
+        ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_WARNING, GTK_BUTTONS_CANCEL, ui->extrac.dial_cond, NULL);
+        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+        gtk_widget_destroy(ui->extrac.dial);
+    }
+    else {
+        /* Création du dialogue à afficher. */
+        ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
+                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                GTK_MESSAGE_INFO, GTK_BUTTONS_NONE, ui->extrac.dial_proc, NULL);
+        /* Lancement du thread de travaille. */
+        gdk_threads_add_idle(extrac_do, ui);
+        /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
+        gtk_button_set_label(GTK_BUTTON(widget), ui->extrac.but_txt_proc);
+        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+    }
+}
+
+static gboolean extrac_do(gpointer data)
+{
+    struct ui *ui = (struct ui *) data;
+    /* Processing. */
+    printf("Fichier hôte : %s\n",
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc)));
+    printf("Dossier du fichier résultant : %s\n",
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
+    printf("Mot de passe : %s\n",
+            gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent)));
+    for(int i = 0; i < 1000000000; i++) {ret = 0;}
+    /* Suppression du dialogue en cours. */
+    gtk_dialog_response(GTK_DIALOG(ui->extrac.dial), 0);
+    gtk_widget_destroy(ui->extrac.dial);
+    /* Fin du traitement puis suppression du thread. */
+    extrac_end(ui);
+    return G_SOURCE_REMOVE;
+}
+
+static void extrac_end(struct ui *ui)
+{
+    gchar *dial_msg = NULL;
+    GtkMessageType dial_type = 0;
+    GtkButtonsType dial_but = 0;
+    /* Si l'extraction à réussie. */
+    if (ret == 0) {
+        dial_msg = ui->extrac.dial_end;
+        dial_type = GTK_MESSAGE_INFO;
+        dial_but = GTK_BUTTONS_OK;
+    }
+    /* Si l'extraction à échouée. */
+    else {
+        dial_msg = ui->extrac.dial_err;
+        dial_type = GTK_MESSAGE_ERROR;
+        dial_but = GTK_BUTTONS_CANCEL;
+    }
+    /* Mise à jour du bouton pour relancer l'extraction. */
+    gtk_button_set_label(GTK_BUTTON(ui->extrac.but),
+            ui->extrac.but_txt);
+    /* Affichage du dialogue de fin. */
+    ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
+            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+            dial_type, dial_but, dial_msg, NULL);
+    gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+    gtk_widget_destroy(ui->extrac.dial);
+}
+
 /**
  * @brief Affiche le dialogue "à propos"
  * @details Construit et affiche le dialogue d'informations "à propos".
@@ -303,6 +401,8 @@ void ui_signal_init(struct ui *ui)
     /* Signaux de l'onglet insertion. */
     g_signal_connect(ui->insert.but, "clicked", G_CALLBACK(insert_anal_start), ui);
     g_signal_connect(ui->insert.but_reset, "clicked", G_CALLBACK(insert_reset), ui);
+    /* Signaux de l'onglet extraction. */
+    g_signal_connect(ui->extrac.but, "clicked", G_CALLBACK(insert_extrac_start), ui);
     /* Signaux du menu utilisateur. */
     g_signal_connect(ui->menu.about, "select", G_CALLBACK(about), ui);
 }

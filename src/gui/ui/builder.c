@@ -116,7 +116,7 @@ static void ui_build_insert(struct ui_insert *ins)
     ins->dial_anal_proc = "Analyse des fichiers en cours... \n\n"
         "Veuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
-        "terminé. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
+        "terminéé. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
         "lors de la dissimulation dans le menu déroulant prévu à cet effet.";
     ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n\n"
         "Veuillez sélectionner un fichier compatible avec l'application.";
@@ -125,7 +125,7 @@ static void ui_build_insert(struct ui_insert *ins)
         "étés choisis.";
     ins->dial_dissi_proc = "Dissimulation des données en cours... \n\n"
         "Veuillez patienter.";
-    ins->dial_dissi_end = "Dissimulation des données terminé avec succès.";
+    ins->dial_dissi_end = "Dissimulation des données terminée avec succès.";
     ins->dial_dissi_err = "Erreur durant la dissimulation des données.";
 }
 
@@ -166,10 +166,21 @@ static void ui_build_extrac(struct ui_extrac *extr)
     gtk_grid_attach_next_to(GTK_GRID(extr->tab), extr->passwd_ent,
             extr->passwd_lbl, GTK_POS_BOTTOM, 2, 1);
 
-    /* Widget pour lancer l'extraction (widget). */
-    extr->but = gtk_button_new_with_label("Extraire");
+    /* Bouton pour lancer l'extraction (widget). */
+    extr->but_txt = "Extraire";
+    extr->but_txt_proc = "Extraction en cours...";
+    extr->but = gtk_button_new_with_label(extr->but_txt);
     gtk_grid_attach_next_to(GTK_GRID(extr->tab), extr->but, extr->passwd_ent,
             GTK_POS_BOTTOM, 2, 1);
+
+    /* Dialogues. */
+    extr->dial_cond = "Un des paramètres requis n'a pas été rempli ! \n\n"
+        "Veuillez vérifier que le fichier hôte et que le dossier du "
+        "fichier à créer ont bien étés choisis.";
+    extr->dial_proc = "Extraction des données en cours... \n\n"
+        "Veuillez patienter.";
+    extr->dial_end = "Extraction des données terminée avec succès.";
+    extr->dial_err = "Erreur durant l'extraction des données.";
 }
 
 /**

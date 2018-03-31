@@ -54,15 +54,22 @@ struct ui_insert
  */
 struct ui_extrac
 {
-    GtkWidget *tab;               /*!< Grille contenant les widgets de l'onglet. */
-    GtkWidget *tab_title;         /*!< Titre de l'onglet. */
-    GtkWidget *file_orig_lbl;     /*!< Label du bouton de sélection du fichier hôte. */
-    GtkWidget *file_orig_fc;      /*!< Bouton de sélection du fichier hôte. */
-    GtkWidget *file_out_dir_lbl;  /*!< Label du bouton de sélection du dossier de sortie. */
-    GtkWidget *file_out_dir_fc;   /*!< Bouton de sélection du dossier de sortie. */
-    GtkWidget *passwd_lbl;        /*!< Label de l'entrée de texte du mot de passe. */
-    GtkWidget *passwd_ent;        /*!< Entrée de texte du mot de passe. */
-    GtkWidget *but;               /*!< Bouton de lancement de l'extraction. */
+    GtkWidget *tab;              /*!< Grille contenant les widgets de l'onglet. */
+    GtkWidget *tab_title;        /*!< Titre de l'onglet. */
+    GtkWidget *file_orig_lbl;    /*!< Label du bouton de sélection du fichier hôte. */
+    GtkWidget *file_orig_fc;     /*!< Bouton de sélection du fichier hôte. */
+    GtkWidget *file_out_dir_lbl; /*!< Label du bouton de sélection du dossier de sortie. */
+    GtkWidget *file_out_dir_fc;  /*!< Bouton de sélection du dossier de sortie. */
+    GtkWidget *passwd_lbl;       /*!< Label de l'entrée de texte du mot de passe. */
+    GtkWidget *passwd_ent;       /*!< Entrée de texte du mot de passe. */
+    GtkWidget *but;              /*!< Bouton de lancement de l'extraction. */
+    GtkWidget *dial;             /*!< Dialogue en cours d'affichage. */
+    gchar *dial_cond;            /*!< Message du dialogue d'information de l'extraction si les conditions initiales ne sont pas remplies. */
+    gchar *dial_proc;            /*!< Message du dialogue d'information de l'extraction pendant le traitement. */
+    gchar *dial_end;             /*!< Message du dialogue d'information de l'extraction terminé. */
+    gchar *dial_err;             /*!< Message du dialogue d'information de l'extraction interrompu par une erreur. */
+    gchar *but_txt;              /*!< Texte du bouton de lancement de l'extraction. */
+    gchar *but_txt_proc;         /*!< Texte du bouton de lancement de l'extraction pendant le traitement. */
 };
 
 /**
