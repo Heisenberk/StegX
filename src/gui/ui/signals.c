@@ -27,7 +27,7 @@ static int ret;
  * @brief Lancement de l'analyse
  * @details Lance l'analyse des fichiers entrés par l'utilisateur. Met à jour
  * l'interface pendant l'analyse et lance le thread chargé de l'analyse.
- * @param widget Bouton qui lance le signal.
+ * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
 static void insert_anal_start(GtkWidget *widget, struct ui *ui);
@@ -56,7 +56,7 @@ static void insert_anal_end(struct ui *ui);
  * @details Lance l'insertion des données du fichier à cacher dans le fichier
  * hôte. Met à jour l'interface pendant l'insertion et lance le thread chargé de
  * de l'insertion.
- * @param widget Bouton qui lance le signal.
+ * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
 static void insert_dissi_start(GtkWidget *widget, struct ui *ui);
@@ -84,7 +84,7 @@ static void insert_dissi_end(struct ui *ui);
  * @brief Réinitialisation
  * @details Réinitialisation de l'affichage des widgets dans l'onglet insertion
  * et revient dans l'état initial d'analyse.
- * @param widget Bouton qui lance le signal.
+ * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
 static void insert_reset(GtkWidget *widget, struct ui *ui);
@@ -212,7 +212,7 @@ static gboolean insert_dissi_do(gpointer data)
             gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
     printf("Algorithme choisis : %s\n",
             algos_lst[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]);
-    for(int i = 0; i < 1000000000; i++) {ret = 1;}
+    for(int i = 0; i < 1000000000; i++) {ret = 0;}
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->insert.dial), 0);
     gtk_widget_destroy(ui->insert.dial);
@@ -267,8 +267,42 @@ static void insert_reset(GtkWidget *widget, struct ui *ui)
     g_signal_handlers_disconnect_by_func(ui->insert.but, insert_dissi_start, ui);
 }
 
+/**
+ * @brief Affiche le dialogue "à propos"
+ * @details Construit et affiche le dialogue d'informations "à propos".
+ * @param widget Bouton qui a émis le signal.
+ * @param ui Structure de l'interface utilisateur.
+ */
+static void about(GtkWidget *widget, struct ui *ui)
+{
+    /* Paramètres. */
+    static const gchar *authors[] = {
+        "AYOUB Pierre", "BASKEVITCH Claire", "BESSAC Tristan",
+        "CAUMES Clément", "DELAUNAY Damien", "DOUDOUH Yassin",
+        NULL};
+    static const gchar *program_name = "StegX";
+    static const gchar *program_version = "0.1.1";
+    static const gchar *copyright = "© 2018 StegX Team";
+    static const gchar *comments = "Application de Stéganographie pour l'UVSQ";
+    static const gchar *license = "GNU General Public License v3";
+    static const gchar *website = "https://github.com/Heisenberk/StegX";
+    static const gchar *logo_path = "../src/gui/pic/stegx-55x55.png";
+    GdkPixbuf *logo = gdk_pixbuf_new_from_file(logo_path, NULL);
+    /* Initilisation et affichage. */
+    gtk_show_about_dialog(GTK_WINDOW(ui->window),
+            "authors", authors, "logo", logo,
+            "license", license, "website", website,
+            "comments", comments, "copyright", copyright,
+            "version", program_version, "program_name", program_name,
+            NULL);
+    gtk_menu_item_deselect(GTK_MENU_ITEM(widget));
+}
+
 void ui_signal_init(struct ui *ui)
 {
+    /* Signaux de l'onglet insertion. */
     g_signal_connect(ui->insert.but, "clicked", G_CALLBACK(insert_anal_start), ui);
     g_signal_connect(ui->insert.but_reset, "clicked", G_CALLBACK(insert_reset), ui);
+    /* Signaux du menu utilisateur. */
+    g_signal_connect(ui->menu.about, "select", G_CALLBACK(about), ui);
 }

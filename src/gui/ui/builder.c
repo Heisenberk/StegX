@@ -35,8 +35,8 @@ static GtkWidget* ui_grid_init()
  * @brief Crée l'onglet de dissimulation
  * @details Construit et place les widgets de l'onglet dissimulation. Initialise
  * aussi les messages utilisés pendant les différentes étapes de l'insertion.
- * @param ins Pointeur vers une structure d'onglet de dissimulation vers laquel
- * lier les widgets construits.
+ * @param ins Pointeur vers une structure d'onglet de dissimulation vers
+ * laquelle lier les widgets construits.
  */
 static void ui_build_insert(struct ui_insert *ins)
 {
@@ -110,27 +110,29 @@ static void ui_build_insert(struct ui_insert *ins)
             GTK_POS_RIGHT, 1, 1);
 
     /* Dialogues. */
-    ins->dial_anal_cond = "Un des paramètres requis n'a pas été rempli !\nVeuillez "
-        "vérifier que le fichier hôte et le fichier à cacher ont bien étés "
-        "choisis.";
-    ins->dial_anal_proc = "Analyse des fichiers en cours... \nVeuillez patienter.";
+    ins->dial_anal_cond = "Un des paramètres requis n'a pas été rempli !\n\n"
+        "Veuillez vérifier que le fichier hôte et le fichier à cacher ont bien "
+        "étés choisis.";
+    ins->dial_anal_proc = "Analyse des fichiers en cours... \n\n"
+        "Veuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
-        "terminé. \nVous pouvez désormais sélectionner un algorithme à utiliser "
+        "terminé. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
         "lors de la dissimulation dans le menu déroulant prévu à cet effet.";
-    ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n"
+    ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n\n"
         "Veuillez sélectionner un fichier compatible avec l'application.";
-    ins->dial_dissi_cond = "Un des paramètres requis n'a pas été rempli !\nVeuillez "
-        "vérifier que le dossier et le nom du fichier à créer ont bien étés "
-        "choisis.";
-    ins->dial_dissi_proc = "\nDissimulation des données en cours... \nVeuillez patienter.";
+    ins->dial_dissi_cond = "Un des paramètres requis n'a pas été rempli ! \n\n"
+        "Veuillez vérifier que le dossier et le nom du fichier à créer ont bien "
+        "étés choisis.";
+    ins->dial_dissi_proc = "Dissimulation des données en cours... \n\n"
+        "Veuillez patienter.";
     ins->dial_dissi_end = "Dissimulation des données terminé avec succès.";
-    ins->dial_dissi_err = "Dissimulation des données interrompu par une erreur.";
+    ins->dial_dissi_err = "Erreur durant la dissimulation des données.";
 }
 
 /**
  * @brief Crée l'onglet d'extraction
  * @details Construit et place les widgets de l'onglet de l'extraction.
- * @param extr Pointeur vers une structure d'onglet d'extraction vers laquel
+ * @param extr Pointeur vers une structure d'onglet d'extraction vers laquelle
  * lier les widgets construits.
  */
 static void ui_build_extrac(struct ui_extrac *extr)
@@ -171,35 +173,27 @@ static void ui_build_extrac(struct ui_extrac *extr)
 }
 
 /**
- * @brief Crée l'onglet d'information
- * @details Construit et place les widgets de l'onglet d'information.
- * @param abt Pointeur vers une structure d'onglet d'information vers laquel
- * lier les widgets construits.
+ * @brief Crée le menu utilisateur
+ * @details Initialise le menu utilisateur et construit puis place les widgets
+ * du menu.
+ * @param menu Structure du menu vers laquelle lier les widgets construits.
  */
-static void ui_build_about(struct ui_about *abt)
+static void ui_build_menu(struct ui_menu *menu)
 {
-    assert(abt->tab);
-    abt->info_lbl = gtk_label_new("Auteurs : \n"
-            "- AYOUB Pierre \n"
-            "- BASKEVITCH Claire \n"
-            "- BESSAC Tristan \n"
-            "- CAUMES Clément \n"
-            "- BASKEVITCH Claire \n"
-            "- DELAUNAY Damien \n"
-            "- DOUDOUH Yassine \n\n"
-            "Version : TODO \n"
-            "Bibliothèque graphique : GTK+ 3 \n"
-            "Bibliothèque de stéganographie : StegX \n"
-            );
-    gtk_grid_attach(GTK_GRID(abt->tab), abt->info_lbl, 1, 1, 1, 1);
+    /* Création du menu. */
+    menu->bar = gtk_menu_bar_new();
+    gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menu->bar), GTK_PACK_DIRECTION_RTL);
+    /* Création du bouton à propos. */
+    menu->about = gtk_menu_item_new_with_label("À propos");
+    gtk_container_add(GTK_CONTAINER(menu->bar), menu->about);
 }
 
 void ui_build(struct ui *ui)
 {
     assert(ui->window);
-    /* Conteneur principal de la fenêtre proposant plusieurs onglets. */
+    /* Conteneur proposant plusieurs onglets. */
     ui->tabs = gtk_notebook_new();
-    gtk_container_add(GTK_CONTAINER(ui->window), ui->tabs);
+    gtk_notebook_popup_enable(GTK_NOTEBOOK(ui->tabs));
 
     /* Création et insertion de l'onglet dissimulation. */
     ui->insert.tab_title = gtk_label_new("Dissimulation");
@@ -215,10 +209,13 @@ void ui_build(struct ui *ui)
     gtk_notebook_append_page(GTK_NOTEBOOK(ui->tabs), ui->extrac.tab,
             ui->extrac.tab_title);
 
-    /* Création et insertion de l'onglet d'information. */
-    ui->about.tab_title = gtk_label_new("À propos");
-    ui->about.tab = ui_grid_init();
-    ui_build_about(&(ui->about));
-    gtk_notebook_append_page(GTK_NOTEBOOK(ui->tabs), ui->about.tab,
-            ui->about.tab_title);
+    /* Création du menu. */
+    ui_build_menu(&(ui->menu));
+    assert(ui->menu.bar);
+
+    /* Conteneur principal de la fenêtre. */
+    ui->box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(ui->box), ui->menu.bar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(ui->box), ui->tabs, TRUE, TRUE, 0);
+    gtk_container_add(GTK_CONTAINER(ui->window), ui->box);
 }

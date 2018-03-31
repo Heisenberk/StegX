@@ -78,6 +78,17 @@ struct ui_about
 };
 
 /**
+ * @brief Menu
+ * @details Menu principal de l'application. Contient les widgets utilisés dans
+ * le menu ainsi que le widget du menu lui-même.
+ */
+struct ui_menu
+{
+    GtkWidget *bar;   /*!< Barre du menu. */
+    GtkWidget *about; /*!< Bouton à propos. */
+};
+
+/**
  * @brief Interface utilisateur
  * @details Contient tout les widgets utilisés dans l'interface
  * utilisateur.
@@ -85,10 +96,12 @@ struct ui_about
 struct ui
 {
     GtkWidget *window;       /*!< Fenêtre principale. */
+    GtkWidget *box;          /*!< Conteneur principal. */
     GtkWidget *tabs;         /*!< Conteneur des onglets. */
     struct ui_insert insert; /*!< Onglet dissimulation. */
     struct ui_extrac extrac; /*!< Onglet extraction. */
     struct ui_about about;   /*!< Onglet d'information. */
+    struct ui_menu menu;     /*!< Menu de l'application. */
 };
 
 #endif /* UI_STRUCT_H_ */
