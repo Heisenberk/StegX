@@ -9,7 +9,7 @@ int hello_libsteg_v2(int ret);
 enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
 typedef enum mode mode_e;
 
-enum algo {	, STEGX_ALGO_EOF, STEGX_ALGO_METADATA};
+enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA};
 typedef enum algo algo_e;
 
 struct stegx_info_ins {
@@ -37,12 +37,12 @@ struct host_info {
     FILE* host;
     type_e type;
     union {
-        struct bmp bmp;
-        struct png png;
-        struct wav wav;
-        struct mp3 mp3;
-        struct avi avi;
-        struct flv flv;
+        //struct bmp bmp;
+        //struct png png;
+       // struct wav wav;
+       // struct mp3 mp3;
+       // struct avi avi;
+       // struct flv flv;
     } file_type;
 };
 typedef struct host_info host_info_s;

@@ -7,15 +7,15 @@
 
 int main(int argc, char *argv[])
 {
-	struct info *com = malloc(sizeof(struct info));
-	com->hote = "\0";
-	com->cache = "\0";
-	com->resultat = "\0";
-	com->mdp = "\0";
-	com->algo = -1;
-	com->d_e = -1;
+	stegx_info_t *com = malloc(sizeof(stegx_info_t));
+	com->host_path = "\0";
+	com->res_path = "\0";
+	com->passwd = "\0";
 	we_are_stegx();
-	remplir_info(com, argc, argv);
-	verif_infos(com);
+	fill_info(com, argc, argv);
+	check_info(com);
+	if(com->mode == STEGX_MODE_INSERT)
+		free(com->ins_info);
+	free(com);
 	return 0;
 }

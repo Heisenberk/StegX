@@ -1,5 +1,6 @@
 #include "unistd.h"
 #include "stdio.h"
+#include "stdlib.h"
 #include "getopt.h"
 #include "cli.h"
 
@@ -51,7 +52,7 @@ void unvalid_line(){
 
 
 
-void fill_info( stegx_info_t* com,const int argc,char* const* argv){
+void fill_info(stegx_info_t* com,const int argc,char* const* argv){
 
     int optch;
     extern int opterr;
@@ -61,7 +62,6 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
                   //c: pour l'option -c suivi du fichier à cacher 
                   //r: pour l'option -r suivi du fichier resultat
                   //p: pour l'option -p suivi du mot de passe 
-                    //a: pour l'option -a suivi de l'algo à utiliser   !!! à voir avec groupe
                   //d pour l'option -d pour signifier la dissimulation
                   //e pour l'option -e pour signifier l'extraction
                   //h pour l'option -h qui affiche l'aide
@@ -81,8 +81,15 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
     opterr = 1;
     int optindex = 0;
 
-    while ((optch = getopt_long(argc, argv, option_court, option_long, &optindex)) != -1)
+    while ((optch = getopt_long(argc, argv, short_option, long_option, &optindex)) != -1)
     switch (optch) {
+		case 'd':
+            com->mode=STEGX_MODE_INSERT;
+            com->ins_info = malloc(sizeof(stegx_info_ins_t));
+            break;
+        case 'e':
+             com->mode=STEGX_MODE_EXTRACT;
+            break;
         case 'o':
             com->host_path=optarg;
             break;
@@ -91,13 +98,6 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
             break; 
         case 'r':
             com->res_path=optarg;
-            break;
-       
-        case 'd':
-            com->mode=STEGX_MODE_INSERT; 
-            break;
-        case 'e':
-             com->mode=STEGX_MODE_EXTRACT;
             break;
         case 'p':
              com->passwd=optarg;
@@ -111,30 +111,26 @@ void fill_info( stegx_info_t* com,const int argc,char* const* argv){
              com->ins_info->algo=STEGX_ALGO_EOF;
              break;
         case 'h':
-             help()
+             help();
              break;
         case '?':
               unvalid_line();
-             
               break;
-        
-
-  };
+    };
  
 }
 
 void check_info(stegx_info_t* com){
   if (com->mode==STEGX_MODE_INSERT){
     if((com->ins_info->hidden_path!="\0") && (com->ins_info->algo!=-1)){
-     stegx_check_compatibility_dissimulation(com);
+      printf("stegx_check_compatibility_dissimulation(com);");
      
     }
-    else if (com->mode==STEGX_MODE_EXTRACT){
-      stegx_check_compatibility_extraction(com);
-    }
-
-
-    else {unvalid_line();}
   }
-}
+  else if (com->mode==STEGX_MODE_EXTRACT){
+      printf("stegx_check_compatibility_extraction(com);");
+  }
+  else {unvalid_line();}
+  }
+
 
