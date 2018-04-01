@@ -289,8 +289,9 @@ struct info {
     FILE* res;                 
     FILE* hidden;              
     char* hidden_name;
-    int hidden_length; %longueur du fichier caché important pour l'extraction
+    int hidden_length; 
     char* passwd;
+    algo_e algo;
 };
 typedef struct info info_s;
 \end{lstlisting}
@@ -312,8 +313,14 @@ dissimulation ou l'extraction.
 Il est donc requis si mode vaut STEGX\_MODE\_INSERT. 
 \item \textit{hidden\_name} représente le nom du fichier à cacher/caché selon 
 les cas. 
+\item \textit{hidden\_length} représente la taille du fichier à cacher/caché. 
+Cette information est nécessaire dans l'extraction pour connaitre combien de 
+données il reste à extraire dans le fichier. Dans la dissimulation, ce champ 
+permet de construire correctement les informations globales du fichier caché. 
 \item \textit{passwd} est la chaine de caractères représentant le mot de passe 
 choisi par l'utilisateur. 
+\item \textit{algo} est l'énumération représentant l'algorithme qui sera utilisé
+pour la dissimulation ou l'extraction. 
 \newline
 \end{itemize}
 
@@ -372,7 +379,7 @@ info_s* stegx_check_compatibility_extraction (stegx_info_s* info);
 Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
 Pour cela, elle vérifie si le fichier à analyser existe et n'est pas vide. 
 Ensuite, la fonction vérifie le format du fichier à analyser. 
-Elle va remplir les champs \textit{mode}, \textit{passwd}, \textit{hidden\_name}, \textit{hidden},
+Elle va remplir les champs \textit{mode}, \textit{hidden\_name}, \textit{hidden},
 \textit{res} et \textit{host} (partiellement) de la structure
 \textit{info\_s*} en sortie. 
 \newline
@@ -453,10 +460,108 @@ du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED
 \newline 
 \end{itemize}
 
-
-
 \subsection{Module Proposition des algorithmes 
 de stéganographie}
+
+Dans l'organigramme des modules de StegX, nous avons créé un sous-module 
+\textit{Proposition des algorithmes de stéganographie}. Il prend en entrée 
+le fichier hôte, le fichier à cacher, le choix de l'utilisateur pour 
+l'algorithme ainsi que le mot de passe voulu par l'utilisateur. 
+Ce sous-module va donc ajouter des données à la structure \textit{info\_s*} 
+avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux 
+proposés. 
+
+\begin{lstlisting}[language=c]
+void* stegx_suggest_algo_stegano (info_s* info, stegx_info_s* user_choices);
+\end{lstlisting}
+
+Cette fonction va remplir les champs \textit{passwd} et \textit{host.file\_type} 
+de \textit{info} pour le sous-module suivant \textit{insertion des données}. 
+De plus, elle va changer les valeurs du tableau représentant les algorithmes 
+de stéganographie utilisés. Ainsi, à partir de ce tableau, l'interface graphique 
+proposera certains algorithmes, et l'interface en ligne de commande comparera 
+ce tableau avec le choix de l'utilisateur. 
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{info :} structure représentant toutes les informations pour 
+réaliser l'insertion par la suite. 
+\item \textit{user\_choices :} structure représentant les choix de 
+l'utilisateur pour les deux interfaces. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{void* :} renvoie NULL si tout se passe bien. [a remodifier 
+comme definition]. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int fill_host_file_type (info_s* infos);
+\end{lstlisting}
+
+En fonction du champ \textit{infos.host.type} représentant le format du 
+fichier hôte, cette fonction va remplir le champ \textit{host.file\_type} 
+de \textit{infos}. En effet, \textit{file\_type} est une union et est 
+particulière en fonction du format du fichier hôte. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{info :} structure représentant toutes les informations pour 
+l'insertion. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
+fonction et 1 si tout se passe bien. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int can_use_algo_lsb (info_s* infos);
+int can_use_algo_eof (info_s* infos);
+int can_use_algo_metadata (info_s* infos);
+\end{lstlisting}
+
+Ces fonctions vont permettre de savoir si les différents algorithmes 
+(LSB, EOF, Metadata) peuvent être utilisés en fonction des entrées 
+de l'utilisateur à travers l'interface (graphique ou en ligne de commande). 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{info :} structure représentant toutes les informations pour 
+l'insertion.  
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 0 si le fichier hôte ne peut pas cacher des 
+données selon l'algorithme, et 1 s'il le peut. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int stegx_choose_algo_stegano (info_s* infos, stegx_infos_s* user_choices); 
+\end{lstlisting}
+
+A partir du champ \textit{ins\_info.algo} de la structure \textit{user\_choices}, 
+ainsi que du tableau représentant les algorithmes utilisables (selon les 
+entrées de l'utilisateur), cette fonction change le champ \textit{algo} 
+\textit{infos}. 
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{info :} structure représentant toutes les informations pour 
+l'insertion.  
+\item \textit{user\_choices :} structure représentant les choix de 
+l'utilisateur pour les deux interfaces. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
+fonction et 1 si tout se passe bien.  
+\newline 
+\end{itemize}
+
 \subsection{Module Détection de l'algorithme de
 stéganographie}
 \subsection{Module Insertion des données}
