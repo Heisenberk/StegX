@@ -349,7 +349,7 @@ bibliothèque \textit{info\_s}.
 \newline
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_dissimulation (stegx_info_s* info);
+info_s* stegx_check_compatibility_dissimulation (stegx_info_s* infos);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité des fichiers hôte et à cacher pour
@@ -362,7 +362,7 @@ Elle va remplir les champs \textit{mode}, \textit{passwd}, \textit{hidden\_name}
 \newline
 \underline{Entrée :}
 \begin{itemize}
-\item \textit{*info :} structure publique que les interfaces vont initialiser.
+\item \textit{*infos :} structure publique que les interfaces vont initialiser.
 \end{itemize}
 \underline{Sortie :}
 \begin{itemize}
@@ -373,7 +373,7 @@ de la compatibilité des fichiers en entrée.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_extraction (stegx_info_s* info);
+info_s* stegx_check_compatibility_extraction (stegx_info_s* infos);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
@@ -385,7 +385,7 @@ Elle va remplir les champs \textit{mode}, \textit{hidden\_name}, \textit{hidden}
 \newline
 \underline{Entrée :}
 \begin{itemize}
-\item \textit{*info :} structure publique que les interfaces vont initialiser.
+\item \textit{*infos :} structure publique que les interfaces vont initialiser.
 \end{itemize}
 \underline{Sortie :}
 \begin{itemize}
@@ -467,12 +467,12 @@ Dans l'organigramme des modules de StegX, nous avons créé un sous-module
 \textit{Proposition des algorithmes de stéganographie}. Il prend en entrée 
 le fichier hôte, le fichier à cacher, le choix de l'utilisateur pour 
 l'algorithme ainsi que le mot de passe voulu par l'utilisateur. 
-Ce sous-module va donc ajouter des données à la structure \textit{info\_s*} 
+Ce sous-module va donc ajouter des données à la structure \textit{info\_s} 
 avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux 
 proposés. 
 
 \begin{lstlisting}[language=c]
-void* stegx_suggest_algo_stegano (info_s* info, stegx_info_s* user_choices);
+void* stegx_suggest_algo_stegano (info_s* infos, stegx_info_s* user_choices);
 \end{lstlisting}
 
 Cette fonction va remplir les champs \textit{passwd} et \textit{host.file\_type} 
@@ -484,7 +484,7 @@ ce tableau avec le choix de l'utilisateur.
 \newline
 \underline{Entrées :} 
 \begin{itemize}
-\item \textit{info :} structure représentant toutes les informations pour 
+\item \textit{infos :} structure représentant toutes les informations pour 
 réaliser l'insertion par la suite. 
 \item \textit{user\_choices :} structure représentant les choix de 
 l'utilisateur pour les deux interfaces. 
@@ -507,7 +507,7 @@ particulière en fonction du format du fichier hôte.
 \newline
 \underline{Entrée :} 
 \begin{itemize}
-\item \textit{info :} structure représentant toutes les informations pour 
+\item \textit{infos :} structure représentant toutes les informations pour 
 l'insertion. 
 \end{itemize}
 \underline{Sortie :} 
@@ -529,7 +529,7 @@ de l'utilisateur à travers l'interface (graphique ou en ligne de commande).
 \newline
 \underline{Entrée :} 
 \begin{itemize}
-\item \textit{info :} structure représentant toutes les informations pour 
+\item \textit{infos :} structure représentant toutes les informations pour 
 l'insertion.  
 \end{itemize}
 \underline{Sortie :} 
@@ -550,7 +550,7 @@ entrées de l'utilisateur), cette fonction change le champ \textit{algo}
 \newline
 \underline{Entrées :} 
 \begin{itemize}
-\item \textit{info :} structure représentant toutes les informations pour 
+\item \textit{infos :} structure représentant toutes les informations pour 
 l'insertion.  
 \item \textit{user\_choices :} structure représentant les choix de 
 l'utilisateur pour les deux interfaces. 
@@ -564,6 +564,62 @@ fonction et 1 si tout se passe bien.
 
 \subsection{Module Détection de l'algorithme de
 stéganographie}
+
+Le sous-module \textit{Détection de l'algorithme de stéganographie} prend en 
+entrée le fichier à analyser. De plus, il récupère grâce à l'interface le 
+mot de passe choisi par l'utilisateur.  
+Ce sous-module va compléter les champs des structures \textit{info\_s} 
+et \textit{stegx\_info\_s} avec en particulier l'algorithme de stéganographie 
+utilisé par l'émetteur et que l'application doit détecter pour extraire 
+correctement les données cachées. 
+
+\begin{lstlisting}[language=c]
+int stegx_read_signature_app (info_s* infos, stegx_info_s user_choices); 
+\end{lstlisting}
+
+Cette fonction va lire la signature insérée dans le fichier à analyser. 
+Cette signature est constituée d'un octet représentant quel algorithme a 
+été utilisé, avec le nom et la taille du fichier caché.  
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{infos :} structure représentant toutes les informations pour 
+l'extraction.  
+\item \textit{user\_choices :} structure représentant les choix de 
+l'utilisateur. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
+fonction et 1 si tout se passe bien.  
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void* detect_algo_stegano (info_s* infos, stegx_info_s* user_choices); 
+\end{lstlisting}
+
+Cette fonction va tout d'abord récupérer le mot de passe choisi par 
+l'utilisateur et initialisé le champ \textit{infos.passwd}. Ensuite, à 
+l'aide de la fonction \textit{fill\_host\_file\_type}, le champ-union 
+\textit{infos.host.file\_type} sera initialisé. Enfin, cette fonction appellera 
+\textit{stegx\_read\_signature\_app} pour connaître les informations concernant 
+le fichier caché. 
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{infos :} structure représentant toutes les informations pour 
+l'extraction.  
+\item \textit{user\_choices :} structure représentant les choix de 
+l'utilisateur. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{void* :} renvoie NULL si tout se passe bien. [a remodifier 
+comme definition]. 
+\newline 
+\end{itemize}
+
 \subsection{Module Insertion des données}
 \subsection{Module Extraction}
 
