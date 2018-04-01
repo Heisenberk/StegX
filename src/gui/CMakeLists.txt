@@ -36,13 +36,14 @@ if (GTK_FOUND)
 
     # Génération du header.
     set (INC_CONFIG_NAME config.h)
-    set (INC_CONFIG_IN_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME}.in)
-    set (INC_CONFIG_OUT_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME})
+    set (INC_CONFIG_DIR common)
+    set (INC_CONFIG_IN_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/${INC_CONFIG_DIR}/${INC_CONFIG_NAME}.in)
+    set (INC_CONFIG_OUT_FPATH ${CMAKE_CURRENT_BINARY_DIR}/${INC_CONFIG_DIR}/${INC_CONFIG_NAME})
     configure_file (${INC_CONFIG_IN_FPATH} ${INC_CONFIG_OUT_FPATH} @ONLY)
 
     # Nettoyage.
     set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
-        ${INC_CONFIG_OUT_FPATH}
+        ${CMAKE_CURRENT_BINARY_DIR}/${INC_CONFIG_DIR}
         )
 
     # Sources ==================================================================
@@ -53,7 +54,7 @@ if (GTK_FOUND)
 
     # Dossiers contenant un header.
     # HEADER_DIRECTORIES (INC_DIRS)
-    set (INC_DIRS ./)
+    set (INC_DIRS ./ ${CMAKE_CURRENT_BINARY_DIR})
 
     # Binaire ==================================================================
 

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
-#include "config.h"
+#include "common/config.h"
 #include "ui/ui.h"
 
 /**
