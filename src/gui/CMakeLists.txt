@@ -117,15 +117,23 @@ if (GTK_FOUND)
             COMPONENT ${SRC_GUI_COMP})
     endif ()
     
-    # Copies les DLL de GTK+ dans le dossier bin de l'installation sur Windows.
+    # Copie les ressources d'exécution de GTK+ dans le dossier l'installation sur Windows.
     if (WIN32)
         set (GTK_RUNTIME_DIR gtk+/win)
         set (GTK_RUNTIME_PATH ${CMAKE_SOURCE_DIR}/${LIB_DIR}/${GTK_RUNTIME_DIR})
-        set (GTK_RUNTIME_BIN_DIR bin)
-        file (GLOB_RECURSE GTK_RUNTIME_LIBS ${GTK_RUNTIME_PATH}/${GTK_RUNTIME_BIN_DIR}/*)
-        install (FILES ${GTK_RUNTIME_LIBS}
-            DESTINATION ${CMAKE_INSTALL_BINDIR}
+        set (GTK_RUNTIME_NAME_WE gtk+)
+        set (GTK_RUNTIME_NAME ${GTK_RUNTIME_NAME_WE}.zip)
+        install (CODE "execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory \"${CMAKE_BINARY_DIR}/${LIB_DIR}\") \n \
+                       execute_process(COMMAND \"${CMAKE_COMMAND}\" -E chdir \"${CMAKE_BINARY_DIR}/${LIB_DIR}\" \"${CMAKE_COMMAND}\" -E tar xf \"${GTK_RUNTIME_PATH}/${GTK_RUNTIME_NAME}\")"
             COMPONENT ${SRC_GUI_COMP}
+            )
+        install (DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_DIR}/${GTK_RUNTIME_NAME_WE}/ DESTINATION ./
+            COMPONENT ${SRC_GUI_COMP}
+            PATTERN "${CMAKE_BINARY_DIR}/lib/gtk+/*"
+            )
+        # Nettoyage.
+        set_property (DIRECTORY APPEND PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+            ${CMAKE_BINARY_DIR}/${LIB_DIR}
             )
     endif ()
 endif ()
