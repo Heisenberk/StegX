@@ -18,12 +18,32 @@ endif ()
 # Si on à trouvé GTK+.
 if (GTK_FOUND)
     # Configuration ============================================================
+    
+    # Chemin de l'icône du programme.
+    set (ICON_INSTALL_NAME ${PROJECT_NAME_LC}.png)
+    if (UNIX)
+        set (DESKTOP_INSTALL_DIR /usr/share/applications)
+        set (ICON_INSTALL_DIR /usr/share/pixmaps)
+    elseif (WIN32)
+        set (ICON_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
+    endif ()
+    
+    # Message d'avertissement du header.
+    set (INC_CONFIG_WARN_MSG
+        "Ne pas éditer ce fichier ! Génération automatique par CMake lors de 
+        la configuration du build."
+        )
 
-    # Header commun.
+    # Génération du header.
     set (INC_CONFIG_NAME config.h)
     set (INC_CONFIG_IN_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME}.in)
     set (INC_CONFIG_OUT_FPATH ${CMAKE_CURRENT_SOURCE_DIR}/common/${INC_CONFIG_NAME})
     configure_file (${INC_CONFIG_IN_FPATH} ${INC_CONFIG_OUT_FPATH} @ONLY)
+
+    # Nettoyage.
+    set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
+        ${INC_CONFIG_OUT_FPATH}
+        )
 
     # Sources ==================================================================
 
@@ -32,7 +52,7 @@ if (GTK_FOUND)
     file (GLOB_RECURSE INC *${INC_EXT})
 
     # Dossiers contenant un header.
-    # HEADER_DIRECTORIES(INC_DIRS)
+    # HEADER_DIRECTORIES (INC_DIRS)
     set (INC_DIRS ./)
 
     # Binaire ==================================================================
@@ -68,7 +88,7 @@ if (GTK_FOUND)
         COMPONENT ${SRC_GUI_COMP}
             )
     
-    # Ajoute un raccourci.
+    # Ajoute un raccourci et une icône pour la GUI.
     if (UNIX)
         set (DESKTOP_PATH_OUTPUT
             ${CMAKE_BINARY_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR}/${DESKTOP_DIR})
@@ -77,21 +97,23 @@ if (GTK_FOUND)
             ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
             @ONLY
             )
-        set (DESKTOP_INSTALL_DIR /usr/share/applications)
-        set (ICON_INSTALL_DIR /usr/share/pixmaps)
         if (EXISTS ${DESKTOP_INSTALL_DIR})
             install (FILES ${DESKTOP_PATH_OUTPUT}/${PROJECT_NAME_LC}.desktop
                 DESTINATION ${DESKTOP_INSTALL_DIR})
             if (EXISTS ${ICON_INSTALL_DIR})
                 install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-128x128.png
-                    RENAME ${PROJECT_NAME_LC}.png
+                    RENAME ${ICON_INSTALL_NAME}
                     DESTINATION ${ICON_INSTALL_DIR})
             endif()
         endif()
     elseif (WIN32)
-        install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico
-            RENAME ${PROJECT_NAME_LC}.ico
+        install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.png
             DESTINATION ./
+            RENAME ${ICON_INSTALL_NAME}
+            COMPONENT ${SRC_GUI_COMP})
+        install (FILES ${DESKTOP_PATH}/${PROJECT_NAME_LC}-64x64.ico
+            DESTINATION ./
+            RENAME ${PROJECT_NAME_LC}.ico
             COMPONENT ${SRC_GUI_COMP})
     endif ()
     

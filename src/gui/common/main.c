@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
+#include "config.h"
 #include "ui/ui.h"
 
 /**
@@ -27,8 +28,8 @@ static void activate(GtkApplication *app, ui_t *ui)
     gtk_window_set_title(GTK_WINDOW(window), "StegX");
     gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-    gtk_window_set_icon_from_file(GTK_WINDOW(window),
-            "../src/gui/pic/stegx-55x55.png", NULL); /* A REFAIRE. */
+    if (program_logo())
+        gtk_window_set_icon_from_file(GTK_WINDOW(window), program_logo(), NULL);
 
     /* Construction de la fenêtre avec les widgets puis lancement de
      * l'affichage. */

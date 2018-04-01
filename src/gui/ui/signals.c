@@ -381,8 +381,7 @@ static void about(GtkWidget *widget, struct ui *ui)
         NULL};
     static const gchar *copyright = "© 2018 StegX Team";
     static const gchar *website = "https://github.com/Heisenberk/StegX";
-    static const gchar *logo_path = "../src/gui/pic/stegx-55x55.png";
-    GdkPixbuf *logo = gdk_pixbuf_new_from_file(logo_path, NULL);
+    GdkPixbuf *logo = gdk_pixbuf_new_from_file(program_logo(), NULL);
     /* Initilisation et affichage. */
     gtk_show_about_dialog(GTK_WINDOW(ui->window),
             "authors", authors, "logo", logo,
