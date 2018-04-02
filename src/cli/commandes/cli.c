@@ -72,7 +72,7 @@ void unvalid_line(){
 
 
 void fill_info(stegx_info_t* com,const int argc,char* const* argv){
-
+    if(argc==1){we_are_stegx();}
     int optch;
     extern int opterr;
 
