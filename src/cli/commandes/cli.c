@@ -8,6 +8,7 @@
 
 
 #include "unistd.h"
+#include "stdlib.h"
 #include "stdio.h"
 #include "cli.h"
 #include "libsteg.h"
