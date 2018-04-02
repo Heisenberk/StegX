@@ -7,15 +7,16 @@
 
 
 
-#include "unistd.h"
-#include "stdlib.h"
-#include "stdio.h"
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "cli.h"
 #include "libsteg.h"
+#include <getopt.h>
 
 stegx_info_t* init_stegx_info(){
-    stegx_info_ins_t* com_ins = calloc(sizeof(stegx_info_ins_t));
-    stegx_info_t com* = calloc(sizeof(stegx_info_t));
+    stegx_info_ins_t* com_ins = calloc(1,sizeof(stegx_info_ins_t));
+    stegx_info_t* com = calloc(1,sizeof(stegx_info_t));
     com->host_path = "stdin\0";
     com->res_path = "stdout\0";
     com->ins_info=com_ins;
@@ -41,6 +42,7 @@ void we_are_stegx(){
   printf("AYOUB Pierre - BASKEVITCH Claire - BESSAC Tristan - CAUMES Clément - ");
   printf("DELAUNAY Damien - DOUDOUH Yassin\n\n");
   printf("Faire \033[01m\033[31mstegx --help\033[0m ou \033[01m\033[31mstegx -h \033[0m pour un rappel des commandes.\n\n\n");
+  exit(0);
 }
 
 void help(){

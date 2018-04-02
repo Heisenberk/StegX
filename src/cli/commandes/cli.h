@@ -62,6 +62,6 @@ void check_info(stegx_info_t* com);
  * @brief libère la structure contenant les informations entrées en ligne de commande
  * @param com structure contenant les informations entrées en ligne de commande 
  */
-void dest_stegx_info(stegx_info_t* com)
+void dest_stegx_info(stegx_info_t* com);
 
 #endif
