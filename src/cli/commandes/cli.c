@@ -1,10 +1,29 @@
+/**
+ * @file cli.h
+ * @brief Traitement du lancement en ligne de commande
+ * @details Traitement du lancement en ligne de commande vérifiant les paramètres rentrer par l'utilisateur.
+ */
+
+
+
+
 #include "unistd.h"
 #include "stdio.h"
-#include "stdlib.h"
-#include "getopt.h"
 #include "cli.h"
-
 #include "libsteg.h"
+
+stegx_info_t* init_stegx_info(){
+    stegx_info_ins_t* com_ins = calloc(sizeof(stegx_info_ins_t));
+    stegx_info_t com* = calloc(sizeof(stegx_info_t));
+    com->host_path = "stdin\0";
+    com->res_path = "stdout\0";
+    com->ins_info=com_ins;
+    return com;
+
+
+}
+
+
 
 
 void we_are_stegx(){
@@ -26,17 +45,17 @@ void we_are_stegx(){
 void help(){
     printf("Manuel d'utilisation de stegx\n\n");
     printf("\033[01m\033[32m-d, --dissimule \033[0m\n\t Option de dissimultation.\n\n"
-		    "\033[01m\033[32m-e, --extraire \033[0m\n\t Option d'extraction.\n\n"
-		    "\033[01m\033[32m-o, --hote [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
-		    "\033[01m\033[32m-c, --cache [nom_fichier]\033[0m (si option de dissimulation sélectionnée)"
-		    "\n\t Le nom du fichier à cacher.\n\n"
-		    "\033[01m\033[32m-r, --resultat [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat.\n\n"
-		    "\033[01m\033[32m-p, --password [password]\033[0m (optionnel)\n\t Pour ajouter un mot de passe permettant "
-		    "de rajouter une protection à la dissimulation.\n\n"
-		    "Voici les différents algorithmes que propose l'application :\n"
-		    "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
-		    "\033[01m\033[32m--metadata\033[0m \n"
-		    "\033[01m\033[32m--EOF\033[0m : end of file.\n");
+        "\033[01m\033[32m-e, --extraire \033[0m\n\t Option d'extraction.\n\n"
+        "\033[01m\033[32m-o, --hote [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
+        "\033[01m\033[32m-c, --cache [nom_fichier]\033[0m (si option de dissimulation sélectionnée)"
+        "\n\t Le nom du fichier à cacher.\n\n"
+        "\033[01m\033[32m-r, --resultat [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat.\n\n"
+        "\033[01m\033[32m-p, --password [password]\033[0m (optionnel)\n\t Pour ajouter un mot de passe permettant "
+        "de rajouter une protection à la dissimulation.\n\n"
+        "Voici les différents algorithmes que propose l'application :\n"
+        "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
+        "\033[01m\033[32m--metadata\033[0m \n"
+        "\033[01m\033[32m--EOF\033[0m : end of file.\n");
 
    printf("\n");
    exit(0); 
@@ -83,9 +102,9 @@ void fill_info(stegx_info_t* com,const int argc,char* const* argv){
 
     while ((optch = getopt_long(argc, argv, short_option, long_option, &optindex)) != -1)
     switch (optch) {
-		case 'd':
+    case 'd':
             com->mode=STEGX_MODE_INSERT;
-            com->ins_info = malloc(sizeof(stegx_info_ins_t));
+            
             break;
         case 'e':
              com->mode=STEGX_MODE_EXTRACT;
@@ -132,5 +151,9 @@ void check_info(stegx_info_t* com){
   }
   else {unvalid_line();}
   }
-//test 
 
+void dest_stegx_info(stegx_info_t* com){
+    if (com->ins_info){free(com->ins_info);}
+    free(com);
+
+}
