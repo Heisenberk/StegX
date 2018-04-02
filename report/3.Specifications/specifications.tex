@@ -64,8 +64,6 @@ application StegX. En effet, le langage C propose une programmation procédurale
 ainsi qu'un langage bas niveau proche de la machine. Enfin, la possibilité 
 d'écriture et de lecture de bits et d'accès mémoire avec le langage C correspond 
 à nos besoins. 
-Sachant que StegX proposera une interface graphique, l'utilisation de GTK+ 
-est possible en langage C. 
 C'est donc pour toutes ces raisons que l'équipe de conception de StegX a 
 choisi le langage C pour implémenter l'application. 
 
@@ -324,22 +322,39 @@ pour la dissimulation ou l'extraction.
 \newline
 \end{itemize}
 
-\section{Description des fonctions des différents modules}
+\section{Description des différents modules}
 
-\subsection{Module Interface graphique}
+\subsection{Interface graphique}
 
-Pour l'interface graphique, on utilisera la librairie GTK+. Pour l'implémentation 
-de l'interface graphique, il faudra donc étudier quels widgets utilisés 
-ainsi que les signaux pour mettre en relation ces derniers avec les 
-actions de l'utilisateur. 
+L'interface graphique permettra à un utilisateur de manipuler correctement
+l'application StegX. Ainsi, un utilisateur non initié à l'informatique pourra
+facilement utiliser notre l'application. 
 
-L'interface permettra à l'utilisateur de manipuler correctement l'application 
-StegX. Ainsi, un utilisateur, non adepte à l'informatique, réussira à 
-utiliser l'application. 
-Pour réaliser cette interface, nous allons créé une structure nommée 
-\textit{struct ui} qui va correspondre à l'interface utilisateur. Cette 
-structure va notamment contenir tous les widgets utilisés dans l'interface 
-utilisateur. 
+Dans le cadre du développement de notre logiciel, nous privilégions les
+solutions multiplate-formes et libres. L'idéal serait donc une bibliothèque
+graphique remplissant ces critères, en plus d'être relativement haut niveau et
+utilisable en C. De nombreuses bibliothèques graphiques proposent de tels
+fonctionnalités, par exemple Qt, GTK+, wxWidgets pour ne citer qu'eux. Lors de
+notre précédent projet, nous avions déjà appris à utiliser Qt. Nous souhaitions
+dès lors apprendre à utiliser une nouvelle bibliothèque plutôt que nous baser
+sur nos acquis, nous avons donc opté pour GTK+ qui correspondait à tout notre
+critères.
+
+GTK+ est une bibliothèque graphique libre, multiplate-forme, développée à
+l'origine pour le logiciel de traitement d'image GIMP. Très utilisée dans
+l'environnent de bureau GNOME, cette bibliothèque propose un large panel de
+fonctionnalité, dont le paradigme des widgets pour la création de l'interface et
+celui des signaux pour la gestion de l'interaction avec l'utilisateur.
+Travailler avec GTK+ nous permettra de nous familiariser avec l'environnent et
+les bibliothèques utilisés par GNOME et GTK+, à savoir GDK, GLib, GIO et
+GObject.
+
+Pour écrire ces spécifications, nous avons donc eu à étudier quels widgets
+seront utilisés, ainsi que les signaux à mettre en oeuvre pour mettre en
+relation ces derniers avec les actions de l'utilisateur. Dans le but de stocker
+les informations de l'interface utilisateur, nous allons créer une structure
+nommée \textit{struct ui} qui contiendra tous les widgets utilisés dans
+l'interface ainsi que les différents messages affichés par le programme. 
 
 \begin{lstlisting}[language=c]
 void ui_create (GtkWidget* window, struct ui* ui);
@@ -401,7 +416,7 @@ La structure \textit{struct ui} et les 4 fonctions sont les outils principaux
 pour construire l'interface graphique. Ainsi, cela permet de visualiser 
 en amont le fonctionnement de l'interface graphique de StegX. 
 
-\subsection{Module Interface en ligne de commande}
+\subsection{Module interface en ligne de commande}
 
 Concernant l'interface en ligne de commande, c'est le deuxième moyen pour 
 manipuler l'application StegX. Les utilisateurs savant manipuler le terminal 
@@ -493,7 +508,7 @@ entrées par l'utilisateur.
 \newline 
 \end{itemize}
 
-\subsection{Module Vérification de la compatibilité des fichiers}
+\subsection{Vérification de la compatibilité des fichiers}
 
 D'après l'organigramme créé lors du cahier des charges, ce module prend en 
 entrée les chemins du fichier hôte et du fichier à cacher (pour la dissimulation) ; 
@@ -618,7 +633,7 @@ du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED
 \newline 
 \end{itemize}
 
-\subsection{Module Proposition des algorithmes 
+\subsection{Proposition des algorithmes 
 de stéganographie}
 
 Dans l'organigramme des modules de StegX, nous avons créé un sous-module 
@@ -720,8 +735,7 @@ fonction et 1 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\subsection{Module Détection de l'algorithme de
-stéganographie}
+\subsection{Détection de l'algorithme de stéganographie}
 
 Le sous-module \textit{Détection de l'algorithme de stéganographie} prend en 
 entrée le fichier à analyser. De plus, il récupère grâce à l'interface le 
@@ -778,8 +792,8 @@ comme definition].
 \newline 
 \end{itemize}
 
-\subsection{Module Insertion des données}
-\subsection{Module Extraction}
+\subsection{Insertion des données}
+\subsection{Extraction}
 
 \section{Bilan des informations circulantes entre les modules}
 
