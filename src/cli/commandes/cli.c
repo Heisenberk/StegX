@@ -132,5 +132,5 @@ void check_info(stegx_info_t* com){
   }
   else {unvalid_line();}
   }
-
+//test 
 
