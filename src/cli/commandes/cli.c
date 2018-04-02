@@ -140,7 +140,7 @@ void fill_info(stegx_info_t* com,const int argc,char* const* argv){
 
 void check_info(stegx_info_t* com){
   if (com->mode==STEGX_MODE_INSERT){
-    if((com->host_path != "\0") && (com->ins_info->algo!=-1)){
+    if((com->host_path != NULL) && (com->ins_info->algo!=-1)){
     printf("host_path : %s\n"
             "hidden_path : %s\n"
 	    "res_path : %s\n"
