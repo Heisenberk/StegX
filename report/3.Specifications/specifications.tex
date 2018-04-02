@@ -451,11 +451,18 @@ en ligne de commande et détaille les différents paramètres à spécifier
 pour l'utilisateur. \newline
 
 \begin{lstlisting}[language=c]
-void unvalid_line ();
+void unvalid_line (stegx_info_s* com);
 \end{lstlisting}
 
 Cette fonction avertira l'utilisateur d'une erreur lors du lancement 
 de l'application en ligne de commande et affiche l'aide. \newline
+
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*com :} pointeur sur la structure contenant les informations 
+entrées par l'utilisateur. 
+\newline 
+\end{itemize}
 
 \begin{lstlisting}[language=c]
 void check_info (stegx_info_s* com);
