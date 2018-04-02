@@ -165,7 +165,7 @@ typedef enum type type_e;
 
 L'énumération type expose les différents formats de fichiers avec leurs 
 particularités pour certains. Si le format du fichier hôte ou à analyser 
-est inconnu, cela sera représenté par le type UNKNOWN. 
+est inconnu, cela sera représenté par le type UNKNOWN. \newline
 
 \subsection{Description des types}
 
@@ -333,6 +333,9 @@ de l'interface graphique, il faudra donc étudier quels widgets utilisés
 ainsi que les signaux pour mettre en relation ces derniers avec les 
 actions de l'utilisateur. 
 
+L'interface permettra à l'utilisateur de manipuler correctement l'application 
+StegX. Ainsi, un utilisateur, non adepte à l'informatique, réussira à 
+utiliser l'application. 
 Pour réaliser cette interface, nous allons créé une structure nommée 
 \textit{struct ui} qui va correspondre à l'interface utilisateur. Cette 
 structure va notamment contenir tous les widgets utilisés dans l'interface 
@@ -399,6 +402,89 @@ pour construire l'interface graphique. Ainsi, cela permet de visualiser
 en amont le fonctionnement de l'interface graphique de StegX. 
 
 \subsection{Module Interface en ligne de commande}
+
+Concernant l'interface en ligne de commande, c'est le deuxième moyen pour 
+manipuler l'application StegX. Les utilisateurs savant manipuler le terminal 
+peuvent ainsi faire de la stéganographie. 
+
+\begin{lstlisting}[language=c]
+stegx_info_s* init_stegx_info ();
+\end{lstlisting}
+
+Cette fonction va initialiser la structure contenant les informations 
+entrées en ligne de commande. 
+\newline
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{stegx\_info\_s:} renvoie la structure initialisée. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void fill_info (stegx_info_s* com, const int argc, char* const* argv);
+\end{lstlisting}
+
+La fonction va remplir la structure avec les informations entrées en 
+ligne de commande. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*com :} pointeur sur la structure contenant les informations 
+entrées par l'utilisateur. 
+\item \textit{argc :} nombre d'arguments entrés en ligne de commande. 
+\item \textit{argv :} arguments entrés en ligne de commande. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void we_are_stegx ();
+\end{lstlisting}
+
+Cette fonction va afficher la présentation du projet. \newline
+
+\begin{lstlisting}[language=c]
+void help ();
+\end{lstlisting}
+
+La fonction \textit{help} va afficher l'aide du lancement de l'application 
+en ligne de commande et détaille les différents paramètres à spécifier 
+pour l'utilisateur. \newline
+
+\begin{lstlisting}[language=c]
+void unvalid_line ();
+\end{lstlisting}
+
+Cette fonction avertira l'utilisateur d'une erreur lors du lancement 
+de l'application en ligne de commande et affiche l'aide. \newline
+
+\begin{lstlisting}[language=c]
+void check_info (stegx_info_s* com);
+\end{lstlisting}
+
+Cette fonction vérifiera les informations entrées par l'utilisateur et 
+que l'utilisateur a bien indiqué les informations nécessaires pour 
+la dissimulation ou l'extraction. \newline
+
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*com :} pointeur sur la structure contenant les informations 
+entrées par l'utilisateur. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void dest_stegx_info (stegx_info_s* com);
+\end{lstlisting}
+
+Cette fonction va libérer la structure contenant les informations entrées 
+en ligne de commande. \newline
+
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*com :} pointeur sur la structure contenant les informations 
+entrées par l'utilisateur. 
+\newline 
+\end{itemize}
 
 \subsection{Module Vérification de la compatibilité des fichiers}
 
