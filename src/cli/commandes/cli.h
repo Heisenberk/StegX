@@ -48,7 +48,7 @@ void help();
  * @details Avertie l'utilisateur d'une erreur lors du lancement en ligne de commande et
  * affiche l'aide. 
  */
-void unvalid_line(); 
+void unvalid_line(char* error_info); 
 
 
 

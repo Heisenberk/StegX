@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "maths/test.h"
 #include "types.h"
 #include "commandes/cli.h"
 
