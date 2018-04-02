@@ -333,6 +333,71 @@ de l'interface graphique, il faudra donc étudier quels widgets utilisés
 ainsi que les signaux pour mettre en relation ces derniers avec les 
 actions de l'utilisateur. 
 
+Pour réaliser cette interface, nous allons créé une structure nommée 
+\textit{struct ui} qui va correspondre à l'interface utilisateur. Cette 
+structure va notamment contenir tous les widgets utilisés dans l'interface 
+utilisateur. 
+
+\begin{lstlisting}[language=c]
+void ui_create (GtkWidget* window, struct ui* ui);
+\end{lstlisting}
+
+Cette fonction va permettre de créer entièrement l'interface utilisateur 
+sur une fenêtre donnée. Elle construira les widgets et configure les signaux. 
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{*window :} pointeur vers la fenêtre sur laquelle construire 
+l'interface utilisateur. 
+\item \textit{*ui :} pointeur vers l'interface utilisateur à remplir. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void ui_delete (struct ui* ui);
+\end{lstlisting}
+
+Cette fonction va supprimer l'interface utilisateur. Elle permettra de 
+désallouer la mémoire utilisée pour l'interface utilisateur. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*ui :} pointeur vers l'interface utilisateur à désallouer. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void ui_build (struct ui* ui);
+\end{lstlisting}
+
+Cette fonction va construire la fenêtre principale en ajoutant les conteneurs 
+et les widgets. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*ui :} pointeur vers l'interface utilisateur où il faut construire 
+l'affichage. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+void ui_signal_init (struct ui* ui);
+\end{lstlisting}
+
+Cette fonction va initialiser les signaux et connecter ces derniers aux 
+widgets de la fenêtre principale. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*ui :} pointeur vers l'interface utilisateur où il faut 
+configurer les signaux. 
+\newline 
+\end{itemize}
+
+La structure \textit{struct ui} et les 4 fonctions sont les outils principaux 
+pour construire l'interface graphique. Ainsi, cela permet de visualiser 
+en amont le fonctionnement de l'interface graphique de StegX. 
+
 \subsection{Module Interface en ligne de commande}
 
 \subsection{Module Vérification de la compatibilité des fichiers}
