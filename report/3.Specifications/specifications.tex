@@ -169,35 +169,6 @@ est inconnu, cela sera représenté par le type UNKNOWN. \newline
 
 \subsection{Description des structures}
 
-%\begin{lstlisting}[language=c]
-%struct stegx_infos {
-%    enum type type;
-%    union{
-%        stegx_bmp bmp;
-%        stegx_png png;
-%        stegx_wav wav;
-%        stegx_mp3 mp3;
-%        stegx_avi avi;
-%        stegx_flv flv;
-%    } infos;
-%};
-%typedef struct stegx_infos STEGX_INFOS;
-%\end{lstlisting}
-
-%Cette première structure stegx\_infos permet de stocker les informations 
-%utiles pour chaque format différent afin de le manipuler convenablement 
-%par la suite. 
-%\newline
-%\underline{Paramètres :}
-%\begin{itemize}
-%\item \textit{type} permet de distinguer quel champ il faut manipuler pour l'union 
-%infos. Pour chaque format, il y un ou plusieurs types possibles.
-%\item \textit{infos} est une union en C. Elle permet de choisir un champ parmi
-%ceux qui sont définis. Ainsi, si le fichier hôte est un fichier BMP par exemple, 
-%seul la structure bmp de infos sera initialisée et manipulée par la suite.
-%\newline
-%\end{itemize}
-
 \begin{lstlisting}[language=c]
 struct stegx_info_ins {
     char* hidden_path;
@@ -416,7 +387,7 @@ La structure \textit{struct ui} et les 4 fonctions sont les outils principaux
 pour construire l'interface graphique. Ainsi, cela permet de visualiser 
 en amont le fonctionnement de l'interface graphique de StegX. 
 
-\subsection{Module interface en ligne de commande}
+\subsection{Interface en ligne de commande}
 
 Concernant l'interface en ligne de commande, c'est le deuxième moyen pour 
 manipuler l'application StegX. Les utilisateurs savant manipuler le terminal 
@@ -719,7 +690,7 @@ int stegx_choose_algo_stegano (info_s* infos, stegx_infos_s* user_choices);
 A partir du champ \textit{ins\_info.algo} de la structure \textit{user\_choices}, 
 ainsi que du tableau représentant les algorithmes utilisables (selon les 
 entrées de l'utilisateur), cette fonction change le champ \textit{algo} 
-\textit{infos}. 
+de \textit{infos}. 
 \newline
 \underline{Entrées :} 
 \begin{itemize}
