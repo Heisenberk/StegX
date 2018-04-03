@@ -18,8 +18,8 @@ d'une bibliothèque partagée intégrable dans d'autres projets de développemen
 Statut
 --------------------------------------------------------------------------------
 
-* Interface graphique : Quasi-terminé.
-* Interface en ligne de commande : Quasi-terminé.
+* Interface graphique : Quasi-terminée.
+* Interface en ligne de commande : Quasi-terminée.
 * Bibliothèque : En cours de commencement.
 
 
@@ -212,6 +212,10 @@ Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
 #### -- Nettoyage
 
     make clean
+
+#### -- Réinitialisation
+
+    make reinit
     
 ### - Windows
 
