@@ -9,27 +9,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <gtk/gtk.h>
+#include "misc.h"
 #include "struct.h"
-
-/**
- * @brief Crée une grille
- * @details Crée un widget une grille et l'initialise avec les propriétés voulus
- * dans notre application.
- * @return GtkWidget Pointeur sur le widget.
- */
-static GtkWidget* ui_grid_init()
-{
-    GtkWidget *tab = gtk_grid_new();
-    gtk_grid_set_row_spacing(GTK_GRID(tab), 10);
-    gtk_grid_set_row_homogeneous(GTK_GRID(tab), TRUE);
-    gtk_grid_set_column_spacing(GTK_GRID(tab), 10);
-    gtk_grid_set_column_homogeneous(GTK_GRID(tab), TRUE);
-    gtk_widget_set_margin_bottom(tab, 20);
-    gtk_widget_set_margin_top(tab, 20);
-    gtk_widget_set_margin_start(tab, 20);
-    gtk_widget_set_margin_end(tab, 20);
-    return tab;
-}
 
 /**
  * @brief Crée l'onglet de dissimulation
@@ -112,7 +93,7 @@ static void ui_build_insert(struct ui_insert *ins)
     /* Dialogues. */
     ins->dial_anal_cond = "Un des paramètres requis n'a pas été rempli !\n\n"
         "Veuillez vérifier que le fichier hôte et le fichier à cacher ont bien "
-        "étés choisis.";
+        "été choisis.";
     ins->dial_anal_proc = "Analyse des fichiers en cours... \n\n"
         "Veuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
@@ -122,7 +103,7 @@ static void ui_build_insert(struct ui_insert *ins)
         "Veuillez sélectionner un fichier compatible avec l'application.";
     ins->dial_dissi_cond = "Un des paramètres requis n'a pas été rempli ! \n\n"
         "Veuillez vérifier que le dossier et le nom du fichier à créer ont bien "
-        "étés choisis.";
+        "été choisis.";
     ins->dial_dissi_proc = "Dissimulation des données en cours... \n\n"
         "Veuillez patienter.";
     ins->dial_dissi_end = "Dissimulation des données terminée avec succès.";
@@ -176,7 +157,7 @@ static void ui_build_extrac(struct ui_extrac *extr)
     /* Dialogues. */
     extr->dial_cond = "Un des paramètres requis n'a pas été rempli ! \n\n"
         "Veuillez vérifier que le fichier hôte et que le dossier du "
-        "fichier à créer ont bien étés choisis.";
+        "fichier à créer ont bien été choisis.";
     extr->dial_proc = "Extraction des données en cours... \n\n"
         "Veuillez patienter.";
     extr->dial_end = "Extraction des données terminée avec succès.";

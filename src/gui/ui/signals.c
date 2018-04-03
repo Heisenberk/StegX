@@ -11,6 +11,7 @@
 #include <gtk/gtk.h>
 #include "common/config.h"
 #include "struct.h"
+#include "misc.h"
 
 /** Nombre d'algorithme à proposer. */
 #define ALGO_NB 3
@@ -122,18 +123,13 @@ static void insert_anal_start(GtkWidget *widget, struct ui *ui)
     /* Si les conditions nécéssaires ne sont pas remplies. */
     if (!(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc)))
             || !(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)))) {
-        ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_WARNING, GTK_BUTTONS_CANCEL, ui->insert.dial_anal_cond, NULL);
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_anal_cond, UI_DIAL_WARN);
         gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
         gtk_widget_destroy(ui->insert.dial);
     }
     else {
-        /* Création du dialogue à afficher. */
-        ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_INFO, GTK_BUTTONS_NONE, ui->insert.dial_anal_proc, NULL);
-        /* Lancement du thread de travaille. */
+        /* Création du dialogue d'attente puis lancement du tread de travaille. */
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_anal_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(insert_anal_do, ui);
         /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->insert.but_txt_anal_proc);
@@ -160,14 +156,9 @@ static gboolean insert_anal_do(gpointer data)
 
 static void insert_anal_end(struct ui *ui)
 {
-    gchar *dial_msg = NULL;
-    GtkMessageType dial_type = 0;
-    GtkButtonsType dial_but = 0;
     /* Si l'anayse à réussie. */
-    if (ret == 0) {
-        dial_msg = ui->insert.dial_anal_end;
-        dial_type = GTK_MESSAGE_INFO;
-        dial_but = GTK_BUTTONS_OK;
+    if (!ret) {
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_anal_end, UI_DIAL_INFO_OK);
         /* Mise à jour du bouton pour la dissimulation. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_dissi);
         /* Mise à jour du signal pour lancer la disimulation. */
@@ -190,16 +181,11 @@ static void insert_anal_end(struct ui *ui)
     }
     /* Si l'analyse à échouée. */
     else {
-        dial_msg = ui->insert.dial_anal_err;
-        dial_type = GTK_MESSAGE_ERROR;
-        dial_but = GTK_BUTTONS_CANCEL;
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_anal_err, UI_DIAL_ERR);
         /* Mise à jour du bouton pour relancer l'analyse. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_anal);
     }
     /* Affichage du dialogue de fin. */
-    ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            dial_type, dial_but, dial_msg, NULL);
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
     gtk_widget_destroy(ui->insert.dial);
 }
@@ -209,18 +195,13 @@ static void insert_dissi_start(GtkWidget *widget, struct ui *ui)
     /* Si les conditions nécéssaires ne sont pas remplies. */
     if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
             || !strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "")) {
-        ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_WARNING, GTK_BUTTONS_CANCEL, ui->insert.dial_dissi_cond, NULL);
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_dissi_cond, UI_DIAL_WARN);
         gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
         gtk_widget_destroy(ui->insert.dial);
     }
     else {
-        /* Création du dialogue à afficher. */
-        ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_INFO, GTK_BUTTONS_NONE, ui->insert.dial_dissi_proc, NULL);
-        /* Lancement du thread de travaille. */
+        /* Création du dialogue à afficher puis lancement du thread de travaille. */
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_dissi_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(insert_dissi_do, ui);
         /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->insert.but_txt_dissi_proc);
@@ -251,29 +232,19 @@ static gboolean insert_dissi_do(gpointer data)
 
 static void insert_dissi_end(struct ui *ui)
 {
-    gchar *dial_msg = NULL;
-    GtkMessageType dial_type = 0;
-    GtkButtonsType dial_but = 0;
     /* Si l'insertion à réussie. */
-    if (ret == 0) {
-        dial_msg = ui->insert.dial_dissi_end;
-        dial_type = GTK_MESSAGE_INFO;
-        dial_but = GTK_BUTTONS_OK;
+    if (!ret) {
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_dissi_end, UI_DIAL_INFO_OK);
         insert_reset(NULL, ui);
     }
     /* Si l'insertion à échouée. */
     else {
-        dial_msg = ui->insert.dial_dissi_err;
-        dial_type = GTK_MESSAGE_ERROR;
-        dial_but = GTK_BUTTONS_CANCEL;
+        ui->insert.dial = ui_msg_dial_new(ui->window, ui->insert.dial_dissi_err, UI_DIAL_ERR);
         /* Mise à jour du bouton pour relancer l'insertion. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but),
                 ui->insert.but_txt_dissi);
     }
     /* Affichage du dialogue de fin. */
-    ui->insert.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            dial_type, dial_but, dial_msg, NULL);
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
     gtk_widget_destroy(ui->insert.dial);
 }
@@ -300,18 +271,13 @@ static void insert_extrac_start(GtkWidget *widget, struct ui *ui)
     /* Si les conditions nécéssaires ne sont pas remplies. */
     if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
             || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
-        ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_WARNING, GTK_BUTTONS_CANCEL, ui->extrac.dial_cond, NULL);
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
         gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
         gtk_widget_destroy(ui->extrac.dial);
     }
     else {
-        /* Création du dialogue à afficher. */
-        ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-                GTK_MESSAGE_INFO, GTK_BUTTONS_NONE, ui->extrac.dial_proc, NULL);
-        /* Lancement du thread de travaille. */
+        /* Création du dialogue d'attente puis lancement du thread de travaille. */
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(extrac_do, ui);
         /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->extrac.but_txt_proc);
@@ -340,28 +306,16 @@ static gboolean extrac_do(gpointer data)
 
 static void extrac_end(struct ui *ui)
 {
-    gchar *dial_msg = NULL;
-    GtkMessageType dial_type = 0;
-    GtkButtonsType dial_but = 0;
     /* Si l'extraction à réussie. */
-    if (ret == 0) {
-        dial_msg = ui->extrac.dial_end;
-        dial_type = GTK_MESSAGE_INFO;
-        dial_but = GTK_BUTTONS_OK;
-    }
+    if (!ret)
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_end, UI_DIAL_INFO_OK);
     /* Si l'extraction à échouée. */
-    else {
-        dial_msg = ui->extrac.dial_err;
-        dial_type = GTK_MESSAGE_ERROR;
-        dial_but = GTK_BUTTONS_CANCEL;
-    }
+    else
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_err, UI_DIAL_ERR);
     /* Mise à jour du bouton pour relancer l'extraction. */
     gtk_button_set_label(GTK_BUTTON(ui->extrac.but),
             ui->extrac.but_txt);
     /* Affichage du dialogue de fin. */
-    ui->extrac.dial = gtk_message_dialog_new(GTK_WINDOW(ui->window),
-            GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
-            dial_type, dial_but, dial_msg, NULL);
     gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
     gtk_widget_destroy(ui->extrac.dial);
 }
