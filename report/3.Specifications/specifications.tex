@@ -539,20 +539,20 @@ de la compatibilité des fichiers en entrée.
 \newline 
 \end{itemize}
 
-\begin{lstlisting}[language=c]
-int stegx_test_file_not_empty (FILE* file);
-\end{lstlisting}
+%\begin{lstlisting}[language=c]
+%int stegx_test_file_not_empty (FILE* file);
+%\end{lstlisting}
 
-Cette fonction teste si le fichier n'est pas vide. 
-\newline
-\underline{Entrée :}
-\begin{itemize}
-\item \textit{file :} fichier à tester.
-\end{itemize}
-\underline{Sortie :} 
-\begin{itemize}
-\item \textit{int :} renvoie 0 si le fichier est vide ou qu'il n'existe pas ; 1 sinon. 
-\newline \end{itemize}
+%Cette fonction teste si le fichier n'est pas vide. 
+%\newline
+%\underline{Entrée :}
+%\begin{itemize}
+%\item \textit{file :} fichier à tester.
+%\end{itemize}
+%\underline{Sortie :} 
+%\begin{itemize}
+%\item \textit{int :} renvoie 0 si le fichier est vide ou qu'il n'existe pas ; 1 sinon. 
+%\newline \end{itemize}
 
 \begin{lstlisting}[language=c]
 type_e stegx_test_file_bmp (FILE* file);
@@ -616,11 +616,11 @@ avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux
 proposés. 
 
 \begin{lstlisting}[language=c]
-void* stegx_suggest_algo_stegano (info_s* infos, stegx_choices_s* user_choices);
+void* stegx_suggest_algo_stegano (info_s* infos);
 \end{lstlisting}
 
-Cette fonction va remplir les champs \textit{passwd} et \textit{host.file\_type} 
-de \textit{info} pour le sous-module suivant \textit{insertion des données}. 
+Cette fonction va remplir le champ \textit{host.file\_type} 
+de \textit{info} pour le sous-module \textit{insertion des données}. 
 De plus, elle va changer les valeurs du tableau représentant les algorithmes 
 de stéganographie utilisés. Ainsi, à partir de ce tableau, l'interface graphique 
 proposera certains algorithmes, et l'interface en ligne de commande comparera 
@@ -630,8 +630,6 @@ ce tableau avec le choix de l'utilisateur.
 \begin{itemize}
 \item \textit{infos :} structure représentant toutes les informations pour 
 réaliser l'insertion par la suite. 
-\item \textit{user\_choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -656,8 +654,8 @@ l'insertion.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
-fonction et 1 si tout se passe bien. 
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien. 
 \newline 
 \end{itemize}
 
@@ -678,8 +676,8 @@ l'insertion.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{int :} renvoie 0 si le fichier hôte ne peut pas cacher des 
-données selon l'algorithme, et 1 s'il le peut. 
+\item \textit{int :} renvoie 1 si le fichier hôte ne peut pas cacher des 
+données selon l'algorithme, et 0 s'il le peut. 
 \newline 
 \end{itemize}
 
@@ -701,8 +699,8 @@ l'utilisateur pour les deux interfaces.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
-fonction et 1 si tout se passe bien.  
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien.  
 \newline 
 \end{itemize}
 
@@ -721,8 +719,8 @@ int stegx_read_signature_app (info_s* infos, stegx_choices_s user_choices);
 \end{lstlisting}
 
 Cette fonction va lire la signature insérée dans le fichier à analyser. 
-Cette signature est constituée d'un octet représentant quel algorithme a 
-été utilisé, avec le nom et la taille du fichier caché.  
+Cette signature permettra de stocker les informations nécessaires à 
+l'extraction des données cachées. 
 \newline
 \underline{Entrées :} 
 \begin{itemize}
@@ -733,28 +731,24 @@ l'utilisateur.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{int :} renvoie 0 si il y a une erreur détectée dans cette 
-fonction et 1 si tout se passe bien.  
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien.  
 \newline 
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void* detect_algo_stegano (info_s* infos, stegx_choices_s* user_choices); 
+void* detect_algo_stegano (info_s* infos); 
 \end{lstlisting}
 
-Cette fonction va tout d'abord récupérer le mot de passe choisi par 
-l'utilisateur et initialisé le champ \textit{infos.passwd}. Ensuite, à 
-l'aide de la fonction \textit{fill\_host\_file\_type}, le champ-union 
-\textit{infos.host.file\_type} sera initialisé. Enfin, cette fonction appellera 
-\textit{stegx\_read\_signature\_app} pour connaître les informations concernant 
-le fichier caché. 
+Cette fonction va , à l'aide de la fonction \textit{fill\_host\_file\_type}, 
+le champ-union \textit{infos.host.file\_type} sera initialisé. Enfin, cette 
+fonction appellera \textit{stegx\_read\_signature\_app} pour connaître les 
+informations concernant le fichier caché. 
 \newline
 \underline{Entrées :} 
 \begin{itemize}
 \item \textit{infos :} structure représentant toutes les informations pour 
-l'extraction.  
-\item \textit{user\_choices :} structure représentant les choix de 
-l'utilisateur. 
+l'extraction. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
