@@ -97,7 +97,7 @@ static void ui_build_insert(struct ui_insert *ins)
     ins->dial_anal_proc = "Analyse des fichiers en cours... \n\n"
         "Veuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
-        "terminéé. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
+        "terminée. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
         "lors de la dissimulation dans le menu déroulant prévu à cet effet.";
     ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n\n"
         "Veuillez sélectionner un fichier compatible avec l'application.";
