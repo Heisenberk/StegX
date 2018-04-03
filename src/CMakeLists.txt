@@ -113,6 +113,10 @@ elseif (WIN32)
     set (CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
     set (CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
     set (CPACK_PACKAGE_INSTALL_DIRECTORY ${PROJECT_NAME})
+    # Préfixe d'installation.
+    set (CPACK_NSIS_INSTALL_ROOT "${CMAKE_INSTALL_PREFIX}")
+    get_filename_component (CPACK_NSIS_INSTALL_ROOT "${CPACK_NSIS_INSTALL_ROOT}" DIRECTORY)
+    string (REPLACE "/" "\\\\" CPACK_NSIS_INSTALL_ROOT "${CPACK_NSIS_INSTALL_ROOT}")
 endif ()
 
 # Configuration générale puis lancement de CPack.

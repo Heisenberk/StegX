@@ -1,6 +1,7 @@
 # Configuration files
 tags
 .gdbinit
+src/gui/common/config.h
 
 # Generated files
 *.pdf
