@@ -41,6 +41,12 @@ if (GTK_FOUND)
     set (INC_CONFIG_OUT_FPATH ${CMAKE_CURRENT_BINARY_DIR}/${INC_CONFIG_DIR}/${INC_CONFIG_NAME})
     configure_file (${INC_CONFIG_IN_FPATH} ${INC_CONFIG_OUT_FPATH} @ONLY)
 
+    # Commande pour regénérer le header si besoin.
+    add_custom_command (OUTPUT ${INC_CONFIG_OUT_FPATH}
+        COMMAND ${CMAKE_COMMAND} ${CMAKE_BINARY_DIR}
+        DEPENDS ${INC_CONFIG_IN_FPATH}
+        )
+
     # Nettoyage.
     set_property (DIRECTORY PROPERTY ADDITIONAL_MAKE_CLEAN_FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${INC_CONFIG_DIR}
@@ -61,7 +67,7 @@ if (GTK_FOUND)
     # Nom de la cible et de l'exécutable.
     set (TARGET ${SRC_GUI_TARGET})
     # Sources et dépendances de l'exécutable.
-    add_executable (${TARGET} ${SRC} ${INC})
+    add_executable (${TARGET} ${SRC} ${INC} ${INC_CONFIG_OUT_FPATH})
 
     # Compilation ==============================================================
 
