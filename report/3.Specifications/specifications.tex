@@ -189,17 +189,17 @@ l'on utilisera pour dissimuler ce dernier. \newline
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-struct stegx_info {
+struct stegx_choices {
     char* host_path;
     char* res_path;                         
     char* passwd;                           
     mode_e mode;                            
     stegx_info_ins_s* ins_info;             
 };
-typedef struct stegx_info stegx_info_s;
+typedef struct stegx_choices stegx_choices_s;
 \end{lstlisting}
 
-La structure stegx\_info représente la structure publique (de la bibliothèque
+La structure stegx\_choices représente la structure publique (de la bibliothèque
 de StegX). Elle représente les données choisies par l'utilisateur s'il veut 
 dissimuler ou extraire des données. \newline
 \underline{Paramètres :}
@@ -235,7 +235,7 @@ struct host_info {
 typedef struct host_info host_info_s;
 \end{lstlisting}
 
-Cette structure stegx\_infos permet de stocker les informations 
+Cette structure host\_info permet de stocker les informations 
 utiles pour chaque format différent afin de le manipuler convenablement 
 par la suite. 
 \newline
@@ -265,7 +265,7 @@ struct info {
 typedef struct info info_s;
 \end{lstlisting}
 
-La structure info\_s correspond à la structure privée de la bibliothèque. 
+La structure info correspond à la structure privée de la bibliothèque. 
 Elle va contenir toutes les informations utiles pour la dissimulation ou 
 l'extraction des données. 
 \newline
@@ -394,7 +394,7 @@ manipuler l'application StegX. Les utilisateurs savant manipuler le terminal
 peuvent ainsi faire de la stéganographie. 
 
 \begin{lstlisting}[language=c]
-stegx_info_s* init_stegx_info ();
+stegx_choices_s* init_stegx_choices ();
 \end{lstlisting}
 
 Cette fonction va initialiser la structure contenant les informations 
@@ -407,7 +407,7 @@ entrées en ligne de commande.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void fill_info (stegx_info_s* com, const int argc, char* const* argv);
+void fill_info (stegx_choices_s* com, const int argc, char* const* argv);
 \end{lstlisting}
 
 La fonction va remplir la structure avec les informations entrées en 
@@ -437,7 +437,7 @@ en ligne de commande et détaille les différents paramètres à spécifier
 pour l'utilisateur. \newline
 
 \begin{lstlisting}[language=c]
-void unvalid_line (stegx_info_s* com);
+void unvalid_line (stegx_choices_s* com);
 \end{lstlisting}
 
 Cette fonction avertira l'utilisateur d'une erreur lors du lancement 
@@ -451,7 +451,7 @@ entrées par l'utilisateur.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void check_info (stegx_info_s* com);
+void check_info (stegx_choices_s* com);
 \end{lstlisting}
 
 Cette fonction vérifiera les informations entrées par l'utilisateur et 
@@ -466,7 +466,7 @@ entrées par l'utilisateur.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void dest_stegx_info (stegx_info_s* com);
+void dest_stegx_choices (stegx_choices_s* com);
 \end{lstlisting}
 
 Cette fonction va libérer la structure contenant les informations entrées 
@@ -493,7 +493,7 @@ bibliothèque \textit{info\_s}.
 \newline
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_dissimulation (stegx_info_s* infos);
+info_s* stegx_check_compatibility_dissimulation (stegx_choices_s* infos);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité des fichiers hôte et à cacher pour
@@ -517,7 +517,7 @@ de la compatibilité des fichiers en entrée.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-info_s* stegx_check_compatibility_extraction (stegx_info_s* infos);
+info_s* stegx_check_compatibility_extraction (stegx_choices_s* infos);
 \end{lstlisting}
 
 Cette fonction analyse la compatibilité du fichier à analyser pour l'extraction. 
@@ -616,7 +616,7 @@ avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux
 proposés. 
 
 \begin{lstlisting}[language=c]
-void* stegx_suggest_algo_stegano (info_s* infos, stegx_info_s* user_choices);
+void* stegx_suggest_algo_stegano (info_s* infos, stegx_choices_s* user_choices);
 \end{lstlisting}
 
 Cette fonction va remplir les champs \textit{passwd} et \textit{host.file\_type} 
@@ -684,7 +684,7 @@ données selon l'algorithme, et 1 s'il le peut.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_choose_algo_stegano (info_s* infos, stegx_infos_s* user_choices); 
+int stegx_choose_algo_stegano (info_s* infos, stegx_choices_s* user_choices); 
 \end{lstlisting}
 
 A partir du champ \textit{ins\_info.algo} de la structure \textit{user\_choices}, 
@@ -717,7 +717,7 @@ utilisé par l'émetteur et que l'application doit détecter pour extraire
 correctement les données cachées. 
 
 \begin{lstlisting}[language=c]
-int stegx_read_signature_app (info_s* infos, stegx_info_s user_choices); 
+int stegx_read_signature_app (info_s* infos, stegx_choices_s user_choices); 
 \end{lstlisting}
 
 Cette fonction va lire la signature insérée dans le fichier à analyser. 
@@ -739,7 +739,7 @@ fonction et 1 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void* detect_algo_stegano (info_s* infos, stegx_info_s* user_choices); 
+void* detect_algo_stegano (info_s* infos, stegx_choices_s* user_choices); 
 \end{lstlisting}
 
 Cette fonction va tout d'abord récupérer le mot de passe choisi par 
