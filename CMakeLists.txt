@@ -124,3 +124,12 @@ if (NOT MINGW AND NOT MSYS)
     enable_testing ()
     add_subdirectory (${TEST_DIR})
 endif ()
+
+# Divers =======================================================================
+
+# Cible de réinitialisation de l'arborescence de build (à faire par exemple si
+# on rajoute un fichier source).
+add_custom_target (reinit
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+    COMMAND ${CMAKE_COMMAND} ${CMAKE_BINARY_DIR}
+    )

@@ -18,9 +18,9 @@ d'une bibliothèque partagée intégrable dans d'autres projets de développemen
 Statut
 --------------------------------------------------------------------------------
 
-* Interface graphique : développement non commencé.
-* Interface en ligne de commande : développement non commencé.
-* Bibliothèque : développement non commencé.
+* Interface graphique : Quasi-terminé.
+* Interface en ligne de commande : Quasi-terminé.
+* Bibliothèque : En cours de commencement.
 
 
 ---
@@ -151,9 +151,10 @@ Commandes et cibles
 --------------------------------------------------------------------------------
 
 La configuration de la compilation est à faire en première. Toutes les autres
-commandes sont à effectuer dans le dossier _build_. Lors d'un ajout d'un fichier
-source au projet, ou lors d'une rencontre avec un bug lors de la
-configuration/compilation, supprimez le dossier _build_ et recommencez la
+commandes sont à effectuer dans le dossier _build_. Lors de l'ajout d'un fichier
+source au projet ou lors de la rencontre d'un bug lors de la
+configuration/compilation, utilisez la commande de réinitialisation de
+l'arborescence, sinon, supprimez le dossier _build_ et recommencez la
 configuration. Les commandes entre _[  ]_ sont optionnelles.
 
 Sur **Windows**, si une erreur survient, faites attention de placer le dossier
@@ -282,3 +283,10 @@ Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
         make clean
     MinGW & MSVC :
         cmake --build . --target clean
+
+#### -- Réinitialisation
+
+    MSYS :
+        make reinit
+    MinGW & MSVC :
+        cmake --build . --target reinit
