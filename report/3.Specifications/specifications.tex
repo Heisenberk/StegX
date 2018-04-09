@@ -258,11 +258,102 @@ par la suite.
 et le fichier à analyser pour le cas de l'extraction. 
 \item \textit{type} permet de distinguer quel champ il faut manipuler pour l'union 
 infos. Pour chaque format, il y un ou plusieurs types possibles.
-\item \textit{infos} est une union en C. Elle permet de choisir un champ parmi
+\item \textit{file\_type} est une union en C. Elle permet de choisir un champ parmi
 ceux qui sont définis. Ainsi, si le fichier hôte est un fichier BMP par exemple, 
 seule la structure bmp de infos sera initialisée et manipulée par la suite.
 \newline
 \end{itemize}
+
+\begin{lstlisting}[language=c]
+struct bmp {
+	uint32_t header_size;
+	uint32_t data_size;
+	uint32_t pixel_number;
+	uint32_t pixel_size;
+};
+typedef struct bmp bmp_s;
+\end{lstlisting}
+
+La structure \textit{bmp\_s} correspond aux informations 
+utiles pour le format BMP.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{header\_size} représente la taille du Header (contenant les 
+informations pour interpréter correctement un fichier BMP), soit l'octet 
+du début des données brutes. 
+\item \textit{data\_size} représente la taille en octets des données brutes 
+(représenté ici par des composantes de pixels). On aura donc 
+\textit{[taille fichier]} = \textit{header\_size} + \textit{data\_size}.
+\item \textit{pixel\_number} représente le nombre de bits par pixel. 
+\item \textit{pixel\_size} représente le nombre de pixels dans l'image BMP. 
+\newline
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+struct png {
+	uint32_t header_size;
+	uint32_t data_size;
+};
+typedef struct png png_s;
+\end{lstlisting}
+
+La structure \textit{png\_s} correspond aux informations 
+utiles pour le format PNG.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{header\_size} représente la taille du Header (contenant les 
+informations pour interpréter correctement un fichier PNG), soit l'octet 
+du début des données représentant l'image réelle. 
+\item \textit{data\_size} représente la taille en octets des données compressées. 
+On aura donc 
+\textit{[taille fichier]} = \textit{header\_size} + \textit{data\_size}.
+\newline
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+struct wav {
+	uint32_t header_size;
+	uint32_t data_size;
+	uint32_t chunk_size;
+};
+typedef struct wav wav_s;
+\end{lstlisting}
+
+La structure \textit{wav\_s} correspond aux informations 
+utiles pour le format WAV.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{header\_size} représente la taille du Header (contenant les 
+informations pour interpréter correctement un fichier WAV), soit l'octet 
+du début des données brutes. 
+\item \textit{data\_size} représente la taille en octets des données brutes 
+(représenté ici par du son). On aura donc 
+\textit{[taille fichier]} = \textit{header\_size} + \textit{data\_size}.
+\item \textit{chunk\_size} représente le nombre de bits par sample (échantillon 
+de son). 
+\newline
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+struct mp3 {
+};
+typedef struct mp3 mp3_s;
+\end{lstlisting}
+
+\begin{lstlisting}[language=c]
+struct avi {
+};
+typedef struct avi avi_s;
+\end{lstlisting}
+
+\begin{lstlisting}[language=c]
+struct flv {
+};
+typedef struct flv flv_s;
+\end{lstlisting}
 
 \begin{lstlisting}[language=c]
 struct info {
@@ -310,7 +401,6 @@ choisi par l'utilisateur.
 \end{itemize}
 
 \section{Description des différents modules}
-
 \subsection{Interface graphique}
 
 L'interface graphique permettra à un utilisateur de manipuler correctement
