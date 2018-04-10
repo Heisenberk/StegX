@@ -351,9 +351,24 @@ typedef struct avi avi_s;
 
 \begin{lstlisting}[language=c]
 struct flv {
+	uint32_t nb_video_tag;
+	uint32_t nb_metadata_tag;
+	uint32_t file_size;
 };
 typedef struct flv flv_s;
 \end{lstlisting}
+
+La structure \textit{flv\_s} correspond aux informations 
+utiles pour le format FLV.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{nb\_video\_tag} représente le nombre de chunks de video dans 
+le fichier. 
+\item \textit{nb\_metadat\_tag} représente le nombre de chunks de metadonnées. 
+\item \textit{file\_size} représente la taille du fichier. 
+\newline
+\end{itemize}
 
 \begin{lstlisting}[language=c]
 struct info {
