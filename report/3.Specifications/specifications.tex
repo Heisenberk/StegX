@@ -174,20 +174,18 @@ typedef enum method method_e;
 L'énumération \textit{method} permettra de connaître si l'utilisateur choisit
 d'utiliser la méthode de protection des données ou non. \newline
 
-\subsection{Description des types}
-
 \subsection{Description des structures}
 
 \begin{lstlisting}[language=c]
-struct stegx_info_ins {
+struct stegx_info_insert {
     char* hidden_path;
     algo_e algo;
 };
-typedef struct stegx_info_ins stegx_info_ins_s;
+typedef struct stegx_info_insert stegx_info_insert_s;
 \end{lstlisting}
 
 La structure stegx\_info\_ins permet de représenter les informations 
-nécessaire sur le fichier à cacher, c'est-à-dire son chemin et l'algo que 
+nécessaires sur le fichier à cacher, c'est-à-dire son chemin et l'algorithme que 
 l'on utilisera pour dissimuler ce dernier. \newline
 \underline{Paramètres :}
 \begin{itemize}
@@ -202,16 +200,14 @@ struct stegx_choices {
     char* host_path;
     char* res_path;                         
     char* passwd;                           
-    mode_e mode;   
-    algo_e* proposition;                         
-    stegx_info_ins_s* ins_info;             
+    mode_e mode;                        
+    stegx_info_insert_s* insert_info;             
 };
 typedef struct stegx_choices stegx_choices_s;
 \end{lstlisting}
 
-La structure stegx\_choices représente la structure publique (de la bibliothèque
-de StegX). Elle représente les données choisies par l'utilisateur s'il veut 
-dissimuler ou extraire des données. \newline
+La structure stegx\_choices représente les données choisies par l'utilisateur 
+s'il veut dissimuler ou extraire des données. \newline
 \underline{Paramètres :}
 \begin{itemize}
 \item \textit{host\_path} est une chaine de caractères représentant le chemin
@@ -223,10 +219,7 @@ choisi par l'utilisateur. Celui-ci est optionnel et si l'utilisateur choisit
 de ne pas en mettre, passwd vaudra NULL. 
 \item \textit{mode} est une variable d'énumération représentant le mode que 
 l'utilisateur a choisi : dissimulation (STEGX\_MODE\_INSERT)ou extraction 
-(STEGX\_MODE\_EXTRACT). 
-\item \textit{* proposition} représente la proposition des algorithmes que 
-l'utilisateur pourra utiliser pour la dissimulation. Si l'utilisateur peut 
-utiliser l'algorithme LSB, il y aura une case égale à \textit{STEGX\_ALGO\_LSB}.  
+(STEGX\_MODE\_EXTRACT).  
 \item \textit{* ins\_info} est un pointeur sur la structure stockant les informations 
 sur le fichier à cacher. Elle est requise si le champ mode est à STEGX\_MODE\_INSERT. 
 \newline
@@ -243,7 +236,7 @@ struct host_info {
         struct mp3 mp3;
         struct avi avi;
         struct flv flv;
-    } file_type;
+    } file_info;
 };
 typedef struct host_info host_info_s;
 \end{lstlisting}
@@ -257,8 +250,8 @@ par la suite.
 \item \textit{host} représente le fichier hôte pour le cas de la dissimulation 
 et le fichier à analyser pour le cas de l'extraction. 
 \item \textit{type} permet de distinguer quel champ il faut manipuler pour l'union 
-infos. Pour chaque format, il y un ou plusieurs types possibles.
-\item \textit{file\_type} est une union en C. Elle permet de choisir un champ parmi
+\textit{infos}. Pour chaque format, il y un ou plusieurs types possibles.
+\item \textit{file\_info} est une union en C. Elle permet de choisir un champ parmi
 ceux qui sont définis. Ainsi, si le fichier hôte est un fichier BMP par exemple, 
 seule la structure bmp de infos sera initialisée et manipulée par la suite.
 \newline
@@ -279,7 +272,7 @@ utiles pour le format BMP.
 \newline
 \underline{Paramètres :}
 \begin{itemize}
-\item \textit{header\_size} représente la taille du Header (contenant les 
+\item \textit{header\_size} représente la taille du header (contenant les 
 informations pour interpréter correctement un fichier BMP), soit l'octet 
 du début des données brutes. 
 \item \textit{data\_size} représente la taille en octets des données brutes 
@@ -303,7 +296,7 @@ utiles pour le format PNG.
 \newline
 \underline{Paramètres :}
 \begin{itemize}
-\item \textit{header\_size} représente la taille du Header (contenant les 
+\item \textit{header\_size} représente la taille du header (contenant les 
 informations pour interpréter correctement un fichier PNG), soit l'octet 
 du début des données représentant l'image réelle. 
 \item \textit{data\_size} représente la taille en octets des données compressées. 
@@ -326,7 +319,7 @@ utiles pour le format WAV.
 \newline
 \underline{Paramètres :}
 \begin{itemize}
-\item \textit{header\_size} représente la taille du Header (contenant les 
+\item \textit{header\_size} représente la taille du header (contenant les 
 informations pour interpréter correctement un fichier WAV), soit l'octet 
 du début des données brutes. 
 \item \textit{data\_size} représente la taille en octets des données brutes 
@@ -385,8 +378,8 @@ struct info {
 typedef struct info info_s;
 \end{lstlisting}
 
-La structure info correspond à la structure privée de la bibliothèque. 
-Elle va contenir toutes les informations utiles pour la dissimulation ou 
+La structure info correspond à la structure interne à la bibliothèque :
+elle va contenir toutes les informations utiles pour la dissimulation ou 
 l'extraction des données. 
 \newline
 \underline{Paramètres :}
@@ -515,7 +508,7 @@ manipuler l'application StegX. Les utilisateurs savant manipuler le terminal
 peuvent ainsi faire de la stéganographie. 
 
 \begin{lstlisting}[language=c]
-stegx_choices_s* init_stegx_choices ();
+stegx_choices_s* init_choices ();
 \end{lstlisting}
 
 Cette fonction va initialiser la structure contenant les informations 
@@ -523,7 +516,7 @@ entrées en ligne de commande.
 \newline
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{stegx\_info\_s:} renvoie la structure initialisée. 
+\item \textit{stegx\_choices\_s:} renvoie la structure initialisée. 
 \newline 
 \end{itemize}
 
@@ -534,7 +527,7 @@ void fill_info (stegx_choices_s* com, const int argc, char* const* argv);
 La fonction va remplir la structure avec les informations entrées en 
 ligne de commande. 
 \newline
-\underline{Entrée :} 
+\underline{Entrées :} 
 \begin{itemize}
 \item \textit{*com :} pointeur sur la structure contenant les informations 
 entrées par l'utilisateur. 
@@ -573,7 +566,7 @@ entrées par l'utilisateur.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-void dest_stegx_choices (stegx_choices_s* com);
+void delete_choices (stegx_choices_s* com);
 \end{lstlisting}
 
 Cette fonction va libérer la structure contenant les informations entrées 
@@ -588,15 +581,13 @@ entrées par l'utilisateur.
 
 \subsection{Vérification de la compatibilité des fichiers}
 
-D'après l'organigramme créé lors du cahier des charges, ce module prend en 
-entrée les chemins du fichier hôte et du fichier à cacher (pour la dissimulation) ; 
+D'après l'organigramme créé lors du cahier des charges, ce module récupère 
+les chemins du fichier hôte et du fichier à cacher (pour la dissimulation) ; 
 le chemin du fichier à analyser (pour l'extraction). Il va interagir avec 
 le système de fichiers pour pouvoir vérifier la compatibilité des fichiers en entrée. 
-Enfin, après sa vérification, ce module va envoyer les fichiers aux modules 
+Enfin, après la vérification, les fichiers vérifiés seront envoyés aux modules 
 \textit{Proposition des algorithmes de stéganographie} (pour dissimuler) ou 
-\textit{Détection de l'algorithme de stéganographie} (pour extraire). 
-Ainsi, cette communication se fera à l'aide de la structure privée de la 
-bibliothèque \textit{info\_s}. 
+\textit{Détection de l'algorithme de stéganographie} (pour extraire).  
 \newline
 
 \begin{lstlisting}[language=c]
@@ -650,19 +641,18 @@ du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_check_compatibility_dissimulation (stegx_choices_s* choices, 
+int stegx_check_compatibility_insert (stegx_choices_s* choices, 
 	info_s* infos);
 \end{lstlisting}
 
-Cette fonction récupère le champ \textit{host\_path} et \textit{ins\_info.hidden\_path}
+Cette fonction récupère le champ \textit{host\_path} et \textit{insert\_info.hidden\_path}
 de \textit{choices} pour connaître le nom du fichier hôte et le nom du fichier 
-à cacher. 
+à cacher. Elle va ensuite interagir avec le système de gestion de fichiers 
+pour les ouvrir. 
 Pour cela, elle vérifie que les fichier hôte et à cacher existent et qu'ils 
 ne sont pas vides. Ensuite, la fonction vérifie le format du fichier hôte. 
 Elle va remplir les champs \textit{mode}, \textit{hidden\_name}, \textit{hidden},
-\textit{host.host} et \textit{host.type} de la structure \textit{infos}. 
-Cette fonction va appeler la fonction \textit{stegx\_suggest\_algos} 
-qui sera vue par la suite. 
+\textit{host.host} et \textit{host.type} de la structure \textit{infos}.  
 \newline
 \underline{Entrées :}
 \begin{itemize}
@@ -679,18 +669,18 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_check_compatibility_extraction (stegx_choices_s* choices, 
+int stegx_check_compatibility_extract (stegx_choices_s* choices, 
 	info_s* infos);
 \end{lstlisting}
 
 Cette fonction récupère le champ \textit{host\_path} 
 de \textit{choices} pour connaître le nom du fichier à analyser. 
-Elle vérifie que le fichier existe et qu'il n'est pas vide. Ensuite, la 
+Elle va ensuite interagir avec le système de gestion de fichiers 
+pour les ouvrir. 
+Elle vérifie que le fichier existe et qu'il n'est pas vide. Puis, la 
 fonction vérifie le format du fichier à analyser. 
 Elle va remplir les champs \textit{mode}, \textit{host.host}, 
 et \textit{host.type} de la structure \textit{infos}. 
-Cette fonction va appeler la fonction \textit{detect\_algo\_stegano} du 
-module \textit{Détection de l'algorithme de stéganographie}. 
 \newline
 \underline{Entrées :}
 \begin{itemize}
@@ -733,9 +723,9 @@ avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux
 proposés. 
 
 \begin{lstlisting}[language=c]
-int can_use_algo_lsb (info_s* infos);
-int can_use_algo_eof (info_s* infos);
-int can_use_algo_metadata (info_s* infos);
+int can_use_lsb (info_s* infos);
+int can_use_eof (info_s* infos);
+int can_use_metadata (info_s* infos);
 \end{lstlisting}
 
 Ces fonctions vont permettre de savoir si les différents algorithmes 
@@ -756,12 +746,12 @@ données selon l'algorithme, et 0 s'il le peut.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int fill_host_file_type (info_s* infos);
+int fill_host_info (info_s* infos);
 \end{lstlisting}
 
 En fonction du champ \textit{infos.host.type} représentant le format du 
-fichier hôte, cette fonction va remplir le champ \textit{host.file\_type} 
-de \textit{infos}. En effet, \textit{file\_type} est une union et est 
+fichier hôte, cette fonction va remplir le champ \textit{host.file\_infos} 
+de \textit{infos}. En effet, \textit{file\_infos} est une union et est 
 particulière en fonction du format du fichier hôte. 
 \newline
 \underline{Entrée :} 
@@ -778,7 +768,7 @@ fonction et 0 si tout se passe bien.
 
 
 \begin{lstlisting}[language=c]
-int stegx_suggest_algo_stegano (info_s* infos, stegx_choices_s* choices);
+int stegx_suggest_algo (info_s* infos, stegx_choices_s* choices);
 \end{lstlisting}
 
 Cette fonction va remplir le champ \textit{host.file\_type} 
@@ -805,7 +795,7 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_choose_algo_stegano (info_s* infos, stegx_choices_s* choices); 
+int stegx_choose_algo (info_s* infos, stegx_choices_s* choices); 
 \end{lstlisting}
 
 A partir du champ \textit{choices.ins\_info.algo}, 
@@ -838,7 +828,7 @@ utilisé par l'émetteur et que l'application doit détecter pour extraire
 correctement les données cachées. 
 
 \begin{lstlisting}[language=c]
-int stegx_read_signature_app (info_s* infos, stegx_choices_s* choices); 
+int read_signature (info_s* infos, stegx_choices_s* choices); 
 \end{lstlisting}
 
 La fonction sera appelée par \textit{detect\_algo\_stegano}.
@@ -866,7 +856,7 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int detect_algo_stegano (info_s* infos, stegx_choices_s* choices); 
+int stegx_detect_algo (info_s* infos, stegx_choices_s* choices); 
 \end{lstlisting}
 
 Cette fonction sera appelée par \textit{stegx\_detect\_compatibility\_extraction}
@@ -899,9 +889,9 @@ de l'utilisateur (entrées), ainsi que toutes les informations concernant
 ces dernières. 
 
 \begin{lstlisting}[language=c]
-int insertion_eof (info_s* infos); 
-int insertion_lsb (info_s* infos);
-int insertion_metadata (infos_s* infos);
+int insert_eof (info_s* infos); 
+int insert_lsb (info_s* infos);
+int insert_metadata (infos_s* infos);
 \end{lstlisting}
 
 La fonction sera appelée par \textit{insertion}.
@@ -920,20 +910,17 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int insertion_eof_XXX (info_s* infos); 
-int insertion_lsb_XXX (info_s* infos);
 int insertion_metadata_XXX (infos_s* infos);
 \end{lstlisting}
 
-L'insertion des données dépend du format du fichier hôte ainsi que de 
-l'algorithme à utiliser. C'est pour cela qu'il est nécessaire d'avoir 
-des fonctions spécifiques pour chaque format. 
+L'insertion des données au format metadata dépend du format du fichier hôte. 
+C'est pour cela qu'il est nécessaire d'avoir des fonctions spécifiques pour 
+chaque format. 
 Enfin, cette fonction appellera \textit{write\_signature}.
 \textit{XXX} représente le format du fichier à cacher : il peut être 
 "bmp", "png", "wav", "mp3", "avi" et "flv". Ils correspondent aux formats 
 pris en charge par l'application. Donc, pour chaque format, il va y avoir 
-une fonction pour chaque algorithme. Si le format ne propose jamais l'algorithme 
-en question, la fonction concernant ce dernier renverra une erreur. 
+une fonction.  
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -968,27 +955,27 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\begin{lstlisting}[language=c]
-int insertion_protection_data (info_s* infos); 
-\end{lstlisting}
+%\begin{lstlisting}[language=c]
+%int insertion_protection_data (info_s* infos); 
+%\end{lstlisting}
 
-Cette fonction va insérer les octets cachés en utilisant la méthode 
-de protection des données en respectant l'algorithme. 
-\newline
-\underline{Entrée :} 
-\begin{itemize}
-\item \textit{*infos :} structure représentant toutes les informations pour 
-la dissimulation. 
-\end{itemize}
-\underline{Sortie :} 
-\begin{itemize}
-\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
-fonction et 0 si tout se passe bien.  
-\newline 
-\end{itemize}
+%Cette fonction va insérer les octets cachés en utilisant la méthode 
+%de protection des données en respectant l'algorithme. 
+%\newline
+%\underline{Entrée :} 
+%\begin{itemize}
+%\item \textit{*infos :} structure représentant toutes les informations pour 
+%la dissimulation. 
+%\end{itemize}
+%\underline{Sortie :} 
+%\begin{itemize}
+%\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+%fonction et 0 si tout se passe bien.  
+%\newline 
+%\end{itemize}
 
 \begin{lstlisting}[language=c]
-int insertion (info_s* infos, stegx_choices_s* choices); 
+int insert (info_s* infos, stegx_choices_s* choices); 
 \end{lstlisting}
 
 La fonction sera appelée par \textit{stegx\_choose\_algo\_stegano}.
@@ -1020,9 +1007,9 @@ informations initialisés dans la structure \textit{info} seront déterminants
 à la réussite de l'extraction. 
 
 \begin{lstlisting}[language=c]
-int extraction_eof (info_s* infos); 
-int extraction_lsb (info_s* infos);
-int extraction_metadata (infos_s* infos);
+int extract_eof (info_s* infos); 
+int extract_lsb (info_s* infos);
+int extract_metadata (infos_s* infos);
 \end{lstlisting}
 
 La fonction sera appelée par \textit{extraction}.
@@ -1041,18 +1028,15 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int extraction_eof_XXX (info_s* infos); 
-int extraction_lsb_XXX (info_s* infos);
 int extraction_metadata_XXX (infos_s* infos);
 \end{lstlisting}
 
-En fonction du format du fichier à analyser ainsi que de l'algorithme à 
-utiliser, on ne va pas faire la même extraction. 
+En fonction du format du fichier à analyser, on ne va pas faire la même 
+extraction pour l'algorithme MetaData. 
 \textit{XXX} représente le format du fichier à analyser : il peut être 
 "bmp", "png", "wav", "mp3", "avi" et "flv". Ils correspondent aux formats 
 pris en charge par l'application. Donc, pour chaque format, il va y avoir 
-une fonction pour chaque algorithme. Si le format ne propose jamais l'algorithme 
-en question, la fonction concernant ce dernier renverra une erreur. 
+une fonction.  
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -1066,27 +1050,27 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\begin{lstlisting}[language=c]
-int extraction_protection_data (info_s* infos); 
-\end{lstlisting}
+%\begin{lstlisting}[language=c]
+%int extraction_protection_data (info_s* infos); 
+%\end{lstlisting}
 
-Cette fonction va extraire les octets cachés en utilisant la méthode 
-de protection des données, peu importe l'algorithme utilisé. 
-\newline
-\underline{Entrée :} 
-\begin{itemize}
-\item \textit{*infos :} structure représentant toutes les informations pour 
-l'extraction. 
-\end{itemize}
-\underline{Sortie :} 
-\begin{itemize}
-\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
-fonction et 0 si tout se passe bien.  
-\newline 
-\end{itemize}
+%Cette fonction va extraire les octets cachés en utilisant la méthode 
+%de protection des données, peu importe l'algorithme utilisé. 
+%\newline
+%\underline{Entrée :} 
+%\begin{itemize}
+%\item \textit{*infos :} structure représentant toutes les informations pour 
+%l'extraction. 
+%\end{itemize}
+%\underline{Sortie :} 
+%\begin{itemize}
+%\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+%fonction et 0 si tout se passe bien.  
+%\newline 
+%\end{itemize}
 
 \begin{lstlisting}[language=c]
-int extraction (info_s* infos, stegx_choices_s* choices); 
+int extract (info_s* infos, stegx_choices_s* choices); 
 \end{lstlisting}
 
 La fonction sera appelée par \textit{detect\_algo\_stegano}.
@@ -1110,7 +1094,7 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\section{Bilan des informations circulantes entre les modules}
+\section{Représentation des informations circulantes entre les modules}
 
 \section{Conclusion}
 
