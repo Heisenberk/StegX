@@ -130,7 +130,6 @@ des différents modules de l'application.
     à extraire et l'algorithme détecté. 
 
 \end{description}
-
 \newpage
 
 \section{Description des structures de données}
@@ -147,12 +146,28 @@ l'application : extraire ou dissimuler.
 \newline
 
 \begin{lstlisting}[language=c]
-enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA};
+enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA, 
+        STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
 typedef enum algo algo_e;
 \end{lstlisting}
 
 L'énumération \textit{algo} distingue les différents algorithmes proposés par 
 l'application. 
+Les énumérations \textit{STEGX\_ALGO\_EOC} pour le format \textit{FLV} et
+\textit{STEGX\_ALGO\_JUNK\_CHUNK} pour les formats \textit{AVI} concernent 
+deux algorithmes supplémentaires. Ces algorithmes n'ont pas été détaillés 
+dans le cahier des charges et ne seront implémentés qu'en supplément, si 
+les concepteurs ont le temps avant de rendre l'application finale. 
+
+Le format \textit{FLV} est divisé en 3 sortes de "tags" : vidéo, audio et 
+data. L'algorithme \textit{EOC} consiste à écrire après chaque tag vidéo 
+qu'on appelle "chunk". Ainsi, les données écrites après ces chunks ne seront 
+pas interprétées. 
+
+Dans le format \textit{AVI}, il existe une sorte de chunk "poubelle" (junk) 
+qui permet d'écrire n'importe quelle donnée et qui ne sera pas interprété
+par le lecteur. Le principe de l'algorithme \textit{Junk Chunk} est de créer 
+un ou plusieurs junk chunks et de cacher les données dedans. 
 \newline 
 
 \begin{lstlisting}[language=c]
@@ -581,13 +596,11 @@ entrées par l'utilisateur.
 
 \subsection{Vérification de la compatibilité des fichiers}
 
-D'après l'organigramme créé lors du cahier des charges, ce module récupère 
-les chemins du fichier hôte et du fichier à cacher (pour la dissimulation) ; 
-le chemin du fichier à analyser (pour l'extraction). Il va interagir avec 
-le système de fichiers pour pouvoir vérifier la compatibilité des fichiers en entrée. 
-Enfin, après la vérification, les fichiers vérifiés seront envoyés aux modules 
-\textit{Proposition des algorithmes de stéganographie} (pour dissimuler) ou 
-\textit{Détection de l'algorithme de stéganographie} (pour extraire).  
+Ce module récupère le fichier hôte (pour la dissimulation) ; 
+le fichier à analyser (pour l'extraction). Il va  vérifier la compatibilité des 
+fichiers en entrée. 
+Ainsi, après la vérification, le champ \textit{host.type} de la structure 
+\textit{info\_s} aura été initialisé.  
 \newline
 
 \begin{lstlisting}[language=c]
@@ -641,23 +654,15 @@ du fichier, il peut renvoyer \textit{BMP\_COMPRESSED}, \textit{BMP\_UNCOMPRESSED
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_check_compatibility_insert (stegx_choices_s* choices, 
-	info_s* infos);
+int stegx_check_compatibility (info_s* infos);
 \end{lstlisting}
 
-Cette fonction récupère le champ \textit{host\_path} et \textit{insert\_info.hidden\_path}
-de \textit{choices} pour connaître le nom du fichier hôte et le nom du fichier 
-à cacher. Elle va ensuite interagir avec le système de gestion de fichiers 
-pour les ouvrir. 
-Pour cela, elle vérifie que les fichier hôte et à cacher existent et qu'ils 
-ne sont pas vides. Ensuite, la fonction vérifie le format du fichier hôte. 
-Elle va remplir les champs \textit{mode}, \textit{hidden\_name}, \textit{hidden},
-\textit{host.host} et \textit{host.type} de la structure \textit{infos}.  
+Cette fonction va lire le fichier hôte (pour l'insertion) et le fichier 
+à analyser (pour l'extraction) et vérifier son format. 
+Elle va remplir le champ \textit{host.type} de la structure \textit{infos}.  
 \newline
-\underline{Entrées :}
+\underline{Entrée :}
 \begin{itemize}
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
 \item \textit{*infos :} structure représentant toutes les informations 
 nécessaires au bon déroulement de la dissimulation. 
 \end{itemize}
@@ -668,70 +673,71 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\begin{lstlisting}[language=c]
-int stegx_check_compatibility_extract (stegx_choices_s* choices, 
-	info_s* infos);
-\end{lstlisting}
-
-Cette fonction récupère le champ \textit{host\_path} 
-de \textit{choices} pour connaître le nom du fichier à analyser. 
-Elle va ensuite interagir avec le système de gestion de fichiers 
-pour les ouvrir. 
-Elle vérifie que le fichier existe et qu'il n'est pas vide. Puis, la 
-fonction vérifie le format du fichier à analyser. 
-Elle va remplir les champs \textit{mode}, \textit{host.host}, 
-et \textit{host.type} de la structure \textit{infos}. 
-\newline
-\underline{Entrées :}
-\begin{itemize}
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
-\item \textit{*infos :} structure représentant toutes les informations 
-nécessaires au bon déroulement de l'extraction. 
-\end{itemize}
-\underline{Sortie :}
-\begin{itemize}
-\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
-fonction et 0 si tout se passe bien.
-\newline 
-\end{itemize}
-
 %\begin{lstlisting}[language=c]
-%int stegx_test_file_not_empty (FILE* file);
+%int stegx_check_compatibility_insert (info_s* infos);
 %\end{lstlisting}
 
-%Cette fonction teste si le fichier n'est pas vide. 
+%Cette fonction va lire le fichier hôte et vérifier son format. 
+%Elle va remplir le champ \textit{host.type} de la structure \textit{infos}.  
 %\newline
 %\underline{Entrée :}
 %\begin{itemize}
-%\item \textit{file :} fichier à tester.
+%\item \textit{*infos :} structure représentant toutes les informations 
+%nécessaires au bon déroulement de la dissimulation. 
 %\end{itemize}
-%\underline{Sortie :} 
+%\underline{Sortie :}
 %\begin{itemize}
-%\item \textit{int :} renvoie 0 si le fichier est vide ou qu'il n'existe pas ; 1 sinon. 
-%\newline \end{itemize}
+%\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+%fonction et 0 si tout se passe bien.
+%\newline 
+%\end{itemize}
+
+%\begin{lstlisting}[language=c]
+%int stegx_check_compatibility_extract (info_s* infos);
+%\end{lstlisting}
+
+%Cette fonction va lire le fichier à analyser et vérifier son format. 
+%Elle va remplir le champ \textit{host.type} de la structure \textit{infos}.  
+%\newline
+%\underline{Entrée :}
+%\begin{itemize}
+%\item \textit{*infos :} structure représentant toutes les informations 
+%nécessaires au bon déroulement de l'extraction. 
+%\end{itemize}
+%\underline{Sortie :}
+%\begin{itemize}
+%\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+%fonction et 0 si tout se passe bien.
+%\newline 
+%\end{itemize}
 
 \subsection{Proposition des algorithmes 
 de stéganographie}
 
-Dans l'organigramme des modules de StegX, nous avons créé un sous-module 
-\textit{Proposition des algorithmes de stéganographie}. Il prend en entrée 
-le fichier hôte, le fichier à cacher, le choix de l'utilisateur pour 
-l'algorithme ainsi que le mot de passe voulu par l'utilisateur. 
-Ce sous-module va donc ajouter des données à la structure \textit{info\_s} 
-avec notamment l'algorithme de stéganographie utilisé choisi à partir de ceux 
-proposés. 
+Le sous-module \textit{Proposition des algorithmes de stéganographie} va 
+permettre de proposer à l'utilisateur les différents algorithmes possibles 
+selon les entrées que ce dernier a donné. Puis, l'utilisateur pourra choisir 
+l'algorithme parmi ceux proposés.
+Les champs de la structure \textit{info\_s} tels que \textit{host.file\_info}, 
+\textit{hidden\_length}, \textit{algo}, \textit{hidden\_name} et 
+\textit{method} seront initialisés. 
+\newline
 
 \begin{lstlisting}[language=c]
 int can_use_lsb (info_s* infos);
 int can_use_eof (info_s* infos);
 int can_use_metadata (info_s* infos);
+int can_use_eoc (info_s* infos);
+int can_use_junk_chunk (info_s* infos);
 \end{lstlisting}
 
 Ces fonctions vont permettre de savoir si les différents algorithmes 
 (LSB, EOF, Metadata) peuvent être utilisés en fonction des entrées 
 de l'utilisateur à travers l'interface. 
 Elles seront appelées par la fonction \textit{stegx\_suggest\_algos}. 
+Les fonctions concernant les algorithmes \textit{EOC} et \textit{Junk Chunk} 
+ne seront implémentées qu'en supplément, si les concepteurs ont le temps 
+avant de rendre l'application finale. 
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -750,8 +756,8 @@ int fill_host_info (info_s* infos);
 \end{lstlisting}
 
 En fonction du champ \textit{infos.host.type} représentant le format du 
-fichier hôte, cette fonction va remplir le champ \textit{host.file\_infos} 
-de \textit{infos}. En effet, \textit{file\_infos} est une union et est 
+fichier hôte, cette fonction va remplir le champ \textit{host.file\_info} 
+de \textit{infos}. En effet, \textit{file\_info} est une union et est 
 particulière en fonction du format du fichier hôte. 
 \newline
 \underline{Entrée :} 
@@ -768,22 +774,25 @@ fonction et 0 si tout se passe bien.
 
 
 \begin{lstlisting}[language=c]
-int stegx_suggest_algo (info_s* infos, stegx_choices_s* choices);
+int stegx_suggest_algo (info_s* infos);
 \end{lstlisting}
 
 Cette fonction va remplir le champ \textit{host.file\_type} 
 de \textit{info} pour le sous-module \textit{insertion des données}. 
 De plus, le champ \textit{infos.hidden\_length} sera initialisé et testera 
 pour chaque algorithme s'il est disponible selon les paramètres de \textit{*infos}. 
-La fonction va changer les valeurs du tableau représentant les algorithmes 
-de stéganographie utilisés : \textit{choices.proposition}. 
-Ainsi, l'interface graphique proposera certains algorithmes, et l'interface 
-en ligne de commande comparera ce tableau avec le choix de l'utilisateur. 
+La fonction va changer les valeurs de la variable globale \textit{algo\_e* proposition}, 
+tableau représentant les algorithmes de stéganographie utilisés. 
+Cette variable globale est nécessaire dans le sens que les fonctions 
+\textit{stegx\_suggest\_algo} et \text{stegx\_choose\_algo} du sous-module 
+\textit{Proposition des algorithmes} et l'interface doivent en avoir accès de 
+façon indépendante. 
+Ainsi, l'interface graphique proposera certains algorithmes et l'utilisateur 
+choisira, tandis que l'interface en ligne de commande comparera ce tableau 
+avec le choix de l'utilisateur. 
 \newline
-\underline{Entrées :}
+\underline{Entrée :}
 \begin{itemize}
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
 \item \textit{*infos :} structure représentant toutes les informations 
 nécessaires au bon déroulement de la dissimulation. 
 \end{itemize}
@@ -795,20 +804,19 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_choose_algo (info_s* infos, stegx_choices_s* choices); 
+int stegx_choose_algo (info_s* infos, algo_e algo_choosen); 
 \end{lstlisting}
 
-A partir du champ \textit{choices.ins\_info.algo}, 
-ainsi que du tableau \textit{choices.proposition} représentant les algorithmes 
-utilisables (selon les entrées de l'utilisateur), cette fonction remplira 
+A partir de la variable \textit{proposition} (proposant les différents algorithmes)
+ainsi que de l'algo choisi par l'utilisateur, cette fonction remplira 
 \textit{algo} de \textit{infos}. 
 \newline
 \underline{Entrées :}
 \begin{itemize}
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
 \item \textit{*infos :} structure représentant toutes les informations 
 nécessaires au bon déroulement de la dissimulation. 
+\item \textit{algo\_choosen :} algorithme choisi par l'utilisateur grâce
+l'interface.
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -819,34 +827,29 @@ fonction et 0 si tout se passe bien.
 
 \subsection{Détection de l'algorithme de stéganographie}
 
-Le sous-module \textit{Détection de l'algorithme de stéganographie} prend en 
-entrée le fichier à analyser. De plus, il récupère grâce à l'interface le 
-mot de passe choisi par l'utilisateur.  
-Ce sous-module va compléter les champs des structures \textit{info\_s} 
+Le sous-module \textit{Détection de l'algorithme de stéganographie} va
+compléter les champs des structures \textit{info\_s} 
 et \textit{stegx\_info\_s} avec en particulier l'algorithme de stéganographie 
 utilisé par l'émetteur et que l'application doit détecter pour extraire 
-correctement les données cachées. 
+correctement les données cachées. Pour cela, il va lire le fichier à analyser 
+et déceler l'algorithme. 
 
 \begin{lstlisting}[language=c]
-int read_signature (info_s* infos, stegx_choices_s* choices); 
+int read_signature (info_s* infos); 
 \end{lstlisting}
 
-La fonction sera appelée par \textit{detect\_algo\_stegano}.
+La fonction sera appelée par \textit{detect\_algo}.
 Elle va lire la signature insérée dans le fichier à analyser. 
 Cette signature permettra de stocker les informations nécessaires à 
 l'extraction des données cachées. 
-Les champs \textit{algo}, \textit{method}, \textit{hidden\_length}, 
-\textit{hidden\_name}, \textit{passwd}, \textit{hidden}. Ces champs seront 
-déduits des choix de l'utilisateur dans l'interface (contenus dans 
-\textit{choices}) ainsi que de la signature contenue dans le fichier à 
-analyser. 
+Les champs \textit{algo}, \textit{hidden\_length}, 
+\textit{hidden\_name}, \textit{method}, \textit{hidden\_length}. Ces champs 
+seront déduits de la signature contenue dans le fichier à analyser. 
 \newline
-\underline{Entrées :} 
+\underline{Entrée :} 
 \begin{itemize}
 \item \textit{*infos :} structure représentant toutes les informations pour 
 l'extraction.  
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -856,23 +859,18 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int stegx_detect_algo (info_s* infos, stegx_choices_s* choices); 
+int stegx_detect_algo (info_s* infos); 
 \end{lstlisting}
 
-Cette fonction sera appelée par \textit{stegx\_detect\_compatibility\_extraction}
-et va , à l'aide de la fonction \textit{fill\_host\_file\_type}, 
-le champ-union \textit{infos.host.file\_type} sera initialisé. Puis, la 
+Cette fonction va, à l'aide de la fonction \textit{fill\_host\_file\_type}, 
+initialisé le champ-union \textit{infos.host.file\_type}. Puis, la 
 fonction utilisera \newline \textit{stegx\_read\_signature\_app} pour connaître les 
 informations concernant le fichier caché. 
-Enfin, elle appellera \textit{extraction} afin de réaliser l'étape finale 
-qui consiste à extraire le fichier caché du fichier à analyser. 
 \newline
-\underline{Entrées :} 
+\underline{Entrée :} 
 \begin{itemize}
 \item \textit{*infos :} structure représentant toutes les informations pour 
-l'extraction.  
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
+l'extraction. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -883,19 +881,24 @@ fonction et 0 si tout se passe bien.
 
 \subsection{Insertion des données}
 
-Le sous-module \textit{Insertion des données} va permettre de dissimuler 
-le fichier à cacher dans le fichier hôte. Pour cela, on utilisera les choix 
-de l'utilisateur (entrées), ainsi que toutes les informations concernant 
-ces dernières. 
+Le sous-module \textit{Insertion des données} va dissimuler 
+le fichier à cacher dans une copie du fichier hôte. Pour cela, on utilisera 
+les choix de l'utilisateur (entrées), ainsi que toutes les informations 
+concernant ces derniers. 
 
 \begin{lstlisting}[language=c]
 int insert_eof (info_s* infos); 
 int insert_lsb (info_s* infos);
 int insert_metadata (infos_s* infos);
+int insert_eoc (info_s* infos);
+int insert_junk_chunk (info_s* infos);
 \end{lstlisting}
 
 La fonction sera appelée par \textit{insertion}.
 Elle fera l'insertion selon l'algorithme choisi par l'utilisateur. 
+Les fonctions concernant les algorithmes \textit{EOC} et \textit{Junk Chunk} 
+ne seront implémentées qu'en supplément, si les concepteurs ont le temps 
+avant de rendre l'application finale. 
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -975,12 +978,10 @@ fonction et 0 si tout se passe bien.
 %\end{itemize}
 
 \begin{lstlisting}[language=c]
-int insert (info_s* infos, stegx_choices_s* choices); 
+int insert (info_s* infos); 
 \end{lstlisting}
 
-La fonction sera appelée par \textit{stegx\_choose\_algo\_stegano}.
-Elle va ouvrir le fichier \textit{infos.res} à partir de 
-\textit{choices.res\_path}. 
+La fonction va écrire dans le fichier \textit{infos.res}. 
 Ensuite, la fonction fera l'insertion du fichier caché dans la copie 
 \textit{res} du fichier hôte. 
 Elle appellera les fonctions \textit{insertion\_XXX}. 
@@ -988,9 +989,7 @@ Elle appellera les fonctions \textit{insertion\_XXX}.
 \underline{Entrées :} 
 \begin{itemize}
 \item \textit{*infos :} structure représentant toutes les informations pour 
-l'extraction.  
-\item \textit{*choices :} structure représentant les choix de 
-l'utilisateur pour les deux interfaces. 
+l'extraction. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
@@ -1010,10 +1009,15 @@ informations initialisés dans la structure \textit{info} seront déterminants
 int extract_eof (info_s* infos); 
 int extract_lsb (info_s* infos);
 int extract_metadata (infos_s* infos);
+int extract_eoc (info_s* infos);
+int extract_junk_chunk (info_s* infos);
 \end{lstlisting}
 
 La fonction sera appelée par \textit{extraction}.
 Elle fera l'extraction en suivant l'algorithme déduit. 
+Les fonctions concernant les algorithmes \textit{EOC} et \textit{Junk Chunk} 
+ne seront implémentées qu'en supplément, si les concepteurs ont le temps 
+avant de rendre l'application finale. 
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -1070,15 +1074,37 @@ fonction et 0 si tout se passe bien.
 %\end{itemize}
 
 \begin{lstlisting}[language=c]
-int extract (info_s* infos, stegx_choices_s* choices); 
+int extract (info_s* infos, char* res_path); 
 \end{lstlisting}
 
 La fonction sera appelée par \textit{detect\_algo\_stegano}.
-Elle va ouvrir le fichier \textit{infos.res} à partir de 
-\textit{choices.res\_path} et \textit{infos.hidden\_name}. 
+Elle va ouvrir le fichier \textit{infos.res} à partir du paramètre
+\textit{res\_path} et \textit{infos.hidden\_name}. 
+En effet, $[res] = [res\_path] + [infos.hidden\_name]$.
 Ensuite, la fonction fera l'extraction du fichier caché et écrire le résultat 
-dans \textit{res}. 
+dans le fichier \textit{res}. 
 Elle appellera les fonctions \textit{extraction\_XXX}. 
+\newline
+\underline{Entrées :} 
+\begin{itemize}
+\item \textit{*infos :} structure représentant toutes les informations pour 
+l'extraction.  
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien.  
+\newline 
+\end{itemize}
+
+\section{Imbrication des différents modules}
+
+\begin{lstlisting}[language=c]
+info_s* stegx_init (stegx_choices_s* choices);
+\end{lstlisting}
+
+Cette première fonction permettra d'initialiser les champs de \textit{info\_s}.
+%Si l'utilisateur veut dissimuler des données
 \newline
 \underline{Entrées :} 
 \begin{itemize}
@@ -1094,7 +1120,6 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
-\section{Représentation des informations circulantes entre les modules}
 
 \section{Conclusion}
 
