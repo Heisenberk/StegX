@@ -636,8 +636,8 @@ type_e check_file_format (FILE* file);
 Cette fonction récupère le fichier dont le format est à trouver. Elle établit une 
 batterie de tests pour déterminer si le format du fichier est pris en charge 
 par l'application. 
-Pour cela, on utilisera les fonctions 
-$type\_e$ $stegx\_test\_file\_XXX (FILE* file)$ comme vu précedemment. 
+Pour cela, on utilisera les fonctions \textit{stegx\_test\_file\_XXX} 
+comme vu précedemment. 
 \newline
 \underline{Entrée :} 
 \begin{itemize}
@@ -664,7 +664,7 @@ Elle va remplir le champ \textit{host.type} de la structure \textit{infos}.
 \underline{Entrée :}
 \begin{itemize}
 \item \textit{*infos :} structure représentant toutes les informations 
-nécessaires au bon déroulement de la dissimulation. 
+nécessaires au bon déroulement de la dissimulation ou de l'extraction. 
 \end{itemize}
 \underline{Sortie :}
 \begin{itemize}
@@ -719,8 +719,7 @@ permettre de proposer à l'utilisateur les différents algorithmes possibles
 selon les entrées que ce dernier a donné. Puis, l'utilisateur pourra choisir 
 l'algorithme parmi ceux proposés.
 Les champs de la structure \textit{info\_s} tels que \textit{host.file\_info}, 
-\textit{hidden\_length}, \textit{algo}, \textit{hidden\_name} et 
-\textit{method} seront initialisés. 
+\textit{hidden\_length} et \textit{algo} seront initialisés. 
 \newline
 
 \begin{lstlisting}[language=c]
@@ -784,7 +783,7 @@ pour chaque algorithme s'il est disponible selon les paramètres de \textit{*inf
 La fonction va changer les valeurs de la variable globale \textit{algo\_e* proposition}, 
 tableau représentant les algorithmes de stéganographie utilisés. 
 Cette variable globale est nécessaire dans le sens que les fonctions 
-\textit{stegx\_suggest\_algo} et \text{stegx\_choose\_algo} du sous-module 
+\textit{stegx\_suggest\_algo} et \textit{stegx\_choose\_algo} du sous-module 
 \textit{Proposition des algorithmes} et l'interface doivent en avoir accès de 
 façon indépendante. 
 Ainsi, l'interface graphique proposera certains algorithmes et l'utilisateur 
@@ -827,12 +826,13 @@ fonction et 0 si tout se passe bien.
 
 \subsection{Détection de l'algorithme de stéganographie}
 
-Le sous-module \textit{Détection de l'algorithme de stéganographie} va
-compléter les champs des structures \textit{info\_s} 
-et \textit{stegx\_info\_s} avec en particulier l'algorithme de stéganographie 
-utilisé par l'émetteur et que l'application doit détecter pour extraire 
-correctement les données cachées. Pour cela, il va lire le fichier à analyser 
-et déceler l'algorithme. 
+Dans le sous-module \textit{Détection de l'algorithme de stéganographie}, 
+on va compléter les champs de la structure \textit{info\_s} avec en particulier 
+l'algorithme de stéganographie utilisé par l'émetteur et que l'application 
+doit détecter pour extraire correctement les données cachées. Pour cela, 
+il va lire le fichier à analyser et déceler l'algorithme. Il y aura également 
+les champs \textit{method}, \textit{hidden\_name}, \textit{hidden\_length}
+et \textit{host.file\_info}.\newline
 
 \begin{lstlisting}[language=c]
 int read_signature (info_s* infos); 
@@ -862,9 +862,9 @@ fonction et 0 si tout se passe bien.
 int stegx_detect_algo (info_s* infos); 
 \end{lstlisting}
 
-Cette fonction va, à l'aide de la fonction \textit{fill\_host\_file\_type}, 
-initialisé le champ-union \textit{infos.host.file\_type}. Puis, la 
-fonction utilisera \newline \textit{stegx\_read\_signature\_app} pour connaître les 
+Cette fonction va, à l'aide de la fonction \textit{fill\_host\_file\_info}, 
+initialisé le champ-union \textit{infos.host.file\_info}. Puis, la 
+fonction utilisera \textit{stegx\_read\_signature\_app} pour connaître les 
 informations concernant le fichier caché. 
 \newline
 \underline{Entrée :} 
@@ -1077,8 +1077,7 @@ fonction et 0 si tout se passe bien.
 int extract (info_s* infos, char* res_path); 
 \end{lstlisting}
 
-La fonction sera appelée par \textit{detect\_algo\_stegano}.
-Elle va ouvrir le fichier \textit{infos.res} à partir du paramètre
+La fonction va ouvrir le fichier \textit{infos.res} à partir du paramètre
 \textit{res\_path} et \textit{infos.hidden\_name}. 
 En effet, $[res] = [res\_path] + [infos.hidden\_name]$.
 Ensuite, la fonction fera l'extraction du fichier caché et écrire le résultat 
