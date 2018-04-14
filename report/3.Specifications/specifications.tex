@@ -106,30 +106,146 @@ des différents modules de l'application.
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
     cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
-    sécurité supplémentaire). Si il y a un mot de passe, l'interface va 
-    donner le mot de passe à ce module, ainsi que l'algorithme choisi. 
+    sécurité supplémentaire).  
 
 \item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
 	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
-	afin de les extraire correctement par la suite. S'il est nécessaire 
-	d'utiliser un mot de passe pour déchiffrer les données cachées, le module 
-	récupèrera le champ mot de passe de l'interface. 
+	afin de les extraire correctement par la suite. 
 
 \item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
     sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
     choisi par l'utilisateur. 
-    Il prendra en entrée le fichier à cacher, le fichier hôte, le chemin du 
-    fichier résultant, l'algorithme à utiliser ainsi que le mot de passe 
-    s'il y en a un. 
 
 \item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
-    sont extraites. Les algorithmes utilisés pour l'insertion des données 
-    et l'extraction seront expliqués dans la sous-section \textit{"Algorithmes 
-    de dissimulation et d'extraction en stéganographie"}. 
-    Ce module prendra en entrée le fichier à analyser, le chemin du fichier 
-    à extraire et l'algorithme détecté. 
+    sont extraites selon l'algorithme déduit.
 
 \end{description}
+\newpage
+
+L'organigramme établi dans le cahier des charges représentait les informations 
+qui circulaient entre les modules, mais ne représentaient pas les appels de 
+fonctions. 
+En effet, pour l'implémentation de StegX, il est nécessaire que les modules 
+soient indépendants. Pourtant, il imposait le fait que les modules soient 
+dépendants. Par exemple, une fonction du module 
+\textit{Vérification de la compatibilité des fichiers} devait appeler une 
+fonction du sous-module \textit{Détection de l'algorithme de stéganographie} 
+qui devait appeler une autre fonction du sous-module \textit{Extraction}. 
+Or, StegX propose une bibliothèque et donc il faut pouvoir proposer aux 
+développeurs qui l'utilisent des fonctions indépendantes de chaque sous-module 
+de dissimulation/extraction. 
+Par exemple, un développeur pourra juste réaliser la détection de l'algorithme de 
+stéganographie sur des fichiers qu'ils considérent déjà comme vérifié. 
+
+C'est pour cette raison que l'organigramme proposé dans les spécifications 
+semble plus représentatif de la future implémentation de StegX puisqu'il 
+fait apparaître les réels appels de fonctions.
+\newline
+
+%\hspace{0.3cm}
+\includegraphics[scale=0.6]{pictures/organigramme2.png}
+\newpage
+
+\paragraph{Liste des informations qui circulent entre les modules :}
+
+\begin{multicols}{2}
+\begin{description}
+\item[1)] %OK
+\begin{itemize}
+\item Utilisation de l'application (dissimulation ou extraction).
+\item Mot de passe choisi par l'utilisateur. 
+\item Nom du fichier hôte, nom du fichier à cacher et chemin du fichier à créer
+    (pour la dissimulation).
+\item Nom du fichier à analyser et chemin du fichier résultant de l'extraction
+    des données cachées (pour l'extraction).
+\end{itemize}
+\item[2)]  %OK
+\begin{itemize}
+\item Nom du fichier hôte et nom du fichier à cacher (pour la dissimulation).
+\item Nom du fichier contenant les données cachées à analyser (pour l'extraction).
+\end{itemize}
+\item[3)] %OK
+\begin{itemize}
+\item Fichier hôte et fichier à cacher (pour la dissimulation). 
+\item Fichier contenant les données cachées à analyser (pour l'extraction). 
+\end{itemize}
+\item[4)] %OK
+\begin{itemize}
+\item Fichier hôte dont il faut vérifier la compatibilité. 
+\end{itemize}
+\item[5)] %OK
+\begin{itemize}
+\item Fichier à analyser dont il faut vérifier la compatibilité.
+\end{itemize}
+\item[6)] %OK
+\begin{itemize}
+\item Fichier hôte.
+\item Fichier à cacher.
+\end{itemize}
+\item[7)] %OK
+\begin{itemize}
+\item Algorithme choisi par l'utilisateur. 
+\item Algorithmes proposés par l'application. 
+\end{itemize}
+\item[8)] %OK
+\begin{itemize}
+\item Fichier à analyser dont il faut détecter l'algorithme utilisé. 
+\item Mot de passe choisi par l'utilisateur. 
+\end{itemize}
+\item[9)] %OK
+\begin{itemize}
+\item Fichier hôte. 
+\item Fichier à cacher. 
+\item Algorithme à utiliser. 
+\item Mot de passe choisi par l'utilisateur. 
+\item Fichier résultant (dans lequel il faut écrire). 
+\end{itemize}
+\item[10)] %OK
+\begin{itemize}
+\item Fichier à analyser.
+\item Algorithme détecté. 
+\item Mot de passe choisi par l'utilisateur. 
+\item Chemin du fichier à créer (lors de l'extraction). 
+\end{itemize}
+\item[11)] 
+\begin{itemize}
+\item Mot de passe pour extraire les données (s'il a choisi l'option de
+    protéger ses données par mot de passe).
+\end{itemize}
+\item[12)]
+\begin{itemize}
+\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
+    l'apparence du fichier hôte.
+\end{itemize}
+\end{description}
+  \ldots
+\end{multicols}
+
+\paragraph{Détails d'un déroulement d'utilisation de l'application pour la 
+dissimulation}
+
+\begin{itemize}
+\item Phase 1 : Récupération des entrées de l'utilisateur : (1)
+\item Phase 2 : Initialisation et ouverture des fichiers : (2) et (3)
+\item Phase 3 : Vérification de la compatibilité du fichier hôte : (4)
+\item Phase 4 : Proposition des algorithmes selon les entrées de départ : 
+(6)
+\item Phase 5 : Choix de l'algorithme selon la proposition des algorithmes : 
+(7)
+\item Phase 6 : Insertion des données : (9) et (11)
+\end{itemize}
+
+\paragraph{Détails d'un déroulement d'utilisation de l'application pour 
+l'extraction}
+
+\begin{itemize}
+\item Phase 1 : Récupération des entrées de l'utilisateur : (1)
+\item Phase 2 : Initialisation et ouverture des fichiers : (2) et (3)
+\item Phase 3 : Vérification de la compatibilité du fichier à analyser : 
+(5)
+\item Phase 4 : Détection de l'algorithme utilisé : (8)
+\item Phase 5 : Extraction : (10) et (12)
+\end{itemize}
 \newpage
 
 \section{Description des structures de données}
