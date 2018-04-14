@@ -139,7 +139,9 @@ stéganographie sur des fichiers qu'ils considérent déjà comme vérifié.
 
 C'est pour cette raison que l'organigramme proposé dans les spécifications 
 semble plus représentatif de la future implémentation de StegX puisqu'il 
-fait apparaître les réels appels de fonctions.
+fait apparaître les réels appels de fonctions. 
+Avec ce nouvel organigramme, on peut réaliser séquentiellement et indépendemment 
+chaque étape de la dissimulation ou de l'extraction. 
 \newline
 
 %\hspace{0.3cm}
@@ -1214,27 +1216,47 @@ fonction et 0 si tout se passe bien.
 
 \section{Imbrication des différents modules}
 
+Les interfaces ont pour rôle de réaliser les étapes séquentiellement 
+de la dissimulation ou de l'extraction. C'est donc le module Interface qui 
+va faire appel aux autres modules. 
+Il va donc y avoir une récolte des entrées de l'utilisateur pour une 
+initialisation d'une structure \textit{stegx\_choices\_s}. 
+Puis, il y aura une initialisation de la structure \textit{info\_s}. 
+Les étapes de la dissimulation/extraction suivront. \newline
+
 \begin{lstlisting}[language=c]
 info_s* stegx_init (stegx_choices_s* choices);
 \end{lstlisting}
 
-Cette première fonction permettra d'initialiser les champs de \textit{info\_s}.
-%Si l'utilisateur veut dissimuler des données
+Cette première fonction permettra d'initialiser les champs de \textit{info\_s} 
+à partir des entrées de l'utilisateur (stockés dans \textit{choices}). 
 \newline
-\underline{Entrées :} 
+\underline{Entrée :} 
 \begin{itemize}
-\item \textit{*infos :} structure représentant toutes les informations pour 
-l'extraction.  
 \item \textit{*choices :} structure représentant les choix de 
 l'utilisateur pour les deux interfaces. 
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
-\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
-fonction et 0 si tout se passe bien.  
+\item \textit{*info\_s :} structure représentant toutes les informations 
+pour l'extraction ou la dissimulation.   
 \newline 
 \end{itemize}
 
+\begin{lstlisting}[language=c]
+void stegx_clear (info_s* infos);
+\end{lstlisting}
+
+Cette fonction va libérer la mémoire de la structure initialisé au début. 
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{*info\_s :} structure représentant toutes les informations 
+pour l'extraction ou la dissimulation. 
+\end{itemize} 
+
+Entre ces deux fonctions d'initialisation et de libération de mémoire, 
+les étapes successives pour la dissimulation ou l'extraction se feront. 
 
 \section{Conclusion}
 
