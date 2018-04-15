@@ -147,7 +147,6 @@ En effet, dans ce nouvel organigramme, ce sont les interfaces qui appellent
 dans un ordre précis les différents modules. 
 Avec ce nouvel organigramme, on peut réaliser séquentiellement et indépendemment 
 chaque étape de la dissimulation ou de l'extraction. 
-\newline
 
 %\hspace{0.3cm}
 \includegraphics[scale=0.6]{pictures/organigramme2.png}
@@ -399,10 +398,10 @@ seule la structure bmp de infos sera initialisée et manipulée par la suite.
 
 \begin{lstlisting}[language=c]
 struct bmp {
-	uint32_t header_size;
-	uint32_t data_size;
-	uint32_t pixel_number;
-	uint32_t pixel_size;
+    uint32_t header_size;
+    uint32_t data_size;
+    uint32_t pixel_number;
+    uint32_t pixel_size;
 };
 typedef struct bmp bmp_s;
 \end{lstlisting}
@@ -425,8 +424,8 @@ du début des données brutes.
 
 \begin{lstlisting}[language=c]
 struct png {
-	uint32_t header_size;
-	uint32_t data_size;
+    uint32_t header_size;
+    uint32_t data_size;
 };
 typedef struct png png_s;
 \end{lstlisting}
@@ -447,9 +446,9 @@ On aura donc
 
 \begin{lstlisting}[language=c]
 struct wav {
-	uint32_t header_size;
-	uint32_t data_size;
-	uint32_t chunk_size;
+    uint32_t header_size;
+    uint32_t data_size;
+    uint32_t chunk_size;
 };
 typedef struct wav wav_s;
 \end{lstlisting}
@@ -472,7 +471,7 @@ de son).
 
 \begin{lstlisting}[language=c]
 struct mp3 {
-	uint64_t sig_addr;
+    uint64_t sig_addr;
 };
 typedef struct mp3 mp3_s;
 \end{lstlisting}
@@ -489,7 +488,7 @@ présente dans le fichier hôte.
 
 \begin{lstlisting}[language=c]
 struct avi {
-	uint64_t sig_addr;
+    uint64_t sig_addr;
 };
 typedef struct avi avi_s;
 \end{lstlisting}
@@ -506,9 +505,9 @@ présente dans le fichier hôte.
 
 \begin{lstlisting}[language=c]
 struct flv {
-	uint32_t nb_video_tag;
-	uint32_t nb_metadata_tag;
-	uint32_t file_size;
+    uint32_t nb_video_tag;
+    uint32_t nb_metadata_tag;
+    uint32_t file_size;
 };
 typedef struct flv flv_s;
 \end{lstlisting}
