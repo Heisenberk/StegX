@@ -1274,7 +1274,7 @@ les étapes successives pour la dissimulation ou l'extraction se feront.
 
 Pour la dissimulation, les interfaces appelleront le module 
 \textit{Vérification de la compatibilité des fichiers} grâce à la fonction 
-\textit{stegx\_check_compatibility} : flèche 4. 
+\textit{stegx\_check\_compatibility} : flèche 4. 
 Puis, elles appelleront le sous-module 
 \textit{Proposition des algorithmes de stéganographie} avec la fonction 
 \textit{stegx\_suggest\_algos} (flèche 6) et la fonction 
@@ -1284,10 +1284,13 @@ Enfin, l'insertion sera réalisée avec \textit{stegx\_insert} du sous-module
 
 Pour l'extraction, les interfaces appelleront le module 
 \textit{Vérification de la compatibilité des fichiers} grâce à la fonction 
-\textit{stegx\_check_compatibility} : flèche 5. 
+\textit{stegx\_check\_compatibility} : flèche 5. 
 Ensuite, elles feront appel au sous-module 
 \textit{Détection de l'algorithme de stéganographie} grâce à la fonction 
 \textit{stegx\_detect\_algo} (flèche 8).
+Enfin, les interfaces appelleront le sous-module \textit{Extraction} avec la 
+fonction \textit{stegx\_extract} pour faire l'extraction du fichier caché 
+(flèche 10). 
 
 \section{Conclusion}
 
