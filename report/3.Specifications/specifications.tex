@@ -41,14 +41,15 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \section{Introduction}
 
-En réalisant le cahier des charges concernant l'application StegX, 
+Après avoir réalisé le cahier des charges concernant l'application StegX, 
 l'analyse des contraintes et des besoins du client nous amène à rédiger 
 les spécifications. 
 
-Le logiciel StegX pourra proposer de cacher des données dans des fichiers 
-dont le format est pris en charge par l'application. De plus, un utilisateur 
-pourra extraire les données cachées d'un fichier qu'on considère déjà comme 
-hôte. StegX prendra en charge les trois algorithmes de stéganographie suivants : 
+Le logiciel StegX proposera de cacher des données dans des fichiers 
+dont le format est pris en charge par l'application (stéganographie). 
+De plus, un utilisateur pourra extraire les données cachées d'un fichier 
+qu'on considère déjà comme hôte (stéganalyse). 
+StegX prendra en charge les trois algorithmes de stéganographie suivants : 
 EOF, LSB et MetaData. 
 
 Avec l'analyse des fonctionnalités de l'application, nous avons vu qu'elle 
@@ -1067,7 +1068,14 @@ fichier caché.
 \underline{Entrée :} 
 \begin{itemize}
 \item \textit{*infos :} structure représentant toutes les informations pour 
-l'extraction. 
+l'extraction. Il est nécessaire de mettre en argument la structure 
+\textit{*infos} et non chacun des éléments écrits dans la signature pour 
+une raison particulière : si nous devions mettre en argument chaque élément 
+pour réaliser la signature, il y aurait l'algorithme utilisé, le fichier hôte, 
+le fichier résultat, la taille du fichier à cacher, le nom du fichier à cacher, 
+le mot de passe ainsi que la méthode utilisé (protection des données ou non). 
+Ces champs représentent 6/9 des champs de la structure \textit{infos}. 
+C'est donc pour cela qu'il est légitime de mettre \textit{*infos} en argument.  
 \end{itemize}
 \underline{Sortie :} 
 \begin{itemize}
