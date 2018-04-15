@@ -137,10 +137,14 @@ développeurs qui l'utilisent des fonctions indépendantes de chaque sous-module
 de dissimulation/extraction. 
 Par exemple, un développeur pourra juste réaliser la détection de l'algorithme de 
 stéganographie sur des fichiers qu'ils considérent déjà comme vérifié. 
+De plus, il fallait que les interfaces (en ligne de commande et graphique) 
+appellent elles-mêmes chacun des modules, et non qu'un module appelle un autre. 
 
 C'est pour cette raison que l'organigramme proposé dans les spécifications 
 semble plus représentatif de la future implémentation de StegX puisqu'il 
 fait apparaître les réels appels de fonctions. 
+En effet, dans ce nouvel organigramme, ce sont les interfaces qui appellent 
+dans un ordre précis les différents modules. 
 Avec ce nouvel organigramme, on peut réaliser séquentiellement et indépendemment 
 chaque étape de la dissimulation ou de l'extraction. 
 \newline
@@ -229,7 +233,8 @@ dissimulation}
 
 \begin{itemize}
 \item Phase 1 : Récupération des entrées de l'utilisateur : (1)
-\item Phase 2 : Initialisation et ouverture des fichiers : (2) et (3)
+\item Phase 2 : Initialisation, ouverture des fichiers et test de la 
+validité des fichiers en entrée : (2) et (3)
 \item Phase 3 : Vérification de la compatibilité du fichier hôte : (4)
 \item Phase 4 : Proposition des algorithmes selon les entrées de départ : 
 (6)
@@ -243,7 +248,8 @@ l'extraction}
 
 \begin{itemize}
 \item Phase 1 : Récupération des entrées de l'utilisateur : (1)
-\item Phase 2 : Initialisation et ouverture des fichiers : (2) et (3)
+\item Phase 2 : Initialisation, ouverture des fichiers et test de la 
+validité des fichiers en entrée : (2) et (3)
 \item Phase 3 : Vérification de la compatibilité du fichier à analyser : 
 (5)
 \item Phase 4 : Détection de l'algorithme utilisé : (8)
@@ -1265,6 +1271,23 @@ pour l'extraction ou la dissimulation.
 
 Entre ces deux fonctions d'initialisation et de libération de mémoire, 
 les étapes successives pour la dissimulation ou l'extraction se feront. 
+
+Pour la dissimulation, les interfaces appelleront le module 
+\textit{Vérification de la compatibilité des fichiers} grâce à la fonction 
+\textit{stegx\_check_compatibility} : flèche 4. 
+Puis, elles appelleront le sous-module 
+\textit{Proposition des algorithmes de stéganographie} avec la fonction 
+\textit{stegx\_suggest\_algos} (flèche 6) et la fonction 
+\textit{stegx\_choose\_algo} (flèche 7). 
+Enfin, l'insertion sera réalisée avec \textit{stegx\_insert} du sous-module 
+\textit{Insertion des données} (flèche 9). 
+
+Pour l'extraction, les interfaces appelleront le module 
+\textit{Vérification de la compatibilité des fichiers} grâce à la fonction 
+\textit{stegx\_check_compatibility} : flèche 5. 
+Ensuite, elles feront appel au sous-module 
+\textit{Détection de l'algorithme de stéganographie} grâce à la fonction 
+\textit{stegx\_detect\_algo} (flèche 8).
 
 \section{Conclusion}
 
