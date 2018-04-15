@@ -472,15 +472,37 @@ de son).
 
 \begin{lstlisting}[language=c]
 struct mp3 {
+	uint64_t sig_addr;
 };
 typedef struct mp3 mp3_s;
 \end{lstlisting}
 
+La structure \textit{mp3\_s} correspond aux informations 
+utiles pour le format MP3.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{sig\_addr} représente l'adresse absolue de la signature StegX 
+présente dans le fichier hôte. 
+\newline
+\end{itemize}
+
 \begin{lstlisting}[language=c]
 struct avi {
+	uint64_t sig_addr;
 };
 typedef struct avi avi_s;
 \end{lstlisting}
+
+La structure \textit{avi\_s} correspond aux informations 
+utiles pour le format AVI.  
+\newline
+\underline{Paramètres :}
+\begin{itemize}
+\item \textit{sig\_addr} représente l'adresse absolue de la signature StegX 
+présente dans le fichier hôte. 
+\newline
+\end{itemize}
 
 \begin{lstlisting}[language=c]
 struct flv {
