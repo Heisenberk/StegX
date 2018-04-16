@@ -45,28 +45,24 @@ Après avoir réalisé le cahier des charges concernant l'application StegX,
 l'analyse des contraintes et des besoins du client nous amène à rédiger 
 les spécifications. 
 
-Le logiciel StegX proposera de cacher des données dans des fichiers 
-dont le format est pris en charge par l'application (stéganographie). 
-De plus, un utilisateur pourra extraire les données cachées d'un fichier 
-qu'on considère déjà comme hôte (stéganalyse). 
-StegX prendra en charge les trois algorithmes de stéganographie suivants : 
-EOF, LSB et MetaData. 
+Le logiciel StegX proposera de cacher des données dans des fichiers dont le
+format est pris en charge par l'application (stéganographie). De plus, un
+utilisateur pourra extraire les données cachées d'un fichier si ces données ont
+étés cachées en utilisant notre application (stéganalyse). StegX prendra en
+charge les trois algorithmes de stéganographie suivants : EOF, LSB et Metadata.
 
-Avec l'analyse des fonctionnalités de l'application, nous avons vu qu'elle 
-devait gérer la manipulation de données binaires et donc il fallait un 
-langage proche de la machine. 
-De plus, nous devons implémenter des fonctions de stéganographie afin de 
-cacher des données dans des fichiers. Par conséquent, une programmation 
-procédurale était nécessaire. 
-Enfin, il fallait des structures ou des objets simples afin de manipuler 
-des structures de fichiers. 
-De ce fait, nous avons choisi le langage C pour implémenter la future 
-application StegX. En effet, le langage C propose une programmation procédurale, 
-ainsi qu'un langage bas niveau proche de la machine. Enfin, la possibilité 
-d'écriture et de lecture de bits et d'accès mémoire avec le langage C correspond 
-à nos besoins. 
-C'est donc pour toutes ces raisons que l'équipe de conception de StegX a 
-choisi le langage C pour implémenter l'application. 
+Durant l'analyse des fonctionnalités de l'application, nous avons vu qu'elle
+devait gérer la manipulation de données binaires et qu’il fallait donc un
+langage proche de la machine. De plus, nous devons implémenter des fonctions de
+stéganographie afin de cacher des données dans des fichiers. Par conséquent, une
+programmation procédurale était nécessaire. Enfin, il fallait des structures
+afin de manipuler des structures de fichiers. De ce fait, nous avons choisi le
+langage C pour implémenter la future application StegX. En effet, le langage C
+propose une programmation procédurale, ainsi qu'un langage bas niveau proche de
+la machine. Enfin, la possibilité d'écriture et de lecture de bits et d'accès
+mémoire avec le langage C correspond à nos besoins. C'est donc pour toutes ces
+raisons que l'équipe de conception de StegX a choisi le langage C pour
+implémenter l'application. 
 
 Après l'étude des différents modules de l'organigramme, ainsi que les informations 
 qui se déplacent, nous avons établi un organigramme. 
@@ -91,7 +87,7 @@ des différents modules de l'application.
     Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
     à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
     fichier contenant les données cachées à analyser (pour l'extraction de 
-    données cachées), grâce à une interaction avec le gestionnaire Entrée/Sorties. 
+    données cachées), grâce à une interaction avec le gestionnaire d’entrée/sorties. 
 
 \item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
 	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
@@ -99,10 +95,10 @@ des différents modules de l'application.
 	cachées}), choisis par l'utilisateur, est vérifié pour savoir s'il est 
 	bien pris en charge par l'application. \newline
 	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
-	pris en charge, il y aura une batterie de tests pour déterminer le 
+	pris en charge, il y aura une série de tests successifs pour déterminer le 
 	format du fichier. 
 	Il prendra en entrée les chemins de fichiers en entrée. Ce module interagira
-	avec le gestionnaire de Gestion de Fichiers. 
+	avec le système de gestion de fichiers. 
 
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
@@ -123,30 +119,28 @@ des différents modules de l'application.
 \end{description}
 \newpage
 
-L'organigramme établi dans le cahier des charges représentait les informations 
-qui circulaient entre les modules, mais ne représentaient pas les appels de 
-fonctions. 
-En effet, pour l'implémentation de StegX, il est nécessaire que les modules 
-soient indépendants. Pourtant, il imposait le fait que les modules soient 
-dépendants. Par exemple, une fonction du module 
-\textit{Vérification de la compatibilité des fichiers} devait appeler une 
-fonction du sous-module \textit{Détection de l'algorithme de stéganographie} 
-qui devait appeler une autre fonction du sous-module \textit{Extraction}. 
-Or, StegX propose une bibliothèque et donc il faut pouvoir proposer aux 
-développeurs qui l'utilisent des fonctions indépendantes de chaque sous-module 
-de dissimulation/extraction. 
-Par exemple, un développeur pourra juste réaliser la détection de l'algorithme de 
-stéganographie sur des fichiers qu'ils considérent déjà comme vérifié. 
-De plus, il fallait que les interfaces (en ligne de commande et graphique) 
+L'organigramme établi dans le cahier des charges représentait les informations
+qui circulaient entre les modules, mais ne représentaient pas les appels de
+fonctions. Pour l'implémentation de StegX, il est nécessaire que les modules
+soient indépendants. Pourtant, si on interprétait l’organigramme initial comme
+un organigramme d’appel de fonction, il imposerait le fait que les modules
+soient dépendants. Par exemple, une fonction du module \textit{Vérification de
+la compatibilité des fichiers} devait appeler une fonction du sous-module
+\textit{Détection de l'algorithme de stéganographie} qui devait appeler une
+autre fonction du sous-module \textit{Extraction}. Or, StegX propose une
+bibliothèque et donc il faut pouvoir proposer aux développeurs qui l'utilisent
+des fonctions indépendantes de chaque sous-module de dissimulation/extraction.
+Par exemple, un développeur pourra juste réaliser la détection de l'algorithme
+de stéganographie sur des fichiers qu'ils considèrent déjà comme vérifié. De
+plus, il fallait que les interfaces (en ligne de commande et graphique)
 appellent elles-mêmes chacun des modules, et non qu'un module appelle un autre. 
 
-C'est pour cette raison que l'organigramme proposé dans les spécifications 
-semble plus représentatif de la future implémentation de StegX puisqu'il 
-fait apparaître les réels appels de fonctions. 
-En effet, dans ce nouvel organigramme, ce sont les interfaces qui appellent 
-dans un ordre précis les différents modules. 
-Avec ce nouvel organigramme, on peut réaliser séquentiellement et indépendemment 
-chaque étape de la dissimulation ou de l'extraction. 
+C'est pour cette raison que l'organigramme proposé dans les spécifications
+semble plus représentatif de la future implémentation de StegX puisqu'il fait
+apparaître les réels appels de fonctions. En effet, dans ce nouvel organigramme,
+ce sont les interfaces qui appellent dans un ordre précis les différents
+modules. Avec ce nouvel organigramme, on peut réaliser séquentiellement et
+indépendamment chaque étape de la dissimulation ou de l'extraction. 
 
 %\hspace{0.3cm}
 \includegraphics[scale=0.6]{pictures/organigramme2.png}
@@ -191,7 +185,6 @@ chaque étape de la dissimulation ou de l'extraction.
 \item[7)] %OK
 \begin{itemize}
 \item Algorithme choisi par l'utilisateur. 
-\item Algorithmes proposés par l'application. 
 \end{itemize}
 \item[8)] %OK
 \begin{itemize}
@@ -211,17 +204,16 @@ chaque étape de la dissimulation ou de l'extraction.
 \item Fichier à analyser.
 \item Algorithme détecté. 
 \item Mot de passe choisi par l'utilisateur. 
-\item Chemin du fichier à créer (lors de l'extraction). 
+\item Fichier à créer (lors de l'extraction). 
 \end{itemize}
 \item[11)] 
 \begin{itemize}
-\item Mot de passe pour extraire les données (s'il a choisi l'option de
-    protéger ses données par mot de passe).
+\item Écriture du fichier à créer qui dissimulera les données à cacher et aura
+    l'apparence du fichier hôte.
 \end{itemize}
 \item[12)]
 \begin{itemize}
-\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
-    l'apparence du fichier hôte.
+\item Écriture du fichier extrait qui était caché dans le fichier hôte.
 \end{itemize}
 \end{description}
   \ldots
@@ -600,7 +592,10 @@ seront utilisés, ainsi que les signaux à mettre en oeuvre pour mettre en
 relation ces derniers avec les actions de l'utilisateur. Dans le but de stocker
 les informations de l'interface utilisateur, nous allons créer une structure
 nommée \textit{struct ui} qui contiendra tous les widgets utilisés dans
-l'interface ainsi que les différents messages affichés par le programme. 
+l'interface ainsi que les différents messages affichés par le programme. De
+plus, l’interface graphique agira comme une machine à état pour l’insertion. En
+effet, il faut différencier les états où l’utilisateur doit d’abord lancer
+l’analyse des fichiers et celui où il peut lancer la dissimulation.
 
 \begin{lstlisting}[language=c]
 void ui_create (GtkWidget* window, struct ui* ui);
@@ -614,19 +609,6 @@ sur une fenêtre donnée. Elle construira les widgets et configure les signaux.
 \item \textit{*window :} pointeur vers la fenêtre sur laquelle construire 
 l'interface utilisateur. 
 \item \textit{*ui :} pointeur vers l'interface utilisateur à remplir. 
-\newline 
-\end{itemize}
-
-\begin{lstlisting}[language=c]
-void ui_delete (struct ui* ui);
-\end{lstlisting}
-
-Cette fonction va supprimer l'interface utilisateur. Elle permettra de 
-désallouer la mémoire utilisée pour l'interface utilisateur. 
-\newline
-\underline{Entrée :} 
-\begin{itemize}
-\item \textit{*ui :} pointeur vers l'interface utilisateur à désallouer. 
 \newline 
 \end{itemize}
 
@@ -657,10 +639,6 @@ widgets de la fenêtre principale.
 configurer les signaux. 
 \newline 
 \end{itemize}
-
-La structure \textit{struct ui} et les 4 fonctions sont les outils principaux 
-pour construire l'interface graphique. Ainsi, cela permet de visualiser 
-en amont le fonctionnement de l'interface graphique de StegX. 
 
 \subsection{Interface en ligne de commande}
 
@@ -780,7 +758,7 @@ type_e check_file_format (FILE* file);
 \end{lstlisting}
 
 Cette fonction récupère le fichier dont le format est à trouver. Elle établit une 
-batterie de tests pour déterminer si le format du fichier est pris en charge 
+série de tests successifs pour déterminer si le format du fichier est pris en charge 
 par l'application. 
 Pour cela, on utilisera les fonctions \textit{stegx\_test\_file\_XXX} 
 comme vu précedemment. 
@@ -1189,7 +1167,7 @@ int extraction_metadata_XXX (infos_s* infos);
 \end{lstlisting}
 
 En fonction du format du fichier à analyser, on ne va pas faire la même 
-extraction pour l'algorithme MetaData. 
+extraction pour l'algorithme Metadata. 
 \textit{XXX} représente le format du fichier à analyser : il peut être 
 "bmp", "png", "wav", "mp3", "avi" et "flv". Ils correspondent aux formats 
 pris en charge par l'application. Donc, pour chaque format, il va y avoir 
@@ -1252,7 +1230,7 @@ fonction et 0 si tout se passe bien.
 \section{Imbrication des différents modules}
 
 Les interfaces ont pour rôle de réaliser les étapes séquentiellement 
-de la dissimulation ou de l'extraction. C'est donc le module Interface qui 
+de la dissimulation ou de l'extraction. C'est donc le module de l’interface qui 
 va faire appel aux autres modules. 
 Il va donc y avoir une récolte des entrées de l'utilisateur pour une 
 initialisation d'une structure \textit{stegx\_choices\_s}. 
@@ -1315,19 +1293,17 @@ fonction \textit{stegx\_extract} pour faire l'extraction du fichier caché
 
 \section{Conclusion}
 
-Pour chaque module et sous-module de l'application, nous avons questionné nos 
-besoins et réfléchi comment répondre à ces derniers. Pour cela, il a fallu 
-réfléchir, à l'aide de l'organigramme créé pour le cahier des charges, 
-sur les signatures des fonctions ainsi que sur les informations qui circulent 
-entre les différents modules. 
-La partie la plus délicate avec la réflexion des structures de données 
-est primordiale pour que les informations circulantes restent cohérentes. 
-En effet, il était nécessaire de respecter le déplacement des données entre 
-les modules selon l'organigramme. 
+Pour chaque module et sous-module de l'application, nous nous sommes questionnés
+sur nos besoins et avons réfléchis à comment nous pourrions y répondre. Pour
+cela, il a fallu, à l'aide de l'organigramme créé lors du cahier des charges,
+établir les signatures des fonctions ainsi que les informations qui circulent
+entre les différents modules.  La partie la plus délicate était la réflexion des
+structures de données, étant une partie primordiale pour que les informations
+circulantes restent cohérentes. En effet, il était nécessaire de respecter le
+déplacement des données entre les modules selon l'organigramme. 
 
-Maintenant que les besoins ont été identifiés (dans le cahier des charges) 
-et que les structures de données et signatures des fonctions ont été 
-analysées (dans les spécifications), il est maintenant nécessaire 
-d'implémenter StegX. 
+Maintenant que les besoins ont été identifiés (dans le cahier des charges) et
+que les structures de données et signatures des fonctions ont été analysées
+(dans les spécifications), il est maintenant possible d'implémenter StegX. 
 
 \end{document}
