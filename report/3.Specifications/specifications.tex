@@ -594,7 +594,7 @@ les informations de l'interface utilisateur, nous allons créer une structure
 nommée \textit{struct ui} qui contiendra tous les widgets utilisés dans
 l'interface ainsi que les différents messages affichés par le programme. De
 plus, l’interface graphique agira comme une machine à état pour l’insertion. En
-effet, il faut différencier les états où l’utilisateur doit d’abord lancer
+effet, il faut différencier l'état où l’utilisateur doit d’abord lancer
 l’analyse des fichiers et celui où il peut lancer la dissimulation.
 
 \begin{lstlisting}[language=c]
@@ -637,6 +637,39 @@ widgets de la fenêtre principale.
 \begin{itemize}
 \item \textit{*ui :} pointeur vers l'interface utilisateur où il faut 
 configurer les signaux. 
+\newline 
+\end{itemize}
+ 
+\begin{lstlisting}[language=c]
+static gboolean insert_do(gpointer data);
+\end{lstlisting}
+Exécute l'analyse des fichiers entrés par l'utilisateur ou l'insertion des
+données du fichier caché dans le fichier hôte. Met à jour une variable avec
+le code de retour du traitement.
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{gpointer data :} structure de l'interface utilisateur. 
+\end{itemize}
+\underline{Sortie :}
+\begin{itemize}
+\item \textit{gboolean :} code de retour du thread GTK+.
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+static gboolean extrac_do(gpointer data);
+\end{lstlisting}
+Exécute l'extraction des données du fichier caché dans le fichier hôte. Met à
+jour une variable avec le code de retour de l'extraction.
+\newline
+\underline{Entrée :} 
+\begin{itemize}
+\item \textit{gpointer data :} structure de l'interface utilisateur. 
+\end{itemize}
+\underline{Sortie :}
+\begin{itemize}
+\item \textit{gboolean :} code de retour du thread GTK+.
 \newline 
 \end{itemize}
 
