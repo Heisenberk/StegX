@@ -70,53 +70,14 @@ Cet organigramme nous permettra ainsi de rédiger en détail les spécifications
 des différents modules de l'application. 
 
 \section{Modules du produit}
-\subsection{Organigramme}
+%\subsection{Organigramme descriptif des informations circulantes entre les 
+%modules}
 
-\hspace{1cm}
-\includegraphics[scale=0.71]{pictures/organigramme.png}
+%\hspace{1cm}
+%\includegraphics[scale=0.71]{pictures/organigramme.png}
 
-\subsection{Liste des modules et de leurs fonctionnalités}
-
-\begin{description}
-\item[a)] \textbf{Interface graphique / Interface en ligne de commande} :
-    interfaces permettant à l'utilisateur de choisir parmi les deux
-    fonctionnalités possibles de l'application. Il peut dissimuler des
-    données dans un fichier (dont le type et le format sont pris en charge
-    par l'application). Ou bien, il peut extraire les données cachées d'un
-    fichier. \newline
-    Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
-    à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
-    fichier contenant les données cachées à analyser (pour l'extraction de 
-    données cachées), grâce à une interaction avec le gestionnaire d’entrées/sorties. 
-
-\item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
-	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
-	le format du fichier à analyser (pour le module \textit{Extraction de données 
-	cachées}), choisis par l'utilisateur, sont vérifiés pour savoir s'ils sont
-	bien pris en charge par l'application. \newline
-	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
-	pris en charge, il y aura une série de tests successifs pour déterminer le 
-	format du fichier. 
-	Il prendra en entrée les chemins de fichiers en entrée. 
-
-\item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
-    du type et du format du fichier hôte, ainsi que de la taille des données à
-    cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
-    sécurité supplémentaire).  
-
-\item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
-	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
-	afin de les extraire correctement par la suite. 
-
-\item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
-    sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
-    choisi par l'utilisateur. 
-
-\item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
-    sont extraites selon l'algorithme déduit.
-
-\end{description}
-\newpage
+\subsection{Organigramme descriptif des appels de fonctions des différents 
+modules}
 
 L'organigramme établi dans le cahier des charges représentait les informations
 qui circulaient entre les modules, mais ne représentaient pas les appels de
@@ -141,9 +102,79 @@ ce sont les interfaces qui appellent dans un ordre précis les différents
 modules. Avec ce nouvel organigramme, on peut réaliser séquentiellement et
 indépendamment chaque étape de la dissimulation ou de l'extraction. 
 
-%\hspace{0.3cm}
-\includegraphics[scale=0.6]{pictures/organigramme2.png}
-\newpage
+\hspace{0.5cm}
+\includegraphics[scale=0.55]{pictures/organigramme2.png}
+
+\subsection{Liste des modules et de leurs fonctionnalités}
+
+\begin{description}
+\item[a)] \textbf{Interface graphique / Interface en ligne de commande} :
+    interfaces permettant à l'utilisateur de choisir parmi les deux
+    fonctionnalités possibles de l'application. Il peut dissimuler des
+    données dans un fichier (dont le type et le format sont pris en charge
+    par l'application). Ou bien, il peut extraire les données cachées d'un
+    fichier. \newline
+    Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
+    à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
+    fichier contenant les données cachées à analyser (pour l'extraction de 
+    données cachées), grâce à une interaction avec le gestionnaire d’entrées/sorties. 
+
+\item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
+	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
+	le format du fichier à analyser (pour le module \textit{Extraction de données 
+	cachées}), choisis par l'utilisateur, sont vérifiés pour savoir s'ils sont
+	bien pris en charge par l'application. \newline
+	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
+	pris en charge, il y aura une série de tests successifs pour déterminer le 
+	format du fichier. 
+
+\item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
+    du type et du format du fichier hôte, ainsi que de la taille des données à
+    cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
+    sécurité supplémentaire).  
+
+\item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
+	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
+	afin de les extraire correctement par la suite. 
+
+\item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
+    sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
+    choisi par l'utilisateur. 
+
+\item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
+    sont extraites selon l'algorithme déduit.
+
+\end{description}
+%\newpage
+%\subsection{Organigramme descriptif des appels de fonctions des différents 
+%modules}
+
+%L'organigramme établi dans le cahier des charges représentait les informations
+%qui circulaient entre les modules, mais ne représentaient pas les appels de
+%fonctions. Pour l'implémentation de StegX, il est nécessaire que les modules
+%soient indépendants. Pourtant, si on interprétait l’organigramme initial comme
+%un organigramme d’appel de fonctions, il imposerait le fait que les modules
+%soient dépendants. Par exemple, une fonction du module \textit{Vérification de
+%la compatibilité des fichiers} devait appeler une fonction du sous-module
+%\textit{Détection de l'algorithme de stéganographie} qui devait appeler une
+%autre fonction du sous-module \textit{Extraction}. Or, StegX propose une
+%bibliothèque et donc il faut pouvoir proposer aux développeurs qui l'utilisent
+%des fonctions indépendantes de chaque sous-module de dissimulation/extraction.
+%Par exemple, un développeur pourra juste réaliser la détection de l'algorithme
+%de stéganographie sur des fichiers qu'ils considèrent déjà comme vérifiés. De
+%plus, il fallait que les interfaces (en ligne de commande et graphique)
+%appellent elles-mêmes chacun des modules, et non qu'un module appelle un autre. 
+
+%C'est pour cette raison que l'organigramme proposé dans les spécifications
+%semble plus représentatif de la future implémentation de StegX puisqu'il fait
+%apparaître les réels appels de fonctions. En effet, dans ce nouvel organigramme,
+%ce sont les interfaces qui appellent dans un ordre précis les différents
+%modules. Avec ce nouvel organigramme, on peut réaliser séquentiellement et
+%indépendamment chaque étape de la dissimulation ou de l'extraction. 
+
+%\hspace{0.5cm}
+%\includegraphics[scale=0.55]{pictures/organigramme2.png}
+%\newpage
 
 \paragraph{Liste des informations qui circulent entre les modules :}
 
@@ -158,39 +189,31 @@ indépendamment chaque étape de la dissimulation ou de l'extraction.
 \item Nom du fichier à analyser et chemin du fichier résultant de l'extraction
     des données cachées (pour l'extraction).
 \end{itemize}
-\item[2)]  %OK
+\item[2)] %OK
 \begin{itemize}
-\item Nom du fichier hôte et nom du fichier à cacher (pour la dissimulation).
-\item Nom du fichier contenant les données cachées à analyser (pour l'extraction).
+\item Fichier hôte.
+\item Fichier à cacher. 
 \end{itemize}
 \item[3)] %OK
 \begin{itemize}
-\item Fichier hôte et fichier à cacher (pour la dissimulation). 
-\item Fichier contenant les données cachées à analyser (pour l'extraction). 
+\item Données du fichier hôte et du fichier à cacher en lecture (pour la 
+dissimulation).
+\item Données du fichier à analyser en lecture (pour l'extraction).  
 \end{itemize}
 \item[4)] %OK
 \begin{itemize}
-\item Fichier hôte dont il faut vérifier la compatibilité. 
+\item Fichier hôte. 
+\item Fichier à cacher. 
 \end{itemize}
 \item[5)] %OK
 \begin{itemize}
-\item Fichier à analyser dont il faut vérifier la compatibilité.
+\item Données du fichier hôte et à cacher en lecture. 
 \end{itemize}
 \item[6)] %OK
 \begin{itemize}
-\item Fichier hôte.
-\item Fichier à cacher.
+\item Algorithme choisi par l'utilisateur.
 \end{itemize}
 \item[7)] %OK
-\begin{itemize}
-\item Algorithme choisi par l'utilisateur. 
-\end{itemize}
-\item[8)] %OK
-\begin{itemize}
-\item Fichier à analyser dont il faut détecter l'algorithme utilisé. 
-\item Mot de passe choisi par l'utilisateur. 
-\end{itemize}
-\item[9)] %OK
 \begin{itemize}
 \item Fichier hôte. 
 \item Fichier à cacher. 
@@ -198,21 +221,35 @@ indépendamment chaque étape de la dissimulation ou de l'extraction.
 \item Mot de passe choisi par l'utilisateur. 
 \item Fichier résultant (dans lequel il faut écrire). 
 \end{itemize}
-\item[10)] %OK
+\item[8)] %OK
+\begin{itemize}
+\item Données du fichier hôte et à cacher en lecture. 
+\item Données du fichier résultant en écriture. 
+\end{itemize}
+\item[9)] %OK
+\begin{itemize}
+\item Fichier à analyser dont il faut vérifier la compatibilité. 
+\end{itemize}
+\item[10)] 
+\begin{itemize}
+\item Fichier à analyser dont il faut détecter l'algorithme utilisé. 
+\item Mot de passe choisi par l'utilisateur. 
+\end{itemize}
+\item[11)] 
+\begin{itemize}
+\item Données du fichier à analyser en lecture.
+\end{itemize}
+\item[12)]
 \begin{itemize}
 \item Fichier à analyser.
 \item Algorithme détecté. 
 \item Mot de passe choisi par l'utilisateur. 
-\item Fichier à créer (lors de l'extraction). 
+\item Chemin du fichier à créer. 
 \end{itemize}
-\item[11)] 
+\item[13)]
 \begin{itemize}
-\item Écriture du fichier à créer qui dissimulera les données à cacher et aura
-    l'apparence du fichier hôte.
-\end{itemize}
-\item[12)]
-\begin{itemize}
-\item Écriture du fichier extrait qui était caché dans le fichier hôte.
+\item Données du fichier à analyser en lecture.
+\item Données du fichier à extraire en écriture. 
 \end{itemize}
 \end{description}
   \ldots
