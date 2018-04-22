@@ -14,12 +14,12 @@
 #include "libsteg.h"
 #include <getopt.h>
 
-stegx_info_t* init_stegx_info(){
-    stegx_info_t* com = calloc(1,sizeof(stegx_info_t));
+stegx_choices_s* init_stegx_info(){
+    stegx_choices_s* com = calloc(1,sizeof(stegx_choices_s));
     com->host_path = NULL;
     com->res_path = "stdout\0";
-    com->ins_info=calloc(1, sizeof(stegx_info_ins_t));
-    com->ins_info->hidden_path = "stdin\0";
+    com->insert_info=calloc(1, sizeof(stegx_info_insert_s));
+    com->insert_info->hidden_path = "stdin\0";
     com->mode = -1;
     return com;
 }
@@ -44,7 +44,7 @@ void we_are_stegx(){
 void help(){
     printf("Manuel d'utilisation de stegx\n\n");
     printf("\033[01m\033[32m-a, --about \033[0m\n\t A propos de l'application et de ses concepteurs\n\n"
-        "\033[01m\033[32m-i, --insert \033[0m\n\t Option de dissimultation.\n\n"
+        "\033[01m\033[32m-i, --insert \033[0m\n\t Option de dissimulation.\n\n"
         "\033[01m\033[32m-e, --extract \033[0m\n\t Option d'extraction.\n\n"
         "\033[01m\033[32m-o, --host [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
         "\033[01m\033[32m-c, --hide [nom_fichier]\033[0m (si option de dissimulation sélectionnée)"
@@ -65,7 +65,7 @@ void unvalid_line(char* error_info){
   printf("la ligne de commande est invalide : %s\n", error_info);
 }
 
-void fill_info(stegx_info_t* com,const int argc,char* const* argv){
+void fill_info(stegx_choices_s* com,const int argc,char* const* argv){
     if(argc==1){we_are_stegx();}
     int optch;
     extern int opterr;
@@ -109,7 +109,7 @@ void fill_info(stegx_info_t* com,const int argc,char* const* argv){
             com->host_path=optarg;
             break;
         case 'c':
-            com->ins_info->hidden_path=optarg;
+            com->insert_info->hidden_path=optarg;
             break; 
         case 'r':
             com->res_path=optarg;
@@ -117,13 +117,13 @@ void fill_info(stegx_info_t* com,const int argc,char* const* argv){
         case 'p':
              com->passwd=optarg;
         case STEGX_ALGO_LSB:
-             com->ins_info->algo=STEGX_ALGO_LSB;
+             com->insert_info->algo=STEGX_ALGO_LSB;
              break;
         case STEGX_ALGO_METADATA:
-             com->ins_info->algo=STEGX_ALGO_METADATA;
+             com->insert_info->algo=STEGX_ALGO_METADATA;
              break;           
         case STEGX_ALGO_EOF:
-             com->ins_info->algo=STEGX_ALGO_EOF;
+             com->insert_info->algo=STEGX_ALGO_EOF;
              break;
         case 'h':
              help();
@@ -138,15 +138,15 @@ void fill_info(stegx_info_t* com,const int argc,char* const* argv){
     };
 }
 
-void check_info(stegx_info_t* com){
+void check_info(stegx_choices_s* com){
   if (com->mode==STEGX_MODE_INSERT){
-    if((com->host_path != NULL) && (com->ins_info->algo!=-1)){
+    if((com->host_path != NULL) && (com->insert_info->algo!=-1)){
     printf("host_path : %s\n"
             "hidden_path : %s\n"
 	    "res_path : %s\n"
 	    "algo : %d\n"
-	    "password : %s\n", com->host_path, com->ins_info->hidden_path,
-	    com->res_path, com->ins_info->algo, com->passwd);
+	    "password : %s\n", com->host_path, com->insert_info->hidden_path,
+	    com->res_path, com->insert_info->algo, com->passwd);
     }
     else{
 	unvalid_line("fichier hôte ou algorithme non renseigné.\n");
@@ -164,9 +164,9 @@ void check_info(stegx_info_t* com){
   }
 }
 
-void dest_stegx_info(stegx_info_t* com){
-    if (com->ins_info){
-	    free(com->ins_info);
+void dest_stegx_info(stegx_choices_s* com){
+    if (com->insert_info){
+	    free(com->insert_info);
     }
     free(com);
 

@@ -26,7 +26,7 @@ if (NOT TARGET uninstall)
     # Cible de désinstallation verbeuse multiplate-forme (cible 1). Ne
     # désinstalle que les fichiers installés, mais pas les dossiers.
     set (UNINSTALL_VERBOSE true)
-    configure_file ( ${UNINSTALL_CMAKE_SCRIPT} ${UNINSTALL_VERBOSE_OUTPUT} @ONLY)
+    configure_file (${UNINSTALL_CMAKE_SCRIPT} ${UNINSTALL_VERBOSE_OUTPUT} @ONLY)
     add_custom_target (${UNINSTALL_TARGET_1}
         COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Uninstalling the project..."
         COMMAND ${CMAKE_COMMAND} -P ${UNINSTALL_VERBOSE_OUTPUT}
@@ -55,7 +55,7 @@ if (NOT TARGET uninstall)
     # packages. Pour UNIX et Windows, cette fonction est déjà assuré par la cible 2.
     else ()
         set (UNINSTALL_VERBOSE false)
-        configure_file ( ${UNINSTALL_CMAKE_SCRIPT} ${UNINSTALL_SILENT_OUTPUT} @ONLY)
+        configure_file (${UNINSTALL_CMAKE_SCRIPT} ${UNINSTALL_SILENT_OUTPUT} @ONLY)
         add_custom_target (${UNINSTALL_TARGET_3} COMMAND ${CMAKE_COMMAND} -P ${UNINSTALL_SILENT_OUTPUT})
     endif()
 endif()

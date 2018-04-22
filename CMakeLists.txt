@@ -19,6 +19,13 @@ project (StegX VERSION 0.1
 string (TOLOWER ${PROJECT_NAME} PROJECT_NAME_LC)
 string (TOUPPER ${PROJECT_NAME} PROJECT_NAME_UC)
 
+# Texte de la license sous forme de chaîne de caractère en une ligne pour le C.
+file (STRINGS ${CMAKE_SOURCE_DIR}/COPYING PROJECT_LICENSE_FULL_TEXT)
+string (REPLACE "\\;" "TRUE_COMMA" PROJECT_LICENSE_FULL_TEXT "${PROJECT_LICENSE_FULL_TEXT}")
+string (REPLACE ";" "\\n" PROJECT_LICENSE_FULL_TEXT "${PROJECT_LICENSE_FULL_TEXT}")
+string (REPLACE "TRUE_COMMA" ";" PROJECT_LICENSE_FULL_TEXT "${PROJECT_LICENSE_FULL_TEXT}")
+string (REPLACE "\"" "\\\"" PROJECT_LICENSE_FULL_TEXT "${PROJECT_LICENSE_FULL_TEXT}")
+
 # Modes de compilation.
 set (CMAKE_CONFIGURATION_TYPES Debug;Release)
 set (CMAKE_BUILD_TYPE Debug)
@@ -124,3 +131,12 @@ if (NOT MINGW AND NOT MSYS)
     enable_testing ()
     add_subdirectory (${TEST_DIR})
 endif ()
+
+# Divers =======================================================================
+
+# Cible de réinitialisation de l'arborescence de build (à faire par exemple si
+# on rajoute un fichier source).
+add_custom_target (reinit
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
+    COMMAND ${CMAKE_COMMAND} ${CMAKE_BINARY_DIR}
+    )
