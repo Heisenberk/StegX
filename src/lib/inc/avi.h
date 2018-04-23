@@ -4,11 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "libsteg.h"
 
 struct avi{
 	
 };
 typedef struct avi avi_s;
+
+type_e stegx_test_file_avi(FILE* file);
 
 
 #endif

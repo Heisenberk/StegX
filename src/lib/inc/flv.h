@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "libsteg.h"
 
 struct flv{
 	uint32_t nb_video_tag;
@@ -11,6 +12,8 @@ struct flv{
 	uint32_t file_size;
 };
 typedef struct flv flv_s;
+
+type_e stegx_test_file_flv(FILE* file);
 
 
 #endif

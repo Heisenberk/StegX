@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "libsteg.h"
 
 struct wav{
 	uint32_t header_size;
@@ -12,5 +13,6 @@ struct wav{
 };
 typedef struct wav wav_s;
 
+type_e stegx_test_file_wav(FILE* file);
 
 #endif

@@ -55,6 +55,7 @@ enum type {BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM,
 	MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN};
 typedef enum type type_e;
 
+
 struct host_info {
     FILE* host;
     type_e type;
