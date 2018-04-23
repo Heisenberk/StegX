@@ -1,25 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 #include "libsteg.h"
 
-void hello_libsteg()
-{
-    printf("Hello libsteg v%d !\n", LIB_VER);
-}
-
-int hello_libsteg_v2(int ret)
-{
-    return ret;
-}
-
 info_s* stegx_init(stegx_choices_s* choices){
-	info_s* s;
+	info_s* s=malloc(sizeof(info_s));
+	int count,begin;
+	int i,j;
 	
-	s->mode=choices->mode; //OK mode
+	//OK mode
+	s->mode=choices->mode; 
 	
-	/*s->host.host=fopen(choices->host_path,"r"); //OK host.host
+	//OK host.host
+	s->host.host=fopen(choices->host_path,"r"); 
 	if(s->host.host==NULL){
+		printf("ERREUR1");
 		//erreur
 	}
 	
@@ -27,25 +24,23 @@ info_s* stegx_init(stegx_choices_s* choices){
 	if(choices->mode==STEGX_MODE_INSERT){ 
 		s->hidden=fopen(choices->insert_info->hidden_path,"r");
 		if(s->hidden==NULL){
+			printf("ERREUR2");
 			//erreur
 		}
 	}
 	else s->hidden=NULL;
 	
 	
-	s->res=NULL;
-	
-	
+	//OK passwd+method
 	if(choices->passwd!=NULL){
-		int count=0;
-		while(choices->passwd[count]!='\n'){
-			count++;
-		}
+		count=strlen(choices->passwd);
 		if(count==0) {
 			//erreur
+			printf("ERREUR3");
 		}
+		count++;
 		s->passwd=malloc(count*sizeof(char));
-		int i;
+
 		for(i=0;i<count;i++){
 			s->passwd[i]=choices->passwd[i];
 		}
@@ -58,12 +53,56 @@ info_s* stegx_init(stegx_choices_s* choices){
 			s->method=STEGX_WITHOUT_PASSWD;
 		}
 		s->passwd=NULL;
-	}*/
+	}
 	
+	//OK res
+	struct stat st;
+	if(choices->mode==STEGX_MODE_EXTRACT){
+		// si on est en EXTRACT il faut absolument que le chemin soit un dossier
+		if(stat(choices->res_path, &st)==0){
+			if(!S_ISDIR(st.st_mode)){
+				printf("ERREUR4 res_path doit etre un dossier");
+			}
+		}
+	}
+	if(choices->mode==STEGX_MODE_EXTRACT){
+		s->res=NULL;
+	}
+	else{
+		s->res=fopen(choices->res_path,"w");
+		if(s->host.host==NULL){
+			// le fait que res_path ne soit pas un fichier est detecte ici
+			printf("ERREUR5");
+			//erreur
+		}
+	}
+	
+	// OK hidden_name
+	if(choices->mode==STEGX_MODE_EXTRACT){
+		s->hidden_name=NULL;
+	}
+	else{
+		count=strlen(choices->insert_info->hidden_path);
+		begin=count-1;
+		while((begin!=0)&&(choices->insert_info->hidden_path[begin]!='/')){
+			begin--;
+		}
+		s->hidden_name=malloc((count-begin)*sizeof(char));
+		j=0;
+		for(i=begin+1;i<count+1;i++){
+			s->hidden_name[j]=choices->insert_info->hidden_path[i];
+			j++;
+		}
+	}
 	
 	return s;
 }
 
 void stegx_clear(info_s* infos){
-	
+	if(infos->hidden!=NULL) fclose(infos->host.host);
+	if(infos->hidden!=NULL) fclose(infos->hidden);
+	if(infos->res!=NULL) fclose(infos->res);
+	if(infos->hidden_name!=NULL) free(infos->hidden_name);
+	if(infos->passwd!=NULL) free(infos->passwd);
+	if(infos!=NULL) free(infos);
 }

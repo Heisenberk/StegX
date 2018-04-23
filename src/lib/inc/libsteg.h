@@ -10,8 +10,6 @@
 #include "avi.h"
 #include "flv.h"
 
-void hello_libsteg(void);
-int hello_libsteg_v2(int ret);
 
 //public  
 enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
