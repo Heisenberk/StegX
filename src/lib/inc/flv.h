@@ -6,6 +6,10 @@
 #include <stdint.h>
 #include "libsteg.h"
 
+#define SIG_FLV_1 0x46
+#define SIG_FLV_2 0x4C
+#define SIG_FLV_3 0x56
+
 struct flv{
 	uint32_t nb_video_tag;
 	uint32_t nb_metadata_tag;

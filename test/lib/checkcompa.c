@@ -1,6 +1,7 @@
 /* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
@@ -15,7 +16,7 @@ void test_file_bmp_v1(void** state){
 	FILE* f=fopen("../test/lib/files/test1.bmp","r");
 	type_e test=stegx_test_file_bmp(f);
 	if(f!=NULL) fclose(f);
-	assert_int_equal(test,BMP_UNCOMPRESSED);
+	assert_int_equal(test,UNKNOWN);
 }
 
 void test_file_bmp_v2(void** state){
@@ -136,8 +137,66 @@ void test_file_wav_v3(void** state){
 	assert_int_equal(test,WAV_PCM);
 }
 
+void test_file_mp3_v1(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/test1.bmp","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,UNKNOWN);
+}
+
+void test_file_mp3_v2(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/inconnu","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,UNKNOWN);
+}
+
+void test_file_mp3_v3(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/test7.mp3","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,MP3);
+}
+
+void test_file_mp3_v4(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/test12.mp3","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,MP3);
+}
+
+void test_file_flv_v1(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/inconnu","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,UNKNOWN);
+}
+
+void test_file_flv_v2(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/test1.bmp","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,UNKNOWN);
+}
+
+void test_file_flv_v3(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../test/lib/files/test13.flv","r");
+	type_e test=stegx_test_file_bmp(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,FLV);
+}
+
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
+	
+	// tests unitaires BMP
     cmocka_unit_test(test_file_bmp_v1),
     cmocka_unit_test(test_file_bmp_v2),
     cmocka_unit_test(test_file_bmp_v3),
@@ -147,15 +206,27 @@ const struct CMUnitTest check_compatibility_tests[] = {
     cmocka_unit_test(test_file_bmp_v7),
     cmocka_unit_test(test_file_bmp_v8),
     
+    // tests unitaires PNG
     cmocka_unit_test(test_file_png_v1),
     cmocka_unit_test(test_file_png_v2),
     cmocka_unit_test(test_file_png_v3),
     cmocka_unit_test(test_file_png_v4),
     
+    // tests unitaires WAV
     cmocka_unit_test(test_file_wav_v1),
     cmocka_unit_test(test_file_wav_v2),
     cmocka_unit_test(test_file_wav_v3),
     
+    // tests unitaires MP3
+    cmocka_unit_test(test_file_mp3_v1),
+    cmocka_unit_test(test_file_mp3_v2),
+    cmocka_unit_test(test_file_mp3_v3),
+    cmocka_unit_test(test_file_mp3_v4),
+    
+     // tests unitaires FLV
+    cmocka_unit_test(test_file_flv_v1),
+    cmocka_unit_test(test_file_flv_v2),
+    cmocka_unit_test(test_file_flv_v3),
 };
 
 int main(void)
