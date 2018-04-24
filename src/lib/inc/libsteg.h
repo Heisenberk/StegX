@@ -3,6 +3,7 @@
 
 #define LIB_VER 2
 
+#include "typesteg.h"
 #include "bmp.h"
 #include "png.h"
 #include "wav.h"
@@ -10,18 +11,7 @@
 #include "avi.h"
 #include "flv.h"
 
-
-//public  
-enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
-typedef enum mode mode_e;
-
-enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA, 
-	STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
-typedef enum algo algo_e;
-
-enum method {STEGX_WITHOUT_PASSWD, STEGX_WITH_PASSWD};
-typedef enum method method_e;
-
+//public
 /**
  * @brief Informations du fichier caché. 
  * @details Permet de représenter les informations nécessaires sur le fichier 
@@ -47,26 +37,19 @@ struct stegx_choices {
     stegx_info_insert_s* insert_info; /*!< pointeur sur la structure stockant les informations sur le fichier à cacher (requis si insertion). */ 
 };
 typedef struct stegx_choices stegx_choices_s;
-
-
 	
 //privé
-enum type {BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM, 
-	MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN};
-typedef enum type type_e;
-
-
 struct host_info {
     FILE* host;
     type_e type;
-    union {
+    /*union {
         struct bmp bmp;
         struct png png;
         struct wav wav;
         struct mp3 mp3;
         struct avi avi;
         struct flv flv;
-    } file_info;
+    } file_info;*/
 };
 typedef struct host_info host_info_s;
 

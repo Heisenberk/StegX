@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 
 #include "libsteg.h"
+#include "typesteg.h"
 
 info_s* stegx_init(stegx_choices_s* choices){
 	info_s* s=malloc(sizeof(info_s));

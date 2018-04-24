@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "libsteg.h"
 
-#define SIGNATURE_BMP 0x4D42
+#define SIG_BMP 0x4D42
 #define ADDRESS_BMP_COMPRESS 30
 
 struct bmp{
