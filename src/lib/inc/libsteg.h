@@ -42,14 +42,14 @@ typedef struct stegx_choices stegx_choices_s;
 struct host_info {
     FILE* host;
     type_e type;
-    /*union {
+    union {
         struct bmp bmp;
         struct png png;
         struct wav wav;
         struct mp3 mp3;
         struct avi avi;
         struct flv flv;
-    } file_info;*/
+    } file_info;
 };
 typedef struct host_info host_info_s;
 

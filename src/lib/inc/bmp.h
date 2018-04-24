@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 #define SIG_BMP 0x4D42
 #define ADDRESS_BMP_COMPRESS 30

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 #define SIG_MP3_ID3V1 0xFBFF
 #define SIG_MP3_ID3V2_1 0x49

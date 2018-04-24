@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 struct avi{
 	

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "avi.h"
+#include "flv.h"
 
 type_e stegx_test_file_flv(FILE* file){
 	if(file==NULL) return UNKNOWN;

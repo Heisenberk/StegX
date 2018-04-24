@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 #define SIG_WAV_RIFF 0x46464952
 #define SIG_WAV_WAVE 0x45564157

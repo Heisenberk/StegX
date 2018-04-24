@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 #define SIG_PNG_1 0x89
 #define SIG_PNG_2 0x50

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "typesteg.h"
 
 #define SIG_FLV_1 0x46
 #define SIG_FLV_2 0x4C
