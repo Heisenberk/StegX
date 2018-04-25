@@ -1,9 +1,8 @@
 #ifndef LIBSTEG_H
 #define LIBSTEG_H
 
-#define LIB_VER 2
-
 #include "typesteg.h"
+//#include "checkcompa.h" // on ne peut pas linclure car checkcompa en a besoin
 #include "bmp.h"
 #include "png.h"
 #include "wav.h"
@@ -39,6 +38,7 @@ struct stegx_choices {
 typedef struct stegx_choices stegx_choices_s;
 	
 //privé
+
 struct host_info {
     FILE* host;
     type_e type;
@@ -70,7 +70,5 @@ typedef struct info info_s;
 info_s* stegx_init(stegx_choices_s* choices);
 
 void stegx_clear(info_s* infos);
-
-
 
 #endif

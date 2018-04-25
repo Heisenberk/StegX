@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "commandes/cli.h"
+#include "checkcompa.h" // a enlever pour n'avoir que libsteg.h
 
 //fonction a enlever
 void affiche(info_s* infos,stegx_choices_s* choices){
@@ -27,6 +28,17 @@ void affiche(info_s* infos,stegx_choices_s* choices){
 	//HOST.HOST
 	if(infos->host.host!=NULL){
 		printf("OUVERTURE FICHIER HOTE : %s\n",choices->host_path);
+		if(infos->host.type==UNKNOWN) printf("TYPE:UNKNOWN\n");
+		else if(infos->host.type==BMP_COMPRESSED) printf("TYPE:BMP_COMPRESSED\n");
+		else if(infos->host.type==BMP_UNCOMPRESSED) printf("TYPE:BMP_UNCOMPRESSED\n");
+		else if(infos->host.type==PNG) printf("TYPE:PNG\n");
+		else if(infos->host.type==WAV_PCM) printf("TYPE:WAV-PCM\n");
+		else if(infos->host.type==WAV_NO_PCM) printf("TYPE:WAV-NO-PCM\n");
+		else if(infos->host.type==MP3) printf("TYPE:MP3\n");
+		else if(infos->host.type==FLV) printf("TYPE:FLV\n");
+		else if(infos->host.type==AVI_COMPRESSED) printf("TYPE:AVI_COMPRESSED\n");
+		else if(infos->host.type==AVI_UNCOMPRESSED) printf("TYPE:AVI_UNCOMPRESSED\n");
+		else printf("TYPE:?\n");
 	}
 	else{
 		printf("ECHEC OUVERTURE FICHIER HOTE\n");
@@ -79,7 +91,18 @@ int main(int argc, char *argv[])
 	fill_info(com,argc,argv);
 	check_info(com);
 	info_s* infos=stegx_init(com);
+	
+	printf("\nINITIALISATION :");
+	affiche(infos,com); //a enlever
+	printf("\n");
+	int compatibility=stegx_check_compatibility(infos);
+	if(compatibility==1){
+		//erreur
+	}
+	printf("VERIFICATION : ");
 	affiche(infos,com);
+	printf("\n");
+	
 	stegx_clear(infos);
 	dest_stegx_info(com);
 	

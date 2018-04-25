@@ -6,8 +6,13 @@
 #include <stdint.h>
 #include "typesteg.h"
 
-#define SIG_WAV_RIFF 0x46464952
-#define SIG_WAV_WAVE 0x45564157
+#define SIG_RIFF_1 0x52
+#define SIG_RIFF_2 0x49
+#define SIG_RIFF_3_4 0x46
+#define SIG_WAVE_1 0x57
+#define SIG_WAVE_2 0x41
+#define SIG_WAVE_3 0x56
+#define SIG_WAVE_4 0x45
 #define ADDRESS_WAV_WAVE 8
 
 struct wav{

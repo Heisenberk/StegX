@@ -5,6 +5,7 @@
 
 type_e stegx_test_file_png(FILE* file){
 	if(file==NULL) return UNKNOWN;
+	fseek(file,0,SEEK_SET);
 	int i;
 	uint8_t sig;
 	int read;
