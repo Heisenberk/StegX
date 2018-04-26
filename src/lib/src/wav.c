@@ -26,6 +26,18 @@ type_e stegx_test_file_wav(FILE* file){
 			return UNKNOWN;
 		}
 	}
-
-	return WAV_PCM;
+	fseek(file,ADDRESS_WAV_PCM,SEEK_SET);
+	uint8_t pcm1,pcm2;
+	uint8_t pcm_read;
+	for(i=0;i<2;i++){
+		read=fread(&pcm_read,sizeof(uint8_t),1,file);
+		if(i==0) pcm1=pcm_read;
+		else pcm2=pcm_read;
+	}
+	if((pcm1==PCM_1)&&(pcm2==PCM_2)){
+		return WAV_PCM;
+	}
+	else {
+		return WAV_NO_PCM;
+	}
 }

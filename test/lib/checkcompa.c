@@ -119,7 +119,7 @@ void test_file_wav_v2(void** state){
 	FILE* f=fopen("../../../test/lib/files/test10.wav","r");
 	type_e test=stegx_test_file_wav(f);
 	if(f!=NULL) fclose(f);
-	assert_int_equal(test,WAV_PCM);
+	assert_int_equal(test,WAV_NO_PCM);
 }
 
 void test_file_wav_v3(void** state){
@@ -127,7 +127,7 @@ void test_file_wav_v3(void** state){
 	FILE* f=fopen("../../../test/lib/files/test11.wav","r");
 	type_e test=stegx_test_file_wav(f);
 	if(f!=NULL) fclose(f);
-	assert_int_equal(test,WAV_PCM);
+	assert_int_equal(test,WAV_NO_PCM);
 }
 
 void test_file_mp3_v1(void** state){
@@ -231,7 +231,7 @@ void test_file_compatibility_v4(void** state){
 	FILE* f=fopen("../../../test/lib/files/test10.wav","r");
 	type_e test=check_file_format(f);
 	if(f!=NULL) fclose(f);
-	assert_int_equal(test,WAV_PCM);
+	assert_int_equal(test,WAV_NO_PCM);
 }
 
 void test_file_compatibility_v5(void** state){

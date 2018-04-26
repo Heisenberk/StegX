@@ -14,6 +14,9 @@
 #define SIG_WAVE_3 0x56
 #define SIG_WAVE_4 0x45
 #define ADDRESS_WAV_WAVE 8
+#define ADDRESS_WAV_PCM 20
+#define PCM_1 0x01
+#define PCM_2 0x00
 
 struct wav{
 	uint32_t header_size;
