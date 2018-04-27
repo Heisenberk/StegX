@@ -9,28 +9,27 @@
 
 /* Tests */
 
-void test_hello_libsteg_v2_failure(void **state)
+/*void test_hello_libsteg_v2_failure(void **state)
 {
-    (void) state; /* Unused */
+    (void) state;
     int ret = hello_libsteg_v2(-1);
     assert_int_equal(-1, ret);
 }
 
 void test_hello_libsteg_v2_success(void **state)
 {
-    (void) state; /* Unused */
+    (void) state;
     int ret = hello_libsteg_v2(0);
     assert_int_equal(0, ret);
 }
 
-/* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest hello_libsteg_v2_tests[] = {
     cmocka_unit_test(test_hello_libsteg_v2_failure),
     cmocka_unit_test(test_hello_libsteg_v2_success),
-};
+};*/
 
 int main(void)
 {
-    /* Exécute les tests. */
-    return cmocka_run_group_tests(hello_libsteg_v2_tests, NULL, NULL);
+   
+    //return cmocka_run_group_tests(hello_libsteg_v2_tests, NULL, NULL);
 }

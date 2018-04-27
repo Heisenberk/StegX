@@ -4,6 +4,8 @@
 #include <sys/stat.h>
 
 #include "libsteg.h"
+#include "typesteg.h"
+#include "checkcompa.h"
 
 info_s* stegx_init(stegx_choices_s* choices){
 	info_s* s=malloc(sizeof(info_s));
@@ -87,9 +89,13 @@ info_s* stegx_init(stegx_choices_s* choices){
 		while((begin!=0)&&(choices->insert_info->hidden_path[begin]!='/')){
 			begin--;
 		}
-		s->hidden_name=malloc((count-begin)*sizeof(char));
+		if(begin==0) s->hidden_name=malloc((count+1)*sizeof(char));
+		else s->hidden_name=malloc((count-begin)*sizeof(char));
 		j=0;
-		for(i=begin+1;i<count+1;i++){
+		int begin_cdr;
+		if(begin==0) begin_cdr=begin;
+		else begin_cdr=begin+1;
+		for(i=begin_cdr;i<count+1;i++){
 			s->hidden_name[j]=choices->insert_info->hidden_path[i];
 			j++;
 		}
@@ -99,7 +105,7 @@ info_s* stegx_init(stegx_choices_s* choices){
 }
 
 void stegx_clear(info_s* infos){
-	if(infos->hidden!=NULL) fclose(infos->host.host);
+	if(infos->host.host!=NULL) fclose(infos->host.host);
 	if(infos->hidden!=NULL) fclose(infos->hidden);
 	if(infos->res!=NULL) fclose(infos->res);
 	if(infos->hidden_name!=NULL) free(infos->hidden_name);

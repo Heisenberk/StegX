@@ -1,8 +1,8 @@
 #ifndef LIBSTEG_H
 #define LIBSTEG_H
 
-#define LIB_VER 2
-
+#include "typesteg.h"
+//#include "checkcompa.h" // on ne peut pas linclure car checkcompa en a besoin
 #include "bmp.h"
 #include "png.h"
 #include "wav.h"
@@ -10,18 +10,7 @@
 #include "avi.h"
 #include "flv.h"
 
-
-//public  
-enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
-typedef enum mode mode_e;
-
-enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA, 
-	STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
-typedef enum algo algo_e;
-
-enum method {STEGX_WITHOUT_PASSWD, STEGX_WITH_PASSWD};
-typedef enum method method_e;
-
+//public
 /**
  * @brief Informations du fichier caché. 
  * @details Permet de représenter les informations nécessaires sur le fichier 
@@ -47,13 +36,8 @@ struct stegx_choices {
     stegx_info_insert_s* insert_info; /*!< pointeur sur la structure stockant les informations sur le fichier à cacher (requis si insertion). */ 
 };
 typedef struct stegx_choices stegx_choices_s;
-
-
 	
 //privé
-enum type {BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM, 
-	MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN};
-typedef enum type type_e;
 
 struct host_info {
     FILE* host;
@@ -86,7 +70,5 @@ typedef struct info info_s;
 info_s* stegx_init(stegx_choices_s* choices);
 
 void stegx_clear(info_s* infos);
-
-
 
 #endif
