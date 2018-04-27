@@ -22,8 +22,7 @@ type_e check_file_format(FILE* file){
 	
 	type_e test_flv=stegx_test_file_flv(file);
 	if(test_flv!=UNKNOWN) return test_flv;
-	
-	//printf("\nINCONNU\n");
+
 	return UNKNOWN;
 }
 
