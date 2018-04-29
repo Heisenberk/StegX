@@ -71,8 +71,11 @@ info_s* stegx_init(stegx_choices_s* choices){
 		s->res=NULL;
 	}
 	else{
-		s->res=fopen(choices->res_path,"w");
-		if(s->host.host==NULL){
+		if(strcmp(choices->res_path,"stdout")==0){
+			s->res=stdout;
+		}
+		else s->res=fopen(choices->res_path,"w");
+		if(s->res==NULL){
 			// le fait que res_path ne soit pas un fichier est detecte ici
 			printf("ERREUR5");
 			//erreur
