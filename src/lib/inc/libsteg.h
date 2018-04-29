@@ -61,7 +61,7 @@ struct info {
     FILE* res;                  // Requis
     FILE* hidden;               // Requis si mode == INSERT
     char* hidden_name;          // Requis (calculé à partir de hidden_path)
-    int hidden_length;
+    uint32_t hidden_length;     // taille en octets du fichier a a
     char* passwd;               //optionnel    
 };
 typedef struct info info_s;
