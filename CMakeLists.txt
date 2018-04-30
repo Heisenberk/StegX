@@ -50,7 +50,7 @@ set (CMAKE_MODULE_PATH ${CMAKE_MACRO_PATH};${CMAKE_TARGET_PATH};
 
 # Configuration du raccourci (.desktop).
 set (DESKTOP_DIR desktop)
-set (DESKTOP_PATH ${CMAKE_CONFIG_PATH}/${DESKTOP_DIR})
+set (DESKTOP_PATH ${CONFIG_PATH}/${DESKTOP_DIR})
 
 # Macros =======================================================================
 
