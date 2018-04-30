@@ -141,3 +141,6 @@ add_custom_target (reinit
     COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean
     COMMAND ${CMAKE_COMMAND} ${CMAKE_BINARY_DIR}
     )
+
+# Formatage des fichiers sources.
+include (indent)

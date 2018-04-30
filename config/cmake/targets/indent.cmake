@@ -19,8 +19,10 @@ if (UNIX AND NOT ${INDENT_COMMAND} STREQUAL "INDENT_COMMAND-NOTFOUND")
         DEPENDS indent-${SRC_CLI_DIR} indent-${SRC_GUI_DIR} indent-${SRC_LIB_DIR}
         )
     foreach (type ${SRC_ALL_DIR})
-        file (GLOB_RECURSE SRC ${CMAKE_CURRENT_SOURCE_DIR}/${type}/*${SRC_EXT})
-        file (GLOB_RECURSE INC ${CMAKE_CURRENT_SOURCE_DIR}/${type}/*${INC_EXT})
+        file (GLOB_RECURSE SRC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${SRC_EXT}
+            ${CMAKE_SOURCE_DIR}/${TEST_DIR}/${type}/*${SRC_EXT})
+        file (GLOB_RECURSE INC ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${type}/*${INC_EXT}
+            ${CMAKE_SOURCE_DIR}/${TEST_DIR}/${type}/*${INC_EXT})
         add_custom_command (OUTPUT indent-${type}
             COMMAND ${CMAKE_COMMAND} -E chdir "${CONFIG_PATH}/indent" ${INDENT_COMMAND} ${SRC} ${INC}
             COMMAND ${CMAKE_COMMAND} -E touch indent-${type}
