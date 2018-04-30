@@ -141,11 +141,18 @@ Au choix :
 * *Moteur de production* : **CMake** (https://cmake.org/)
 * *Interface graphique* : <b> GTK+ </b> (>= 3.0) (https://www.gtk.org/)
 
-### - Optionnelles (Unix & Windows)
+### - Optionnelles
+
+#### -- Unix & Windows
 
 * *Générateur de documentation* : **Doxygen** (https://www.stack.nl/~dimitri/doxygen/index.html)
 * *Distribution LaTeX* : **TeX Live** (https://tug.org/texlive/)
 * *Test unitaire* : **CMocka** (https://cmocka.org/)
+
+#### -- Unix
+
+* *Générateur de tags* : **Ctags** (http://ctags.sourceforge.net/)
+* *Formateur de code source* : **GNU Indent** (https://www.gnu.org/software/indent/)
 
 Commandes et cibles
 --------------------------------------------------------------------------------
@@ -208,6 +215,14 @@ Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
 #### -- Désinstallation
 
     sudo make uninstall
+
+#### -- Génération des tags
+
+    make tags
+
+#### -- Formatage du code source
+
+    make indent
     
 #### -- Nettoyage
 

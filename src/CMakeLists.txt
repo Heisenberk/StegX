@@ -4,6 +4,8 @@
 include (info)
 # Génération des tags des fichiers sources.
 include (tags)
+# Formatage des fichiers sources.
+include (indent)
 
 # Communs ======================================================================
 

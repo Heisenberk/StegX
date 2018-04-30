@@ -34,8 +34,9 @@ set (CMAKE_BUILD_TYPE Debug)
 
 # Configuration de CMake.
 set (CONFIG_DIR config)
+set (CONFIG_PATH ${CMAKE_SOURCE_DIR}/${CONFIG_DIR})
 set (CMAKE_CONFIG_DIR cmake)
-set (CMAKE_CONFIG_PATH ${CMAKE_SOURCE_DIR}/${CONFIG_DIR}/${CMAKE_CONFIG_DIR})
+set (CMAKE_CONFIG_PATH ${CONFIG_PATH}/${CMAKE_CONFIG_DIR})
 
 # Dossiers de recherche des modules de CMake.
 set (CMAKE_MACRO_DIR macros)
