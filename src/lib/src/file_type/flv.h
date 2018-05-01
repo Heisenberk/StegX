@@ -2,13 +2,9 @@
 #define FLV_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include "typesteg.h"
 
-#define SIG_FLV_1 0x46
-#define SIG_FLV_2 0x4C
-#define SIG_FLV_3 0x56
+#include "common_priv.h"
 
 struct flv{
 	uint32_t nb_video_tag;

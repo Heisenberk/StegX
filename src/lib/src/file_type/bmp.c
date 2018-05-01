@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bmp.h"
+#include <stdint.h>
+
+#include "common_priv.h"
+
+#define SIG_BMP_1 0x42
+#define SIG_BMP_2 0x4D
+#define ADDRESS_BMP_COMPRESS 30
 
 type_e stegx_test_file_bmp(FILE* file){
 	int i;

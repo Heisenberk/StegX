@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-#include "avi.h"
+#include "common_priv.h"
+#include "riff.h"
+
+#define SIG_AVI_1 0x41
+#define SIG_AVI_2 0x56
+#define SIG_AVI_3 0x49
+#define SIG_AVI_4 0x20
+#define ADDRESS_SIG_AVI 8
 
 type_e stegx_test_file_avi(FILE* file){
 	if(file==NULL) return UNKNOWN;

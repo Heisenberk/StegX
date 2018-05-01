@@ -1,16 +1,36 @@
-#ifndef STRUCTSTEG_H
-#define STRUCTSTEG_H
+/**
+ * @file stegx_common.h
+ * @brief Définitions communes à la partie privée et public de la bibliothèque.
+ * @details Ce fichier peut-être inclus par les programme utilisant la
+ * bibliothèque ainsi que par les différents modules de la bibliothèque. Il
+ * contient des types, des structures et des variables globales.
+ */
 
-#include "typesteg.h"
-//#include "checkcompa.h" // on ne peut pas linclure car checkcompa en a besoin
-#include "bmp.h"
-#include "png.h"
-#include "wav.h"
-#include "mp3.h"
-#include "avi.h"
-#include "flv.h"
+#ifndef STEGX_COMMON_H
+#define STEGX_COMMON_H
 
-//public
+/*
+ * Types
+ * =============================================================================
+ */
+
+enum mode {STEGX_MODE_INSERT, STEGX_MODE_EXTRACT};
+typedef enum mode mode_e;
+
+enum algo {STEGX_ALGO_LSB, STEGX_ALGO_EOF, STEGX_ALGO_METADATA, 
+	STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
+typedef enum algo algo_e;
+
+enum method {STEGX_WITHOUT_PASSWD, STEGX_WITH_PASSWD};
+typedef enum method method_e;
+
+typedef struct info info_s;
+
+/*
+ * Structures
+ * =============================================================================
+ */
+	
 /**
  * @brief Informations du fichier caché. 
  * @details Permet de représenter les informations nécessaires sur le fichier 
@@ -36,34 +56,5 @@ struct stegx_choices {
     stegx_info_insert_s* insert_info; /*!< pointeur sur la structure stockant les informations sur le fichier à cacher (requis si insertion). */ 
 };
 typedef struct stegx_choices stegx_choices_s;
-	
-//privé
 
-struct host_info {
-    FILE* host;
-    type_e type;
-    union {
-        struct bmp bmp;
-        struct png png;
-        struct wav wav;
-        struct mp3 mp3;
-        struct avi avi;
-        struct flv flv;
-    } file_info;
-};
-typedef struct host_info host_info_s;
-
-struct info {
-    mode_e mode;                // Requis : INSERT / EXTRACT
-    algo_e algo;
-    method_e method;
-    host_info_s host;           // Requis
-    FILE* res;                  // Requis
-    FILE* hidden;               // Requis si mode == INSERT
-    char* hidden_name;          // Requis (calculé à partir de hidden_path)
-    uint32_t hidden_length;     // taille en octets du fichier a a
-    char* passwd;               //optionnel    
-};
-typedef struct info info_s;
-
-#endif
+#endif /* ifndef STEGX_COMMON_H */

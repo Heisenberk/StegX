@@ -2,13 +2,9 @@
 #define BMP_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
-#include "typesteg.h"
 
-#define SIG_BMP_1 0x42
-#define SIG_BMP_2 0x4D
-#define ADDRESS_BMP_COMPRESS 30
+#include "common_priv.h"
 
 struct bmp{
 	uint32_t header_size;

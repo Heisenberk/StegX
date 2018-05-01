@@ -3,9 +3,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "libsteg.h"
-#include "typesteg.h"
-#include "checkcompa.h"
+#include "stegx_common.h"
+#include "common_priv.h"
 
 info_s* stegx_init(stegx_choices_s* choices){
 	info_s* s=malloc(sizeof(info_s));

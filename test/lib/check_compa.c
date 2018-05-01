@@ -1,13 +1,17 @@
 /* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <setjmp.h>
-#include <errno.h>
 #include "cmocka.h"
 
 /* Inclusions supplémentaires. */
-#include "libsteg.h"
+#include <errno.h>
+#include <unistd.h>
+#include "stegx_common.h"
+#include "stegx.h"
+#include "common_priv.h"
+
+extern type_e check_file_format(FILE* file);
 
 /* Tests */
 

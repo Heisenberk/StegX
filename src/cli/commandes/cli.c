@@ -4,12 +4,13 @@
  * @details Traitement du lancement en ligne de commande vérifiant les paramètres rentrer par l'utilisateur.
  */
 
-#include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "cli.h"
-#include "libsteg.h"
+#include <unistd.h>
 #include <getopt.h>
+
+#include "cli.h"
+#include "stegx_common.h"
 
 stegx_choices_s* init_stegx_info(){
     stegx_choices_s* com = calloc(1,sizeof(stegx_choices_s));

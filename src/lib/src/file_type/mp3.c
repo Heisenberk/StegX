@@ -1,7 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-#include "mp3.h"
+#include "common_priv.h"
+
+#define SIG_MP3_ID3V1 0xFBFF
+#define SIG_MP3_ID3V1_1 0xFF
+#define SIG_MP3_ID3V1_2 0xFB
+#define SIG_MP3_ID3V2_1 0x49
+#define SIG_MP3_ID3V2_2 0x44
+#define SIG_MP3_ID3V2_3 0x33
 
 type_e stegx_test_file_mp3(FILE* file){
 	if(file==NULL) return UNKNOWN;

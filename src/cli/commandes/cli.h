@@ -8,7 +8,7 @@
 
 #ifndef CLI_H
 #define CLI_H
-#include "libsteg.h"
+#include "stegx_common.h"
 
 
 /**

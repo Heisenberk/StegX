@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "checkcompa.h"
-
+#include "stegx_common.h"
+#include "common_priv.h"
 
 type_e check_file_format(FILE* file){
 	type_e test_bmp=stegx_test_file_bmp(file);

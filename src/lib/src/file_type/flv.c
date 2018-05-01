@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-#include "flv.h"
+#include "common_priv.h"
+
+#define SIG_FLV_1 0x46
+#define SIG_FLV_2 0x4C
+#define SIG_FLV_3 0x56
 
 type_e stegx_test_file_flv(FILE* file){
 	if(file==NULL) return UNKNOWN;
