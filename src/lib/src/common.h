@@ -1,5 +1,5 @@
 /**
- * @file common_priv.h
+ * @file common.h
  * @brief Définitions communes à la partie privée de la bibliothèque.
  * @details Ce fichier peut-être inclus par les différents modules de la
  * bibliothèque.

@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 struct bmp{
 	uint32_t header_size;

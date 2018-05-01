@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 #define SIG_BMP_1 0x42
 #define SIG_BMP_2 0x4D

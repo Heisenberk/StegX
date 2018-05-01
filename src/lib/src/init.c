@@ -4,7 +4,7 @@
 #include <sys/stat.h>
 
 #include "stegx_common.h"
-#include "common_priv.h"
+#include "common.h"
 
 info_s* stegx_init(stegx_choices_s* choices){
 	info_s* s=malloc(sizeof(info_s));

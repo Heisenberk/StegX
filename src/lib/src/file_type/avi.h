@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 struct avi{
 	

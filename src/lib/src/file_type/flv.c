@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 #define SIG_FLV_1 0x46
 #define SIG_FLV_2 0x4C

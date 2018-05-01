@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 struct wav{
 	uint32_t header_size;

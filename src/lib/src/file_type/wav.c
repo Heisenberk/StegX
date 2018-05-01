@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 #include "riff.h"
 
 #define SIG_WAVE_1 0x57

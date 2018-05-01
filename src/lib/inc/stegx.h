@@ -9,6 +9,7 @@
 #define STEGX_H
 
 #include "stegx_common.h"
+#include "stegx_errors.h"
 
 info_s* stegx_init(stegx_choices_s* choices);
 

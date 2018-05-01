@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "common_priv.h"
+#include "common.h"
 
 #define SIG_MP3_ID3V1 0xFBFF
 #define SIG_MP3_ID3V1_1 0xFF
