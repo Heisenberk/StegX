@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "libsteg.h"
+#include "structsteg.h"
 
 type_e check_file_format(FILE* file);
 

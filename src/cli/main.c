@@ -3,8 +3,7 @@
 
 #include "types.h"
 #include "commandes/cli.h"
-#include "checkcompa.h" // a enlever pour n'avoir que libsteg.h
-
+ 
 //fonction a enlever
 void affiche(info_s* infos,stegx_choices_s* choices){
 	
