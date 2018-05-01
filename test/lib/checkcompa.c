@@ -130,6 +130,14 @@ void test_file_wav_v3(void** state){
 	assert_int_equal(test,WAV_NO_PCM);
 }
 
+void test_file_wav_v4(void** state){
+	(void) state; /* Unused */
+	FILE* f=fopen("../../../test/lib/files/test15.wav","r");
+	type_e test=stegx_test_file_wav(f);
+	if(f!=NULL) fclose(f);
+	assert_int_equal(test,WAV_PCM);
+}
+
 void test_file_mp3_v1(void** state){
 	(void) state; /* Unused */
 	FILE* f=fopen("../../../test/lib/files/test1.bmp","r");
@@ -296,6 +304,7 @@ const struct CMUnitTest check_compatibility_tests[] = {
     cmocka_unit_test(test_file_wav_v1),
     cmocka_unit_test(test_file_wav_v2),
     cmocka_unit_test(test_file_wav_v3),
+    cmocka_unit_test(test_file_wav_v4),
     
     // tests unitaires MP3
     cmocka_unit_test(test_file_mp3_v1),
@@ -322,6 +331,7 @@ const struct CMUnitTest check_compatibility_tests[] = {
     cmocka_unit_test(test_file_compatibility_v7),
     cmocka_unit_test(test_file_compatibility_v8),
     cmocka_unit_test(test_file_compatibility_v9),
+    
     
 };
 

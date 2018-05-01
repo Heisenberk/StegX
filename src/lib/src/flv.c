@@ -7,14 +7,13 @@ type_e stegx_test_file_flv(FILE* file){
 	if(file==NULL) return UNKNOWN;
 	fseek(file,0,SEEK_SET);
 	int i;
-	uint8_t sig;
 	int read;
-	uint8_t tab_sig_flv[3]={SIG_FLV_1, SIG_FLV_2, SIG_FLV_3};
-	for(i=0;i<3;i++){
-		read=fread(&sig,sizeof(uint8_t),1,file);
-		if(sig!=tab_sig_flv[i]){
-			return UNKNOWN;
-		}
+	uint32_t sig_read,sig;
+	read=fread(&sig_read,sizeof(uint32_t),1,file);
+	sig=htobe32(sig_read);
+	sig>>=8; // on enleve 8 derniers bits car on soccupe des 3 premiers octets
+	if(sig!=SIG_FLV){
+		return UNKNOWN;
 	}
 	return FLV;
 }

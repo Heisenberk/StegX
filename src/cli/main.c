@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 	printf("\n");
 	int compatibility=stegx_check_compatibility(infos);
 	if(compatibility==1){
+		printf("ERREUR COMPATIBILITY");
 		//erreur
 	}
 	printf("VERIFICATION : ");

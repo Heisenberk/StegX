@@ -6,17 +6,11 @@
 #include <stdint.h>
 #include "typesteg.h"
 
-#define SIG_RIFF_1 0x52
-#define SIG_RIFF_2 0x49
-#define SIG_RIFF_3_4 0x46
-#define SIG_WAVE_1 0x57
-#define SIG_WAVE_2 0x41
-#define SIG_WAVE_3 0x56
-#define SIG_WAVE_4 0x45
+#define SIG_RIFF 0x52494646
+#define SIG_WAVE 0x57415645
 #define ADDRESS_WAV_WAVE 8
 #define ADDRESS_WAV_PCM 20
-#define PCM_1 0x01
-#define PCM_2 0x00
+#define SIG_PCM 0x0100
 
 struct wav{
 	uint32_t header_size;
