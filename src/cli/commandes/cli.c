@@ -4,9 +4,6 @@
  * @details Traitement du lancement en ligne de commande vérifiant les paramètres rentrer par l'utilisateur.
  */
 
-
-
-
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
