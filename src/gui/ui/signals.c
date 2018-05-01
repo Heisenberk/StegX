@@ -45,7 +45,7 @@ static void insert_start(GtkWidget *widget, struct ui *ui);
 /** 
  * @brief Exécution de l'étape courante de l'onglet dissimulation
  * @details Exécute l'analyse des fichiers entrés par l'utilisateur ou
- * l'extraction des données du fichier caché dans le fichier hôte. Met à jour la
+ * l'insertion des données du fichier caché dans le fichier hôte. Met à jour la
  * variable "ret" avec le code de retour du traitement.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
@@ -84,7 +84,7 @@ static void extrac_start(GtkWidget *widget, struct ui *ui);
 /** 
  * @brief Exécution de l'extraction
  * @details Exécute l'extraction des données du fichier caché dans le fichier
- * hôte. Met à jour la variable "ret" avec le code de retour de l'insertion.
+ * hôte. Met à jour la variable "ret" avec le code de retour de l'extraction.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
  */

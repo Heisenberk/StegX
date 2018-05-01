@@ -47,7 +47,7 @@ set_target_properties (${TARGET} PROPERTIES OUTPUT_NAME ${SRC_LIB_NAME})
 set_target_properties (${TARGET} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties (${TARGET} PROPERTIES SOVERSION 1)
 # Headers publiques.
-set_target_properties (${TARGET} PROPERTIES PUBLIC_HEADER ${INC_PUBLIC})
+set_property (TARGET ${TARGET} PROPERTY PUBLIC_HEADER ${INC_PUBLIC})
 
 # Spécifie les dossiers d'installation de la bibliothèque et de ses headers en
 # fonction de l'OS.

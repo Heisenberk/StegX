@@ -18,8 +18,8 @@ d'une bibliothèque partagée intégrable dans d'autres projets de développemen
 Statut
 --------------------------------------------------------------------------------
 
-* Interface graphique : Quasi-terminé.
-* Interface en ligne de commande : Quasi-terminé.
+* Interface graphique : Quasi-terminée.
+* Interface en ligne de commande : Quasi-terminée.
 * Bibliothèque : En cours de commencement.
 
 
@@ -141,11 +141,18 @@ Au choix :
 * *Moteur de production* : **CMake** (https://cmake.org/)
 * *Interface graphique* : <b> GTK+ </b> (>= 3.0) (https://www.gtk.org/)
 
-### - Optionnelles (Unix & Windows)
+### - Optionnelles
+
+#### -- Unix & Windows
 
 * *Générateur de documentation* : **Doxygen** (https://www.stack.nl/~dimitri/doxygen/index.html)
 * *Distribution LaTeX* : **TeX Live** (https://tug.org/texlive/)
 * *Test unitaire* : **CMocka** (https://cmocka.org/)
+
+#### -- Unix
+
+* *Générateur de tags* : **Ctags** (http://ctags.sourceforge.net/)
+* *Formateur de code source* : **GNU Indent** (https://www.gnu.org/software/indent/)
 
 Commandes et cibles
 --------------------------------------------------------------------------------
@@ -208,10 +215,22 @@ Ci-dessous une liste des variables configurables avec leurs valeurs possibles :
 #### -- Désinstallation
 
     sudo make uninstall
+
+#### -- Génération des tags
+
+    make tags
+
+#### -- Formatage du code source
+
+    make indent
     
 #### -- Nettoyage
 
     make clean
+
+#### -- Réinitialisation
+
+    make reinit
     
 ### - Windows
 

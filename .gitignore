@@ -1,20 +1,20 @@
-# Configuration files
+# Personal configuration files
 tags
 .gdbinit
-src/gui/common/config.h
 
 # Generated files
-*.pdf
-*.out
-*.log
-*.aux
-*.toc
 build
 
 # Temporary files
 .fuse_hidden*
 *.swp
 
-# Output files (log)
+# Log files
 .gdb_history
 .valgrind.out
+
+# Backup files
+*~
+
+# Other
+TODO
