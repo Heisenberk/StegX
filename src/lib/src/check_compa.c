@@ -3,9 +3,17 @@
 
 #include "stegx_common.h"
 #include "common.h"
+#include "stegx_errors.h"
 
+/**
+ * @brief Retourne le type du fichier. 
+ * @param *file fichier à tester.
+ * @return type_e représentant les différents types pris en charge par 
+ * l'application. 
+ */
 type_e check_file_format(FILE * file)
 {
+	// teste pour chaque format le type du fichier en entrée
     type_e test_bmp = stegx_test_file_bmp(file);
     if (test_bmp != UNKNOWN)
         return test_bmp;
@@ -33,10 +41,22 @@ type_e check_file_format(FILE * file)
     return UNKNOWN;
 }
 
+/**
+ * @brief Fonction principale du module Vérification de la compatibilité 
+ * des fichiers.
+ * @details Remplit la structure info_s avec son champ host.type correspondant
+ * au type du fichier hôte. 
+ * @param *infos Structure qui contient les informations pour réaliser 
+ * correctement la dissimulation/extraction.
+ * @return 0 si la vérification s'est bien déroulée, sinon 1. 
+ */
 int stegx_check_compatibility(info_s * infos)
 {
-    if (infos->host.host == NULL)
-        return 1;
+    if (infos->host.host == NULL){
+		err_print(ERR_HOST_NULL);
+		return 1;
+	}
+	// remplit le champ host.host de infos
     type_e host_type = check_file_format(infos->host.host);
     infos->host.type = host_type;
     return 0;
