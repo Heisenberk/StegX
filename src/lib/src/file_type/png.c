@@ -6,8 +6,17 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
+/**
+ * \def Signature PNG
+ * */
 #define SIG_PNG 0x89504E470D0A1A0A
 
+/**
+ * @brief Retourne le type du fichier. 
+ * @param *file fichier à tester.
+ * @return type_e représentant le type PNG, et si le format n'est pas 
+ * reconnu : UNKNOWN. 
+ */
 type_e stegx_test_file_png(FILE * file)
 {
     if (file == NULL)
@@ -25,13 +34,15 @@ type_e stegx_test_file_png(FILE * file)
 		err_print(ERR_FSEEK);
 		return 1;
 	}
-
+	
+	// lecture signature PNG
     read = fread(&sig_read, sizeof(uint64_t), 1, file);
     if(read==0){
 		err_print(ERR_READ);
 		return 1;
 	}
-    sig = htobe64(sig_read);
+    // conversion BIG ENDIAN en endian de la machine
+    sig=be64toh(sig_read); 
     if (sig != SIG_PNG) {
         return UNKNOWN;
     }

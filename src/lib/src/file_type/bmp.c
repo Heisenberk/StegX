@@ -6,9 +6,23 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
+/**
+ * \def Signature BMP
+ * */
 #define SIG_BMP 0x424D
+
+/**
+ * \def Déplacement absolu à faire pour savoir si il s'agit d'un fichier 
+ * compressé ou non. 
+ * */
 #define ADDRESS_BMP_COMPRESS 30
 
+/**
+ * @brief Retourne le type du fichier. 
+ * @param *file fichier à tester.
+ * @return type_e représentant le type BMP_UNCOMPRESSED, BMP_COMPRESSED, 
+ * et si le format n'est pas reconnu : UNKNOWN. 
+ */
 type_e stegx_test_file_bmp(FILE * file)
 {
     int i;
@@ -23,13 +37,16 @@ type_e stegx_test_file_bmp(FILE * file)
 		err_print(ERR_FSEEK);
 		return 1;
 	}
+	// lecture de la signature BMP
     uint16_t sig_read;
     read = fread(&sig_read, sizeof(uint16_t), 1, file);
     if(read==0){
 		err_print(ERR_READ);
 		return 1;
 	}
-    sig = htobe16(sig_read);
+	
+	// conversion du BIG ENDIAN en l'endian de la machine
+    sig=be16toh(sig_read);
     if (sig != SIG_BMP) {
         return UNKNOWN;
     }
@@ -39,7 +56,8 @@ type_e stegx_test_file_bmp(FILE * file)
 		err_print(ERR_FSEEK);
 		return 1;
     }
-
+	
+	// lecture pour déterminer si c'est compressé ou non
     read = fread(&compress, sizeof(uint32_t), 1, file);
     if (compress == 0) {
         return BMP_UNCOMPRESSED;

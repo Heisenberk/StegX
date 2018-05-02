@@ -7,6 +7,12 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
+/**
+ * @brief Initialise la structure info_s en fonction des choix de l'utilisateur. 
+ * @param *choices Structure représentant les choix de l'utilisateur.
+ * @return info_s* Structure qui contient les informations pour réaliser 
+ * correctement la dissimulation/extraction. 
+ */
 info_s *stegx_init(stegx_choices_s * choices)
 {
     info_s *s = malloc(sizeof(info_s));
@@ -103,6 +109,10 @@ info_s *stegx_init(stegx_choices_s * choices)
     return s;
 }
 
+/**
+ * @brief Libère la mémoire de la structure info_s. 
+ * @param *infos Structure représentant les choix de l'utilisateur à libérer. 
+ */
 void stegx_clear(info_s * infos)
 {
     if (infos->host.host != NULL)
