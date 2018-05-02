@@ -12,7 +12,7 @@
 #include "builder.h"
 #include "signals.h"
 
-void ui_create(GtkWidget *window, struct ui *ui)
+void ui_create(GtkWidget * window, struct ui *ui)
 {
     /* Initialisation de la structure de l'interface. */
     ui->window = window;
@@ -22,7 +22,7 @@ void ui_create(GtkWidget *window, struct ui *ui)
     ui_signal_init(ui);
 }
 
-struct ui* ui_init()
+struct ui *ui_init()
 {
     return calloc(1, sizeof(struct ui));
 }

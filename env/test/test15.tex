@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    breaklinks=true,
+    urlcolor=red,
+}
+\parskip=5pt
+
+\title{Stéganogaphie \& Stéganalyse}
+
+\begin{document}
+
+\maketitle
+
+\section{Résumé du sujet}
+
+La stéganographie est l'art de la dissimulation, appliquée en informatique en
+cachant des données dans d'autres données. Cette dissimulation se fait
+généralement au sein de fichiers multimédias. Par exemple, le fait de cacher un
+mot de passe dans une image relève de la stéganographie. Plusieurs algorithmes
+peuvent être utilisés, dépendant à la fois du format, de la compression et de
+beaucoup d'autres paramètres. Les élèves proposeront une application permettant
+de dissimuler et d'extraire des messages dans différents formats.
+
+La stéganalyse, quant à elle, est la recherche de données cachées dans des
+fichiers suspects. Si ces données sont identifiées, il faut ensuite réussir à
+les extraire pour les lire.
+
+\section{Travail à fournir}
+
+\begin{itemize}
+    \item L'application doit permettre de cacher des données dans des fichiers
+        de type image, audio et vidéo.
+    \item Pour la dissimulation des messages, l'application détectera le format
+        du fichier contenant et proposera à l'utilisateur de choisir parmi les
+        algorithmes implémentés. 
+    \item Pour la réception de fichiers, on considèrera que les fichiers en
+        entrée contiennent, par défaut, des données cachées. Ainsi, le
+        programme fera l'extraction automatique de ces données cachées.
+    \item Plusieurs formats de fichier devront être gérés par l'application,
+        ainsi qu'une diversité dans les algorithmes proposés.
+    \item L'application se présentera sous forme d'une bibliothèque partagée par
+        deux interfaces différentes, une graphique et une en ligne de commande.
+\end{itemize}
+
+\section{Calendrier}
+
+\begin{tabular}{|l|r|}
+  \hline
+  Remise du cahier des charges & Mercredi 14 mars 2018 \\
+  \hline
+  Présentation orale & Mercredi 21 mars 2018 \\
+  \hline
+  Remise des spécifications & Mercredi 18 avril 2018 \\
+  \hline
+  Remise du compte rendu & Vendredi 25 mai 2018 \\
+  \hline
+  Soutenance et démonstration & Vendredi 1 juin 2018 \\
+  \hline
+\end{tabular}
+
+\vspace{1\baselineskip}
+
+Le cahier des charges ainsi que le compte rendu devront obligatoirement être
+tapés en \LaTeX.
+
+\end{document}

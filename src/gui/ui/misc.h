@@ -12,10 +12,10 @@
 
 /** Nature du dialogue. */
 enum ui_dial_type {
-    UI_DIAL_INFO_OK,   /*!< Dialogue d'information que tout est ok. */
-    UI_DIAL_INFO_WAIT, /*!< Dialogue d'information pour patienter. */
-    UI_DIAL_WARN,      /*!< Dialogue d'avertissement. */
-    UI_DIAL_ERR        /*!< Dialogue d'erreur. */
+    UI_DIAL_INFO_OK,            /*!< Dialogue d'information que tout est ok. */
+    UI_DIAL_INFO_WAIT,          /*!< Dialogue d'information pour patienter. */
+    UI_DIAL_WARN,               /*!< Dialogue d'avertissement. */
+    UI_DIAL_ERR                 /*!< Dialogue d'erreur. */
 };
 
 /**
@@ -24,7 +24,7 @@ enum ui_dial_type {
  * dans notre application.
  * @return GtkWidget Pointeur sur le widget.
  */
-GtkWidget* ui_grid_init();
+GtkWidget *ui_grid_init();
 
 /**
  * @brief Crée un dialogue.
@@ -35,6 +35,6 @@ GtkWidget* ui_grid_init();
  * @param ui_type Nature du dialogue.
  * @return GtkWidget* Widget de type "GtkMessageDialog" prêt à être affiché.
  */
-GtkWidget* ui_msg_dial_new(GtkWidget* win, const gchar *str, enum ui_dial_type ui_type);
+GtkWidget *ui_msg_dial_new(GtkWidget * win, const gchar * str, enum ui_dial_type ui_type);
 
-#endif /* UI_MISC_H_ */
+#endif                          /* UI_MISC_H_ */

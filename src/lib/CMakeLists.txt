@@ -28,7 +28,7 @@ add_library (${TARGET} SHARED ${SRC} ${INC})
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${TARGET} PUBLIC ${INC_DIRS})
+target_include_directories (${TARGET} PRIVATE ${INC_DIRS})
 
 # Copie la DLL de la bibliothèque dans le dossier contenant les tests
 # pour le linkage lors de l'exécution.
