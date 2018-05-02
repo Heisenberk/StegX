@@ -8,7 +8,7 @@
 #include <gtk/gtk.h>
 #include "misc.h"
 
-GtkWidget* ui_grid_init()
+GtkWidget *ui_grid_init()
 {
     GtkWidget *tab = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(tab), 10);
@@ -22,7 +22,7 @@ GtkWidget* ui_grid_init()
     return tab;
 }
 
-GtkWidget* ui_msg_dial_new(GtkWidget* win, const gchar *str, enum ui_dial_type ui_type)
+GtkWidget *ui_msg_dial_new(GtkWidget * win, const gchar * str, enum ui_dial_type ui_type)
 {
     GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
     GtkMessageType type;
@@ -30,8 +30,7 @@ GtkWidget* ui_msg_dial_new(GtkWidget* win, const gchar *str, enum ui_dial_type u
     if (ui_type == UI_DIAL_INFO_WAIT || ui_type == UI_DIAL_INFO_OK) {
         type = GTK_MESSAGE_INFO;
         buttons = (ui_type == UI_DIAL_INFO_WAIT) ? GTK_BUTTONS_NONE : GTK_BUTTONS_OK;
-    }
-    else if (ui_type == UI_DIAL_WARN || ui_type == UI_DIAL_ERR) {
+    } else if (ui_type == UI_DIAL_WARN || ui_type == UI_DIAL_ERR) {
         buttons = GTK_BUTTONS_CANCEL;
         type = (ui_type == UI_DIAL_WARN) ? GTK_MESSAGE_WARNING : GTK_MESSAGE_ERROR;
     }

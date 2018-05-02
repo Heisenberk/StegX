@@ -17,7 +17,7 @@
 #define ALGO_NB 3
 
 /** Liste d'algorithmes proposés. */
-const static char *algos_lst[] = {"LSB", "EOF", "Metadonnées"};
+const static char *algos_lst[] = { "LSB", "EOF", "Metadonnées" };
 
 /**
  * Variable globale au module signal qui contient le code de retour de la fonction
@@ -40,7 +40,7 @@ static int insert_state = 0;
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
-static void insert_start(GtkWidget *widget, struct ui *ui);
+static void insert_start(GtkWidget * widget, struct ui *ui);
 
 /** 
  * @brief Exécution de l'étape courante de l'onglet dissimulation
@@ -70,7 +70,7 @@ static void insert_end(struct ui *ui);
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
-static void insert_reset(GtkWidget *widget, struct ui *ui);
+static void insert_reset(GtkWidget * widget, struct ui *ui);
 
 /**
  * @brief Lancement de l'extraction
@@ -79,7 +79,7 @@ static void insert_reset(GtkWidget *widget, struct ui *ui);
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
-static void extrac_start(GtkWidget *widget, struct ui *ui);
+static void extrac_start(GtkWidget * widget, struct ui *ui);
 
 /** 
  * @brief Exécution de l'extraction
@@ -99,14 +99,14 @@ static gboolean extrac_do(gpointer data);
  */
 static void extrac_end(struct ui *ui);
 
-static void insert_start(GtkWidget *widget, struct ui *ui)
+static void insert_start(GtkWidget * widget, struct ui *ui)
 {
     /* Test de la condition en fonction de l'état. */
     int cond = (insert_state == 0) ?
         gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc))
-            && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)) :
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)) :
         gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
-            && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "");
+        && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "");
     /* Si la condition est remplie. */
     if (cond) {
         /* Création du dialogue à afficher pour patienter. */
@@ -117,8 +117,7 @@ static void insert_start(GtkWidget *widget, struct ui *ui)
         /* On met à jour le texte du bouton et on affiche le dialogue. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->insert.but_txt_dissi_proc);
         gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
-    }
-    else {
+    } else {
         /* Création du dialogue d'avertissement puis affichage. */
         gchar *msg = insert_state == 0 ? ui->insert.dial_anal_cond : ui->insert.dial_dissi_cond;
         ui->insert.dial = ui_msg_dial_new(ui->window, msg, UI_DIAL_WARN);
@@ -129,27 +128,28 @@ static void insert_start(GtkWidget *widget, struct ui *ui)
 
 static gboolean insert_do(gpointer data)
 {
-    struct ui *ui = (struct ui *) data;
+    struct ui *ui = (struct ui *)data;
     /* Si on doit faire l'analyse. */
     if (insert_state == 0) {
         printf("Fichier hôte : %s\n",
-                gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc)));
+               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc)));
         printf("Fichier à cacher : %s\n",
-                gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)));
+               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)));
     }
     /* Si c'est la dissimulation. */
     else {
         printf("Dossier du fichier à créer : %s\n",
-                gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
+               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
         printf("Nom du fichier à créer : %s\n",
-                gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
-        printf("Mot de passe : %s\n",
-                gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
+               gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
+        printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
         printf("Algorithme choisis : %s\n",
-                algos_lst[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]);
+               algos_lst[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]);
     }
     /* Traitement. */
-    for(int i = 0; i < 1000000000; i++) {ret = 0;}
+    for (int i = 0; i < 1000000000; i++) {
+        ret = 0;
+    }
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->insert.dial), 0);
     gtk_widget_destroy(ui->insert.dial);
@@ -177,7 +177,7 @@ static void insert_end(struct ui *ui)
             /* Ajoute le choix de sélection de l'algorithme. */
             for (int i = 0; i < ALGO_NB; i++) {
                 gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb),
-                        algos_lst[i]);
+                                               algos_lst[i]);
             }
             gtk_combo_box_set_active(GTK_COMBO_BOX(ui->insert.algos_cb), 0);
             gtk_widget_show(ui->insert.algos_lbl);
@@ -194,14 +194,14 @@ static void insert_end(struct ui *ui)
         ui->insert.dial = ui_msg_dial_new(ui->window, msg, UI_DIAL_ERR);
         /* Mise à jour du bouton pour relancer le traitement. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but), insert_state == 0 ?
-                ui->insert.but_txt_anal : ui->insert.but_txt_dissi);
+                             ui->insert.but_txt_anal : ui->insert.but_txt_dissi);
     }
     /* Affichage du dialogue de fin. */
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
     gtk_widget_destroy(ui->insert.dial);
 }
 
-static void insert_reset(GtkWidget *widget, struct ui *ui)
+static void insert_reset(GtkWidget * widget, struct ui *ui)
 {
     /* Ré-affiche les widgets de choix de fichiers d'entrés. */
     gtk_widget_show(ui->insert.file_orig_fc);
@@ -215,16 +215,15 @@ static void insert_reset(GtkWidget *widget, struct ui *ui)
     gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_anal);
 }
 
-static void extrac_start(GtkWidget *widget, struct ui *ui)
+static void extrac_start(GtkWidget * widget, struct ui *ui)
 {
     /* Si les conditions nécéssaires ne sont pas remplies. */
     if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
-            || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
+        || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
         gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
         gtk_widget_destroy(ui->extrac.dial);
-    }
-    else {
+    } else {
         /* Création du dialogue d'attente puis lancement du thread de travaille. */
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(extrac_do, ui);
@@ -236,15 +235,16 @@ static void extrac_start(GtkWidget *widget, struct ui *ui)
 
 static gboolean extrac_do(gpointer data)
 {
-    struct ui *ui = (struct ui *) data;
+    struct ui *ui = (struct ui *)data;
     /* Processing. */
     printf("Fichier hôte : %s\n",
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc)));
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc)));
     printf("Dossier du fichier résultant : %s\n",
-            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
-    printf("Mot de passe : %s\n",
-            gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent)));
-    for(int i = 0; i < 1000000000; i++) {ret = 0;}
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
+    printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent)));
+    for (int i = 0; i < 1000000000; i++) {
+        ret = 0;
+    }
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->extrac.dial), 0);
     gtk_widget_destroy(ui->extrac.dial);
@@ -274,23 +274,23 @@ static void extrac_end(struct ui *ui)
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
-static void about(GtkWidget *widget, struct ui *ui)
+static void about(GtkWidget * widget, struct ui *ui)
 {
     /* Paramètres. */
     static const gchar *authors[] = {
         "AYOUB Pierre", "BASKEVITCH Claire", "BESSAC Tristan",
         "CAUMES Clément", "DELAUNAY Damien", "DOUDOUH Yassin",
-        NULL};
+        NULL
+    };
     static const gchar *copyright = "© 2018 StegX Team";
     static const gchar *website = "https://github.com/Heisenberk/StegX";
     GdkPixbuf *logo = gdk_pixbuf_new_from_file(program_logo(), NULL);
     /* Initilisation et affichage. */
     gtk_show_about_dialog(GTK_WINDOW(ui->window),
-            "authors", authors, "logo", logo,
-            "license", program_license, "website", website,
-            "comments", program_desc, "copyright", copyright,
-            "version", program_ver, "program_name", program_name,
-            NULL);
+                          "authors", authors, "logo", logo,
+                          "license", program_license, "website", website,
+                          "comments", program_desc, "copyright", copyright,
+                          "version", program_ver, "program_name", program_name, NULL);
     gtk_menu_item_deselect(GTK_MENU_ITEM(widget));
 }
 

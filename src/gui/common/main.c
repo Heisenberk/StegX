@@ -18,7 +18,7 @@
  * @param ui Pointeur vers la structure de l'interface utilisateur à laquelle
  * sera liée l'application.
  */
-static void activate(GtkApplication *app, ui_t *ui)
+static void activate(GtkApplication * app, ui_t * ui)
 {
     /* Initialisation de la fenêtre principale. */
     GtkWidget *window;

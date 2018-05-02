@@ -72,7 +72,7 @@ if (GTK_FOUND)
     # Compilation ==============================================================
 
     # Flags de compilation.
-    target_compile_options (${TARGET} PUBLIC ${GTK_CFLAGS})
+    target_compile_options (${TARGET} PRIVATE ${GTK_CFLAGS})
     
     # Flags de liaison.
     # Sur Windows, n'affiche pas la console lors du lancement de l'application.
@@ -81,7 +81,7 @@ if (GTK_FOUND)
     endif ()
 
     # Dossiers des headers à inclure pour le préprocesseur.
-    target_include_directories (${TARGET} PUBLIC
+    target_include_directories (${TARGET} PRIVATE
         ${INC_DIRS} ${SRC_LIB_INC_PATH} ${GTK_INCLUDE_DIRS})
 
     # Bibliothèque à passer au linker.

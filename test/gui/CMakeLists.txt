@@ -19,18 +19,18 @@ if (TARGET ${SRC_GUI_TARGET})
         add_test (NAME ${TEST_NAME} COMMAND ${TEST_NAME})
         
         # Inclusion et linkage de CMocka.
-        target_include_directories (${TEST_NAME} PUBLIC ${CMOCKA_PATH}/${CMOCKA_INC_DIR})
+        target_include_directories (${TEST_NAME} PRIVATE ${CMOCKA_PATH}/${CMOCKA_INC_DIR})
         target_link_libraries (${TEST_NAME} ${CMOCKA_LIBRARY})
 
         # Ajout des flags personnalisés s'ils ont étés spécifiés.
         if (TEST_FLAG)
-            target_compile_options (${TEST_NAME} PUBLIC ${TEST_FLAG})
+            target_compile_options (${TEST_NAME} PRIVATE ${TEST_FLAG})
         endif()
 
         # Inclusion et linkage de bibliothèque supplémentaire.
-        target_include_directories (${TEST_NAME} PUBLIC
+        target_include_directories (${TEST_NAME} PRIVATE
             ${CMAKE_SOURCE_DIR}/${SRC_DIR}/${SRC_GUI_DIR})
-        target_include_directories (${TEST_NAME} PUBLIC ${SRC_LIB_INC_PATH})
+        target_include_directories (${TEST_NAME} PRIVATE ${SRC_LIB_INC_PATH})
         target_link_libraries (${TEST_NAME} ${SRC_LIB_TARGET})
     endforeach ()
 

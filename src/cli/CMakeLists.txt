@@ -18,7 +18,7 @@ add_executable (${TARGET} ${SRC} ${INC})
 # Compilation ==================================================================
 
 # Dossiers des headers à inclure pour le préprocesseur.
-target_include_directories (${TARGET} PUBLIC ${INC_DIRS} ${SRC_LIB_INC_PATH})
+target_include_directories (${TARGET} PRIVATE ${INC_DIRS} ${SRC_LIB_INC_PATH})
 
 # Bibliothèque à passer au linker.
 target_link_libraries (${TARGET} ${SRC_LIB_TARGET})

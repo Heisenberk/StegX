@@ -19,20 +19,20 @@ typedef struct ui ui_t;
  * @param window Pointeur vers la fenêtre sur laquelle construire l'interface utilisateur.
  * @param ui Pointeur vers l'interface utilisateur à remplir.
  */
-void ui_create(GtkWidget *window, struct ui *ui);
+void ui_create(GtkWidget * window, struct ui *ui);
 
 /**
  * @brief Initialisation de l'interface utilisateur
  * @details Permet d'allouer la mémoire pour l'interface utilisateur.
  * @return Pointeur sur l'interface utilisateur prête à être construite.
  */
-ui_t* ui_init();
+ui_t *ui_init();
 
 /**
  * @brief Suppression de l'interface utilisateur
  * @details Permet de désallouer la mémoire utilisée pour l'interface
  * utilisateur.
  */
-void ui_delete(ui_t *ui);
+void ui_delete(ui_t * ui);
 
-#endif /* UI_H_ */
+#endif                          /* UI_H_ */

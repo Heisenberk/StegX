@@ -18,4 +18,4 @@
  */
 void ui_signal_init(struct ui *ui);
 
-#endif /* UI_SIGNALS_H_ */
+#endif                          /* UI_SIGNALS_H_ */
