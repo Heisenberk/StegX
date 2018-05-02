@@ -9,6 +9,8 @@
 #ifndef STEGX_COMMON_H
 #define STEGX_COMMON_H
 
+
+
 /*
  * Types
  * =============================================================================
@@ -26,6 +28,15 @@ enum method { STEGX_WITHOUT_PASSWD, STEGX_WITH_PASSWD };
 typedef enum method method_e;
 
 typedef struct info info_s;
+ 
+#define NB_ALGOS 5
+
+/*
+ * Variables
+ * =============================================================================
+ */
+ 
+ algo_e* proposition_algos; // stegx_propos_algos
 
 /*
  * Structures
