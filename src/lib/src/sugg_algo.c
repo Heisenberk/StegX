@@ -54,7 +54,9 @@ int can_use_lsb(info_s* infos){
 		uint64_t nb_bits_audio=(((infos->host.file_info.wav.data_size)-8)/(infos->host.file_info.wav.chunk_size))*2;
 
 		//attention overflow
-		if((infos->hidden_length*8)>nb_bits_audio){
+		uint64_t hidden_length_bits=infos->hidden_length*8;
+		// si overflow ERREUR
+		if(hidden_length_bits>nb_bits_audio){
 			return 1;
 		}
 	}

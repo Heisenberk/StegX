@@ -22,6 +22,8 @@ enum err_code {
     ERR_RES_INSERT, 			/*!< Resultat null en insert. */
     ERR_READ,					/*!< Erreur lors de la lecture. */
     ERR_FSEEK,					/*!< Erreur lors de l'utilisateur de fseek. */
+    ERR_CHECK_COMPAT,			/*!< Erreur dans le module Verification de la compatibilite des fichiers. */
+    ERR_SUGG_ALGOS,				/*!< Erreur dans le sous-module proposition des algos de steganographie. */
     ERR_OTHER                   /*!< Erreur quelconque. */
 };
 

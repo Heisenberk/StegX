@@ -19,6 +19,8 @@ void err_print(enum err_code err)
         /* ERR_PASSWD */ "mot de passe invalide",
         /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
         /* ERR_READ */ "erreur de lecture",
+        /* ERR_CHECK_COMPAT */ "erreur dans le module verification de la compatibilite des fichiers",
+        /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
         /* ERR_OTHER */ "erreur inconnu"
  
     };
