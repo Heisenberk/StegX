@@ -36,7 +36,7 @@ typedef struct info info_s;
  * =============================================================================
  */
  
- algo_e* proposition_algos; // stegx_propos_algos
+ algo_e* stegx_propos_algos;
 
 /*
  * Structures

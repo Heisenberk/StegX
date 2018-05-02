@@ -361,7 +361,7 @@ int stegx_suggest_algo(info_s* infos){
 	quels algos sont proposés par l'application en fonction des 
 	entrées de l'utilisateur. 
 	*/
-	proposition_algos=malloc(NB_ALGOS*sizeof(algo_e));
+	stegx_propos_algos=malloc(NB_ALGOS*sizeof(algo_e));
 	algo_e tab_algo_possible[NB_ALGOS]={STEGX_ALGO_EOF, STEGX_ALGO_LSB, 
 		STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
 	for(i=0;i<NB_ALGOS;i++){
@@ -371,9 +371,9 @@ int stegx_suggest_algo(info_s* infos){
 		else if(i==3) test=can_use_eoc(infos);
 		else if(i==4) test=can_use_junk_chunk(infos);
 		// can_use_XXX renvoie 1 si il ne peut pas et 0 s'il le peut
-		if(test==1) proposition_algos[i]=ALGO_UNAVAILABLE;
+		if(test==1) stegx_propos_algos[i]=ALGO_UNAVAILABLE;
 		else {
-			proposition_algos[i]=tab_algo_possible[i];
+			stegx_propos_algos[i]=tab_algo_possible[i];
 		}
 	}
 	return 0;
