@@ -6,13 +6,13 @@
 #include "riff.h"
 
 #define SIG_WAVE 0x57415645
+#define SIG_PCM 0x0100
 #define ADDRESS_WAV_WAVE 8
 #define ADDRESS_WAV_PCM 20
-#define SIG_PCM 0x0100
 
 type_e stegx_test_file_wav(FILE * file)
 {
-    if (file == NULL)
+    if (!file)
         return UNKNOWN;
     fseek(file, 0, SEEK_SET);
     int i;
