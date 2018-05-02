@@ -2,8 +2,17 @@
 #include "file_type/bmp.h"
 #include "file_type/png.h"
 #include <endian.h>
+#include <time.h>
 
+/**
+ * \def Algorithme non disponible
+ * */
 #define ALGO_UNAVAILABLE -1
+
+/**
+ * \def Longueur du mot de passe choisi par défaut
+ * */
+#define LENGTH_DEFAULT_PASSWD 10
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
@@ -379,4 +388,77 @@ int stegx_suggest_algo(info_s* infos){
 	return 0;
 }
 
-int stegx_choose_algo(info_s* infos,algo_e algo_choosen);
+/** 
+ * @brief Va initialiser l'algorithme à utiliser pour la dissimulation. 
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @param algo_choosen Algorithme choisi par l'utilisateur. 
+ * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
+ * la fonction. 
+ */
+int stegx_choose_algo(info_s* infos,algo_e algo_choosen){
+	
+	// creation du mot de passe si il na pas ete choisi par l'utilisateur
+	// si il ny a pas de mdp on en cree un avec 9 caractere + '\0'
+	
+	/* 
+	Si l'utilisateur n'a pas choisi de mot de passe, 
+	StegX va en créer un par défaut aléatoirement
+	*/
+	srand(time(NULL));
+	int random;
+	int i;
+	if(infos->method==STEGX_WITHOUT_PASSWD){
+		infos->passwd=malloc(LENGTH_DEFAULT_PASSWD*sizeof(char));
+		for(i=0;i<LENGTH_DEFAULT_PASSWD-1;i++){
+			random=rand()%126; // pour avoir des symboles ASCII
+			while(random<32) random=rand()%126; // symboles ASCII >=32
+			infos->passwd[i]=random;
+		}
+		infos->passwd[LENGTH_DEFAULT_PASSWD-1]='\0';
+		printf("paswd:\"%s\"\n",infos->passwd);
+	}
+	
+	if(algo_choosen==ALGO_UNAVAILABLE){
+		printf("CHOISI PAR DEFAUT\n");
+		algo_choosen=STEGX_ALGO_EOF;
+		return 1;
+	}
+	if(algo_choosen==STEGX_ALGO_EOF){
+		if(stegx_propos_algos[0]==STEGX_ALGO_EOF){
+			printf("ALGO EOF CHOISI\n");
+			infos->algo=STEGX_ALGO_EOF;
+			return 0;
+		}
+	}
+	else if(algo_choosen==STEGX_ALGO_LSB){
+		if(stegx_propos_algos[1]==STEGX_ALGO_LSB){
+			printf("ALGO LSB CHOISI\n");
+			infos->algo=STEGX_ALGO_LSB;
+			return 0;
+		}
+	}
+	else if(algo_choosen==STEGX_ALGO_METADATA){
+		if(stegx_propos_algos[2]==STEGX_ALGO_METADATA){
+			printf("ALGO META CHOISI\n");
+			infos->algo=STEGX_ALGO_METADATA;
+			return 0;
+		}
+	}
+	else if(algo_choosen==STEGX_ALGO_EOC){
+		if(stegx_propos_algos[3]==STEGX_ALGO_EOC){
+			printf("ALGO EOC CHOISI\n");
+			infos->algo=STEGX_ALGO_EOC;
+			return 0;
+		}
+	}
+	else if(algo_choosen==STEGX_ALGO_JUNK_CHUNK){
+		if(stegx_propos_algos[4]==STEGX_ALGO_JUNK_CHUNK){
+			printf("ALGO JUNK CHUNK CHOISI\n");
+			infos->algo=STEGX_ALGO_JUNK_CHUNK;
+			return 0;
+		}
+	}
+	printf("ALGO DEMANDE INDISPONIBLE\n");
+	return 1;
+}
+
