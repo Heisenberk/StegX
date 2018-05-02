@@ -5,11 +5,11 @@
 
 #include "common.h"
 
-struct mp3{
-	
+struct mp3 {
+
 };
 typedef struct mp3 mp3_s;
 
-type_e stegx_test_file_mp3(FILE* file);
+type_e stegx_test_file_mp3(FILE * file);
 
 #endif

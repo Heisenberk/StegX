@@ -5,12 +5,11 @@
 
 #include "common.h"
 
-struct avi{
-	
+struct avi {
+
 };
 typedef struct avi avi_s;
 
-type_e stegx_test_file_avi(FILE* file);
-
+type_e stegx_test_file_avi(FILE * file);
 
 #endif

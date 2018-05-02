@@ -18,8 +18,9 @@
  * =============================================================================
  */
 
-enum type {BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM, 
-	MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN};
+enum type { BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM,
+    MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN
+};
 typedef enum type type_e;
 
 /*
@@ -35,7 +36,7 @@ typedef enum type type_e;
 #include "file_type/flv.h"
 
 struct host_info {
-    FILE* host;
+    FILE *host;
     type_e type;
     union {
         struct bmp bmp;
@@ -53,11 +54,11 @@ struct info {
     algo_e algo;
     method_e method;
     host_info_s host;           // Requis
-    FILE* res;                  // Requis
-    FILE* hidden;               // Requis si mode == INSERT
-    char* hidden_name;          // Requis (calculé à partir de hidden_path)
+    FILE *res;                  // Requis
+    FILE *hidden;               // Requis si mode == INSERT
+    char *hidden_name;          // Requis (calculé à partir de hidden_path)
     uint32_t hidden_length;     // taille en octets du fichier a a
-    char* passwd;               //optionnel    
+    char *passwd;               //optionnel    
 };
 
-#endif /* ifndef COMMON_PRIV_H */
+#endif                          /* ifndef COMMON_PRIV_H */

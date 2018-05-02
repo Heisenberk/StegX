@@ -11,10 +11,10 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-info_s* stegx_init(stegx_choices_s* choices);
+info_s *stegx_init(stegx_choices_s * choices);
 
-void stegx_clear(info_s* infos);
+void stegx_clear(info_s * infos);
 
-int stegx_check_compatibility(info_s* infos);
+int stegx_check_compatibility(info_s * infos);
 
-#endif /* ifndef STEGX_H */
+#endif                          /* ifndef STEGX_H */

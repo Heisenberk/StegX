@@ -20,4 +20,4 @@
  */
 void ui_build(struct ui *ui);
 
-#endif /* UI_BUILDER_H_ */
+#endif                          /* UI_BUILDER_H_ */

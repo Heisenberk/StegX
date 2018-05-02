@@ -14,8 +14,8 @@
  * (sauf cas particulier) qu'aucune erreur ne s'est produite.
  */
 enum err_code {
-    ERR_NONE = 0, /*!< Aucune erreur. */
-    ERR_OTHER     /*!< Erreur quelconque. */
+    ERR_NONE = 0,               /*!< Aucune erreur. */
+    ERR_OTHER                   /*!< Erreur quelconque. */
 };
 
 /**
@@ -31,4 +31,4 @@ enum err_code stegx_errno;
  */
 void err_print(const enum err_code err);
 
-#endif /* ERRORS_H */
+#endif                          /* ERRORS_H */

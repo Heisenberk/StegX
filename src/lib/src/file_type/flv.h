@@ -6,14 +6,13 @@
 
 #include "common.h"
 
-struct flv{
-	uint32_t nb_video_tag;
-	uint32_t nb_metadata_tag;
-	uint32_t file_size;
+struct flv {
+    uint32_t nb_video_tag;
+    uint32_t nb_metadata_tag;
+    uint32_t file_size;
 };
 typedef struct flv flv_s;
 
-type_e stegx_test_file_flv(FILE* file);
-
+type_e stegx_test_file_flv(FILE * file);
 
 #endif
