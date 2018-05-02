@@ -1,8 +1,11 @@
-#include "sugg_algo.h"
-#include "file_type/bmp.h"
-#include "file_type/png.h"
 #include <endian.h>
 #include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "common.h"
+#include "stegx_common.h"
+#include "stegx_errors.h"
 
 /**
  * \def Algorithme non disponible
@@ -354,6 +357,7 @@ int fill_host_info(info_s* infos){
  */
 int stegx_suggest_algo(info_s* infos){
 	if(infos->mode==STEGX_MODE_EXTRACT){
+		err_print(ERR_RES_INSERT);
 		return 1;
 	}
 	int fill=fill_host_info(infos);
