@@ -39,13 +39,17 @@ int can_use_lsb(info_s* infos){
 		// calcul du nombre de bits modifiables pour l'algorithme LSB
 		nb_bits_pic/=4;
 		
-		// si la taille du fichier a cacher est trop grosse NON
-		// attention overflow
-		if((infos->hidden_length*8)>nb_bits_pic){
+		// si la taille du fichier a cacher est trop importante LSB impossible
+		uint64_t hidden_length=infos->hidden_length*8;
+		if(hidden_length>UINT32_MAX){
+			return 1;
+		}
+		else if(hidden_length>nb_bits_pic){
 			return 1;
 		}
 		return 0;
 	}
+	
 	// si le fichier hôte est un fichier WAV PCM
 	else if(infos->host.type==WAV_PCM){
 		/* 
@@ -56,13 +60,15 @@ int can_use_lsb(info_s* infos){
 		*/
 		uint64_t nb_bits_audio=(((infos->host.file_info.wav.data_size)-8)/(infos->host.file_info.wav.chunk_size))*2;
 
-		//attention overflow
 		uint64_t hidden_length_bits=infos->hidden_length*8;
-		// si overflow ERREUR
-		if(hidden_length_bits>nb_bits_audio){
+		if(hidden_length_bits>UINT32_MAX){
+			return 1;
+		}
+		else if(hidden_length_bits>nb_bits_audio){
 			return 1;
 		}
 	}
+	
 	else return 1;
 }
 
@@ -105,6 +111,7 @@ int can_use_metadata(info_s* infos){
 	// pour tous les formats proposés par StegX, on propose MetaData
 	if((infos->host.type==BMP_COMPRESSED)||(infos->host.type==BMP_UNCOMPRESSED)){
 		// pas toujours pour BMP car cela depend de la taille 
+		// A FINIR
 		return 0;
 	}
 	else if(infos->host.type==PNG){
@@ -193,8 +200,10 @@ int can_use_junk_chunk(info_s* infos){
 int fill_host_info(info_s* infos){
 	// si le fichier hôte a un format non reconnu
 	if(infos->host.host==NULL) return 1;
-	fseek(infos->host.host,0,SEEK_SET);
-	int i,read;
+	int i,read,move;
+	move=fseek(infos->host.host,0,SEEK_SET);
+	if(move==-1) return 1;
+	
 	// remplit la structure BMP de infos.host.file_info
 	//http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
 	if((infos->host.type==BMP_COMPRESSED)||(infos->host.type==BMP_UNCOMPRESSED)){
@@ -324,7 +333,7 @@ int fill_host_info(info_s* infos){
 		read=fread(&read_nb_channels,sizeof(uint16_t),1,infos->host.host);
 		nb_channels=le32toh(read_nb_channels);
 		
-		// lecture du nombre de bloc align 
+		// lecture du nombre de Bloc Align 
 		fseek(infos->host.host,WAV_NB_BLOC_ALIGN,SEEK_SET);
 		read=fread(&read_bloc_align,sizeof(uint16_t),1,infos->host.host);
 		bloc_align=le32toh(read_bloc_align);
@@ -337,10 +346,13 @@ int fill_host_info(info_s* infos){
 	// FLV
 	// https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
 	else if(infos->host.type==FLV){
+		// a remplir 
+		// ATTENTION UTILISER LES FONCTIONS le32toh etc... pour convertir 
+		//un nombre little-endian en l'endian de la machine
 		return 0;
 	}
 	
-	// pour les structures AVI et MP3 leurs structures sont 
+	// pour les structures AVI et MP3 leurs structures sont vides
 	else if((infos->host.type==MP3)||(infos->host.type==AVI_COMPRESSED)
 		||(infos->host.type==AVI_UNCOMPRESSED)){
 			return 0;
@@ -357,18 +369,26 @@ int fill_host_info(info_s* infos){
  */
 int stegx_suggest_algo(info_s* infos){
 	if(infos->mode==STEGX_MODE_EXTRACT){
-		err_print(ERR_RES_INSERT);
+		err_print(ERR_SUGG_ALGOS);
 		return 1;
 	}
 	int fill=fill_host_info(infos);
 	if(fill==1){
-		//erreur
+		err_print(ERR_SUGG_ALGOS);
 		return 1;
 	} 
-	fseek(infos->hidden,0,SEEK_END);
+	int move=fseek(infos->hidden,0,SEEK_END);
+	if(move==-1){
+		err_print(ERR_SUGG_ALGOS);
+		return 1;
+	}
 	// lecture de la taille du fichier à cacher
-	infos->hidden_length = ftell(infos->hidden);
-	// attention pour la taille overflow????!!!!
+	uint64_t hidden_length=ftell(infos->hidden);
+	if(hidden_length>UINT32_MAX){
+		err_print(ERR_LENGTH_HIDDEN);
+		return 1;
+	}
+	else infos->hidden_length = (uint32_t) hidden_length;
 	
 	int i,test;
 	/*
@@ -401,18 +421,13 @@ int stegx_suggest_algo(info_s* infos){
  * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
  * la fonction. 
  */
-int stegx_choose_algo(info_s* infos,algo_e algo_choosen){
-	
-	// creation du mot de passe si il na pas ete choisi par l'utilisateur
-	// si il ny a pas de mdp on en cree un avec 9 caractere + '\0'
-	
+int stegx_choose_algo(info_s* infos,algo_e algo_choosen){	
 	/* 
 	Si l'utilisateur n'a pas choisi de mot de passe, 
 	StegX va en créer un par défaut aléatoirement
 	*/
 	srand(time(NULL));
-	int random;
-	int i;
+	int random,i;
 	if(infos->method==STEGX_WITHOUT_PASSWD){
 		infos->passwd=malloc(LENGTH_DEFAULT_PASSWD*sizeof(char));
 		for(i=0;i<LENGTH_DEFAULT_PASSWD-1;i++){
@@ -421,50 +436,41 @@ int stegx_choose_algo(info_s* infos,algo_e algo_choosen){
 			infos->passwd[i]=random;
 		}
 		infos->passwd[LENGTH_DEFAULT_PASSWD-1]='\0';
-		printf("paswd:\"%s\"\n",infos->passwd);
 	}
 	
-	if(algo_choosen==ALGO_UNAVAILABLE){
-		printf("CHOISI PAR DEFAUT\n");
-		algo_choosen=STEGX_ALGO_EOF;
-		return 1;
-	}
+	// pour chaque algorithme possible, on regarde si il est disponible 
+	// dans les algorithmes proposés
 	if(algo_choosen==STEGX_ALGO_EOF){
 		if(stegx_propos_algos[0]==STEGX_ALGO_EOF){
-			printf("ALGO EOF CHOISI\n");
 			infos->algo=STEGX_ALGO_EOF;
 			return 0;
 		}
 	}
 	else if(algo_choosen==STEGX_ALGO_LSB){
 		if(stegx_propos_algos[1]==STEGX_ALGO_LSB){
-			printf("ALGO LSB CHOISI\n");
 			infos->algo=STEGX_ALGO_LSB;
 			return 0;
 		}
 	}
 	else if(algo_choosen==STEGX_ALGO_METADATA){
 		if(stegx_propos_algos[2]==STEGX_ALGO_METADATA){
-			printf("ALGO META CHOISI\n");
 			infos->algo=STEGX_ALGO_METADATA;
 			return 0;
 		}
 	}
 	else if(algo_choosen==STEGX_ALGO_EOC){
 		if(stegx_propos_algos[3]==STEGX_ALGO_EOC){
-			printf("ALGO EOC CHOISI\n");
 			infos->algo=STEGX_ALGO_EOC;
 			return 0;
 		}
 	}
 	else if(algo_choosen==STEGX_ALGO_JUNK_CHUNK){
 		if(stegx_propos_algos[4]==STEGX_ALGO_JUNK_CHUNK){
-			printf("ALGO JUNK CHUNK CHOISI\n");
 			infos->algo=STEGX_ALGO_JUNK_CHUNK;
 			return 0;
 		}
 	}
-	printf("ALGO DEMANDE INDISPONIBLE\n");
+
 	return 1;
 }
 

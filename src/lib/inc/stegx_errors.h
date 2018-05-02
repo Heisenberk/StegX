@@ -26,6 +26,7 @@ enum err_code {
     ERR_SUGG_ALGOS,				/*!< Erreur dans le sous-module proposition des algos de steganographie. */
     ERR_INSERT, 				/*!< Erreur mauvais appel de fonctions sur une insertion. */
     ERR_EXTRACT, 				/*!< Erreur mauvais appel de fonctions sur une extraction. */
+    ERR_LENGTH_HIDDEN,			/*!< Erreur taille du fichier à cacher trop élevée */
     ERR_OTHER                   /*!< Erreur quelconque. */
 };
 

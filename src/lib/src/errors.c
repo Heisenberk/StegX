@@ -22,7 +22,8 @@ void err_print(enum err_code err)
         /* ERR_CHECK_COMPAT */ "erreur dans le module verification de la compatibilite des fichiers",
         /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
         /* ERR_INSERT */ "erreur mauvais appel de fonctions sur une insertion", 
-        /* ERR_EXTRACT */ "erreur mauvais appel de fonctions sur une extraction"
+        /* ERR_EXTRACT */ "erreur mauvais appel de fonctions sur une extraction",
+        /* ERR_LENGTH_HIDDEN */ "erreur taille du fichier a cacher trop importante",
         /* ERR_OTHER */ "erreur inconnu"
  
     };
