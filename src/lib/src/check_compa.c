@@ -3,6 +3,7 @@
 
 #include "stegx_common.h"
 #include "common.h"
+#include "stegx_errors.h"
 
 type_e check_file_format(FILE * file)
 {
@@ -35,8 +36,10 @@ type_e check_file_format(FILE * file)
 
 int stegx_check_compatibility(info_s * infos)
 {
-    if (infos->host.host == NULL)
-        return 1;
+    if (infos->host.host == NULL){
+		err_print(ERR_HOST_NULL);
+		return 1;
+	}
     type_e host_type = check_file_format(infos->host.host);
     infos->host.type = host_type;
     return 0;

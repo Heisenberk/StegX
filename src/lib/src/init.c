@@ -3,8 +3,9 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "stegx_common.h"
 #include "common.h"
+#include "stegx_common.h"
+#include "stegx_errors.h"
 
 info_s *stegx_init(stegx_choices_s * choices)
 {
@@ -18,15 +19,13 @@ info_s *stegx_init(stegx_choices_s * choices)
     //OK host.host
     s->host.host = fopen(choices->host_path, "r");
     if (s->host.host == NULL) {
-        printf("ERREUR1");
-        //erreur
+        err_print(ERR_HOST_NULL);
     }
     //OK hidden
     if (choices->mode == STEGX_MODE_INSERT) {
         s->hidden = fopen(choices->insert_info->hidden_path, "r");
         if (s->hidden == NULL) {
-            printf("ERREUR2");
-            //erreur
+            err_print(ERR_HIDDEN_NULL);
         }
     } else
         s->hidden = NULL;
@@ -35,8 +34,7 @@ info_s *stegx_init(stegx_choices_s * choices)
     if (choices->passwd != NULL) {
         count = strlen(choices->passwd);
         if (count == 0) {
-            //erreur
-            printf("ERREUR3");
+            err_print(ERR_PASSWD);
         }
         count++;
         s->passwd = malloc(count * sizeof(char));
@@ -60,7 +58,7 @@ info_s *stegx_init(stegx_choices_s * choices)
         // si on est en EXTRACT il faut absolument que le chemin soit un dossier
         if (stat(choices->res_path, &st) == 0) {
             if (!S_ISDIR(st.st_mode)) {
-                printf("ERREUR4 res_path doit etre un dossier");
+                err_print(ERR_RES_EXTRACT);
             }
         }
     }
@@ -73,8 +71,7 @@ info_s *stegx_init(stegx_choices_s * choices)
             s->res = fopen(choices->res_path, "w");
         if (s->res == NULL) {
             // le fait que res_path ne soit pas un fichier est detecte ici
-            printf("ERREUR5");
-            //erreur
+            err_print(ERR_RES_INSERT);
         }
     }
 
