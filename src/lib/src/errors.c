@@ -19,12 +19,12 @@ void err_print(enum err_code err)
         /* ERR_PASSWD */ "mot de passe invalide",
         /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
         /* ERR_READ */ "erreur de lecture",
-        /* ERR_CHECK_COMPAT */ "erreur dans le module verification de la compatibilite des fichiers",
+        /* ERR_CHECK_COMPAT */
+            "erreur dans le module verification de la compatibilite des fichiers",
         /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
-        /* ERR_INSERT */ "erreur mauvais appel de fonctions sur une insertion", 
+        /* ERR_INSERT */ "erreur mauvais appel de fonctions sur une insertion",
         /* ERR_EXTRACT */ "erreur mauvais appel de fonctions sur une extraction"
-        /* ERR_OTHER */ "erreur inconnu"
- 
+            /* ERR_OTHER */ "erreur inconnu"
     };
     /* Vérifcation de la valeur de "err". */
     err = (unsigned int)err <= ERR_OTHER ? err : ERR_OTHER;

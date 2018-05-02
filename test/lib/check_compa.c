@@ -14,7 +14,6 @@ extern type_e check_file_format(FILE * file);
 
 /* Tests */
 
-
 void test_file_compatibility_v1(void **state)
 {
     (void)state;                /* Unused */

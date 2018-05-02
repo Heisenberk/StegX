@@ -13,7 +13,7 @@
  */
 type_e check_file_format(FILE * file)
 {
-	// teste pour chaque format le type du fichier en entrée
+    // teste pour chaque format le type du fichier en entrée
     type_e test_bmp = stegx_test_file_bmp(file);
     if (test_bmp != UNKNOWN)
         return test_bmp;
@@ -52,11 +52,11 @@ type_e check_file_format(FILE * file)
  */
 int stegx_check_compatibility(info_s * infos)
 {
-    if (infos->host.host == NULL){
-		err_print(ERR_CHECK_COMPAT);
-		return 1;
-	}
-	// remplit le champ host.host de infos
+    if (infos->host.host == NULL) {
+        err_print(ERR_CHECK_COMPAT);
+        return 1;
+    }
+    // remplit le champ host.host de infos
     type_e host_type = check_file_format(infos->host.host);
     infos->host.type = host_type;
     return 0;

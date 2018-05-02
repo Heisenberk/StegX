@@ -27,7 +27,6 @@
  * */
 #define ADDRESS_WAV_PCM 20
 
-
 /**
  * @brief Retourne le type du fichier. 
  * @param *file fichier à tester.
@@ -38,60 +37,57 @@ type_e stegx_test_file_wav(FILE * file)
 {
     if (file == NULL)
         return UNKNOWN;
-    int i,move,read;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	
-	// lecture de la signature RIFF
+    int i, move, read;
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
+    // lecture de la signature RIFF
     uint32_t sig_read, sig;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
+    if (read == 0) {
+        err_print(ERR_READ);
+        return 1;
+    }
     // conversion BIG ENDIAN en endian de la machine
-    sig=be32toh(sig_read); 
+    sig = be32toh(sig_read);
     if (sig != SIG_RIFF) {
         return UNKNOWN;
     }
 
-    move=fseek(file, ADDRESS_WAV_WAVE, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	// lecture de la singnature WAV
+    move = fseek(file, ADDRESS_WAV_WAVE, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
+    // lecture de la singnature WAV
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
+    if (read == 0) {
+        err_print(ERR_READ);
+        return 1;
+    }
     // conversion BIG ENDIAN en endian de la machine
-    sig=be32toh(sig_read); 
+    sig = be32toh(sig_read);
     if (sig != SIG_WAVE) {
         return UNKNOWN;
     }
 
-    move=fseek(file, ADDRESS_WAV_PCM, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	
-	// lecture de la signature PCM
+    move = fseek(file, ADDRESS_WAV_PCM, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
+    // lecture de la signature PCM
     uint16_t pcm_read;
     uint16_t pcm;
     read = fread(&pcm_read, sizeof(uint16_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-    
+    if (read == 0) {
+        err_print(ERR_READ);
+        return 1;
+    }
     // conversion BIG ENDIAN en endian de la machine
-    pcm=be16toh(pcm_read); 
+    pcm = be16toh(pcm_read);
     if (pcm == SIG_PCM) {
         return WAV_PCM;
     } else

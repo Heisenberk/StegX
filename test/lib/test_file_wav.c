@@ -54,7 +54,6 @@ void test_file_wav_v4(void **state)
     assert_int_equal(test, WAV_PCM);
 }
 
-
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
 
@@ -71,4 +70,3 @@ int main(void)
     /* Exécute les tests. */
     return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
 }
-

@@ -27,37 +27,36 @@ type_e stegx_test_file_avi(FILE * file)
 {
     if (file == NULL)
         return UNKNOWN;
-    int i,read,move;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-    
+    int i, read, move;
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
     // lecture de la signature RIFF
     uint32_t sig_read, sig;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-	// conversion BIG ENDIAN en endian de la machine
-    sig=be32toh(sig_read);
+    if (read == 0) {
+        err_print(ERR_READ);
+        return 1;
+    }
+    // conversion BIG ENDIAN en endian de la machine
+    sig = be32toh(sig_read);
     if (sig != SIG_RIFF) {
         return UNKNOWN;
     }
-    move=fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	// lecture de la signature AVI
+    move = fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
+    // lecture de la signature AVI
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-    sig=be32toh(sig_read);
+    if (read == 0) {
+        err_print(ERR_READ);
+        return 1;
+    }
+    sig = be32toh(sig_read);
     if (sig != SIG_AVI) {
         return UNKNOWN;
     }
