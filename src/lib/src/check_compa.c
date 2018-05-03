@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "stegx_common.h"
 #include "common.h"
@@ -13,6 +14,7 @@
  */
 type_e check_file_format(FILE * file)
 {
+	assert(file);
     // teste pour chaque format le type du fichier en entrée
     type_e test_bmp = stegx_test_file_bmp(file);
     if (test_bmp != UNKNOWN)

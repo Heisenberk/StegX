@@ -108,7 +108,7 @@ void test_file_compatibility_v9(void **state)
 const struct CMUnitTest check_compatibility_tests[] = {
 
     // tests unitaires compatibility
-    cmocka_unit_test(test_file_compatibility_v1),
+    /*cmocka_unit_test(test_file_compatibility_v1),
     cmocka_unit_test(test_file_compatibility_v2),
     cmocka_unit_test(test_file_compatibility_v3),
     cmocka_unit_test(test_file_compatibility_v4),
@@ -116,7 +116,7 @@ const struct CMUnitTest check_compatibility_tests[] = {
     cmocka_unit_test(test_file_compatibility_v6),
     cmocka_unit_test(test_file_compatibility_v7),
     cmocka_unit_test(test_file_compatibility_v8),
-    cmocka_unit_test(test_file_compatibility_v9),
+    cmocka_unit_test(test_file_compatibility_v9),*/
 
 };
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -19,21 +20,14 @@
  */
 type_e stegx_test_file_flv(FILE * file)
 {
-    if (file == NULL)
-        return UNKNOWN;
+    assert(file);
     int i, read, move;
     move = fseek(file, 0, SEEK_SET);
-    if (move == -1) {
-        err_print(ERR_FSEEK);
-        return 1;
-    }
+    if (move == -1) return 1;
     // lecture de la signayure FLV
     uint32_t sig_read, sig;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if (read == 0) {
-        err_print(ERR_READ);
-        return 1;
-    }
+    if (read == 0) return 1;
     // conversion BIG ENDIAN en endian de la machine
     sig = be32toh(sig_read);
     sig >>= 8;                  // on enleve 8 derniers bits car on soccupe des 3 premiers octets
