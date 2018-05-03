@@ -10,7 +10,7 @@
 /**
  * \def Signature FLV
  * */
-#define SIG_FLV 0x464C56
+#define SIG_FLV 0x564C46
 
 /**
  * @brief Retourne le type du fichier. 
@@ -25,13 +25,13 @@ type_e stegx_test_file_flv(FILE * file)
     move = fseek(file, 0, SEEK_SET);
     if (move == -1) return 1;
     // lecture de la signayure FLV
-    uint32_t sig_read, sig;
+    uint32_t sig_read;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    sig = be32toh(sig_read);
-    sig >>= 8;                  // on enleve 8 derniers bits car on soccupe des 3 premiers octets
-    if (sig != SIG_FLV) {
+    // on enleve 8 premiers bits car on soccupe des 3 derniers octets
+    sig_read <<= 8; 
+    sig_read >>= 8;
+    if (sig_read != SIG_FLV) {
         return UNKNOWN;
     }
     return FLV;

@@ -11,12 +11,12 @@
 /**
  * \def Signature WAV
  * */
-#define SIG_WAVE 0x57415645
+#define SIG_WAVE 0x45564157
 
 /**
  * \def Signature PCM
  * */
-#define SIG_PCM 0x0100
+#define SIG_PCM 0x0001
 
 /**
  * \def Déplacement absolu à faire pour lire la signature WAV
@@ -41,12 +41,10 @@ type_e stegx_test_file_wav(FILE * file)
     move = fseek(file, 0, SEEK_SET);
     if (move == -1) return 1;
     // lecture de la signature RIFF
-    uint32_t sig_read, sig;
+    uint32_t sig_read;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    sig = be32toh(sig_read);
-    if (sig != SIG_RIFF) {
+    if (sig_read != SIG_RIFF) {
         return UNKNOWN;
     }
 
@@ -55,9 +53,7 @@ type_e stegx_test_file_wav(FILE * file)
     // lecture de la singnature WAV
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    sig = be32toh(sig_read);
-    if (sig != SIG_WAVE) {
+    if (sig_read != SIG_WAVE) {
         return UNKNOWN;
     }
 
@@ -65,12 +61,9 @@ type_e stegx_test_file_wav(FILE * file)
     if (move == -1) return 1;
     // lecture de la signature PCM
     uint16_t pcm_read;
-    uint16_t pcm;
     read = fread(&pcm_read, sizeof(uint16_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    pcm = be16toh(pcm_read);
-    if (pcm == SIG_PCM) {
+    if (pcm_read == SIG_PCM) {
         return WAV_PCM;
     } else
         return WAV_NO_PCM;

@@ -10,7 +10,7 @@
 /**
  * \def Signature PNG
  * */
-#define SIG_PNG 0x89504E470D0A1A0A
+#define SIG_PNG 0x0A1A0A0D474E5089
 
 /**
  * @brief Retourne le type du fichier. 
@@ -25,15 +25,12 @@ type_e stegx_test_file_png(FILE * file)
     move = fseek(file, 0, SEEK_SET);
     if (move == -1) return 1;
     uint64_t sig_read;
-    uint64_t sig;
     move = fseek(file, 0, SEEK_SET);
     if (move == -1) return 1;
     // lecture signature PNG
     read = fread(&sig_read, sizeof(uint64_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    sig = be64toh(sig_read);
-    if (sig != SIG_PNG) {
+    if (sig_read != SIG_PNG) {
         return UNKNOWN;
     }
     return PNG;

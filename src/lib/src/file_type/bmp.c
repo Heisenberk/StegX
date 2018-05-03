@@ -10,7 +10,7 @@
 /**
  * \def Signature BMP
  * */
-#define SIG_BMP 0x424D
+#define SIG_BMP 0x4D42
 
 /**
  * \def Déplacement absolu à faire pour savoir si il s'agit d'un fichier 
@@ -26,10 +26,8 @@
  */
 type_e stegx_test_file_bmp(FILE * file)
 {
-    int i;
     uint32_t compress;
-    uint16_t sig;
-    int read, move;
+    int i, read, move;
 
     assert(file);
     move = fseek(file, 0, SEEK_SET);
@@ -38,9 +36,7 @@ type_e stegx_test_file_bmp(FILE * file)
     uint16_t sig_read;
     read = fread(&sig_read, sizeof(uint16_t), 1, file);
     if (read == 0) return 1;
-    // conversion du BIG ENDIAN en l'endian de la machine
-    sig = be16toh(sig_read);
-    if (sig != SIG_BMP) {
+    if (sig_read != SIG_BMP) {
         return UNKNOWN;
     }
 

@@ -11,7 +11,7 @@
 /**
  * \def Signature AVI
  * */
-#define SIG_AVI 0x41564920
+#define SIG_AVI 0x20495641
 
 /**
  * \def Déplacement absolu à faire pour lire la signature AVI
@@ -34,12 +34,10 @@ type_e stegx_test_file_avi(FILE * file)
         return 1;
     }
     // lecture de la signature RIFF
-    uint32_t sig_read, sig;
+    uint32_t sig_read;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
     if (read == 0) return 1;
-    // conversion BIG ENDIAN en endian de la machine
-    sig = be32toh(sig_read);
-    if (sig != SIG_RIFF) {
+    if (sig_read != SIG_RIFF) {
         return UNKNOWN;
     }
     move = fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
@@ -47,8 +45,7 @@ type_e stegx_test_file_avi(FILE * file)
     // lecture de la signature AVI
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
     if (read == 0) return 1;
-    sig = be32toh(sig_read);
-    if (sig != SIG_AVI) {
+    if (sig_read != SIG_AVI) {
         return UNKNOWN;
     }
     return AVI_UNCOMPRESSED;
