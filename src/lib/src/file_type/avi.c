@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -10,7 +11,7 @@
 /**
  * \def Signature AVI
  * */
-#define SIG_AVI 0x41564920
+#define SIG_AVI 0x20495641
 
 /**
  * \def Déplacement absolu à faire pour lire la signature AVI
@@ -25,40 +26,26 @@
  */
 type_e stegx_test_file_avi(FILE * file)
 {
-    if (file == NULL)
-        return UNKNOWN;
-    int i,read,move;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-    
+    assert(file);
+    int i, read, move;
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) {
+        err_print(ERR_FSEEK);
+        return 1;
+    }
     // lecture de la signature RIFF
-    uint32_t sig_read, sig;
+    uint32_t sig_read;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-	// conversion BIG ENDIAN en endian de la machine
-    sig=be32toh(sig_read);
-    if (sig != SIG_RIFF) {
+    if (read == 0) return 1;
+    if (sig_read != SIG_RIFF) {
         return UNKNOWN;
     }
-    move=fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	// lecture de la signature AVI
+    move = fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
+    if (move == -1) return 1;
+    // lecture de la signature AVI
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-    sig=be32toh(sig_read);
-    if (sig != SIG_AVI) {
+    if (read == 0) return 1;
+    if (sig_read != SIG_AVI) {
         return UNKNOWN;
     }
     return AVI_UNCOMPRESSED;

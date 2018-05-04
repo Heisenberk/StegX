@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -9,7 +10,7 @@
 /**
  * \def Signature BMP
  * */
-#define SIG_BMP 0x424D
+#define SIG_BMP 0x4D42
 
 /**
  * \def Déplacement absolu à faire pour savoir si il s'agit d'un fichier 
@@ -25,39 +26,23 @@
  */
 type_e stegx_test_file_bmp(FILE * file)
 {
-    int i;
     uint32_t compress;
-    uint16_t sig;
-    int read,move;
+    int i, read, move;
 
-    if (file == NULL)
-        return UNKNOWN;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	// lecture de la signature BMP
+    assert(file);
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) return 1;
+    // lecture de la signature BMP
     uint16_t sig_read;
     read = fread(&sig_read, sizeof(uint16_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-	
-	// conversion du BIG ENDIAN en l'endian de la machine
-    sig=be16toh(sig_read);
-    if (sig != SIG_BMP) {
+    if (read == 0) return 1;
+    if (sig_read != SIG_BMP) {
         return UNKNOWN;
     }
 
     move = fseek(file, ADDRESS_BMP_COMPRESS, SEEK_SET);
-    if (move == -1) {
-		err_print(ERR_FSEEK);
-		return 1;
-    }
-	
-	// lecture pour déterminer si c'est compressé ou non
+    if (move == -1) return 1;
+    // lecture pour déterminer si c'est compressé ou non
     read = fread(&compress, sizeof(uint32_t), 1, file);
     if (compress == 0) {
         return BMP_UNCOMPRESSED;
