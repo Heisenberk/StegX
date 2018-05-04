@@ -25,13 +25,15 @@ info_s *stegx_init(stegx_choices_s * choices)
     //OK host.host
     s->host.host = fopen(choices->host_path, "r");
     if (s->host.host == NULL) {
-        err_print(ERR_HOST_NULL);
+        stegx_errno=ERR_HOST_NULL;
+        return NULL;
     }
     //OK hidden
     if (choices->mode == STEGX_MODE_INSERT) {
         s->hidden = fopen(choices->insert_info->hidden_path, "r");
         if (s->hidden == NULL) {
-            err_print(ERR_HIDDEN_NULL);
+            stegx_errno=ERR_HIDDEN_NULL;
+            return NULL;
         }
     } else
         s->hidden = NULL;
@@ -64,7 +66,8 @@ info_s *stegx_init(stegx_choices_s * choices)
         // si on est en EXTRACT il faut absolument que le chemin soit un dossier
         if (stat(choices->res_path, &st) == 0) {
             if (!S_ISDIR(st.st_mode)) {
-                err_print(ERR_RES_EXTRACT);
+                stegx_errno=ERR_RES_EXTRACT;
+                return NULL;
             }
         }
     }
@@ -77,7 +80,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             s->res = fopen(choices->res_path, "w");
         if (s->res == NULL) {
             // le fait que res_path ne soit pas un fichier est detecte ici
-            err_print(ERR_RES_INSERT);
+            stegx_errno=ERR_RES_INSERT;
+            return NULL;
         }
     }
 

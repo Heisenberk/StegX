@@ -55,7 +55,7 @@ type_e check_file_format(FILE * file)
 int stegx_check_compatibility(info_s * infos)
 {
     if (infos->host.host == NULL) {
-        err_print(ERR_CHECK_COMPAT);
+        stegx_errno=ERR_CHECK_COMPAT;
         return 1;
     }
     // remplit le champ host.host de infos
