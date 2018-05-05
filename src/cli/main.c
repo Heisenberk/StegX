@@ -9,19 +9,18 @@ int main(int argc, char *argv[])
     stegx_choices_s *com = init_stegx_info();
     fill_info(com, argc, argv);
     check_info(com);
-    
+
     info_s *infos = stegx_init(com);
-    if(infos==NULL){
-		err_print(stegx_errno);
-		return EXIT_FAILURE;
-	}
+    if (infos == NULL) {
+        err_print(stegx_errno);
+        return EXIT_FAILURE;
+    }
 
     int compatibility = stegx_check_compatibility(infos);
-    if (compatibility == 1){
-		err_print(stegx_errno);
-		return EXIT_FAILURE;
-	}
-        
+    if (compatibility == 1) {
+        err_print(stegx_errno);
+        return EXIT_FAILURE;
+    }
 
     if (com->mode == STEGX_MODE_INSERT) {
         int suggest = stegx_suggest_algo(infos);
@@ -34,8 +33,7 @@ int main(int argc, char *argv[])
 
         //stegx_insert(infos);
     }
-	
-	// vider la variable globale
+    // vider la variable globale
     stegx_clear(infos);
     dest_stegx_info(com);
 
