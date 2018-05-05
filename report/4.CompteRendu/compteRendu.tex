@@ -41,8 +41,13 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \section{Introduction}
 
-Le cahier des charges ainsi que les spécifications ont été réalisés par 
-l'équipe de StegX, il est maintenant temps d'implémenter le logiciel.
+La stéganographie est le but recherché lors de l'implémentation de StegX. 
+ELle consiste à dissimuler des données dans des fichiers de type image, 
+audio et vidéo. 
+Après avoir étudié en détail les algorithmes de stéganographie (dans le 
+cahier des charges), et analysé comment mettre en relation les différents 
+modules correspondant aux différentes fonctionnalités, il est maintenant 
+temps d'implémenter le logiciel.
 L'application StegX proposera à ses utilisateurs de manipuler une interface 
 graphique ou en ligne de commandes afin de cacher des données dans d'autres 
 données (pour des formats pris en charge par StegX). De plus, StegX permettra 
@@ -57,9 +62,96 @@ bilan technique sur l'application et humain sur l'équipe de conception.
 
 \section{Architecture du produit}
 
+\hspace{0.5cm}
+\includegraphics[scale=0.55]{pictures/organigramme.png}
+\newpage
+
+L'étude des différentes propriétés de la stéganographie et la stéganalyse 
+nous a mené vers cet organigramme. 
+Il permet de visualiser les étapes successives de la stéganographie 
+(insertion des données), ainsi que celle de la stéganalyse (extraction 
+des données). 
+
+Pour la dissimulation de données, il va d'abord y avoir la vérification 
+de la compatibilité du fichier hôte, pour savoir si le format est bien 
+pris en charge par l'application. 
+Il y a ensuite, le module \textit{Proposition des algorithmes de stéganographie}
+qui va être utilisé. Un premier appel vers ce module permettra de proposer 
+un ou plusieurs algorithmes en fonction du fichier hôte et du fichier à cacher. 
+Puis, le deuxième appel permettra à l'utilisateur de choisir l'algorithme 
+parmi ceux proposés précedemment. 
+La dernière étape consiste en la réelle insertion des données, où les 
+données à cacher seront dissimulées dans une copie du fichier hôte. 
+
+Pour l'extraction de données, le module \textit{Vérification de la compatibilité 
+des fichiers} permettra, comme pour l'insertion, de vérifier si le format 
+du fichier à analyser est bien pris en charge. 
+Il y aura ensuite une détection de l'algorithme de stéganographie permettant de 
+trouver la méthode utilisée par l'émetteur pour cacher les données. 
+Enfin, l'extraction permettra de récupérer les données cachées dans le 
+fichier à analyser. 
+
+Tous ces modules et sous-modules seront coordonnées grâce aux interfaces 
+graphique et en ligne de commande, proposées par StegX. 
+
+
+
+
 \section{Explications techniques}
 
 \section{Description du fonctionnement}
+
+Pour montrer le fonctionnement de l'application, nous allons proposer un 
+exemple pour dissimulation et un autre pour l'extraction, correspondant 
+à une communication entre Alice et Bob. 
+Les données sont issues d'une réelle utilisation de StegX. 
+
+\subsection{Fonctionnement de l'insertion des données}
+
+Alice choisit de dissimuler le message qu'elle veut envoyer à Bob dans une 
+image à l'aide de l'interface graphique. 
+Tout d'abord, elle choisit les entrées de la dissimulation : le fichier 
+à cacher, le fichier hôte ainsi que le chemin du fichier à créer et un mot 
+de passe pour augmenter la sécurité de la dissimulation. 
+Dans cet exemple, le fichier à cacher est /home/user/Bureau/message.txt 
+de taille 2.2 kB ; le fichier hôte est /home/user/Images/photo.bmp 
+de taille 21.1 MB ; le chemin du fichier à créer est 
+/home/user/Documents/piece\_jointe.bmp ; le mot de passe est "alicebob" 
+(communiqué à Bob sur un canal sûr). 
+
+L'interface va appeler le module \textit{Vérification de la compatibilité 
+des fichiers}. Le type du fichier hôte sera analysé grâce à la lecture 
+de l'entête du fichier : il s'agit d'un fichier BMP non compressé dont les 
+pixels sont codés sur 24 bits (8 bits par composantes couleurs). 
+L'interface va alors lui proposer 3 algorithmes différents : l'algorithme 
+EOF, LSB et Metadata. 
+A ce moment de la manipulation, la structure spécifique 
+\textit{infos.host.file\_info.bmp} a été remplie notamment avec le 
+\textit{header\_size} égal à $122$ octets, le \textit{data\_size} égal à 
+$21085440$ octets, le champ \textit{pixel\_length} égal à $24$ et le champ 
+\textit{pixel\_number} égal à $2584 \times 2720 = 7028480$. De cette structure
+est déduit les algorithmes proposés. 
+Dans cet exemple, Alice a choisit l'algorithme EOF. 
+
+La prochaine étape est celle de l'insertion. Pour la stéganographie EOF, 
+StegX va écrire dans /home/user/Documents/piece\_jointe.bmp le fichier hôte. 
+Ensuite, la signature StegX est écrite dans lequel on a l'identificateur 
+de l'algorithme (1 octet), la taille du fichier caché noté en Big Endian 
+(sur 4 octets), la taille du nom du fichier caché (1 octet) et le nom du 
+fichier caché (255 octets). 
+Enfin, les données cachées sont écrites avec le XOR du mot de passe "alicebob"
+choisi au début. 
+
+Alice pourra donc envoyer le fichier piece\_jointe.bmp qui aura une taille 
+de 21088071 octets soit 21.1 MB sur un canal non sécurisé. 
+
+Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun 
+soupçons en voyant piece\_jointe.bmp qui semble être une image comme une 
+autre. 
+
+\subsection{Fonctionnement de l'extraction des données}
+
+Bob voit que 
 
 \section{Description des points délicats de la programmation}
 
