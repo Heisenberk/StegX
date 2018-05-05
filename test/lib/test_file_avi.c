@@ -46,4 +46,3 @@ int main(void)
     /* Exécute les tests. */
     return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
 }
-

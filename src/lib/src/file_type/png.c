@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -9,7 +10,7 @@
 /**
  * \def Signature PNG
  * */
-#define SIG_PNG 0x89504E470D0A1A0A
+#define SIG_PNG 0x0A1A0A0D474E5089
 
 /**
  * @brief Retourne le type du fichier. 
@@ -19,31 +20,17 @@
  */
 type_e stegx_test_file_png(FILE * file)
 {
-    if (file == NULL)
-        return UNKNOWN;
-    int move,i,read;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
+    assert(file);
+    int move, i, read;
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) return 1;
     uint64_t sig_read;
-    uint64_t sig;
-    move=fseek(file, 0, SEEK_SET);
-    if(move==-1){
-		err_print(ERR_FSEEK);
-		return 1;
-	}
-	
-	// lecture signature PNG
+    move = fseek(file, 0, SEEK_SET);
+    if (move == -1) return 1;
+    // lecture signature PNG
     read = fread(&sig_read, sizeof(uint64_t), 1, file);
-    if(read==0){
-		err_print(ERR_READ);
-		return 1;
-	}
-    // conversion BIG ENDIAN en endian de la machine
-    sig=be64toh(sig_read); 
-    if (sig != SIG_PNG) {
+    if (read == 0) return 1;
+    if (sig_read != SIG_PNG) {
         return UNKNOWN;
     }
     return PNG;

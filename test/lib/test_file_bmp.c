@@ -20,7 +20,7 @@ void test_file_bmp_v1(void **state)
     (void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test1.bmp", "r");
     type_e test = stegx_test_file_bmp(f);
-    //if(f!=NULL) fclose(f);
+    if(f!=NULL) fclose(f);
     assert_int_equal(test, BMP_COMPRESSED);
 }
 
@@ -79,16 +79,6 @@ void test_file_bmp_v6(void **state)
     assert_int_equal(test, BMP_COMPRESSED);
 }
 
-void test_file_bmp_v7(void **state)
-{
-    (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/inexistant", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, UNKNOWN);
-}
-
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
 
@@ -99,7 +89,6 @@ const struct CMUnitTest check_compatibility_tests[] = {
     cmocka_unit_test(test_file_bmp_v4),
     cmocka_unit_test(test_file_bmp_v5),
     cmocka_unit_test(test_file_bmp_v6),
-    cmocka_unit_test(test_file_bmp_v7),
 
 };
 
