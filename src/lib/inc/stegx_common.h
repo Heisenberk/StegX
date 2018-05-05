@@ -27,6 +27,15 @@ typedef enum method method_e;
 
 typedef struct info info_s;
 
+#define NB_ALGOS 5
+
+/*
+ * Variables
+ * =============================================================================
+ */
+
+algo_e *stegx_propos_algos;
+
 /*
  * Structures
  * =============================================================================
