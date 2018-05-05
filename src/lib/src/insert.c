@@ -39,8 +39,7 @@ int write_signature(info_s * infos)
     assert(infos->hidden);
     assert(infos->res);
     assert(infos->hidden_name);
-    if (infos->mode == STEGX_MODE_EXTRACT)
-        return 1;
+    assert(infos->mode != STEGX_MODE_EXTRACT);
     int write;
     char car;
     int i = 0;
@@ -96,10 +95,10 @@ int write_signature(info_s * infos)
         return 1;
 
     // on ecrit la taille du nom du fichier caché (1 octet)
-    int length = strlen(infos->hidden_name);
+    uint8_t length = strlen(infos->hidden_name);
     if (length > 0xFF)
         length = LENGTH_HIDDEN_NAME_MAX;
-    write = fwrite(&length_written, sizeof(uint32_t), 1, infos->res);
+    write = fwrite(&length, sizeof(uint8_t), 1, infos->res);
     if (write == 0)
         return 1;
 
@@ -140,7 +139,7 @@ int write_signature(info_s * infos)
 
 int stegx_insert(info_s * infos)
 {
-    /*int insertion;
+    int insertion;
        if(infos->mode!=STEGX_MODE_INSERT){
        stegx_errno=ERR_INSERT;
        return 1;
@@ -161,6 +160,5 @@ int stegx_insert(info_s * infos)
        insertion=insert_junk_chunk(infos);
        }
        else insertion=1;
-       return insertion; */
-    return write_signature(infos);
+       return insertion; 
 }
