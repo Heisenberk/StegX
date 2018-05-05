@@ -31,17 +31,20 @@ type_e stegx_test_file_bmp(FILE * file)
 
     assert(file);
     move = fseek(file, 0, SEEK_SET);
-    if (move == -1) return 1;
+    if (move == -1)
+        return 1;
     // lecture de la signature BMP
     uint16_t sig_read;
     read = fread(&sig_read, sizeof(uint16_t), 1, file);
-    if (read == 0) return 1;
+    if (read == 0)
+        return 1;
     if (sig_read != SIG_BMP) {
         return UNKNOWN;
     }
 
     move = fseek(file, ADDRESS_BMP_COMPRESS, SEEK_SET);
-    if (move == -1) return 1;
+    if (move == -1)
+        return 1;
     // lecture pour déterminer si c'est compressé ou non
     read = fread(&compress, sizeof(uint32_t), 1, file);
     if (compress == 0) {
@@ -49,4 +52,9 @@ type_e stegx_test_file_bmp(FILE * file)
     } else {
         return BMP_COMPRESSED;
     }
+}
+
+int insert_metadata_bmp(info_s * infos)
+{
+    return 1;
 }

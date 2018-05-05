@@ -20,4 +20,6 @@ typedef struct png png_s;
 
 type_e stegx_test_file_png(FILE * file);
 
+int insert_metadata_png(info_s * infos);
+
 #endif

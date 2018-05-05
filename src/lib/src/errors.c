@@ -20,14 +20,14 @@ void err_print(enum err_code err)
         /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
         /* ERR_READ */ "erreur de lecture",
         /* ERR_CHECK_COMPAT */
-            "erreur dans le module verification de la compatibilite des fichiers",
+        "erreur dans le module verification de la compatibilite des fichiers",
         /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
-        /* ERR_INSERT */ "erreur mauvais appel de fonctions sur une insertion", 
-        /* ERR_EXTRACT */ "erreur mauvais appel de fonctions sur une extraction",
+        /* ERR_INSERT */ "erreur dans le sous-module insertion",
+        /* ERR_EXTRACT */ "erreur dans le sous-module extraction",
         /* ERR_LENGTH_HIDDEN */ "erreur taille du fichier a cacher trop importante",
         /* ERR_OTHER */ "erreur inconnu"
     };
-    
+
     /* Vérification de la valeur de "err". */
     err = (unsigned int)err <= ERR_OTHER ? err : ERR_OTHER;
     fprintf(stderr, "Erreur %d : %s.\n", err, err_desc[err]);

@@ -14,7 +14,7 @@
  */
 type_e check_file_format(FILE * file)
 {
-	assert(file);
+    assert(file);
     // teste pour chaque format le type du fichier en entrée
     type_e test_bmp = stegx_test_file_bmp(file);
     if (test_bmp != UNKNOWN)
@@ -55,7 +55,7 @@ type_e check_file_format(FILE * file)
 int stegx_check_compatibility(info_s * infos)
 {
     if (infos->host.host == NULL) {
-        stegx_errno=ERR_CHECK_COMPAT;
+        stegx_errno = ERR_CHECK_COMPAT;
         return 1;
     }
     // remplit le champ host.host de infos

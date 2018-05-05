@@ -21,6 +21,6 @@ int stegx_suggest_algo(info_s * infos);
 
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
 
-int insert(info_s* infos);
+int stegx_insert(info_s * infos);
 
 #endif                          /* ifndef STEGX_H */
