@@ -3,9 +3,16 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#include "stegx_common.h"
 #include "common.h"
+#include "stegx_common.h"
+#include "stegx_errors.h"
 
+/**
+ * @brief Initialise la structure info_s en fonction des choix de l'utilisateur. 
+ * @param *choices Structure représentant les choix de l'utilisateur.
+ * @return info_s* Structure qui contient les informations pour réaliser 
+ * correctement la dissimulation/extraction. 
+ */
 info_s *stegx_init(stegx_choices_s * choices)
 {
     info_s *s = malloc(sizeof(info_s));
@@ -18,15 +25,15 @@ info_s *stegx_init(stegx_choices_s * choices)
     //OK host.host
     s->host.host = fopen(choices->host_path, "r");
     if (s->host.host == NULL) {
-        printf("ERREUR1");
-        //erreur
+        stegx_errno = ERR_HOST_NULL;
+        return NULL;
     }
     //OK hidden
     if (choices->mode == STEGX_MODE_INSERT) {
         s->hidden = fopen(choices->insert_info->hidden_path, "r");
         if (s->hidden == NULL) {
-            printf("ERREUR2");
-            //erreur
+            stegx_errno = ERR_HIDDEN_NULL;
+            return NULL;
         }
     } else
         s->hidden = NULL;
@@ -35,8 +42,7 @@ info_s *stegx_init(stegx_choices_s * choices)
     if (choices->passwd != NULL) {
         count = strlen(choices->passwd);
         if (count == 0) {
-            //erreur
-            printf("ERREUR3");
+            err_print(ERR_PASSWD);
         }
         count++;
         s->passwd = malloc(count * sizeof(char));
@@ -60,7 +66,8 @@ info_s *stegx_init(stegx_choices_s * choices)
         // si on est en EXTRACT il faut absolument que le chemin soit un dossier
         if (stat(choices->res_path, &st) == 0) {
             if (!S_ISDIR(st.st_mode)) {
-                printf("ERREUR4 res_path doit etre un dossier");
+                stegx_errno = ERR_RES_EXTRACT;
+                return NULL;
             }
         }
     }
@@ -73,8 +80,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             s->res = fopen(choices->res_path, "w");
         if (s->res == NULL) {
             // le fait que res_path ne soit pas un fichier est detecte ici
-            printf("ERREUR5");
-            //erreur
+            stegx_errno = ERR_RES_INSERT;
+            return NULL;
         }
     }
 
@@ -106,6 +113,10 @@ info_s *stegx_init(stegx_choices_s * choices)
     return s;
 }
 
+/**
+ * @brief Libère la mémoire de la structure info_s. 
+ * @param *infos Structure représentant les choix de l'utilisateur à libérer. 
+ */
 void stegx_clear(info_s * infos)
 {
     if (infos->host.host != NULL)
