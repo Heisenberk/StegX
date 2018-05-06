@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     if (com->mode == STEGX_MODE_INSERT) {
         int suggest = stegx_suggest_algo(infos);
         if (suggest == 1) {
-            err_print(ERR_SUGG_ALGOS);
+            err_print(stegx_errno);
             return EXIT_FAILURE;
         }
         // a mettre com->insert_info->algo mettre STEGX_ALGO_EOF par defaut
@@ -35,7 +35,11 @@ int main(int argc, char *argv[])
     }
     
     else if(com->mode==STEGX_MODE_EXTRACT){
-		
+		int detect=stegx_detect_algo(infos);
+		if(detect==1){
+			err_print(stegx_errno);
+			return EXIT_FAILURE;
+		}
 	}
     
     // vider la variable globale--> a faire

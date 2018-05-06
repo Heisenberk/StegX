@@ -406,6 +406,10 @@ int stegx_suggest_algo(info_s * infos)
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
+	if (infos->mode == STEGX_MODE_EXTRACT) {
+        stegx_errno = ERR_SUGG_ALGOS;
+        return 1;
+    }
     /* 
        Si l'utilisateur n'a pas choisi de mot de passe, 
        StegX va en créer un par défaut aléatoirement
