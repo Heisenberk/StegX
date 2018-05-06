@@ -103,13 +103,13 @@ graphique et en ligne de commande, proposées par StegX.
 
 Pour montrer le fonctionnement de l'application, nous allons proposer un 
 exemple pour dissimulation et un autre pour l'extraction, correspondant 
-à une communication entre Alice et Bob. 
+à une communication entre Alice et Bob, surveillée par Oscar. 
 Les données sont issues d'une réelle utilisation de StegX. 
 
-\subsection{Fonctionnement de l'insertion des données}
+\subsection{Fonctionnement de l'insertion des données dans un exemple}
 
-Alice choisit de dissimuler le message qu'elle veut envoyer à Bob dans une 
-image à l'aide de l'interface graphique. 
+Alice choisit de dissimuler le message dans une image qu'elle veut envoyer 
+à Bob à l'aide de l'interface graphique. 
 Tout d'abord, elle choisit les entrées de la dissimulation : le fichier 
 à cacher, le fichier hôte ainsi que le chemin du fichier à créer et un mot 
 de passe pour augmenter la sécurité de la dissimulation. 
@@ -123,24 +123,23 @@ L'interface va appeler le module \textit{Vérification de la compatibilité
 des fichiers}. Le type du fichier hôte sera analysé grâce à la lecture 
 de l'entête du fichier : il s'agit d'un fichier BMP non compressé dont les 
 pixels sont codés sur 24 bits (8 bits par composantes couleurs). 
-L'interface va alors lui proposer 3 algorithmes différents : l'algorithme 
-EOF, LSB et Metadata. 
-A ce moment de la manipulation, la structure spécifique 
-\textit{infos.host.file\_info.bmp} a été remplie notamment avec le 
+Le sous-module \textit{Proposition des algorithmes de stéganographie} va 
+remplir la structure spécifique 
+\textit{infos.host.file\_info.bmp}, notamment avec le 
 \textit{header\_size} égal à $122$ octets, le \textit{data\_size} égal à 
 $21085440$ octets, le champ \textit{pixel\_length} égal à $24$ et le champ 
 \textit{pixel\_number} égal à $2584 \times 2720 = 7028480$. De cette structure
-est déduit les algorithmes proposés. 
-Dans cet exemple, Alice a choisit l'algorithme EOF. 
+est déduit les algorithmes proposés (EOF, LSB et Metadata). 
+Dans cet exemple, Alice choisit l'algorithme EOF. 
 
 La prochaine étape est celle de l'insertion. Pour la stéganographie EOF, 
 StegX va écrire dans /home/user/Documents/piece\_jointe.bmp le fichier hôte. 
 Ensuite, la signature StegX est écrite dans lequel on a l'identificateur 
 de l'algorithme (1 octet), la taille du fichier caché noté en Big Endian 
 (sur 4 octets), la taille du nom du fichier caché (1 octet) et le nom du 
-fichier caché (255 octets). 
-Enfin, les données cachées sont écrites avec le XOR du mot de passe "alicebob"
-choisi au début. 
+fichier caché XOR avec le mot de passe "alicebob" choisi au début (255 octets 
+maximum). 
+Enfin, les données cachées sont également écrites avec le XOR du mot de passe. 
 
 Alice pourra donc envoyer le fichier piece\_jointe.bmp qui aura une taille 
 de 21088071 octets soit 21.1 MB sur un canal non sécurisé. 
@@ -149,9 +148,36 @@ Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun
 soupçons en voyant piece\_jointe.bmp qui semble être une image comme une 
 autre. 
 
-\subsection{Fonctionnement de l'extraction des données}
+\subsection{Fonctionnement de l'extraction des données dans un exemple}
 
-Bob voit que 
+Bob reçoit sur le canal non sûr le fichier piece\_jointe.bmp et sait que 
+ce fichier contient des données cachées. Pour les extraire, Bob choisit 
+d'utiliser StegX avec l'interface en ligne de commande. 
+
+Il tape dans son terminal \textit{stegx -e -o piece\_jointe.bmp -r 
+/home/user/Bureau/ -p alicebob} qui signifie que Bob veut extraire les 
+données cachées du fichier piece\_jointe.bmp, que le résultat de ces 
+données extraites doivent être écrites dans son Bureau et que Bob veut 
+extraire les données cachées à l'aide du mot de passe "alicebob"
+
+Tout d'abord, le module \textit{Vérification de la compatibilité des 
+fichiers} va analyser le type de piece\_jointe.bmp. Il s'agira bien du 
+format BMP non compressé. 
+
+Ensuite, le module \textit{Détection de l'algorithme de stéganographie}
+permettra de remplir la structure spécifique de \textit{infos.host.file\_info.bmp}
+et déduira les mêmes champs que Alice lors de l'insertion. En effet, 
+il va y avoir une lecture approfondie du fichier. Ensuite, la signature 
+StegX, qui a été écrite lors de l'insertion, sera lu pour ne déduire 
+le nom du fichier caché, l'algorithme et la taille du fichier caché. 
+
+Enfin, le module \textit{Extraction}, appelé par l'interface, va réaliser 
+l'extraction. Ici, les données cachées ont été XOR avec "alicebob" choisi 
+par Alice lors de l'insertion et nécessaire pour l'extraction effectuée 
+par Bob. 
+Les données cachées extraites seront écrites dans le fichier
+/user/home/Bureau/message.txt. Bob pourra ainsi lire le message de Alice 
+contenu dans le fichier message.txt. 
 
 \section{Description des points délicats de la programmation}
 
