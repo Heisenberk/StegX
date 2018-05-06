@@ -14,7 +14,8 @@
 extern int fill_host_info(info_s * infos);
 extern int write_signature(info_s* infos);
 
-void test_write_signature_v1(void **state)
+
+void test_write_signature_with_passwd(void **state)
 {
 	(void)state;
     info_s *infos = malloc(sizeof(info_s));
@@ -86,7 +87,7 @@ void test_write_signature_v1(void **state)
 	assert_int_equal(test,1);
 }
 
-void test_write_signature_v2(void **state)
+void test_write_signature_without_passwd(void **state)
 {
 	(void)state;
     info_s *infos = malloc(sizeof(info_s));
@@ -149,7 +150,6 @@ void test_write_signature_v2(void **state)
 	
 	// lecture du mot de passe par défaut choisi aleatoirement par l'application
 	// aller jusqu'au debut de la lecture du mot de passe
-	fseek(f,255-length_name,SEEK_CUR);
 	char* passwd_read=malloc((LENGTH_DEFAULT_PASSWD+1)*sizeof(char));
 	for(i=0;i<LENGTH_DEFAULT_PASSWD+1;i++){
 		fread(&c, sizeof(uint8_t), 1,f);
@@ -171,9 +171,8 @@ void test_write_signature_v2(void **state)
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
 
-    // tests unitaires AVI
-    cmocka_unit_test(test_write_signature_v1),
-    cmocka_unit_test(test_write_signature_v2),
+    cmocka_unit_test(test_write_signature_with_passwd),
+    cmocka_unit_test(test_write_signature_without_passwd),
 
 };
 

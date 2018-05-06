@@ -114,11 +114,8 @@ int write_signature(info_s * infos)
     xor(cpy_hidden_name, infos->passwd);
     i = 0;
     srand(time(NULL));
-    for (i = 0; i < LENGTH_HIDDEN_NAME_MAX; i++) {
-        if (i < length)
-            car = cpy_hidden_name[i];
-        else
-            car = rand() % 256;
+    for (i = 0; i < length; i++) {
+        car = cpy_hidden_name[i];
         fwrite(&car, sizeof(uint8_t), 1, infos->res);
     }
     free(cpy_hidden_name);
