@@ -137,25 +137,21 @@ int write_signature(info_s * infos)
 int stegx_insert(info_s * infos)
 {
     int insertion;
-       if(infos->mode!=STEGX_MODE_INSERT){
-       stegx_errno=ERR_INSERT;
-       return 1;
-       }
-       if(infos->algo==STEGX_ALGO_EOF) {
-       insertion=insert_eof(infos);
-       }
-       else if(infos->algo==STEGX_ALGO_LSB){
-       insertion=insert_lsb(infos);
-       }
-       else if(infos->algo==STEGX_ALGO_METADATA){
-       insertion=insert_metadata(infos);
-       }
-       else if(infos->algo==STEGX_ALGO_EOC){
-       insertion=insert_eoc(infos);
-       }
-       else if(infos->algo==STEGX_ALGO_JUNK_CHUNK){
-       insertion=insert_junk_chunk(infos);
-       }
-       else insertion=1;
-       return insertion; 
+    if (infos->mode != STEGX_MODE_INSERT) {
+        stegx_errno = ERR_INSERT;
+        return 1;
+    }
+    if (infos->algo == STEGX_ALGO_EOF) {
+        insertion = insert_eof(infos);
+    } else if (infos->algo == STEGX_ALGO_LSB) {
+        insertion = insert_lsb(infos);
+    } else if (infos->algo == STEGX_ALGO_METADATA) {
+        insertion = insert_metadata(infos);
+    } else if (infos->algo == STEGX_ALGO_EOC) {
+        insertion = insert_eoc(infos);
+    } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
+        insertion = insert_junk_chunk(infos);
+    } else
+        insertion = 1;
+    return insertion;
 }

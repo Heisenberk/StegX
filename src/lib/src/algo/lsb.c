@@ -11,3 +11,8 @@ int insert_lsb(info_s * infos)
 {
     return 1;
 }
+
+int extract_lsb(info_s * infos)
+{
+    return 1;
+}

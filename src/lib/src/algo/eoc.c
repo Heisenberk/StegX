@@ -11,3 +11,8 @@ int insert_eoc(info_s * infos)
 {
     return 1;
 }
+
+int extract_eoc(info_s * infos)
+{
+    return 1;
+}

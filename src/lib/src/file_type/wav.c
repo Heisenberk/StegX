@@ -79,3 +79,8 @@ int insert_metadata_wav(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata_wav(info_s * infos)
+{
+    return 1;
+}

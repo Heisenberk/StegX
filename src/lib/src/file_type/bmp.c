@@ -58,3 +58,8 @@ int insert_metadata_bmp(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata_bmp(info_s * infos)
+{
+    return 1;
+}

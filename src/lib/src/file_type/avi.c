@@ -58,3 +58,8 @@ int insert_metadata_avi(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata_avi(info_s * infos)
+{
+    return 1;
+}

@@ -7,4 +7,6 @@
 
 int insert_eof(info_s * infos);
 
+int extract_eof(info_s * infos);
+
 #endif

@@ -33,7 +33,12 @@ int main(int argc, char *argv[])
 
         int insert = stegx_insert(infos);
     }
-    // vider la variable globale
+    
+    else if(com->mode==STEGX_MODE_EXTRACT){
+		
+	}
+    
+    // vider la variable globale--> a faire
     stegx_clear(infos);
     dest_stegx_info(com);
 

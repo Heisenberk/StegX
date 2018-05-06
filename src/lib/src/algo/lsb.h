@@ -7,4 +7,6 @@
 
 int insert_lsb(info_s * infos);
 
+int extract_lsb(info_s * infos);
+
 #endif
