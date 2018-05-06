@@ -15,6 +15,17 @@
  */
 enum err_code {
     ERR_NONE = 0,               /*!< Aucune erreur. */
+    ERR_HOST_NULL,              /*!< Host null. */
+    ERR_HIDDEN_NULL,            /*!< Fichier a cacher null. */
+    ERR_PASSWD,                 /*!< Mot de passe invalide. */
+    ERR_RES_EXTRACT,            /*!< Resultat doit être un dossier en extract. */
+    ERR_RES_INSERT,             /*!< Resultat null en insert. */
+    ERR_READ,                   /*!< Erreur lors de la lecture. */
+    ERR_FSEEK,                  /*!< Erreur lors de l'utilisateur de fseek. */
+    ERR_CHECK_COMPAT,           /*!< Erreur dans le module Verification de la compatibilite des fichiers. */
+    ERR_SUGG_ALGOS,             /*!< Erreur dans le sous-module proposition des algos de steganographie. */
+    ERR_INSERT,                 /*!< Erreur mauvais appel de fonctions sur une insertion. */
+    ERR_EXTRACT,                /*!< Erreur mauvais appel de fonctions sur une extraction. */
     ERR_OTHER                   /*!< Erreur quelconque. */
 };
 

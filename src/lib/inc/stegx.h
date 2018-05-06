@@ -17,4 +17,8 @@ void stegx_clear(info_s * infos);
 
 int stegx_check_compatibility(info_s * infos);
 
+int stegx_suggest_algo(info_s * infos);
+
+int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
+
 #endif                          /* ifndef STEGX_H */
