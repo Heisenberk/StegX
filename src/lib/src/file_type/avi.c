@@ -27,27 +27,20 @@
 type_e stegx_test_file_avi(FILE * file)
 {
     assert(file);
-    int i, read, move;
-    move = fseek(file, 0, SEEK_SET);
-    if (move == -1) {
-        err_print(ERR_FSEEK);
-        return 1;
-    }
+    if (fseek(file, 0, SEEK_SET) == -1)
+        return UNKNOWN;
     // lecture de la signature RIFF
     uint32_t sig_read;
-    read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if (read == 0)
-        return 1;
+    if (fread(&sig_read, sizeof(uint32_t), 1, file) != 1)
+        return UNKNOWN;
     if (sig_read != SIG_RIFF) {
         return UNKNOWN;
     }
-    move = fseek(file, ADDRESS_SIG_AVI, SEEK_SET);
-    if (move == -1)
-        return 1;
+    if (fseek(file, ADDRESS_SIG_AVI, SEEK_SET) == -1)
+        return UNKNOWN;
     // lecture de la signature AVI
-    read = fread(&sig_read, sizeof(uint32_t), 1, file);
-    if (read == 0)
-        return 1;
+    if (fread(&sig_read, sizeof(uint32_t), 1, file) != 1)
+        return UNKNOWN;
     if (sig_read != SIG_AVI) {
         return UNKNOWN;
     }
