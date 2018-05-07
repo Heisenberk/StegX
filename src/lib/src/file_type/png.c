@@ -43,3 +43,8 @@ int insert_metadata_png(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata_png(info_s * infos)
+{
+    return 1;
+}

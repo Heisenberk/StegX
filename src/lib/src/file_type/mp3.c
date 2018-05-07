@@ -69,3 +69,8 @@ int insert_metadata_mp3(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata_mp3(info_s * infos)
+{
+    return 1;
+}

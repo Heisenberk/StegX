@@ -29,10 +29,7 @@ type_e stegx_test_file_avi(FILE * file)
     assert(file);
     int i, read, move;
     move = fseek(file, 0, SEEK_SET);
-    if (move == -1) {
-        err_print(ERR_FSEEK);
-        return 1;
-    }
+    if (move == -1) return 1;
     // lecture de la signature RIFF
     uint32_t sig_read;
     read = fread(&sig_read, sizeof(uint32_t), 1, file);
@@ -55,6 +52,11 @@ type_e stegx_test_file_avi(FILE * file)
 }
 
 int insert_metadata_avi(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_avi(info_s * infos)
 {
     return 1;
 }

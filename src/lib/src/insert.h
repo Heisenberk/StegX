@@ -1,5 +1,4 @@
 
-
 #ifndef INSERT_H
 #define INSERT_H
 
@@ -8,4 +7,4 @@
 
 int write_signature(info_s * infos);
 
-#endif       
+#endif

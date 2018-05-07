@@ -22,4 +22,6 @@ type_e stegx_test_file_png(FILE * file);
 
 int insert_metadata_png(info_s * infos);
 
+int extract_metadata_png(info_s * infos);
+
 #endif

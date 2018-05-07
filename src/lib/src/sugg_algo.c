@@ -17,7 +17,6 @@
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé ; 1 sinon 
- * dans la fonction.
  */
 int can_use_lsb(info_s * infos)
 {
@@ -406,6 +405,10 @@ int stegx_suggest_algo(info_s * infos)
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
+	if (infos->mode == STEGX_MODE_EXTRACT) {
+        stegx_errno = ERR_SUGG_ALGOS;
+        return 1;
+    }
     /* 
        Si l'utilisateur n'a pas choisi de mot de passe, 
        StegX va en créer un par défaut aléatoirement

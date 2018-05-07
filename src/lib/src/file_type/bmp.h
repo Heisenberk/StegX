@@ -23,4 +23,6 @@ type_e stegx_test_file_bmp(FILE * file);
 
 int insert_metadata_bmp(info_s * infos);
 
+int extract_metadata_bmp(info_s * infos);
+
 #endif

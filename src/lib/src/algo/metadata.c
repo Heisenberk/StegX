@@ -11,3 +11,8 @@ int insert_metadata(info_s * infos)
 {
     return 1;
 }
+
+int extract_metadata(info_s * infos)
+{
+    return 1;
+}
