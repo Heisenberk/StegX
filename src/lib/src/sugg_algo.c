@@ -338,12 +338,6 @@ int fill_host_info(info_s * infos)
         return 1;
 }
 
-/** 
- * @brief Va proposer les algorithmes en fonction de la structure infos. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_suggest_algo(info_s * infos)
 {
     if (infos->mode == STEGX_MODE_EXTRACT) {
@@ -366,11 +360,11 @@ int stegx_suggest_algo(info_s * infos)
        quels algos sont proposés par l'application en fonction des 
        entrées de l'utilisateur. 
      */
-    stegx_propos_algos = malloc(NB_ALGOS * sizeof(algo_e));
-    algo_e tab_algo_possible[NB_ALGOS] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    algo_e tab_algo_possible[STEGX_NB_ALGO] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
         STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK
     };
-    for (i = 0; i < NB_ALGOS; i++) {
+    for (i = 0; i < STEGX_NB_ALGO; i++) {
         if (i == 0)
             test = can_use_eof(infos);
         else if (i == 1)
@@ -391,13 +385,6 @@ int stegx_suggest_algo(info_s * infos)
     return 0;
 }
 
-/** 
- * @brief Va initialiser l'algorithme à utiliser pour la dissimulation. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
 

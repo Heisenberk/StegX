@@ -1,3 +1,10 @@
+/** 
+ * @file wav.c
+ * @brief Fichier WAVE.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format WAVE.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -8,32 +15,16 @@
 #include "stegx_errors.h"
 #include "riff.h"
 
-/**
- * \def Signature WAV
- * */
+/** Signature d'un fichier WAVE. */
 #define SIG_WAVE 0x45564157
-
-/**
- * \def Signature PCM
- * */
+/** Signautre d'un flux PCM. */
 #define SIG_PCM 0x0001
 
-/**
- * \def Déplacement absolu à faire pour lire la signature WAV
- * */
+/** Adresse (offset) de la signature du WAVE (octet). */
 #define ADDRESS_WAV_WAVE 8
-
-/**
- * \def Déplacement absolu à faire pour lire la signature PCM
- * */
+/** Adresse (offset) de la signature du PCM (octet). */
 #define ADDRESS_WAV_PCM 20
 
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type WAV_PCM, WAV_NO_PCM, 
- * et si le format n'est pas reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_wav(FILE * file)
 {
     assert(file);

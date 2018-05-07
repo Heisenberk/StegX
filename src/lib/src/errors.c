@@ -15,16 +15,16 @@ void err_print(enum err_code err)
     static const char *err_desc[] = {
         /* ERR_NONE */ "aucune erreur",
         /* ERR_HOST_NULL */ "fichier host null",
-        /* ERR_HIDDEN_NULL */ "fichier a cacher null",
+        /* ERR_HIDDEN_NULL */ "fichier à cacher null",
         /* ERR_PASSWD */ "mot de passe invalide",
-        /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
+        /* ERR_RES_EXTRACT */ "le resultat en extraction doit être un dossier",
         /* ERR_READ */ "erreur de lecture",
         /* ERR_CHECK_COMPAT */
-        "erreur dans le module verification de la compatibilite des fichiers",
-        /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
-        /* ERR_INSERT */ "erreur mauvais appel de fonctions sur une insertion",
-        /* ERR_EXTRACT */ "erreur mauvais appel de fonctions sur une extraction",
-            /* ERR_OTHER */ "erreur inconnu"
+        "erreur dans le module verification de la compatibilité des fichiers",
+        /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de stéganographie",
+        /* ERR_INSERT */ "erreur mauvais appel de fonction sur une insertion",
+        /* ERR_EXTRACT */ "erreur mauvais appel de fonction sur une extraction",
+        /* ERR_OTHER */ "erreur inconnu"
     };
     /* Vérifcation de la valeur de "err". */
     err = (unsigned int)err <= ERR_OTHER ? err : ERR_OTHER;

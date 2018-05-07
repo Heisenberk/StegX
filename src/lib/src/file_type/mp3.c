@@ -1,3 +1,10 @@
+/** 
+ * @file mp3.c
+ * @brief Fichier MP3.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format MP3.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -7,22 +14,11 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * \def Signature MP3 ID3V1
- * */
+/** Signature du MP3 version ID3V1. */
 #define SIG_MP3_ID3V1 0xFBFF
-
-/**
- * \def Signature MP3 ID3V2
- * */
+/** Signature du MP3 version ID3V2. */
 #define SIG_MP3_ID3V2 0x334449
 
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type MP3, et si le format n'est pas 
- * reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_mp3(FILE * file)
 {
     assert(file);

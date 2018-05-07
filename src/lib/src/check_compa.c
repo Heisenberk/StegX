@@ -26,15 +26,6 @@ type_e check_file_format(FILE * file)
     return res;
 }
 
-/**
- * @brief Fonction principale du module Vérification de la compatibilité 
- * des fichiers.
- * @details Remplit la structure info_s avec son champ host.type correspondant
- * au type du fichier hôte. 
- * @param *infos Structure qui contient les informations pour réaliser 
- * correctement la dissimulation/extraction.
- * @return 0 si la vérification s'est bien déroulée, sinon 1. 
- */
 int stegx_check_compatibility(info_s * infos)
 {
     if (!(infos->host.host))

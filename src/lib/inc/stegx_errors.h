@@ -9,7 +9,7 @@
 #define ERRORS_H
 
 /**
- * Liste des codes d'erreurs de la bibliothèque. Utilisé dans le retour des
+ * @error Liste des codes d'erreurs de la bibliothèque. Utilisé dans le retour des
  * fonctions et dans la correspondance erreur <=> message. Le code 0 signifie
  * (sauf cas particulier) qu'aucune erreur ne s'est produite.
  */
