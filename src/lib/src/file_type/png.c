@@ -21,18 +21,12 @@
 type_e stegx_test_file_png(FILE * file)
 {
     assert(file);
-    int move, i, read;
-    move = fseek(file, 0, SEEK_SET);
-    if (move == -1)
-        return 1;
-    uint64_t sig_read;
-    move = fseek(file, 0, SEEK_SET);
-    if (move == -1)
-        return 1;
+    if (fseek(file, 0, SEEK_SET) == -1)
+        return UNKNOWN;
     // lecture signature PNG
-    read = fread(&sig_read, sizeof(uint64_t), 1, file);
-    if (read == 0)
-        return 1;
+    uint64_t sig_read;
+    if (fread(&sig_read, sizeof(uint64_t), 1, file) != 1)
+        return UNKNOWN;
     if (sig_read != SIG_PNG) {
         return UNKNOWN;
     }
