@@ -10,49 +10,39 @@
 #include "stegx.h"
 #include "common.h"
 
-extern type_e check_file_format(FILE * file);
-
-void test_file_wav_v1(void **state)
+void test_file_wav__wave_pcm_alaw_1(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test10.wav", "r");
-    type_e test = stegx_test_file_wav(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, WAV_NO_PCM);
+    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r");
+    assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_NO_PCM);
+    fclose(f);
 }
 
-void test_file_wav_v2(void **state)
+void test_file_wav__wave_pcm_alaw_2(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test11.wav", "r");
-    type_e test = stegx_test_file_wav(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, WAV_NO_PCM);
+    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_NO_PCM);
+    fclose(f);
 }
 
-void test_file_wav_v3(void **state)
+void test_file_wav__wave_pcm_s16le(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test15.wav", "r");
-    type_e test = stegx_test_file_wav(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, WAV_PCM);
+    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r");
+    assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_PCM);
+    fclose(f);
 }
 
 /* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest check_compatibility_tests[] = {
-
-    // tests unitaires WAV
-    cmocka_unit_test(test_file_wav_v1),
-    cmocka_unit_test(test_file_wav_v2),
-    cmocka_unit_test(test_file_wav_v3),
+const struct CMUnitTest wave_tests[] = {
+    cmocka_unit_test(test_file_wav__wave_pcm_alaw_1),
+    cmocka_unit_test(test_file_wav__wave_pcm_alaw_2),
+    cmocka_unit_test(test_file_wav__wave_pcm_s16le)
 };
 
 int main(void)
 {
     /* Exécute les tests. */
-    return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
+    return cmocka_run_group_tests(wave_tests, NULL, NULL);
 }
