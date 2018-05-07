@@ -94,7 +94,7 @@ fichier à analyser.
 Tous ces modules et sous-modules seront coordonnées grâce aux interfaces 
 graphique et en ligne de commande, proposées par StegX. 
 
-
+% a redefinir plus precisement ave la description des modules
 
 
 \section{Explications techniques}
@@ -180,6 +180,29 @@ Les données cachées extraites seront écrites dans le fichier
 contenu dans le fichier message.txt. 
 
 \section{Description des points délicats de la programmation}
+
+\subsection{Lecture et écriture de fichiers \& Endianness}
+
+La première difficulté est arrivée lors de l'implémentation du module 
+\textit{Vérification de la compatibilité des fichiers}. En effet, il fallait 
+lire la signature des fichiers hôtes pour l'insertion et l'extraction. 
+
+Nous ne comprenions pas pourquoi sur certains formats le little-endian 
+était utilisé et sur d'autres il fallait utilisé le big-endian. 
+De plus, il fallait également convertir les octets lus dans l'endian de la 
+machine de l'utilisateur. 
+
+Nous avons donc trouvé une solution : l'utilisation de la librairie 
+\textit{endian.h} qui permet de convertir un nombre entre 8 et 64 bits 
+little/big endian en l'endian de la machine. 
+De plus, nous avons recherché à propos des processeurs little/big endian. 
+Les processeurs big-endian sont les processeurs pour les systèmes embarqués.
+
+L'utilisateur qui va manipuler StegX va donc avoir une architecture 
+little-endian. C'est d'ailleurs l'architecture des ordinateurs utilisés 
+par l'équipe de conception StegX. 
+
+\subsection{Etude des différents formats \& Algorithme Metadata}
 
 \section{Comparaison estimation - implémentation}
 
