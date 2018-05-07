@@ -7,17 +7,9 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * \def Signature PNG
- * */
+/** Signature PNG */
 #define SIG_PNG 0x0A1A0A0D474E5089
 
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type PNG, et si le format n'est pas 
- * reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_png(FILE * file)
 {
     assert(file);

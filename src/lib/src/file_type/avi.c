@@ -8,22 +8,12 @@
 #include "stegx_errors.h"
 #include "riff.h"
 
-/**
- * \def Signature AVI
- * */
+/** Signature d'un fichier AVI. */
 #define SIG_AVI 0x20495641
 
-/**
- * \def Déplacement absolu à faire pour lire la signature AVI
- * */
+/** Déplacement absolu à faire pour lire la signature AVI. */
 #define ADDRESS_SIG_AVI 8
 
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type AVI_UNCOMPRESSED, AVI_COMPRESSED, 
- * et si le format n'est pas reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_avi(FILE * file)
 {
     assert(file);
