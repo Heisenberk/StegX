@@ -45,8 +45,8 @@ int stegx_check_compatibility(info_s * infos);
  * @details En fonction des informations rentrées dans \r{info_s}, vérifie pour
  * chaque algorithme qu'il est utilisable en fonction type de fichier hôte et de
  * la taille du fichier à cacher.
- * @sideeffect Initialise et rempli le champ \r{info_s.hidden_length} ainsi que la
- * variable globale \r{stegx_propos_algos}.
+ * @sideeffect Initialise et rempli le champ \r{info_s.hidden_length} et 
+ * \r{infos.host.file_info} ainsi que la variable globale \r{stegx_propos_algos}.
  * @param infos Structure contenant les informations concernant la dissimulation.
  * @return 0 si tout se passe bien, sinon 1 en cas d'erreur. 
  */

@@ -180,6 +180,7 @@ int can_use_junk_chunk(info_s * infos)
 /** 
  * @brief Va remplir le champ host.file_info de infos (particulière en 
  * fonction du fichier hote). 
+ * @sideeffect Initialise et rempli le champ \r{infos.host.file_info}..
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
  * la fonction. 
