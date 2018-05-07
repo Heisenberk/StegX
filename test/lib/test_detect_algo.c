@@ -11,7 +11,7 @@
 #include "stegx.h"
 #include "common.h"
 
-void test_read_signature_with_passwd(void **state)
+void test_detect_algo_with_passwd(void **state)
 {
     (void)state;
     info_s *infos_insert = malloc(sizeof(info_s));
@@ -90,7 +90,7 @@ void test_read_signature_with_passwd(void **state)
     assert_int_equal(test, 1);
 }
 
-void test_read_signature_without_passwd(void **state)
+void test_detect_algo_without_passwd(void **state)
 {
     (void)state;
     info_s *infos_insert = malloc(sizeof(info_s));
@@ -159,8 +159,8 @@ void test_read_signature_without_passwd(void **state)
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
 	
-    cmocka_unit_test(test_read_signature_with_passwd),
-    cmocka_unit_test(test_read_signature_without_passwd),
+    cmocka_unit_test(test_detect_algo_with_passwd),
+    cmocka_unit_test(test_detect_algo_without_passwd),
 
 };
 

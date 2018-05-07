@@ -30,8 +30,16 @@ int main(int argc, char *argv[])
         }
         // a mettre com->insert_info->algo mettre STEGX_ALGO_EOF par defaut
         int choosen = stegx_choose_algo(infos, STEGX_ALGO_EOF);
+        if (choosen == 1) {
+            err_print(stegx_errno);
+            return EXIT_FAILURE;
+        }
 
         int insert = stegx_insert(infos);
+        if (insert == 1) {
+            err_print(stegx_errno);
+            return EXIT_FAILURE;
+        }
     }
     
     else if(com->mode==STEGX_MODE_EXTRACT){

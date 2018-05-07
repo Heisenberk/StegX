@@ -17,7 +17,6 @@
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé ; 1 sinon 
- * dans la fonction.
  */
 int can_use_lsb(info_s * infos)
 {
