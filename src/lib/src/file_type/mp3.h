@@ -13,7 +13,8 @@
 #include "common.h"
 
 /** Structure du format MP3. */
-struct mp3 {};
+struct mp3 {
+};
 
 /** Type du format MP3. */
 typedef struct mp3 mp3_s;

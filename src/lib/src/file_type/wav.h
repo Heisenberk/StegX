@@ -25,9 +25,9 @@
 
 /** Structure du format WAVE. */
 struct wav {
-    uint32_t header_size; /*!< Offset du début du segment data (octet). */
-    uint32_t data_size;   /*!< Taille des données (octet). */
-    uint32_t chunk_size;  /*!< Taille de chaque sample (bit). */
+    uint32_t header_size;       /*!< Offset du début du segment data (octet). */
+    uint32_t data_size;         /*!< Taille des données (octet). */
+    uint32_t chunk_size;        /*!< Taille de chaque sample (bit). */
 };
 
 /** Type du format WAVE. */

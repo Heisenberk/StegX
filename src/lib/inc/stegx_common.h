@@ -19,8 +19,8 @@
  * l'application.
  * */
 enum mode {
-    STEGX_MODE_INSERT, /*!< Mode insertion/dissimulation de données. */
-    STEGX_MODE_EXTRACT /*!< Mode extraction de données. */
+    STEGX_MODE_INSERT,          /*!< Mode insertion/dissimulation de données. */
+    STEGX_MODE_EXTRACT          /*!< Mode extraction de données. */
 };
 
 /** Type du mode d'utilisation de la bibliothèque. */
@@ -31,12 +31,12 @@ typedef enum mode mode_e;
  * fichier hôte).
  */
 enum algo {
-    STEGX_ALGO_LSB,        /*!< Least Significant Bit : modification du bit de poids faible. */
-    STEGX_ALGO_EOF,        /*!< End-Of-File : concaténation avec le fichier à cacher. */
-    STEGX_ALGO_METADATA,   /*!< Métadonnée : stockage du fichier à cacher dans les métadonnées du fichier hôte. */
-    STEGX_ALGO_EOC,        /*!< End-Of-Chunk : stockage du fichier à cacher après chaque chunk. */
-    STEGX_ALGO_JUNK_CHUNK, /*!< Chunk poubelle : stockage du fichier dans des chunks invalides. */
-    STEGX_NB_ALGO          /*!< Nombres d'algorithmes proposés par l'application. */
+    STEGX_ALGO_LSB,             /*!< Least Significant Bit : modification du bit de poids faible. */
+    STEGX_ALGO_EOF,             /*!< End-Of-File : concaténation avec le fichier à cacher. */
+    STEGX_ALGO_METADATA,        /*!< Métadonnée : stockage du fichier à cacher dans les métadonnées du fichier hôte. */
+    STEGX_ALGO_EOC,             /*!< End-Of-Chunk : stockage du fichier à cacher après chaque chunk. */
+    STEGX_ALGO_JUNK_CHUNK,      /*!< Chunk poubelle : stockage du fichier dans des chunks invalides. */
+    STEGX_NB_ALGO               /*!< Nombres d'algorithmes proposés par l'application. */
 };
 
 /** Type d'un l'agortihme. */
@@ -44,8 +44,8 @@ typedef enum algo algo_e;
 
 /** Méthode de protection des données. */
 enum method {
-    STEGX_WITHOUT_PASSWD, /*!< Aucun mot de passe choisi par l'utilisateur. */
-    STEGX_WITH_PASSWD     /*!< Mot de passe choisi par l'utilisateur. */
+    STEGX_WITHOUT_PASSWD,       /*!< Aucun mot de passe choisi par l'utilisateur. */
+    STEGX_WITH_PASSWD           /*!< Mot de passe choisi par l'utilisateur. */
 };
 
 /** Type de la méthode de protection des données. */
@@ -72,8 +72,8 @@ algo_e *stegx_propos_algos;
 
 /** Informations concernant uniquement l'insertion de données. */
 struct stegx_info_insert {
-    char *hidden_path; /*!< Chaîne de caractères representant le nom du fichier a cacher (requis). */
-    algo_e algo;       /*!< Rlgorithme qui sera utilisé pour la dissimulation (requis uniquement si CLI). */
+    char *hidden_path;          /*!< Chaîne de caractères representant le nom du fichier a cacher (requis). */
+    algo_e algo;                /*!< Rlgorithme qui sera utilisé pour la dissimulation (requis uniquement si CLI). */
 };
 
 /** Type des informations concernant uniquement l'insertion. */
@@ -87,14 +87,14 @@ typedef struct stegx_info_insert stegx_info_insert_s;
  * doivent pointer sur des zones mémoires allouées.
  */
 struct stegx_choices {
-    char *host_path;                  /*!< Chemin du fichier à analyser (requis). */
-    char *res_path;                   /*!< Chemin du fichier résultant (requis). */
-    char *passwd;                     /*!< Mot de passe choisi par l'utilisateur (optionnel). */
-    mode_e mode;                      /*!< Mode d'utilisation (requis). */
-    stegx_info_insert_s *insert_info; /*!< Structure stockant les informations de l'insertion (requis si insertion). */
+    char *host_path;            /*!< Chemin du fichier à analyser (requis). */
+    char *res_path;             /*!< Chemin du fichier résultant (requis). */
+    char *passwd;               /*!< Mot de passe choisi par l'utilisateur (optionnel). */
+    mode_e mode;                /*!< Mode d'utilisation (requis). */
+    stegx_info_insert_s *insert_info;   /*!< Structure stockant les informations de l'insertion (requis si insertion). */
 };
 
-/** Type des informations du choix de l'utilisateur. */ 
+/** Type des informations du choix de l'utilisateur. */
 typedef struct stegx_choices stegx_choices_s;
 
 #endif                          /* ifndef STEGX_COMMON_H */

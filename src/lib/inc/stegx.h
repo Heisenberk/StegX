@@ -22,7 +22,7 @@
  * @return Structure privée qui contient les informations pour réaliser la
  * dissimulation et l'extraction. 
  */
-info_s* stegx_init(stegx_choices_s * choices);
+info_s *stegx_init(stegx_choices_s * choices);
 
 /**
  * @brief Procédure de fin d'utilisation de la bibliothèque.
