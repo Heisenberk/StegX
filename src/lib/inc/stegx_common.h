@@ -30,11 +30,6 @@ typedef struct info info_s;
 #define NB_ALGOS 5
 
 /**
- * \def Longueur du mot de passe choisi par défaut
- * */
-#define LENGTH_DEFAULT_PASSWD  64       // 64 caractères sans compter le '\0'
-
-/**
  * \def Signature EOF avec mot de passe choisi par l'utilisateur
  * */
 #define BYTE_EOF_WITH_PASSWD 1
@@ -90,6 +85,11 @@ typedef struct info info_s;
 #define BYTE_JUNK_CHUNK_WITHOUT_PASSWD 10
 
 #define LENGTH_HIDDEN_NAME_MAX 255
+
+/**
+ * \def Longueur du mot de passe choisi par défaut
+ * */
+#define LENGTH_DEFAULT_PASSWD  64       // 64 caractères sans compter le '\0'
 
 /*
  * Variables
