@@ -263,7 +263,7 @@ void test_file_info_wav_v1(void **state)
     infos->mode=STEGX_MODE_INSERT;
     infos->algo=STEGX_ALGO_EOF;
     infos->method=STEGX_WITH_PASSWD;
-    infos->host.host=fopen("../../../env/test/test10.wav","r");
+    infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav","r");
     infos->host.type=WAV_NO_PCM;
     infos->res=fopen("res.bmp","w");
     infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
@@ -303,7 +303,7 @@ void test_file_info_wav_v2(void **state)
     infos->mode=STEGX_MODE_INSERT;
     infos->algo=STEGX_ALGO_EOF;
     infos->method=STEGX_WITH_PASSWD;
-    infos->host.host=fopen("../../../env/test/test11.wav","r");
+    infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav","r");
     infos->host.type=WAV_NO_PCM;
     infos->res=fopen("res.bmp","w");
     infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
@@ -343,7 +343,7 @@ void test_file_info_wav_v3(void **state)
     infos->mode=STEGX_MODE_INSERT;
     infos->algo=STEGX_ALGO_EOF;
     infos->method=STEGX_WITH_PASSWD;
-    infos->host.host=fopen("../../../env/test/test15.wav","r");
+    infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav","r");
     infos->host.type=WAV_PCM;
     infos->res=fopen("res.bmp","w");
     infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
@@ -395,7 +395,7 @@ void test_propos_algos_v1(void **state){
     infos->res=fopen("res.bmp","w");
     infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
     strcpy(infos->hidden_name,"test2.bmp");
-    infos->hidden=fopen("../../../env/test/test15.wav","r");
+    infos->hidden=fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
     

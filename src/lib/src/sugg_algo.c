@@ -186,11 +186,11 @@ int can_use_junk_chunk(info_s * infos)
  */
 int fill_host_info(info_s * infos)
 {
-    // si le fichier hôte a un format non reconnu
-    if (infos->host.host == NULL)
-        return 1;
-    fseek(infos->host.host, 0, SEEK_SET);
-    int i, read;
+	assert(infos->host.host);
+	int i, read, move;
+    move=fseek(infos->host.host, 0, SEEK_SET);
+    if(move==-1) return 1;
+    
     // remplit la structure BMP de infos.host.file_info
     //http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
@@ -345,12 +345,6 @@ int fill_host_info(info_s * infos)
         return 1;
 }
 
-/** 
- * @brief Va proposer les algorithmes en fonction de la structure infos. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_suggest_algo(info_s * infos)
 {
     if (infos->mode == STEGX_MODE_EXTRACT) {
@@ -381,11 +375,11 @@ int stegx_suggest_algo(info_s * infos)
        entrées de l'utilisateur. 
      */
     int i, test;
-    stegx_propos_algos = malloc(NB_ALGOS * sizeof(algo_e));
-    algo_e tab_algo_possible[NB_ALGOS] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
-        STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
-    for (i = 0; i < NB_ALGOS; i++) {
-		// can_use_XXX renvoie 1 si il ne peut pas et 0 s'il le peut
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    algo_e tab_algo_possible[STEGX_NB_ALGO] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
+        STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK
+    };
+    for (i = 0; i < STEGX_NB_ALGO; i++) {
         if (i == 0)
             test = can_use_eof(infos);
         else if (i == 1)
@@ -405,13 +399,6 @@ int stegx_suggest_algo(info_s * infos)
     return 0;
 }
 
-/** 
- * @brief Va initialiser l'algorithme à utiliser pour la dissimulation. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
     /* 

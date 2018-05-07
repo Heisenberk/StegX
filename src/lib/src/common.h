@@ -18,9 +18,21 @@
  * =============================================================================
  */
 
-enum type { BMP_COMPRESSED, BMP_UNCOMPRESSED, PNG, WAV_PCM, WAV_NO_PCM,
-    MP3, AVI_COMPRESSED, AVI_UNCOMPRESSED, FLV, UNKNOWN
+/** Types de fichiers possibles pour le fichier hôte. */
+enum type {
+    UNKNOWN = 0,                /*!< Type de fichier inconnu. */
+    BMP_COMPRESSED,             /*!< Fichier BMP compressé. */
+    BMP_UNCOMPRESSED,           /*!< Fichier BMP non-compressé. */
+    PNG,                        /*!< Fichier PNG. */
+    WAV_PCM,                    /*!< Fichier WAVE-PCM. */
+    WAV_NO_PCM,                 /*!< Fichier WAVE contenant un flux non-PCM. */
+    MP3,                        /*!< Fichier MP3. */
+    AVI_COMPRESSED,             /*!< Fichier AVI compressé. */
+    AVI_UNCOMPRESSED,           /*!< Fichier AVI non-compressé. */
+    FLV                         /*!< Fichier FLV. */
 };
+
+/** Type des types de fichiers. */
 typedef enum type type_e;
 
 /*
@@ -35,9 +47,10 @@ typedef enum type type_e;
 #include "file_type/avi.h"
 #include "file_type/flv.h"
 
+/** Informations concernant le fichier hôte. */
 struct host_info {
-    FILE *host;
-    type_e type;
+    FILE *host;                 /*!< Pointeur vers le fichier hôte. */
+    type_e type;                /*!< Type du fichier hôte. */
     union {
         struct bmp bmp;
         struct png png;
@@ -45,20 +58,26 @@ struct host_info {
         struct mp3 mp3;
         struct avi avi;
         struct flv flv;
-    } file_info;
+    } file_info;                /*!< Structure du format du fichier hôte. */
 };
+
+/** Type du fichier hôte. */
 typedef struct host_info host_info_s;
 
+/**
+ * Informations utiles aux fonctions de la bibliothèque pour l'insertion et la
+ * dissimulation. 
+ */
 struct info {
-    mode_e mode;                // Requis : INSERT / EXTRACT
-    algo_e algo;
-    method_e method;
-    host_info_s host;           // Requis
-    FILE *res;                  // Requis
-    FILE *hidden;               // Requis si mode == INSERT
-    char *hidden_name;          // Requis (calculé à partir de hidden_path)
-    uint32_t hidden_length;     // taille en octets du fichier a a
-    char *passwd;               //optionnel    
+    mode_e mode;                /*!< Mode d'utilisation de la bibliothèque (requis). */
+    algo_e algo;                /*!< Algorithme utilisé. */
+    method_e method;            /*!< Méthode de protection de données utilisé. */
+    host_info_s host;           /*!< Fichier hôte. */
+    FILE *res;                  /*!< Fichier résultat qui va être créé pour l'insertion ou l'extraction (requis). */
+    FILE *hidden;               /*!< Fichier à cacher (requis lors de l'insertion). */
+    char *hidden_name;          /*!< Nom du fichier à cacher / du fichier chaché (requis, calculé à partir de hidden_path). */
+    uint32_t hidden_length;     /*!< Taille du fichier à cacher / du fichier caché (octets). */
+    char *passwd;               /*!< Mot de passe choisi par l'utilisateur. */
 };
 
 #endif                          /* ifndef COMMON_PRIV_H */
