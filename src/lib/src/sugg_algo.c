@@ -13,20 +13,14 @@
  * */
 #define ALGO_UNAVAILABLE -1
 
-/**
- * \def Longueur du mot de passe choisi par défaut
- * */
-#define LENGTH_DEFAULT_PASSWD  64 // 64 caractères sans compter le '\0'
-
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé ; 1 sinon 
- * dans la fonction.
  */
 int can_use_lsb(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // si le fichier hôte est un fichier BMP non compressé
     if (infos->host.type == BMP_UNCOMPRESSED) {
         /* 
@@ -40,17 +34,17 @@ int can_use_lsb(info_s * infos)
 
         // calcul du nombre d'octets représentant l'image brute
         uint64_t nb_bits_pic =
-            ((infos->host.file_info.bmp.pixel_length) * (infos->host.file_info.bmp.pixel_number))/8;
+            ((infos->host.file_info.bmp.pixel_length) * (infos->host.file_info.bmp.pixel_number)) /
+            8;
         // calcul du nombre de bits modifiables pour l'algorithme LSB
         nb_bits_pic /= 4;
-        
+
         // si la taille du fichier a cacher est trop importante -> LSB impossible
         if ((infos->hidden_length * 8) > nb_bits_pic) {
             return 1;
         }
         return 0;
     }
-    
     // si le fichier hôte est un fichier WAV PCM
     else if (infos->host.type == WAV_PCM) {
         /* 
@@ -66,9 +60,10 @@ int can_use_lsb(info_s * infos)
         if ((infos->hidden_length * 8) > nb_bits_audio) {
             return 1;
         }
-    } 
-    
-    else return 1;
+    }
+
+    else
+        return 1;
 }
 
 /** 
@@ -79,7 +74,7 @@ int can_use_lsb(info_s * infos)
  */
 int can_use_eof(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // pour tous les formats proposés par StegX, on propose EOF
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         return 0;
@@ -105,7 +100,7 @@ int can_use_eof(info_s * infos)
  */
 int can_use_metadata(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // pour tous les formats proposés par StegX, on propose MetaData
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         // pas toujours pour BMP car cela depend de la taille 
@@ -133,7 +128,7 @@ int can_use_metadata(info_s * infos)
  */
 int can_use_eoc(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // pour le format FLV, on propose EOC
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         return 1;
@@ -159,7 +154,7 @@ int can_use_eoc(info_s * infos)
  */
 int can_use_junk_chunk(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // pour le format AVI, on propose Junk Chunk
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         return 1;
@@ -230,7 +225,6 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }
-    
     // remplit la structure BMP de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
@@ -239,7 +233,7 @@ int fill_host_info(info_s * infos)
         uint32_t read_ihdr_length, ihdr_length;
         read = fread(&read_ihdr_length, sizeof(uint32_t), 1, infos->host.host);
         // convertit read_length_pic de big-endian en l'endian de la machine
-        ihdr_length = be32toh(read_ihdr_length);        
+        ihdr_length = be32toh(read_ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
 
         uint64_t file_length = 0;
@@ -273,7 +267,6 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
-    
     // remplit la structure BMP de infos.host.file_info
     // http://soundfile.sapp.org/doc/WaveFormat/
     else if ((infos->host.type == WAV_PCM) || (infos->host.type == WAV_NO_PCM)) {
@@ -330,16 +323,15 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.wav.chunk_size = (bloc_align / nb_channels) * 8;
         return 0;
     }
-    
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
         return 0;
     }
-    
     // pour les structures AVI et MP3 leurs structures sont vides
     else if ((infos->host.type == MP3) || (infos->host.type == AVI_COMPRESSED)
-             || (infos->host.type == AVI_UNCOMPRESSED)) return 0;
+             || (infos->host.type == AVI_UNCOMPRESSED))
+        return 0;
 
     else
         return 1;
@@ -354,27 +346,25 @@ int fill_host_info(info_s * infos)
 int stegx_suggest_algo(info_s * infos)
 {
     if (infos->mode == STEGX_MODE_EXTRACT) {
-        stegx_errno=ERR_SUGG_ALGOS;
+        stegx_errno = ERR_SUGG_ALGOS;
         return 1;
     }
-    
     // remplit la structure infos->host.file_info
     int fill = fill_host_info(infos);
     if (fill == 1) {
-        stegx_errno=ERR_SUGG_ALGOS;
+        stegx_errno = ERR_SUGG_ALGOS;
         return 1;
     }
-    
+
     fseek(infos->hidden, 0, SEEK_END);
     // lecture de la taille du fichier à cacher
-    uint64_t read_hidden_length=ftell(infos->hidden);
-    if(read_hidden_length>=UINT32_MAX){ // si overflow
-		stegx_errno=ERR_LENGTH_HIDDEN;
-		return 1;
-	}
-    else infos->hidden_length = (uint32_t)read_hidden_length;
+    uint64_t read_hidden_length = ftell(infos->hidden);
+    if (read_hidden_length >= UINT32_MAX) {     // si overflow
+        stegx_errno = ERR_LENGTH_HIDDEN;
+        return 1;
+    } else
+        infos->hidden_length = (uint32_t) read_hidden_length;
 
-    
     /*
        remplissage du tableau stegx_propos_algos pour savoir 
        quels algos sont proposés par l'application en fonction des 
@@ -383,9 +373,10 @@ int stegx_suggest_algo(info_s * infos)
     int i, test;
     stegx_propos_algos = malloc(NB_ALGOS * sizeof(algo_e));
     algo_e tab_algo_possible[NB_ALGOS] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
-        STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK};
+        STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK
+    };
     for (i = 0; i < NB_ALGOS; i++) {
-		// can_use_XXX renvoie 1 si il ne peut pas et 0 s'il le peut
+        // can_use_XXX renvoie 1 si il ne peut pas et 0 s'il le peut
         if (i == 0)
             test = can_use_eof(infos);
         else if (i == 1)
@@ -414,6 +405,10 @@ int stegx_suggest_algo(info_s * infos)
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
+	if (infos->mode == STEGX_MODE_EXTRACT) {
+        stegx_errno = ERR_SUGG_ALGOS;
+        return 1;
+    }
     /* 
        Si l'utilisateur n'a pas choisi de mot de passe, 
        StegX va en créer un par défaut aléatoirement
@@ -422,8 +417,8 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
     int random;
     int i;
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        infos->passwd = malloc((LENGTH_DEFAULT_PASSWD+1) * sizeof(char));
-        for (i = 0; i < (LENGTH_DEFAULT_PASSWD+1); i++) {
+        infos->passwd = malloc((LENGTH_DEFAULT_PASSWD + 1) * sizeof(char));
+        for (i = 0; i < (LENGTH_DEFAULT_PASSWD + 1); i++) {
             random = rand() % 126;      // pour avoir des symboles ASCII
             while (random < 32)
                 random = rand() % 126;  // symboles ASCII >=32
@@ -457,8 +452,7 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
             infos->algo = STEGX_ALGO_JUNK_CHUNK;
             return 0;
         }
-    }
-    else{
+    } else {
         if (stegx_propos_algos[0] == STEGX_ALGO_EOF) {
             infos->algo = STEGX_ALGO_EOF;
             return 0;

@@ -20,7 +20,8 @@ void test_file_bmp_v1(void **state)
     (void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test1.bmp", "r");
     type_e test = stegx_test_file_bmp(f);
-    if(f!=NULL) fclose(f);
+    if (f != NULL)
+        fclose(f);
     assert_int_equal(test, BMP_COMPRESSED);
 }
 

@@ -12,4 +12,8 @@ typedef struct mp3 mp3_s;
 
 type_e stegx_test_file_mp3(FILE * file);
 
+int insert_metadata_mp3(info_s * infos);
+
+int extract_metadata_mp3(info_s * infos);
+
 #endif

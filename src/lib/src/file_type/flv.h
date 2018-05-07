@@ -15,4 +15,8 @@ typedef struct flv flv_s;
 
 type_e stegx_test_file_flv(FILE * file);
 
+int insert_metadata_flv(info_s * infos);
+
+int extract_metadata_avi(info_s * infos);
+
 #endif

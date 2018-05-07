@@ -17,12 +17,16 @@
 #define WAV_NB_BLOC_ALIGN 32
 
 struct wav {
-    uint32_t header_size;
-    uint32_t data_size;
-    uint32_t chunk_size;
+    uint32_t header_size;       /*!< Offset du début de data (octet). */
+    uint32_t data_size;         /*!< Taille des données (octet). */
+    uint32_t chunk_size;        /*!< Taille de chaque sample (bit). */
 };
 typedef struct wav wav_s;
 
 type_e stegx_test_file_wav(FILE * file);
+
+int insert_metadata_wav(info_s * infos);
+
+int extract_metadata_wav(info_s * infos);
 
 #endif
