@@ -72,30 +72,28 @@ Il permet de visualiser les étapes successives de la stéganographie
 (insertion des données), ainsi que celle de la stéganalyse (extraction 
 des données). 
 
-Pour la dissimulation de données, il va d'abord y avoir la vérification 
-de la compatibilité du fichier hôte, pour savoir si le format est bien 
+Pour la dissimulation de données, il va d'abord y avoir la \textit{Vérification 
+de la compatibilité} (b) du fichier hôte, pour savoir si le format est bien 
 pris en charge par l'application. 
-Il y a ensuite, le module \textit{Proposition des algorithmes de stéganographie}
-qui va être utilisé. Un premier appel vers ce module permettra de proposer 
-un ou plusieurs algorithmes en fonction du fichier hôte et du fichier à cacher. 
+Il y a ensuite, le module \textit{Proposition des algorithmes de stéganographie} 
+(c) qui va être utilisé. Un premier appel vers ce module permettra de proposer 
+un ou plusieurs algorithmes en fonction du fichier hôte et du fichier à cacher (flèche 4). 
 Puis, le deuxième appel permettra à l'utilisateur de choisir l'algorithme 
-parmi ceux proposés précedemment. 
+parmi ceux proposés précedemment (flèche 6). 
 La dernière étape consiste en la réelle insertion des données, où les 
-données à cacher seront dissimulées dans une copie du fichier hôte. 
+données à cacher seront dissimulées dans une copie du fichier hôte (flèche 7). 
 
 Pour l'extraction de données, le module \textit{Vérification de la compatibilité 
 des fichiers} permettra, comme pour l'insertion, de vérifier si le format 
 du fichier à analyser est bien pris en charge. 
-Il y aura ensuite une détection de l'algorithme de stéganographie permettant de 
-trouver la méthode utilisée par l'émetteur pour cacher les données. 
-Enfin, l'extraction permettra de récupérer les données cachées dans le 
-fichier à analyser. 
+Il y aura ensuite une \textit{Détection de l'algorithme de stéganographie} 
+(flèche 10) permettant de trouver la méthode utilisée par l'émetteur pour 
+cacher les données. 
+Enfin, l'\textit{Extraction} (f) permettra de récupérer les données cachées 
+dans le fichier à analyser (flèche 12). 
 
 Tous ces modules et sous-modules seront coordonnées grâce aux interfaces 
-graphique et en ligne de commande, proposées par StegX. 
-
-% a redefinir plus precisement ave la description des modules
-
+graphique et en ligne de commande (a), proposées par StegX. 
 
 \section{Explications techniques}
 
@@ -145,7 +143,7 @@ Alice pourra donc envoyer le fichier piece\_jointe.bmp qui aura une taille
 de 21088071 octets soit 21.1 MB sur un canal non sécurisé. 
 
 Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun 
-soupçons en voyant piece\_jointe.bmp qui semble être une image comme une 
+soupçon en voyant piece\_jointe.bmp qui semble être une image comme une 
 autre. 
 
 \subsection{Fonctionnement de l'extraction des données dans un exemple}
@@ -181,7 +179,7 @@ contenu dans le fichier message.txt.
 
 \section{Description des points délicats de la programmation}
 
-\subsection{Lecture et écriture de fichiers \& Endianness}
+\subsection{Lecture et écriture de fichiers \& endianness}
 
 La première difficulté est arrivée lors de l'implémentation du module 
 \textit{Vérification de la compatibilité des fichiers}. En effet, il fallait 
@@ -202,7 +200,17 @@ L'utilisateur qui va manipuler StegX va donc avoir une architecture
 little-endian. C'est d'ailleurs l'architecture des ordinateurs utilisés 
 par l'équipe de conception StegX. 
 
-\subsection{Etude des différents formats \& Algorithme Metadata}
+\subsection{Etude des différents formats \& algorithme Metadata}
+
+La deuxième difficulté rencontrée est celle de l'implémentation de 
+l'algorithme Metadata. La particularité de cet algorithme est le fait 
+qu'elle dépend du format du fichier hôte. C'est d'ailleurs avec la fonction 
+\textit{fill\_host\_info} que la structure-union était remplie et qu'on 
+distinguait les éléments importants du format en question.  
+Il faut donc étudier avec précision la nature des éléments qui composent
+ce format.  
+
+\section{Changements mineurs des spécifications}
 
 \section{Comparaison estimation - implémentation}
 
@@ -238,6 +246,10 @@ par l'équipe de conception StegX.
   \hline
 \end{tabular}
 \normalsize
+
+% expliquer quil ya une grosse difference pour la proposition des algos 
+% on pensait que fill_host_info sera ds verification 
+% cest pr ca que ca fait bcp pour verification et peu pour proposition
 
 \section{Bilan du produit}
 
