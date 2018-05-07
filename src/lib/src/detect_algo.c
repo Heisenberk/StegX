@@ -84,11 +84,11 @@ int read_signature(info_s* infos){
 	uint8_t length_name_hidden;
 	int read,length_passwd_default;
 	int ii,jj;
+	// faire ca pour chaque format /!\ --> a faire pour WAV,MP3, AVI, FLV 
 	// on va a la signature
 	if((infos->host.type==BMP_COMPRESSED)||(infos->host.type==BMP_UNCOMPRESSED)){
 		fseek(infos->host.host,infos->host.file_info.bmp.header_size+infos->host.file_info.bmp.data_size,SEEK_SET);
 	}
-	// faire ca pour chaque format /!\
 	
 	/*
 	on lit l'octet représentant l'algorithme utilisé et la méthode 
@@ -115,51 +115,45 @@ int read_signature(info_s* infos){
 		stegx_errno=ERR_NEED_PASSWD;
 		return 1;
 	}
-	// si il a besoin d'un mdp et que l'utilisateur en a fourni
-	else if((infos->method==STEGX_WITH_PASSWD)&&(infos->passwd!=NULL)){
-		ii=0;jj=0;
-		printf("PASSW:'%s'\n",infos->passwd);
-		while(ii<length_name_hidden){
-			read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
-			infos->hidden_name[ii]=car_read^infos->passwd[jj]; //XOR
-			printf("%x^%x=%x\n",car_read,infos->passwd[jj],infos->hidden_name[ii]);
-			ii++; jj++;
-			if(infos->passwd[jj]=='\0') jj=0;
-		}
-		infos->hidden_name[length_name_hidden]='\0';
-		printf("NOM DU FICHIER DETECTE : %s\n",infos->hidden_name);
-	}
 	
-	else if(infos->method==STEGX_WITHOUT_PASSWD){
+	/*
+	si l'application a choisi un mot de passe par défaut aléatoirement
+	on va le lire afin de pourvoir récupérer le nom du fichier qui 
+	qui est XOR avec ce dernier
+	*/
+	if(infos->method==STEGX_WITHOUT_PASSWD){
 		// important car si l'utilisateur tape un mdp alors qu'il nen a pas besoin 
 		// il faut vider la memoire et realloue par dessus
 		if(infos->passwd!=NULL) free(infos->passwd);
 		infos->passwd=malloc((LENGTH_DEFAULT_PASSWD+1)*sizeof(char));
 		
 		// on lit le mdp ecrit dans la signature
-		//fseek(infos->host.host,-length_passwd_default,SEEK_CUR);
+		fseek(infos->host.host,length_name_hidden,SEEK_CUR);
 		for(ii=0;ii<(LENGTH_DEFAULT_PASSWD+1);ii++){
 			read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
 			infos->passwd[ii]=car_read;
 		}
-		infos->hidden_name[LENGTH_DEFAULT_PASSWD]='\0';
+		infos->passwd[LENGTH_DEFAULT_PASSWD]='\0';
 		printf("PASSWD : \"%s\"\n",infos->passwd);
 		
-		// on lit le nom du fichier dans la signature
-		fseek(infos->host.host,-(LENGTH_DEFAULT_PASSWD),SEEK_CUR);
-		ii=0;jj=0;
-		
-		while(ii<length_name_hidden){
-			read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
-			infos->hidden_name[ii]=car_read^infos->passwd[jj]; //XOR
-			printf("%x^%x=%x\n",car_read,infos->passwd[jj],infos->hidden_name[ii]);
-			ii++; jj++;
-			if(infos->passwd[jj]=='\0') jj=0;
-		}
-		infos->hidden_name[length_name_hidden]='\0';
-		
-		printf("NOM DU FICHIER DETECTE : '%s'\n",infos->hidden_name);
+		// on va au niveau du nom du fichier pour pouvoir le lire dans la signature
+		fseek(infos->host.host,-(LENGTH_DEFAULT_PASSWD+length_name_hidden+1),SEEK_CUR);
 	}
+	
+	/*
+	lecture du nom du fichier caché XOR avec le mot de passe 
+	(choisi par l'utilisateur ou par l'application aléatoirement)
+	*/
+	ii=0;jj=0;
+	while(ii<length_name_hidden){
+		read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
+		infos->hidden_name[ii]=car_read^infos->passwd[jj]; //XOR
+		ii++; jj++;
+		if(infos->passwd[jj]=='\0') jj=0;
+	}
+	infos->hidden_name[length_name_hidden]='\0';
+	printf("NOM DU FICHIER DETECTE : %s\n",infos->hidden_name);
+		
 	return 0;
 }
 

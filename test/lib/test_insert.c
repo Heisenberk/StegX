@@ -100,7 +100,7 @@ void test_write_signature_without_passwd(void **state)
     infos->method = STEGX_WITHOUT_PASSWD;
     infos->host.host = fopen("../../../env/test/test1.bmp", "r");
     infos->host.type = BMP_COMPRESSED;
-    infos->res = fopen("res1_test_insert.bmp", "w");
+    infos->res = fopen("res2_test_insert.bmp", "w");
     infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
     char *hidden_name_write = malloc((strlen("test2.bmp") + 1) * sizeof(char));
     strcpy(infos->hidden_name, "test2.bmp");
@@ -128,7 +128,7 @@ void test_write_signature_without_passwd(void **state)
 
     uint8_t algo_read, length_name;
     uint32_t length_file;
-    FILE *f = fopen("res1_test_insert.bmp", "r");
+    FILE *f = fopen("res2_test_insert.bmp", "r");
     // lecture de l'algorithme
     fread(&algo_read, sizeof(uint8_t), 1, f);
 
