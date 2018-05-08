@@ -368,7 +368,6 @@ int stegx_suggest_algo(info_s * infos)
        quels algos sont proposés par l'application en fonction des 
        entrées de l'utilisateur. 
      */
-    //stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
         if (i == STEGX_ALGO_LSB)
             stegx_propos_algos[i] = !can_use_lsb(infos);
@@ -392,7 +391,8 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
      */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         srand(time(NULL));
-        infos->passwd = calloc((LENGTH_DEFAULT_PASSWD+1), sizeof(char));
+        if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD+1), sizeof(char))))
+            return perror("Can't allocate memoty for password string"), 1;
         // Génération de symboles ASCII >= 32 et <= 126.
         for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
             infos->passwd[i] = 32 + (rand() % 95);
