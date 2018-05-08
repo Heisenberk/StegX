@@ -23,7 +23,7 @@
  * @return 0 si la signature a bien ete lue ; 1 sinon 
  */
 int read_signature(info_s* infos){
-	assert(infos->host.host);
+	assert(infos);
     assert(infos->mode == STEGX_MODE_EXTRACT);
     
 	uint8_t algo_read,car_read;
@@ -31,19 +31,19 @@ int read_signature(info_s* infos){
 	uint8_t length_name_hidden;
 	int read,length_passwd_default,move;
 	int ii,jj;
-	// faire ca pour chaque format /!\ --> a faire pour WAV,MP3, AVI, FLV 
+
 	// on va a la signature
+	// faire ca pour chaque format /!\ --> a faire pour WAV,MP3, AVI, FLV 
 	if((infos->host.type==BMP_COMPRESSED)||(infos->host.type==BMP_UNCOMPRESSED)){
-		move=fseek(infos->host.host,infos->host.file_info.bmp.header_size+infos->host.file_info.bmp.data_size,SEEK_SET);
-		if (move == -1) return 1;
+		if (fseek(infos->host.host, infos->host.file_info.bmp.header_size+infos->host.file_info.bmp.data_size, SEEK_SET) == -1)
+			return 1;
 	}
 	
 	/*
 	on lit l'octet représentant l'algorithme utilisé et la méthode 
 	utilisée (avec ou sans mdp choisi par l'utilisateur)
 	*/
-	read=fread(&algo_read, sizeof(uint8_t), 1, infos->host.host);
-	if (read == 0)
+	if (fread(&algo_read, sizeof(uint8_t), 1, infos->host.host) != 1)
         return 1;
 	
 	// on remplit les champs algo et method de infos
@@ -94,11 +94,11 @@ int read_signature(info_s* infos){
 	}
 	
 	// on lit la taille du fichier caché
-	read=fread(&hidden_length_read, sizeof(uint32_t), 1, infos->host.host);
-	if (read == 0)
+	if (fread(&hidden_length_read, sizeof(uint32_t), 1, infos->host.host) != 1)
         return 1;
 	// convertit read_length_pic de big-endian en l'endian de la machine
 	hidden_length=be32toh(hidden_length_read);
+	infos->hidden_length=hidden_length;
 	
 	// on lit la taille du nom du fichier caché
 	read=fread(&length_name_hidden, sizeof(uint8_t), 1, infos->host.host);
@@ -124,12 +124,11 @@ int read_signature(info_s* infos){
 		infos->passwd=malloc((LENGTH_DEFAULT_PASSWD+1)*sizeof(char));
 		
 		// on lit le mdp ecrit dans la signature
-		move=fseek(infos->host.host,length_name_hidden,SEEK_CUR);
-		if (move == -1) return 1;
+		if (fseek(infos->host.host, length_name_hidden, SEEK_CUR) == -1)
+			return 1;
 		
 		for(ii=0;ii<(LENGTH_DEFAULT_PASSWD+1);ii++){
-			read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
-			if (read == 0)
+		    if (fread(&car_read, sizeof(uint8_t), 1, infos->host.host) != 1)
 				return 1;
 			infos->passwd[ii]=car_read;
 		}
@@ -137,8 +136,8 @@ int read_signature(info_s* infos){
 		printf("PASSWD : \"%s\"\n",infos->passwd);
 		
 		// on va au niveau du nom du fichier pour pouvoir le lire dans la signature
-		move=fseek(infos->host.host,-(LENGTH_DEFAULT_PASSWD+length_name_hidden+1),SEEK_CUR);
-		if (move == -1) return 1;
+		if (fseek(infos->host.host, -(LENGTH_DEFAULT_PASSWD+length_name_hidden+1), SEEK_CUR) == -1)
+			return 1;
 	}
 	
 	/*
@@ -147,8 +146,7 @@ int read_signature(info_s* infos){
 	*/
 	ii=0;jj=0;
 	while(ii<length_name_hidden){
-		read=fread(&car_read, sizeof(uint8_t), 1, infos->host.host);
-		if (read == 0)
+		if (fread(&car_read, sizeof(uint8_t), 1, infos->host.host) != 1)
 			return 1;
 		infos->hidden_name[ii]=car_read^infos->passwd[jj]; //XOR
 		ii++; jj++;
@@ -160,12 +158,7 @@ int read_signature(info_s* infos){
 	return 0;
 }
 
-/** 
- * @brief Va detecter l'algorithme utilise ainsi que le nom du fichier caché 
- * et la taille des données cachées. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme a bien ete extrait ; 1 sinon 
- */
+
 int stegx_detect_algo(info_s* infos){
 	if (infos->mode == STEGX_MODE_INSERT) {
         stegx_errno = ERR_DETECT_ALGOS;
