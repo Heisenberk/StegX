@@ -49,8 +49,6 @@ int main(int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 	}
-    
-    // vider la variable globale--> a faire
     stegx_clear(infos);
     dest_stegx_info(com);
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -7,17 +8,16 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * @brief Initialise la structure info_s en fonction des choix de l'utilisateur. 
- * @param *choices Structure représentant les choix de l'utilisateur.
- * @return info_s* Structure qui contient les informations pour réaliser 
- * correctement la dissimulation/extraction. 
- */
 info_s *stegx_init(stegx_choices_s * choices)
 {
+    assert(choices);
     info_s *s = malloc(sizeof(info_s));
     int count, begin;
     int i, j;
+
+    /* Initialisation de la variable globale de proposition des algorithmes. */
+    if (!stegx_propos_algos)
+        stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
     //OK mode
     s->mode = choices->mode;
@@ -113,10 +113,6 @@ info_s *stegx_init(stegx_choices_s * choices)
     return s;
 }
 
-/**
- * @brief Libère la mémoire de la structure info_s. 
- * @param *infos Structure représentant les choix de l'utilisateur à libérer. 
- */
 void stegx_clear(info_s * infos)
 {
     if (infos->host.host != NULL)
@@ -125,10 +121,8 @@ void stegx_clear(info_s * infos)
         fclose(infos->hidden);
     if (infos->res != NULL)
         fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    stegx_propos_algos = (free(stegx_propos_algos), NULL);
 }
