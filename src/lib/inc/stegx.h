@@ -66,7 +66,7 @@ int stegx_suggest_algo(info_s * infos);
  * l'utilisateur n'en à pas choisi.
  * @param infos Structure contenant les informations concernant la dissimulation.
  * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return 0 si tout se passe bien, sinon 1 en cas d'erreur. 
+ * @return toujours 0.
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
 
