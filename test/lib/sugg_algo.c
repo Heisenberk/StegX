@@ -11,8 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-#define ALGO_UNAVAILABLE -1
-
 #define LENGTH_DEFAULT_PASSWD  64
 
 /* Tests */
@@ -32,16 +30,17 @@ void test_hidden_length(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t hidden_length=infos->hidden_length;
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     int test;
     test=(hidden_length==14057098);
@@ -63,6 +62,7 @@ void test_file_info_bmp_v1(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.bmp.header_size;
@@ -72,10 +72,10 @@ void test_file_info_bmp_v1(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -107,6 +107,7 @@ void test_file_info_bmp_v2(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.bmp.header_size;
@@ -116,10 +117,10 @@ void test_file_info_bmp_v2(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -151,6 +152,7 @@ void test_file_info_bmp_v3(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.bmp.header_size;
@@ -160,10 +162,10 @@ void test_file_info_bmp_v3(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -195,6 +197,7 @@ void test_file_info_png_v1(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.png.header_size;
@@ -202,10 +205,10 @@ void test_file_info_png_v1(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -233,6 +236,7 @@ void test_file_info_png_v2(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.png.header_size;
@@ -240,10 +244,10 @@ void test_file_info_png_v2(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -271,6 +275,7 @@ void test_file_info_wav_v1(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.wav.header_size;
@@ -279,10 +284,10 @@ void test_file_info_wav_v1(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -311,6 +316,7 @@ void test_file_info_wav_v2(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.wav.header_size;
@@ -319,10 +325,10 @@ void test_file_info_wav_v2(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -351,6 +357,7 @@ void test_file_info_wav_v3(void **state)
     infos->hidden=fopen("../../../env/test/test2.bmp","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     uint32_t header_size=infos->host.file_info.wav.header_size;
@@ -359,10 +366,10 @@ void test_file_info_wav_v3(void **state)
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     /*
 		Valeurs à trouver:
@@ -398,20 +405,20 @@ void test_propos_algos_v1(void **state){
     infos->hidden=fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     
-    // algos eof et metadata proposés
-    int test=((stegx_propos_algos[0]==STEGX_ALGO_EOF)&&(stegx_propos_algos[1]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[2]==STEGX_ALGO_METADATA)&&(stegx_propos_algos[3]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[4]==ALGO_UNAVAILABLE));
+    int test=((stegx_propos_algos[0]==0)&&(stegx_propos_algos[1]==1)&&
+		(stegx_propos_algos[2]==1)&&(stegx_propos_algos[3]==0)&&
+		(stegx_propos_algos[4]==0));
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     assert_int_equal(test, 1);
 }
@@ -430,20 +437,20 @@ void test_propos_algos_v2(void **state){
     infos->hidden=fopen("../../../env/test/test16.txt","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
+
+    int test=((stegx_propos_algos[0]==1)&&(stegx_propos_algos[1]==1)&&
+		(stegx_propos_algos[2]==1)&&(stegx_propos_algos[3]==0)&&
+		(stegx_propos_algos[4]==0));
     
-    // algos eof, lsb et metadata proposés
-    int test=((stegx_propos_algos[0]==STEGX_ALGO_EOF)&&(stegx_propos_algos[1]==STEGX_ALGO_LSB)&&
-		(stegx_propos_algos[2]==STEGX_ALGO_METADATA)&&(stegx_propos_algos[3]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[4]==ALGO_UNAVAILABLE));
-    
-    if(infos->host.host!=NULL) fclose(infos->host.host);
+	if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     assert_int_equal(test, 1);
 }
@@ -462,20 +469,25 @@ void test_propos_algos_v3(void **state){
     infos->hidden=fopen("../../../env/test/test16.txt","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     
-    // algos eof, lsb et metadata proposés
-    int test=((stegx_propos_algos[0]==STEGX_ALGO_EOF)&&(stegx_propos_algos[1]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[2]==STEGX_ALGO_METADATA)&&(stegx_propos_algos[3]==STEGX_ALGO_EOC)&&
-		(stegx_propos_algos[4]==ALGO_UNAVAILABLE));
+        int i;
+    for(i=0;i<5;i++){
+		printf(">%d\n",stegx_propos_algos[i]);
+	}
+    
+    int test=((stegx_propos_algos[0]==0)&&(stegx_propos_algos[1]==1)&&
+		(stegx_propos_algos[2]==1)&&(stegx_propos_algos[3]==1)&&
+		(stegx_propos_algos[4]==0));
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     assert_int_equal(test, 1);
 }
@@ -494,20 +506,20 @@ void test_propos_algos_v4(void **state){
     infos->hidden=fopen("../../../env/test/test16.txt","r");
     infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
     strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     
-    // algos eof, lsb et metadata proposés
-    int test=((stegx_propos_algos[0]==STEGX_ALGO_EOF)&&(stegx_propos_algos[1]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[2]==STEGX_ALGO_METADATA)&&(stegx_propos_algos[3]==ALGO_UNAVAILABLE)&&
-		(stegx_propos_algos[4]==STEGX_ALGO_JUNK_CHUNK));
+    int test=((stegx_propos_algos[0]==0)&&(stegx_propos_algos[1]==1)&&
+		(stegx_propos_algos[2]==1)&&(stegx_propos_algos[3]==0)&&
+		(stegx_propos_algos[4]==1));
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     assert_int_equal(test, 1);
 }
@@ -524,6 +536,7 @@ void test_passwd_default_length(void **state){
     strcpy(infos->hidden_name,"test16.txt");
     infos->hidden=fopen("../../../env/test/test16.txt","r");
     infos->passwd=NULL;
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_suggest_algo(infos);
     stegx_choose_algo(infos,STEGX_ALGO_EOF);
@@ -532,10 +545,10 @@ void test_passwd_default_length(void **state){
     
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
-    if(infos->hidden_name!=NULL) free(infos->hidden_name);
-    if(infos->passwd!=NULL) free(infos->passwd);
-    if(infos!=NULL) free(infos);
-    if(stegx_propos_algos!=NULL) free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
     
     assert_int_equal(length_passwd_default, LENGTH_DEFAULT_PASSWD);
 }

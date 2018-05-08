@@ -23,6 +23,7 @@
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 Si l'algorithme est proposé, 1 sinon.
  */
+
 static int can_use_lsb(info_s * infos)
 {
 	assert(infos->host.host);
@@ -69,7 +70,6 @@ static int can_use_lsb(info_s * infos)
     
     else return 1;
 }
-
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme EOF pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
@@ -331,7 +331,7 @@ int stegx_suggest_algo(info_s * infos)
        entrées de l'utilisateur. 
      */
     /* A ENLEVER ET REFAIRE LES TESTS UNITAIRES. */
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    //stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
         if (i == STEGX_ALGO_LSB)
             stegx_propos_algos[i] = !can_use_lsb(infos);
@@ -363,7 +363,7 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 
     /* Test que l'algorithme choisis à bien été proposé comme étant possible. Si
      * oui, alors il est sauvegardé. */
-    if (stegx_propos_algo[algo_choosen])
+    if (stegx_propos_algos[algo_choosen])
         infos->algo = algo_choosen;
     /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
      * choisis EOF par défaut. */
