@@ -76,7 +76,8 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
  * @sideeffect Remplit les champs \r{info_s.host.file_info}, \r{info_s.algo}, 
  * \r{info_s.method}, \r{info_s.hidden_length}, \r{info_s.hidden_name}
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme a bien ete extrait ; 1 sinon 
+ * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
+ * \r{stegx_errno}.
  */
 int stegx_detect_algo(info_s* infos);
 
