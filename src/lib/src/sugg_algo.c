@@ -330,7 +330,6 @@ int stegx_suggest_algo(info_s * infos)
        quels algos sont proposés par l'application en fonction des 
        entrées de l'utilisateur. 
      */
-    /* A ENLEVER ET REFAIRE LES TESTS UNITAIRES. */
     //stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
         if (i == STEGX_ALGO_LSB)
