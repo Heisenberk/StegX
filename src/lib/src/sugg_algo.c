@@ -284,7 +284,7 @@ int fill_host_info(info_s * infos)
     // remplit la structure WAV de infos.host.file_info
     // http://soundfile.sapp.org/doc/WaveFormat/
     else if ((infos->host.type == WAV_PCM) || (infos->host.type == WAV_NO_PCM)) {
-        uint8_t byte_read_wav;  //l ecture de l'octet a chaque iteration
+        uint8_t byte_read_wav;  //lecture de l'octet a chaque iteration
         uint64_t header_length = 0;     // longueur du header
         int stop_wav = 0;       // sort de la boucle quand on a lu les lettres "DATA"
         int read_data = 0;      // compte les lettres "DATA"
