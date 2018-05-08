@@ -26,6 +26,7 @@ info_s *stegx_init(stegx_choices_s * choices);
 
 /**
  * @brief Procédure de fin d'utilisation de la bibliothèque.
+ * @req Avoir appelé \r{stegx_init} sur le paramètre "infos".
  * @sideeffect Libère la mémoire de la structure \r{info_s}.
  * @param infos Structure à libérer. 
  */
@@ -46,9 +47,13 @@ int stegx_check_compatibility(info_s * infos);
  * chaque algorithme qu'il est utilisable en fonction type de fichier hôte et de
  * la taille du fichier à cacher.
  * @sideeffect Initialise et rempli le champ \r{info_s.hidden_length} et 
- * \r{infos.host.file_info} ainsi que la variable globale \r{stegx_propos_algos}.
+ * \r{info_s.host.file_info} ainsi que la variable globale \r{stegx_propos_algos}.
+ * @error \r{ERR_SUGG_ALGOS} s'il y a eu un problème d'utilisation.
+ * @error \r{ERR_LENGTH_HIDDEN} si le fichier à cacher est supérieur à la taille
+ * maximum (2^32).
  * @param infos Structure contenant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien, sinon 1 en cas d'erreur. 
+ * @return 0 si tout se passe bien, sinon 1 en cas d'erreur et met à jour
+ * \r{stegx_errno}. 
  */
 int stegx_suggest_algo(info_s * infos);
 
