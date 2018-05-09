@@ -23,7 +23,7 @@ type_e stegx_test_file_bmp(FILE * file)
         return UNKNOWN;
     }
 
-	if (fseek(file, ADDRESS_BMP_COMPRESS, SEEK_SET) == -1)
+    if (fseek(file, ADDRESS_BMP_COMPRESS, SEEK_SET) == -1)
         return UNKNOWN;
     // lecture pour déterminer si c'est compressé ou non
     uint32_t compress;
