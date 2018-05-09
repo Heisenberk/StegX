@@ -303,46 +303,38 @@ int fill_host_info(info_s * infos)
 		uint32_t prev_tag_size;
 
 
-	infos->host.file_info.flv.nb_video_tag=0;
-    infos->host.file_info.flv.nb_metadata_tag=0;
-    infos->host.file_info.flv.file_size=0;
-    fseek(infos.host.host,4,SEEK_SET);
+		infos->host.file_info.flv.nb_video_tag=0;
+    	infos->host.file_info.flv.nb_metadata_tag=0;
+    	infos->host.file_info.flv.file_size=0;
+    	fseek(infos.host.host,4,SEEK_SET);
     
+    	//lecture du header
+    	fread(&check_tags,sizeof(check_tags),1,infos->host.host);
+		fread(&header_size,sizeof(header_size),1,infos->host.host);
     
+    	header_size=be32toh(header_size);
+    	infos->host.file_info.flv.file_size+=header_size;
+    	fseek(infos->host.host,4,SEEK_CUR);
+    	infos->host.file_info.flv.file_size+=4;
 
-    //lecture du header
-    fread(&check_tags,sizeof(check_tags),1,infos->host.host);
-    //file_size+=1;
-    //à enlever (?)    if (!(check_tags==5 || check_tags==1)){nb_video_tag=0;}
-    fread(&header_size,sizeof(header_size),1,infos->host.host);
-    //file_size+=1;
-    header_size=be32toh(header_size);
-    infos->host.file_info.flv.file_size+=header_size;
-    fseek(infos->host.host,4,SEEK_CUR);
-    infos->host.file_info.flv.file_size+=4;
-
-    //lecture des tags
-    while(fread(&tag_type,sizeof(tag_type),1,infos->host.host)==1){
-	    //file_size++;
-	    if(tag_type==18){infos->host.file_info.flv.nb_metadata_tag+=1;}
-	    if(tag_type==9){infos->host.file_info.flv.nb_video_tag+=1;}
-	    fread(&data_size,sizeof(data_size),1,infos->host.host);
-
-	  	 data_size=be32toh(data_size);    
-	     data_size>>=8;
-	     fseek(infos->host.host,data_size+6,SEEK_CUR);
-	     fread(&prev_tag_size,sizeof(prev_tag_size),1,infos->host.host);
-		 prev_tag_size=be32toh(prev_tag_size);
-		 infos->host.file_info.flv.file_size+=prev_tag_size+4;
-
-	}
-
-
-
-
-
-
-		// a remplir par claire et tristan
+    	//lecture des tags
+    	while(fread(&tag_type,sizeof(tag_type),1,infos->host.host)==1){
+	    
+	    	if(tag_type==METATAG){infos->host.file_info.flv.nb_metadata_tag+=1;}
+	   		else if(tag_type==VIDEO_TAG){nb_video_tag+=1;}
+			else if(!(tag_type==AUDIO_TAG || tag_type==SCRIPT_DATA_TAG)){break;}	
+	    	fread(&data_size,sizeof(data_size),1,infos->host.host);
+	    	//lecture de la taille des data
+	  	 	data_size=be32toh(data_size);
+	  	 	//passage en 24 bits      
+	     	data_size>>=8;
+	     	//deplacement jusqu'au prochain previous tag size (data size + 6octets qui comportent d'autres informations non utiles) 
+	     	fseek(infos->host.host,data_size+6,SEEK_CUR);
+	     	//lecture du previous tag size 
+	     	fread(&prev_tag_size,sizeof(prev_tag_size),1,infos->host.host);
+		 	prev_tag_size=be32toh(prev_tag_size);
+		 	infos->host.file_info.flv.file_size+=prev_tag_size+4;
+		}
         return 0;
     }
     
