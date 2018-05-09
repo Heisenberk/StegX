@@ -79,10 +79,10 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
  */
-int stegx_detect_algo(info_s* infos);
+int stegx_detect_algo(info_s * infos);
 
 int stegx_insert(info_s * infos);
 
-int stegx_extract(info_s* infos,char* res_path);
+int stegx_extract(info_s * infos, char *res_path);
 
 #endif                          /* ifndef STEGX_H */

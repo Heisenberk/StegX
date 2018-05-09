@@ -19,7 +19,6 @@
  * */
 #define ADDRESS_BMP_COMPRESS 30
 
-
 /** Structure du format BMP. */
 struct bmp {
     uint32_t header_size;

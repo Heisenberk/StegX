@@ -77,9 +77,10 @@ void test_write_signature_with_passwd(void **state)
 
     int test = ((algo_read == BYTE_EOF_WITH_PASSWD) && (length_file == 14057098) &&
                 (strcmp(hidden_name, hidden_name_write) == 0));
-    if(f!=NULL) fclose(f);
+    if (f != NULL)
+        fclose(f);
     if (hidden_name != NULL)
-    free(hidden_name);
+        free(hidden_name);
     free(hidden_name_write);
     free(passwd_save);
 
@@ -157,7 +158,8 @@ void test_write_signature_without_passwd(void **state)
     int test = ((algo_read == BYTE_EOF_WITHOUT_PASSWD) && (length_file == 14057098) &&
                 (strcmp(hidden_name, hidden_name_write) == 0)
                 && (strcmp(passwd_read, passwd_save) == 0));
-    if(f!=NULL) fclose(f);
+    if (f != NULL)
+        fclose(f);
     free(hidden_name);
     free(hidden_name_write);
     free(passwd_save);

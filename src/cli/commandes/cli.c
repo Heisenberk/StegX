@@ -139,11 +139,11 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
                 com->insert_info->algo = STEGX_ALGO_EOF;
                 break;
             case STEGX_ALGO_EOC:
-				com->insert_info->algo = STEGX_ALGO_EOC;
-				break;
-			case STEGX_ALGO_JUNK_CHUNK:
-				com->insert_info->algo = STEGX_ALGO_JUNK_CHUNK;
-				break;
+                com->insert_info->algo = STEGX_ALGO_EOC;
+                break;
+            case STEGX_ALGO_JUNK_CHUNK:
+                com->insert_info->algo = STEGX_ALGO_JUNK_CHUNK;
+                break;
             case 'h':
                 help();
                 break;

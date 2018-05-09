@@ -16,7 +16,7 @@
 #include "stegx_errors.h"
 
 /** Longueur du mot de passe choisi par défaut. */
-#define LENGTH_DEFAULT_PASSWD  64 /* 64 caractères sans compter le '\0'. */
+#define LENGTH_DEFAULT_PASSWD  64       /* 64 caractères sans compter le '\0'. */
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
@@ -26,7 +26,7 @@
 
 static int can_use_lsb(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     // Si le fichier hôte est un fichier BMP non compressé.
     if (infos->host.type == BMP_UNCOMPRESSED) {
         /* 
@@ -71,6 +71,7 @@ static int can_use_lsb(info_s * infos)
     else
         return 1;
 }
+
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme EOF pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
@@ -139,10 +140,10 @@ static int can_use_junk_chunk(info_s * infos)
  */
 int fill_host_info(info_s * infos)
 {
-	assert(infos->host.host);
+    assert(infos->host.host);
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return 1;
-    
+
     // remplit la structure BMP de infos.host.file_info
     //http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
@@ -151,16 +152,16 @@ int fill_host_info(info_s * infos)
 
         // lecture de la taille totale du fichier
         if (fseek(infos->host.host, BMP_DEF_LENGTH, SEEK_SET) == -1)
-			return 1;
-		if (fread(&length_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&length_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
         length_pic = le32toh(length_pic);
 
         // lecture de la taille du header (qui correspond au debut de data)
         if (fseek(infos->host.host, BMP_DEF_PIC, SEEK_SET) == -1)
-			return 1;
-		if (fread(&begin_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&begin_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
         begin_pic = le32toh(begin_pic);
 
         infos->host.file_info.bmp.header_size = begin_pic;
@@ -168,22 +169,22 @@ int fill_host_info(info_s * infos)
 
         // lecture du nombre de bits par pixel
         if (fseek(infos->host.host, BMP_DEF_PIX_LENGTH, SEEK_SET) == -1)
-			return 1;
-		if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
         pixel_length = le32toh(pixel_length);
         infos->host.file_info.bmp.pixel_length = pixel_length;
 
         // lecture de la largeur de l'image
         if (fseek(infos->host.host, BMP_DEF_NB_PIXEL, SEEK_SET) == -1)
-			return 1;
-		if (fread(&pixel_width, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&pixel_width, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
         pixel_width = le32toh(pixel_width);
 
         // lecture de la hauteur de l'image
-		if (fread(&pixel_height, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
+        if (fread(&pixel_height, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
         pixel_height = le32toh(pixel_height);
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
@@ -193,11 +194,11 @@ int fill_host_info(info_s * infos)
     else if (infos->host.type == PNG) {
         // lecture de la taille du chunk IHDR (header)
         if (fseek(infos->host.host, PNG_DEF_IHDR, SEEK_SET) == -1)
-			return 1;
+            return 1;
         uint32_t ihdr_length;
         if (fread(&ihdr_length, sizeof(uint32_t), 1, infos->host.host) != 1)
-			return 1;
-        ihdr_length = be32toh(ihdr_length);        
+            return 1;
+        ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
 
         uint64_t file_length = 0;
@@ -205,11 +206,11 @@ int fill_host_info(info_s * infos)
         int read_iend = 0;
         int stop_png = 0;
         if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-			return 1;
+            return 1;
         // detection du chunk IEND et lecture de la taille de data (jusqu'a IEND)
         while (stop_png == 0) {
-	        if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
-				stop_png = 1;
+            if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
+                stop_png = 1;
             else {
                 if (byte_read_png == HEXA_i)
                     read_iend++;
@@ -231,7 +232,6 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
-
     // remplit la structure WAV de infos.host.file_info
     // http://soundfile.sapp.org/doc/WaveFormat/
     else if ((infos->host.type == WAV_PCM) || (infos->host.type == WAV_NO_PCM)) {
@@ -241,8 +241,8 @@ int fill_host_info(info_s * infos)
         int read_data = 0;      // compte les lettres "DATA"
         // lecture de la taille du header (jusqu'a DATA)
         while (stop_wav == 0) {
-			if (fread(&byte_read_wav, sizeof(uint8_t), 1, infos->host.host) != 1)
-				stop_wav=1;
+            if (fread(&byte_read_wav, sizeof(uint8_t), 1, infos->host.host) != 1)
+                stop_wav = 1;
             else {
                 if (byte_read_wav == HEXA_D)
                     read_data++;
@@ -266,9 +266,9 @@ int fill_host_info(info_s * infos)
         // lecture de la taille du chunk DATA
         uint64_t data_length;
         if (fseek(infos->host.host, header_length + WAV_DATA_SIZE, SEEK_SET) == -1)
-			return 1;
-		if (fread(&data_length, sizeof(uint64_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&data_length, sizeof(uint64_t), 1, infos->host.host) != 1)
+            return 1;
         data_length = le32toh(data_length);
         infos->host.file_info.wav.data_size = data_length + WAV_SUBCHUNK_LENGTH;
 
@@ -276,16 +276,16 @@ int fill_host_info(info_s * infos)
         uint16_t bloc_align;
         uint16_t nb_channels;
         if (fseek(infos->host.host, WAV_NUM_CHANNELS, SEEK_SET) == -1)
-			return 1;
-		if (fread(&nb_channels, sizeof(uint16_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&nb_channels, sizeof(uint16_t), 1, infos->host.host) != 1)
+            return 1;
         nb_channels = le32toh(nb_channels);
 
         // lecture du nombre de bloc align 
         if (fseek(infos->host.host, WAV_NB_BLOC_ALIGN, SEEK_SET) == -1)
-			return 1;
-		if (fread(&bloc_align, sizeof(uint16_t), 1, infos->host.host) != 1)
-			return 1;
+            return 1;
+        if (fread(&bloc_align, sizeof(uint16_t), 1, infos->host.host) != 1)
+            return 1;
         bloc_align = le32toh(bloc_align);
 
         // nb_bits_par_sample=(nb_bloc_align/nb_channels)*8;
@@ -295,7 +295,7 @@ int fill_host_info(info_s * infos)
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
-		// a remplir par claire et tristan
+        // a remplir par claire et tristan
         return 0;
     }
     // pour les structures AVI et MP3 leurs structures sont vides
@@ -313,16 +313,16 @@ int stegx_suggest_algo(info_s * infos)
        infos->host.file_info. */
     if (infos->mode == STEGX_MODE_EXTRACT || fill_host_info(infos))
         return stegx_errno = ERR_SUGG_ALGOS, 1;
-    
+
     // Lecture de la taille du fichier à cacher.
     if (fseek(infos->hidden, 0, SEEK_END))
         return stegx_errno = ERR_SUGG_ALGOS, perror("Can't move to the end of hidden file"), 1;
-    uint64_t read_hidden_length=ftell(infos->hidden);
+    uint64_t read_hidden_length = ftell(infos->hidden);
     // Précaution overflow.
-    if(read_hidden_length>=UINT32_MAX)
-        return stegx_errno=ERR_LENGTH_HIDDEN, 1;
+    if (read_hidden_length >= UINT32_MAX)
+        return stegx_errno = ERR_LENGTH_HIDDEN, 1;
     else
-        infos->hidden_length = (uint32_t)read_hidden_length;
+        infos->hidden_length = (uint32_t) read_hidden_length;
 
     /*
        remplissage du tableau stegx_propos_algos pour savoir 
@@ -346,7 +346,7 @@ int stegx_suggest_algo(info_s * infos)
 
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
-	if (infos->mode == STEGX_MODE_EXTRACT) {
+    if (infos->mode == STEGX_MODE_EXTRACT) {
         stegx_errno = ERR_SUGG_ALGOS;
         return 1;
     }
@@ -356,7 +356,7 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
      */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         srand(time(NULL));
-        infos->passwd = calloc((LENGTH_DEFAULT_PASSWD+1), sizeof(char));
+        infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char));
         // Génération de symboles ASCII >= 32 et <= 126.
         for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
             infos->passwd[i] = 32 + (rand() % 95);
@@ -368,11 +368,10 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
         infos->algo = algo_choosen;
     /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
      * choisis EOF par défaut. */
-    else if(!stegx_propos_algos[algo_choosen]){
-		stegx_errno=ERR_CHOICE_ALGO; 
-		return 1;
-	}
-    else
+    else if (!stegx_propos_algos[algo_choosen]) {
+        stegx_errno = ERR_CHOICE_ALGO;
+        return 1;
+    } else
         infos->algo = STEGX_ALGO_EOF;
     return 0;
 }

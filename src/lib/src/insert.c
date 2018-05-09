@@ -151,9 +151,9 @@ int stegx_insert(info_s * infos)
         insertion = insert_eoc(infos);
     } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
         insertion = insert_junk_chunk(infos);
-    } else{
-		stegx_errno=ERR_INSERT;
-		insertion = 1;
-	}
+    } else {
+        stegx_errno = ERR_INSERT;
+        insertion = 1;
+    }
     return insertion;
 }
