@@ -18,6 +18,15 @@
  * =============================================================================
  */
 
+/**
+ * @brief Test si le paramètre correspond à un format de fichier connu par
+ * l'application.
+ * @param enum_type Enumération de type à tester.
+ * @return 1 si le type est connu, 0 sinon.
+ */
+#define IS_FILE_TYPE(enum_type)                                           \
+        (enum_type > UNKNOWN && enum_type <= FLV ? 1 : 0);
+
 /** Types de fichiers possibles pour le fichier hôte. */
 enum type {
     UNKNOWN = 0,                /*!< Type de fichier inconnu. */
@@ -51,7 +60,7 @@ typedef enum type type_e;
 struct host_info {
     FILE *host;                 /*!< Pointeur vers le fichier hôte. */
     type_e type;                /*!< Type du fichier hôte. */
-    union {
+    union file_info_u {
         struct bmp bmp;
         struct png png;
         struct wav wav;

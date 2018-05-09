@@ -51,9 +51,18 @@ type_e stegx_test_file_wav(FILE * file)
         return UNKNOWN;
     if (fread(&sig_16, sizeof(uint16_t), 1, file) != 1)
         return UNKNOWN;
-
     if (sig_16 == SIG_PCM)
         return WAV_PCM;
     else
         return WAV_NO_PCM;
+}
+
+int insert_metadata_wav(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_wav(info_s * infos)
+{
+    return 1;
 }

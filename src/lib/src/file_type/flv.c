@@ -7,17 +7,9 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * \def Signature FLV
- * */
+/** Signature d'un fichier FLV. */
 #define SIG_FLV 0x564C46
 
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type FLV, et si le format n'est pas 
- * reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_flv(FILE * file)
 {
     assert(file);
@@ -34,4 +26,14 @@ type_e stegx_test_file_flv(FILE * file)
         return UNKNOWN;
     }
     return FLV;
+}
+
+int insert_metadata_flv(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_flv(info_s * infos)
+{
+    return 1;
 }

@@ -45,3 +45,13 @@ type_e stegx_test_file_mp3(FILE * file)
     else
         return UNKNOWN;
 }
+
+int insert_metadata_mp3(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_mp3(info_s * infos)
+{
+    return 1;
+}

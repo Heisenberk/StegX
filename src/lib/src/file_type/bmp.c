@@ -7,23 +7,9 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * \def Signature BMP
- * */
+/** Signature BMP */
 #define SIG_BMP 0x4D42
 
-/**
- * \def Déplacement absolu à faire pour savoir si il s'agit d'un fichier 
- * compressé ou non. 
- * */
-#define ADDRESS_BMP_COMPRESS 30
-
-/**
- * @brief Retourne le type du fichier. 
- * @param *file fichier à tester.
- * @return type_e représentant le type BMP_UNCOMPRESSED, BMP_COMPRESSED, 
- * et si le format n'est pas reconnu : UNKNOWN. 
- */
 type_e stegx_test_file_bmp(FILE * file)
 {
     assert(file);
@@ -48,4 +34,14 @@ type_e stegx_test_file_bmp(FILE * file)
     } else {
         return BMP_COMPRESSED;
     }
+}
+
+int insert_metadata_bmp(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_bmp(info_s * infos)
+{
+    return 1;
 }

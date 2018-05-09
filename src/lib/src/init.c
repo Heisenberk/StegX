@@ -15,6 +15,10 @@ info_s *stegx_init(stegx_choices_s * choices)
     int count, begin;
     int i, j;
 
+    /* Initialisation de la variable globale de proposition des algorithmes. */
+    if (!stegx_propos_algos)
+        stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+
     //OK mode
     s->mode = choices->mode;
 
@@ -117,10 +121,8 @@ void stegx_clear(info_s * infos)
         fclose(infos->hidden);
     if (infos->res != NULL)
         fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    stegx_propos_algos = (free(stegx_propos_algos), NULL);
 }

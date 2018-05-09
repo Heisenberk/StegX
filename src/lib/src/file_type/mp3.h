@@ -23,8 +23,12 @@ typedef struct mp3 mp3_s;
  * @brief Test si le fichier est un fichier WAVE.
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
- * @return -1 si une erreur survient, sinon \r{MP3} ou \r{UNKNOWN}. 
+ * @return \r{MP3} ou \r{UNKNOWN}. 
  */
 type_e stegx_test_file_mp3(FILE * file);
+
+int insert_metadata_mp3(info_s * infos);
+
+int extract_metadata_mp3(info_s * infos);
 
 #endif

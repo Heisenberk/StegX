@@ -19,13 +19,16 @@ enum err_code {
     ERR_HIDDEN_NULL,            /*!< Fichier a cacher null. */
     ERR_PASSWD,                 /*!< Mot de passe invalide. */
     ERR_RES_EXTRACT,            /*!< Resultat doit être un dossier en extract. */
-    ERR_RES_INSERT,             /*!< Resultat null en insert. */
+    ERR_RES_INSERT,				/*!< Resultat invalide pour l'insertion. */
     ERR_READ,                   /*!< Erreur lors de la lecture. */
-    ERR_FSEEK,                  /*!< Erreur lors de l'utilisateur de fseek. */
     ERR_CHECK_COMPAT,           /*!< Erreur dans le module Verification de la compatibilite des fichiers. */
     ERR_SUGG_ALGOS,             /*!< Erreur dans le sous-module proposition des algos de steganographie. */
-    ERR_INSERT,                 /*!< Erreur mauvais appel de fonctions sur une insertion. */
-    ERR_EXTRACT,                /*!< Erreur mauvais appel de fonctions sur une extraction. */
+    ERR_CHOICE_ALGO,			/*!< Erreur l'algorithme choisi par l'utilisateur n'est proposé. */
+    ERR_INSERT,                 /*!< Erreur dans le sous-module Insertion. */
+    ERR_EXTRACT,                /*!< Erreur dans le sous-module Extraction. */
+    ERR_DETECT_ALGOS, 				/*!< Erreur dans le sous-module Dectection des algorithmes de steganographie. */
+    ERR_LENGTH_HIDDEN,          /*!< Erreur taille du fichier à cacher trop élevée */
+    ERR_NEED_PASSWD,			/*!< Erreur l'application a besoin d'un mot de passe pour extraire les données. */
     ERR_OTHER                   /*!< Erreur quelconque. */
 };
 
