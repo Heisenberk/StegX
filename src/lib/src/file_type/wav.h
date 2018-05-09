@@ -13,20 +13,15 @@
 
 #include "common.h"
 
-/** Hexadecimal "D". */
-#define HEXA_D 0x64
-/** Hexadecimal "A". */
-#define HEXA_A 0x61
-/** Hexadecimal "T". */
-#define HEXA_T 0x74
-/** Taille Signature DATA dans le format WAV. */
-#define WAV_DATA_SIZE 4
-/** Taille du SubChunk dans le format WAV. */
-#define WAV_SUBCHUNK_LENGTH 8
-/** Position du curseur pour lire le nombre de canaux dans le format WAV. */
-#define WAV_NUM_CHANNELS 22
-/** Position du curseur pour lire le bloc align dans le format WAV. */
-#define WAV_NB_BLOC_ALIGN 32
+/** Signature du subchunk data. */
+#define WAV_DATA_SIGN 0x61746164
+/** Signature du subchunk fmt. */
+#define WAV_FMT_SIGN 0x20746d66
+/** Offset entre le champ situé après la taille du subchunk fmt et le nombre de bit
+ * par sample. */
+#define WAV_FMT_BPS_OFF 14
+/** Adresse du premier subchunk (octet). */
+#define WAV_SUBCHK1_ADDR 12
 
 /** Structure du format WAVE. */
 struct wav {

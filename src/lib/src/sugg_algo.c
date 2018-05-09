@@ -5,11 +5,11 @@
  * vérifier l'algorithme de stéganographie à utiliser.
  */
 
-#include <endian.h>
-#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <endian.h>
+#include <time.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -26,8 +26,8 @@
 
 static int can_use_lsb(info_s * infos)
 {
-	assert(infos->host.host);
-    // Si le fichier hôte est un fichier BMP non compressé.
+    assert(infos);
+    /* Si le fichier hôte est un fichier BMP non compressé. */
     if (infos->host.type == BMP_UNCOMPRESSED) {
         /* 
            Si le nombre de bits utilisés pour coder la couleur de chaque 
@@ -51,7 +51,7 @@ static int can_use_lsb(info_s * infos)
         return 0;
     }
     
-    // si le fichier hôte est un fichier WAV PCM
+    /* Si le fichier hôte est un fichier WAVE-PCM. */
     else if (infos->host.type == WAV_PCM) {
         /* 
            calcul du nombre de bits modifiables pour l'algorithme LSB
@@ -60,15 +60,15 @@ static int can_use_lsb(info_s * infos)
            [nb doctets representant l'audio]*2 -> nb de bits modifiable avec LSB 
          */
         uint64_t nb_bits_audio =
-            (((infos->host.file_info.wav.data_size) -
-              8) / (infos->host.file_info.wav.chunk_size)) * 2;
+            (((infos->host.file_info.wav.data_size) - 8) / (infos->host.file_info.wav.chunk_size)) * 2;
 
         if ((infos->hidden_length * 8) > nb_bits_audio) {
             return 1;
         }
     } 
-    
-    else return 1;
+    /* Sinon, on ne peux pas utiliser LSB. */
+    else
+        return 1;
 }
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme EOF pour la dissimulation. 
@@ -132,18 +132,20 @@ static int can_use_junk_chunk(info_s * infos)
  * @details Remplit les informations du fichier hôte en fonction du type de
  * fichier. Effectue la lecture des données pour remplir la structure. 
  * @sideeffect Initialise et rempli le champ \r{info_s.host.file_info}.
+ * @req \r{info_s.host.host} doit être un fichier ouvert en lecture et
+ * compatible avec l'application.
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
+ * @return 0 si tout se passe bien, sinon 1 s'il y a une erreur. 
  */
 int fill_host_info(info_s * infos)
 {
-	assert(infos->host.host);
-    if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-        return 1;
+    /* Vérifications + on set positionne au début du fichier. */
+    assert(infos && infos->host.host);
+    if (fseek(infos->host.host, 0, SEEK_SET))
+        return perror("Can't move to the beginning of the host file"), 1;
     
-    // remplit la structure BMP de infos.host.file_info
-    //http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
+    // Remplit la structure BMP de infos.host.file_info.
+    // http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         uint32_t begin_pic, length_pic, pixel_width, pixel_height;
         uint16_t pixel_length;
@@ -232,64 +234,38 @@ int fill_host_info(info_s * infos)
         return 0;
     }
     
-    // remplit la structure WAV de infos.host.file_info
-    // http://soundfile.sapp.org/doc/WaveFormat/
+    /* Remplit la structure WAVE. */
     else if ((infos->host.type == WAV_PCM) || (infos->host.type == WAV_NO_PCM)) {
-        uint8_t byte_read_wav;  //lecture de l'octet a chaque iteration
-        uint64_t header_length = 0;     // longueur du header
-        int stop_wav = 0;       // sort de la boucle quand on a lu les lettres "DATA"
-        int read_data = 0;      // compte les lettres "DATA"
-        // lecture de la taille du header (jusqu'a DATA)
-        while (stop_wav == 0) {
-			if (fread(&byte_read_wav, sizeof(uint8_t), 1, infos->host.host) != 1)
-				stop_wav=1;
-            else {
-                if (byte_read_wav == HEXA_D)
-                    read_data++;
-                else if ((byte_read_wav == HEXA_A) && (read_data == 1)) {
-                    read_data++;
-                } else if ((byte_read_wav == HEXA_T) && (read_data == 2)) {
-                    read_data++;
-                } else if ((byte_read_wav == HEXA_A) && (read_data == 3)) {
-                    read_data++;
-                } else
-                    read_data = 0;
-                if (read_data == 4) {
-                    header_length = header_length - 4;
-                    stop_wav = 1;
-                }
-                header_length++;
+        /* Lecture de tout les subchunk depuis le premier subchunk du header
+         * jusqu'au subchunk "data". */
+        uint32_t chunk_id = 0, chunk_size = WAV_SUBCHK1_ADDR;  /* ID et taille du chunk lu. */
+        while (chunk_id != WAV_DATA_SIGN) {
+            /* On saute le chunk venant d'être lu (pour le premier : on va à
+             * l'adresse du premier subchunk). */
+            if (fseek(infos->host.host, chunk_size, SEEK_CUR))
+                return perror("WAVE file: Can't skip the subchunk currently read"), 1;
+            /* Lecture de l'ID du subchunk. */
+            if (fread(&chunk_id, sizeof(chunk_id), 1, infos->host.host) != 1)
+                return perror("WAVE file: Can't read ID of subchunk"), 1;
+            /* Lecture de la taille du subchunk. */
+            if (fread(&chunk_size, sizeof(chunk_size), 1, infos->host.host) != 1)
+                return perror("WAVE file: Can't read the size of subchunk"), 1;
+
+            /* Cas spécial : quand on lit le subchunk fmt, on en profite pour
+             * lire le nombre de bits par sample. */
+            if (chunk_id == WAV_FMT_SIGN) {
+                chunk_size -= WAV_FMT_BPS_OFF + sizeof(uint16_t);
+                if (fseek(infos->host.host, WAV_FMT_BPS_OFF, SEEK_CUR))
+                    return perror("WAVE file: Can't jump to bit per sample in the fmt subchunk"), 1;
+                if (fread(&(infos->host.file_info.wav.chunk_size), sizeof(uint16_t), 1, infos->host.host) != 1)
+                    return perror("WAVE file: Can't read number of bit per sample"), 1;
             }
         }
-        infos->host.file_info.wav.header_size = header_length;
-
-        // lecture de la taille du chunk DATA
-        uint64_t data_length;
-        if (fseek(infos->host.host, header_length + WAV_DATA_SIZE, SEEK_SET) == -1)
-			return 1;
-		if (fread(&data_length, sizeof(uint64_t), 1, infos->host.host) != 1)
-			return 1;
-        data_length = le32toh(data_length);
-        infos->host.file_info.wav.data_size = data_length + WAV_SUBCHUNK_LENGTH;
-
-        // lecture du nombre de channels (canaux)
-        uint16_t bloc_align;
-        uint16_t nb_channels;
-        if (fseek(infos->host.host, WAV_NUM_CHANNELS, SEEK_SET) == -1)
-			return 1;
-		if (fread(&nb_channels, sizeof(uint16_t), 1, infos->host.host) != 1)
-			return 1;
-        nb_channels = le32toh(nb_channels);
-
-        // lecture du nombre de bloc align 
-        if (fseek(infos->host.host, WAV_NB_BLOC_ALIGN, SEEK_SET) == -1)
-			return 1;
-		if (fread(&bloc_align, sizeof(uint16_t), 1, infos->host.host) != 1)
-			return 1;
-        bloc_align = le32toh(bloc_align);
-
-        // nb_bits_par_sample=(nb_bloc_align/nb_channels)*8;
-        infos->host.file_info.wav.chunk_size = (bloc_align / nb_channels) * 8;
+        /* Récupération de la taille totale du header. */
+        if ((infos->host.file_info.wav.header_size = ftell(infos->host.host)) == -1)
+            return perror("WAVE file: Can't read size of header"), 1;
+        /* Récupération de la taille de data. */
+        infos->host.file_info.wav.data_size = chunk_size;
         return 0;
     }
     
@@ -338,10 +314,13 @@ int fill_host_info(info_s * infos)
         return 0;
     }
     
-    // pour les structures AVI et MP3 leurs structures sont vides
-    else if ((infos->host.type == MP3) || (infos->host.type == AVI_COMPRESSED)
-             || (infos->host.type == AVI_UNCOMPRESSED)) return 0;
-
+    /* Structures AVI et MP3 : structures vides. */
+    else if (infos->host.type == MP3
+            || infos->host.type == AVI_COMPRESSED
+            || infos->host.type == AVI_UNCOMPRESSED) {
+        return 0;
+    }
+    /* Format non reconnu => erreur. */
     else
         return 1;
 }
