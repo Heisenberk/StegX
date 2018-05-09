@@ -30,6 +30,7 @@ void test_detect_algo_with_passwd(void **state)
     infos_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
     strcpy(infos_insert->passwd, "stegx");
     strcpy(passwd_save1, "stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));    
 
     stegx_suggest_algo(infos_insert);
     stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
@@ -41,14 +42,10 @@ void test_detect_algo_with_passwd(void **state)
         fclose(infos_insert->host.host);
     if (infos_insert->res != NULL)
         fclose(infos_insert->res);
-    if (infos_insert->hidden_name != NULL)
-        free(infos_insert->hidden_name);
-    if (infos_insert->passwd != NULL)
-        free(infos_insert->passwd);
-    if (infos_insert != NULL)
-        free(infos_insert);
-    if (stegx_propos_algos != NULL)
-        free(stegx_propos_algos);
+    free(infos_insert->hidden_name);
+    free(infos_insert->passwd);
+    free(infos_insert);
+    free(stegx_propos_algos);
         
 	info_s *infos_extract = malloc(sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
@@ -78,14 +75,10 @@ void test_detect_algo_with_passwd(void **state)
         fclose(infos_extract->host.host);
     if (infos_extract->res != NULL)
         fclose(infos_extract->res);
-    if (infos_extract->hidden_name != NULL)
-        free(infos_extract->hidden_name);
-    if (infos_extract->passwd != NULL)
-        free(infos_extract->passwd);
-    if (infos_extract != NULL)
-        free(infos_extract);
-    if (stegx_propos_algos != NULL)
-        free(stegx_propos_algos);
+    free(infos_extract->hidden_name);
+    free(infos_extract->passwd);
+    free(infos_extract);
+    free(stegx_propos_algos);
 
     assert_int_equal(test, 1);
 }
@@ -105,6 +98,7 @@ void test_detect_algo_without_passwd(void **state)
     strcpy(infos_insert->hidden_name, "test2.bmp");
     strcpy(hidden_name_write1, "test2.bmp");
     infos_insert->hidden = fopen("../../../env/test/test2.bmp", "r");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));  
 
     stegx_suggest_algo(infos_insert);
     stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
