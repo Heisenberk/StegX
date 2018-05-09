@@ -103,7 +103,7 @@ static int can_use_metadata(info_s * infos)
  * @return 0 si l'algorithme est proposé, 1 sinon.
  */
 static int can_use_eoc(info_s * infos)
-{
+{	
     assert(infos);
     // Pour le format FLV, on propose EOC. Pour tous le reste, on ne propose pas EOC.
     if (infos->host.type == FLV)
@@ -296,6 +296,52 @@ int fill_host_info(info_s * infos)
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
+    	uint8_t check_tags; 
+		uint32_t header_size;
+		uint8_t tag_type;
+		uint32_t data_size;
+		uint32_t prev_tag_size;
+
+
+	infos->host.file_info.flv.nb_video_tag=0;
+    infos->host.file_info.flv.nb_metadata_tag=0;
+    infos->host.file_info.flv.file_size=0;
+    fseek(infos.host.host,4,SEEK_SET);
+    
+    
+
+    //lecture du header
+    fread(&check_tags,sizeof(check_tags),1,infos->host.host);
+    //file_size+=1;
+    //à enlever (?)    if (!(check_tags==5 || check_tags==1)){nb_video_tag=0;}
+    fread(&header_size,sizeof(header_size),1,infos->host.host);
+    //file_size+=1;
+    header_size=be32toh(header_size);
+    infos->host.file_info.flv.file_size+=header_size;
+    fseek(infos->host.host,4,SEEK_CUR);
+    infos->host.file_info.flv.file_size+=4;
+
+    //lecture des tags
+    while(fread(&tag_type,sizeof(tag_type),1,infos->host.host)==1){
+	    //file_size++;
+	    if(tag_type==18){infos->host.file_info.flv.nb_metadata_tag+=1;}
+	    if(tag_type==9){infos->host.file_info.flv.nb_video_tag+=1;}
+	    fread(&data_size,sizeof(data_size),1,infos->host.host);
+
+	  	 data_size=be32toh(data_size);    
+	     data_size>>=8;
+	     fseek(infos->host.host,data_size+6,SEEK_CUR);
+	     fread(&prev_tag_size,sizeof(prev_tag_size),1,infos->host.host);
+		 prev_tag_size=be32toh(prev_tag_size);
+		 infos->host.file_info.flv.file_size+=prev_tag_size+4;
+
+	}
+
+
+
+
+
+
 		// a remplir par claire et tristan
         return 0;
     }
