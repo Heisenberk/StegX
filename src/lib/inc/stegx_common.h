@@ -54,7 +54,11 @@ typedef enum method method_e;
 /** Type de la structure privée stockant les informations de la bibliothèque. */
 typedef struct info info_s;
 
-#define NB_ALGOS 5
+/*
+attention les octets 8, 9, 12 et 18 ne peuvent pas etre utilisés dans 
+le premier octet de la signature StegX a cause de la signature FLV des 
+différents tags.
+*/
 
 /**
  * \def Signature EOF avec mot de passe choisi par l'utilisateur
@@ -98,18 +102,18 @@ typedef struct info info_s;
  * \def Signature EOC sans mot de passe choisi par l'utilisateur, choisi 
  * aléatoirement par l'application
  * */
-#define BYTE_EOC_WITHOUT_PASSWD 8
+#define BYTE_EOC_WITHOUT_PASSWD 10
 
 /**
  * \def Signature JUNK CHUNK avec mot de passe choisi par l'utilisateur
  * */
-#define BYTE_JUNK_CHUNK_WITH_PASSWD 9
+#define BYTE_JUNK_CHUNK_WITH_PASSWD 11
 
 /**
  * \def Signature Junk Chunk sans mot de passe choisi par l'utilisateur, choisi 
  * aléatoirement par l'application
  * */
-#define BYTE_JUNK_CHUNK_WITHOUT_PASSWD 10
+#define BYTE_JUNK_CHUNK_WITHOUT_PASSWD 13
 
 #define LENGTH_HIDDEN_NAME_MAX 255
 

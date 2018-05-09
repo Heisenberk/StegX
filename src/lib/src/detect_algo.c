@@ -22,7 +22,7 @@
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si la signature a bien ete lue ; 1 sinon 
  */
-int read_signature(info_s* infos){
+static int read_signature(info_s* infos){
 	assert(infos);
     assert(infos->mode == STEGX_MODE_EXTRACT);
     
@@ -176,6 +176,9 @@ int stegx_detect_algo(info_s* infos){
 	*/
 	int read=read_signature(infos);
 	if(read==1){
+		if(stegx_errno==ERR_NEED_PASSWD){ // erreur particuliere
+			return 1;
+		}
 		stegx_errno=ERR_DETECT_ALGOS;
 		return 1;
 	}
