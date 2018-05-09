@@ -306,7 +306,7 @@ int fill_host_info(info_s * infos)
 		infos->host.file_info.flv.nb_video_tag=0;
     	infos->host.file_info.flv.nb_metadata_tag=0;
     	infos->host.file_info.flv.file_size=0;
-    	fseek(infos.host.host,4,SEEK_SET);
+    	fseek(infos->host.host,4,SEEK_SET);
     
     	//lecture du header
     	fread(&check_tags,sizeof(check_tags),1,infos->host.host);
@@ -321,7 +321,7 @@ int fill_host_info(info_s * infos)
     	while(fread(&tag_type,sizeof(tag_type),1,infos->host.host)==1){
 	    
 	    	if(tag_type==METATAG){infos->host.file_info.flv.nb_metadata_tag+=1;}
-	   		else if(tag_type==VIDEO_TAG){nb_video_tag+=1;}
+	   		else if(tag_type==VIDEO_TAG){infos->host.file_info.flv.nb_video_tag+=1;}
 			else if(!(tag_type==AUDIO_TAG || tag_type==SCRIPT_DATA_TAG)){break;}	
 	    	fread(&data_size,sizeof(data_size),1,infos->host.host);
 	    	//lecture de la taille des data
