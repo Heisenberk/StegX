@@ -23,48 +23,38 @@
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 Si l'algorithme est proposé, 1 sinon.
  */
-
 static int can_use_lsb(info_s * infos)
 {
     assert(infos);
-    /* Si le fichier hôte est un fichier BMP non compressé. */
-    if (infos->host.type == BMP_UNCOMPRESSED) {
-        /* 
-           Si le nombre de bits utilisés pour coder la couleur de chaque 
-           pixel est inférieur ou égal à 8 (soit 256 couleurs), le deuxième 
-           en-tête est suivi d’une table des couleurs utilisées dans l’image. 
-           LSB non proposé 
-         */
-        if (infos->host.file_info.bmp.pixel_length <= 8)
-            return 1;
-
+    /* Si le fichier hôte est un fichier BMP non compressé. Si le nombre de bits
+     * utilisés pour coder la couleur de chaque pixel est inférieur ou égal à 8
+     * (soit 256 couleurs), le deuxième en-tête est suivi d’une table des
+     * couleurs utilisées dans l’image => LSB non proposé */
+    if (infos->host.type == BMP_UNCOMPRESSED && infos->host.file_info.bmp.pixel_length > 8) {
         // calcul du nombre d'octets représentant l'image brute
         uint64_t nb_bits_pic =
             ((infos->host.file_info.bmp.pixel_length) * (infos->host.file_info.bmp.pixel_number))/8;
         // calcul du nombre de bits modifiables pour l'algorithme LSB
         nb_bits_pic /= 4;
         
-        // si la taille du fichier a cacher est trop importante -> LSB impossible
-        if ((infos->hidden_length * 8) > nb_bits_pic) {
-            return 1;
-        }
-        return 0;
+        // si la taille du fichier a cacher est ok -> LSB possible
+        if ((infos->hidden_length * 8) <= nb_bits_pic)
+            return 0;
     }
     
     /* Si le fichier hôte est un fichier WAVE-PCM. */
     else if (infos->host.type == WAV_PCM) {
-        /* 
-           calcul du nombre de bits modifiables pour l'algorithme LSB
-           on fait -8 car data_size inclut [signature DATA](4 octets) et [taille du chunk DATA](4 octets)
-           ([nb doctets data]/[nb de bits par sample])=[nb doctets representant l'audio]
-           [nb doctets representant l'audio]*2 -> nb de bits modifiable avec LSB 
-         */
-        uint64_t nb_bits_audio =
-            (((infos->host.file_info.wav.data_size) - 8) / (infos->host.file_info.wav.chunk_size)) * 2;
+        /* Calcul du nombre de bits modifiables pour l'algorithme LSB :
+           ([nb d'octets de data] / ([nb de bits par sample] / 8)) = [nb de bit de poids faible d'audio]
+           [nb de bit de poids faible d'audio] * 2 = [nb de bits modifiable]
+           (car on modifie les 2 bits de poids faible par sample). */
+        uint64_t nb_bits_modif =
+            ((infos->host.file_info.wav.data_size) / (infos->host.file_info.wav.chunk_size / 8)) * 2;
 
-        if ((infos->hidden_length * 8) > nb_bits_audio) {
-            return 1;
-        }
+        /* Si le nombre de bit du fichier à cacher est inférieur ou égal au
+         * nombre de bit modifiables => LSB utilisable. */
+        if ((infos->hidden_length * 8) <= nb_bits_modif)
+            return 0;
     } 
     /* Sinon, on ne peux pas utiliser LSB. */
     else
