@@ -368,6 +368,10 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
         infos->algo = algo_choosen;
     /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
      * choisis EOF par défaut. */
+    else if(!stegx_propos_algos[algo_choosen]){
+		stegx_errno=ERR_CHOICE_ALGO; 
+		return 1;
+	}
     else
         infos->algo = STEGX_ALGO_EOF;
     return 0;

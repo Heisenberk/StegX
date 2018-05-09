@@ -23,6 +23,7 @@ enum err_code {
     ERR_READ,                   /*!< Erreur lors de la lecture. */
     ERR_CHECK_COMPAT,           /*!< Erreur dans le module Verification de la compatibilite des fichiers. */
     ERR_SUGG_ALGOS,             /*!< Erreur dans le sous-module proposition des algos de steganographie. */
+    ERR_CHOICE_ALGO,			/*!< Erreur l'algorithme choisi par l'utilisateur n'est proposé. */
     ERR_INSERT,                 /*!< Erreur dans le sous-module Insertion. */
     ERR_EXTRACT,                /*!< Erreur dans le sous-module Extraction. */
     ERR_DETECT_ALGOS, 				/*!< Erreur dans le sous-module Dectection des algorithmes de steganographie. */

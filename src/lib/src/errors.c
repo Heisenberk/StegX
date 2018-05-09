@@ -20,10 +20,10 @@ void err_print(enum err_code err)
         /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
         /* ERR_RES_INSERT */ "le resultat est invalide pour l'insertion",
         /* ERR_READ */ "erreur de lecture",
-        /* ERR_FSEEK */ "erreur fseek",	
         /* ERR_CHECK_COMPAT */
         "erreur dans le module verification de la compatibilite des fichiers",
         /* ERR_SUGG_ALGOS */ "erreur dans le sous-module proposition des algos de steganographie",
+        /* ERR_CHOICE_ALGO */ "erreur l'algorithme choisi par l'utilisateur n'est proposé par StegX",
         /* ERR_INSERT */ "erreur dans le sous-module insertion",
         /* ERR_EXTRACT */ "erreur dans le sous-module extraction",
         /* ERR_DETECT_ALGOS */ "erreur dans le sous-module detection de l'algorithme de steganographie",
