@@ -260,34 +260,25 @@ void test_file_info_png_v2(void **state)
     assert_int_equal(test, 1);
 }
 
-void test_file_info_wav_v1(void **state)
+void test_file_info_wav__pcm_alaw_1(void **state)
 {
     (void)state;   
+    /* Setup. */
     info_s* infos=malloc(sizeof(info_s));
+    assert_non_null(infos);
     infos->mode=STEGX_MODE_INSERT;
     infos->algo=STEGX_ALGO_EOF;
     infos->method=STEGX_WITH_PASSWD;
     infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav","r");
     infos->host.type=WAV_NO_PCM;
-    infos->res=fopen("res.bmp","w");
-    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
+    infos->res=fopen("res.bmp","w"), assert_non_null(infos->res);
+    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char)), assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name,"test2.bmp");
-    infos->hidden=fopen("../../../env/test/test2.bmp","r");
-    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+    infos->hidden=fopen("../../../env/test/test2.bmp","r"), assert_non_null(infos->hidden);
+    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char)), assert_non_null(infos->passwd);
     strcpy(infos->passwd,"stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-    
-    stegx_suggest_algo(infos);
-    uint32_t header_size=infos->host.file_info.wav.header_size;
-    uint32_t data_size=infos->host.file_info.wav.data_size;
-    uint32_t chunk_size=infos->host.file_info.wav.chunk_size;
-    
-    if(infos->host.host!=NULL) fclose(infos->host.host);
-    if(infos->res!=NULL) fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
+
     
     /*
 		Valeurs à trouver:
@@ -295,92 +286,99 @@ void test_file_info_wav_v1(void **state)
 		DATA SIZE:106416
 		CHUNK SIZE:8
 	*/
-    
-    int test;
-    test=((header_size==48)&&(data_size==106416)&&(chunk_size==8));
-    assert_int_equal(test, 1);
-}
-
-void test_file_info_wav_v2(void **state)
-{
-    (void)state;   
-    info_s* infos=malloc(sizeof(info_s));
-    infos->mode=STEGX_MODE_INSERT;
-    infos->algo=STEGX_ALGO_EOF;
-    infos->method=STEGX_WITH_PASSWD;
-    infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav","r");
-    infos->host.type=WAV_NO_PCM;
-    infos->res=fopen("res.bmp","w");
-    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
-    strcpy(infos->hidden_name,"test2.bmp");
-    infos->hidden=fopen("../../../env/test/test2.bmp","r");
-    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
-    strcpy(infos->passwd,"stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-    
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-    uint32_t header_size=infos->host.file_info.wav.header_size;
-    uint32_t data_size=infos->host.file_info.wav.data_size;
-    uint32_t chunk_size=infos->host.file_info.wav.chunk_size;
+    // CHUNK SIZE :
+    assert_int_equal(infos->host.file_info.wav.chunk_size, 8);
+    // HEADER SIZE :
+    assert_int_equal(infos->host.file_info.wav.header_size, 56);
+    // DATA SIZE :
+    assert_int_equal(infos->host.file_info.wav.data_size, 106408);
+    // TOTAL SIZE : 106464
     
+    /* Teardown. */
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
     free(infos->hidden_name);
     free(infos->passwd);
     free(infos);
     free(stegx_propos_algos);
-    
-    /*
-		Valeurs à trouver:
-		HEADER SIZE:48
-		DATA SIZE:160588
-		CHUNK SIZE:8
-	*/
-    
-    int test;
-    test=((header_size==48)&&(data_size==160588)&&(chunk_size==8));
-    assert_int_equal(test, 1);
 }
 
-void test_file_info_wav_v3(void **state)
+void test_file_info_wav__pcm_alaw_2(void **state)
+{
+    (void)state;
+    /* Setup. */
+    info_s* infos=malloc(sizeof(info_s));
+    assert_non_null(infos);
+    infos->mode=STEGX_MODE_INSERT;
+    infos->algo=STEGX_ALGO_EOF;
+    infos->method=STEGX_WITH_PASSWD;
+    infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav","r"), assert_non_null(infos->host.host);
+    infos->host.type=WAV_NO_PCM;
+    infos->res=fopen("res.bmp","w"), assert_non_null(infos->res);
+    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char)), assert_non_null(infos->hidden_name);
+    strcpy(infos->hidden_name,"test2.bmp");
+    infos->hidden=fopen("../../../env/test/test2.bmp","r"), assert_non_null(infos->hidden);
+    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char)), assert_non_null(infos->passwd);
+    strcpy(infos->passwd,"stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
+    
+    /* Valeurs à trouver : */
+    stegx_suggest_algo(infos);
+    // CHUNK SIZE :
+    assert_int_equal(infos->host.file_info.wav.chunk_size, 8);
+    // HEADER SIZE :
+    assert_int_equal(infos->host.file_info.wav.header_size, 56);
+    // DATA SIZE :
+    assert_int_equal(infos->host.file_info.wav.data_size, 160580);
+    // TOTAL SIZE : 160636
+    
+    /* Teardown. */
+    if(infos->host.host!=NULL) fclose(infos->host.host);
+    if(infos->res!=NULL) fclose(infos->res);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
+}
+
+void test_file_info_wav__pcm_s16le(void **state)
 {
     (void)state;   
+    /* Setup. */
     info_s* infos=malloc(sizeof(info_s));
+    assert_non_null(infos);
     infos->mode=STEGX_MODE_INSERT;
     infos->algo=STEGX_ALGO_EOF;
     infos->method=STEGX_WITH_PASSWD;
     infos->host.host=fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav","r");
     infos->host.type=WAV_PCM;
-    infos->res=fopen("res.bmp","w");
-    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char));
+    infos->res=fopen("res.bmp","w"), assert_non_null(infos->res);
+    infos->hidden_name=malloc((strlen("test2.bmp")+1)*sizeof(char)), assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name,"test2.bmp");
-    infos->hidden=fopen("../../../env/test/test2.bmp","r");
-    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+    infos->hidden=fopen("../../../env/test/test2.bmp","r"), assert_non_null(infos->hidden);
+    infos->passwd=malloc((strlen("stegx")+1)*sizeof(char)), assert_non_null(infos->passwd);
     strcpy(infos->passwd,"stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
     
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-    uint32_t header_size=infos->host.file_info.wav.header_size;
-    uint32_t data_size=infos->host.file_info.wav.data_size;
-    uint32_t chunk_size=infos->host.file_info.wav.chunk_size;
-    
+    // CHUNK SIZE :
+    assert_int_equal(infos->host.file_info.wav.chunk_size, 16);
+    // HEADER SIZE :
+    assert_int_equal(infos->host.file_info.wav.header_size, 78);
+    // DATA SIZE :
+    assert_int_equal(infos->host.file_info.wav.data_size, 34230272);
+    // TOTAL SIZE : 34230350
+
+    /* Teardown. */
     if(infos->host.host!=NULL) fclose(infos->host.host);
     if(infos->res!=NULL) fclose(infos->res);
     free(infos->hidden_name);
     free(infos->passwd);
     free(infos);
     free(stegx_propos_algos);
-    
-    /*
-		Valeurs à trouver:
-		HEADER SIZE:70
-		DATA SIZE:34230280
-		CHUNK SIZE:16
-	*/
-    
-    int test;
-    test=((header_size==70)&&(data_size==34230280)&&(chunk_size==16));
-    assert_int_equal(test, 1);
 }
 
 void test_file_info_flv_v1(void **state)
@@ -475,7 +473,7 @@ void test_propos_algos_v3(void **state){
     
         int i;
     for(i=0;i<5;i++){
-		printf(">%d\n",stegx_propos_algos[i]);
+		/* printf(">%d\n",stegx_propos_algos[i]); */
 	}
     
     int test=((stegx_propos_algos[0]==0)&&(stegx_propos_algos[1]==1)&&
@@ -561,9 +559,9 @@ const struct CMUnitTest sugg_algos_tests[] = {
     cmocka_unit_test(test_file_info_bmp_v3),
     cmocka_unit_test(test_file_info_png_v1),
     cmocka_unit_test(test_file_info_png_v2),
-    cmocka_unit_test(test_file_info_wav_v1),
-    cmocka_unit_test(test_file_info_wav_v2),
-    cmocka_unit_test(test_file_info_wav_v3),
+    cmocka_unit_test(test_file_info_wav__pcm_alaw_1),
+    cmocka_unit_test(test_file_info_wav__pcm_alaw_2),
+    cmocka_unit_test(test_file_info_wav__pcm_s16le),
     cmocka_unit_test(test_file_info_flv_v1),
     cmocka_unit_test(test_propos_algos_v1),
     cmocka_unit_test(test_propos_algos_v2),
