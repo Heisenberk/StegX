@@ -56,7 +56,7 @@ void test_write_signature_with_passwd(void **state)
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
+    length_file = le32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);
@@ -127,7 +127,7 @@ void test_write_signature_without_passwd(void **state)
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
+    length_file = le32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);

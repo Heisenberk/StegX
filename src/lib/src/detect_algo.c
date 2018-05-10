@@ -39,7 +39,7 @@ static int read_signature(info_s * infos)
             (infos->host.host,
              infos->host.file_info.bmp.header_size + infos->host.file_info.bmp.data_size,
              SEEK_SET) == -1)
-            return 1;
+            return perror("Can't move to STEGX signature"), 1;
     }
 
     /*
@@ -47,7 +47,7 @@ static int read_signature(info_s * infos)
        utilisée (avec ou sans mdp choisi par l'utilisateur)
      */
     if (fread(&algo_read, sizeof(uint8_t), 1, infos->host.host) != 1)
-        return 1;
+        return perror("Can't read byte algo-method"), 1;
 
     // on remplit les champs algo et method de infos
     // cas algo EOF
@@ -92,15 +92,14 @@ static int read_signature(info_s * infos)
     }
     // on lit la taille du fichier caché
     if (fread(&hidden_length_read, sizeof(uint32_t), 1, infos->host.host) != 1)
-        return 1;
+        return perror("Can't read length hidden file"), 1;
     // convertit read_length_pic de big-endian en l'endian de la machine
-    hidden_length = be32toh(hidden_length_read);
-    infos->hidden_length = hidden_length;
+    infos->hidden_length = le32toh(hidden_length_read);
 
     // on lit la taille du nom du fichier caché
     read = fread(&length_name_hidden, sizeof(uint8_t), 1, infos->host.host);
     if (read == 0)
-        return 1;
+        return perror("Can't read length name hidden file"), 1;
     infos->hidden_name = malloc((length_name_hidden + 1) * sizeof(char));
 
     // si l'emetteur a besoin d'un mdp et que le recepteur n'en a pas fourni 
@@ -123,7 +122,7 @@ static int read_signature(info_s * infos)
 
         // on lit le mdp ecrit dans la signature
         if (fseek(infos->host.host, length_name_hidden, SEEK_CUR) == -1)
-            return 1;
+            return perror("Can't read password"), 1;
 
         for (ii = 0; ii < (LENGTH_DEFAULT_PASSWD + 1); ii++) {
             if (fread(&car_read, sizeof(uint8_t), 1, infos->host.host) != 1)
@@ -131,12 +130,11 @@ static int read_signature(info_s * infos)
             infos->passwd[ii] = car_read;
         }
         infos->passwd[LENGTH_DEFAULT_PASSWD] = '\0';
-        printf("PASSWD : \"%s\"\n", infos->passwd);
 
         // on va au niveau du nom du fichier pour pouvoir le lire dans la signature
         if (fseek(infos->host.host, -(LENGTH_DEFAULT_PASSWD + length_name_hidden + 1), SEEK_CUR) ==
             -1)
-            return 1;
+            return perror("Can't read name hidden file"), 1;
     }
 
     /*
@@ -155,7 +153,7 @@ static int read_signature(info_s * infos)
             jj = 0;
     }
     infos->hidden_name[length_name_hidden] = '\0';
-    printf("NOM DU FICHIER DETECTE : %s\n", infos->hidden_name);
+
 
     return 0;
 }
