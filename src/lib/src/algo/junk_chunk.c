@@ -9,6 +9,7 @@
 
 int insert_junk_chunk(info_s * infos)
 {
+	// a remplir
     return 1;
 }
 

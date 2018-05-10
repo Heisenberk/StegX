@@ -20,6 +20,7 @@
  * @param *message représente le message a XOR avec le mot de passe.
  * @param *passwd représente le mot de passe choisi pour XOR le message. 
  */
+ // a enlever car ce n'est pas dans les specifications
 void xor(char *message, char *passwd)
 {
     int i = 0;

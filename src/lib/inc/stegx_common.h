@@ -61,60 +61,63 @@ a cause de la signature FLV des différents tags.
 */
 
 /**
- * \def Signature EOF avec mot de passe choisi par l'utilisateur
+ * \def Signature EOF avec mot de passe choisi par l'utilisateur. 
  * */
 #define BYTE_EOF_WITH_PASSWD 1
 
 /**
  * \def Signature EOF sans mot de passe choisi par l'utilisateur, choisi 
- * aléatoirement par l'application
+ * aléatoirement par l'application. 
  * */
 #define BYTE_EOF_WITHOUT_PASSWD 2
 
 /**
- * \def Signature LSB avec mot de passe choisi par l'utilisateur
+ * \def Signature LSB avec mot de passe choisi par l'utilisateur. 
  * */
 #define BYTE_LSB_WITH_PASSWD 3
 
 /**
  * \def Signature LSB sans mot de passe choisi par l'utilisateur, choisi 
- * aléatoirement par l'application
+ * aléatoirement par l'application. 
  * */
 #define BYTE_LSB_WITHOUT_PASSWD 4
 
 /**
- * \def Signature METADATA avec mot de passe choisi par l'utilisateur
+ * \def Signature METADATA avec mot de passe choisi par l'utilisateur. 
  * */
 #define BYTE_METADATA_WITH_PASSWD 5
 
 /**
  * \def Signature METADATA sans mot de passe choisi par l'utilisateur, choisi 
- * aléatoirement par l'application
+ * aléatoirement par l'application. 
  * */
 #define BYTE_METADATA_WITHOUT_PASSWD 6
 
 /**
- * \def Signature EOC avec mot de passe choisi par l'utilisateur
+ * \def Signature EOC avec mot de passe choisi par l'utilisateur. 
  * */
 #define BYTE_EOC_WITH_PASSWD 7
 
 /**
  * \def Signature EOC sans mot de passe choisi par l'utilisateur, choisi 
- * aléatoirement par l'application
+ * aléatoirement par l'application. 
  * */
 #define BYTE_EOC_WITHOUT_PASSWD 10
 
 /**
- * \def Signature JUNK CHUNK avec mot de passe choisi par l'utilisateur
+ * \def Signature JUNK CHUNK avec mot de passe choisi par l'utilisateur. 
  * */
 #define BYTE_JUNK_CHUNK_WITH_PASSWD 11
 
 /**
  * \def Signature Junk Chunk sans mot de passe choisi par l'utilisateur, choisi 
- * aléatoirement par l'application
+ * aléatoirement par l'application. 
  * */
 #define BYTE_JUNK_CHUNK_WITHOUT_PASSWD 13
 
+/**
+ * \def Taille maximale pour le nom du fichier caché. 
+ * */
 #define LENGTH_HIDDEN_NAME_MAX 255
 
 /**
