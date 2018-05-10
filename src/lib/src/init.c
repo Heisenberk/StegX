@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -7,17 +8,23 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * @brief Initialise la structure info_s en fonction des choix de l'utilisateur. 
- * @param *choices Structure représentant les choix de l'utilisateur.
- * @return info_s* Structure qui contient les informations pour réaliser 
- * correctement la dissimulation/extraction. 
- */
 info_s *stegx_init(stegx_choices_s * choices)
 {
+    assert(choices);
     info_s *s = malloc(sizeof(info_s));
+    if (!s)
+        return perror("Can't allocate memory for info_s structure"), NULL;
     int count, begin;
     int i, j;
+
+    /* Initialisation de la variable globale de proposition des algorithmes si
+     * elle n'est pas déjà initialisée. Lors du free, il remettre le pointeur à
+     * NULL pour bien spécifié que la zone n'est plus allouée : on pourrait
+     * partager cette variable entre plusieurs structures "info_s" si on imagine
+     * une interface qui appellent plusieurs fois "stegx_init" et "stegx_clear" sur
+     * des structures différentes. */
+    if (!stegx_propos_algos && !(stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e))))
+        return perror("Can't allocate memory for stegx_propos_algos tab"), NULL;
 
     //OK mode
     s->mode = choices->mode;
@@ -45,7 +52,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             err_print(ERR_PASSWD);
         }
         count++;
-        s->passwd = malloc(count * sizeof(char));
+        if (!(s->passwd = malloc(count * sizeof(char))))
+            return perror("Can't allocate memory for passwd string"), NULL;
 
         for (i = 0; i < count; i++) {
             s->passwd[i] = choices->passwd[i];
@@ -98,6 +106,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             s->hidden_name = malloc((count + 1) * sizeof(char));
         else
             s->hidden_name = malloc((count - begin) * sizeof(char));
+        if (!(s->hidden_name))
+            return perror("Can't allocate memory for hidden_name string"), NULL;
         j = 0;
         int begin_cdr;
         if (begin == 0)
@@ -113,10 +123,6 @@ info_s *stegx_init(stegx_choices_s * choices)
     return s;
 }
 
-/**
- * @brief Libère la mémoire de la structure info_s. 
- * @param *infos Structure représentant les choix de l'utilisateur à libérer. 
- */
 void stegx_clear(info_s * infos)
 {
     if (infos->host.host != NULL)
@@ -125,10 +131,8 @@ void stegx_clear(info_s * infos)
         fclose(infos->hidden);
     if (infos->res != NULL)
         fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    stegx_propos_algos = (free(stegx_propos_algos), NULL);
 }

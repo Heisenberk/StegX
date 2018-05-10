@@ -19,6 +19,7 @@ stegx_choices_s *init_stegx_info()
     com->res_path = "stdout\0";
     com->insert_info = calloc(1, sizeof(stegx_info_insert_s));
     com->insert_info->hidden_path = "stdin\0";
+    com->insert_info->algo = STEGX_ALGO_EOF;
     com->mode = -1;
     return com;
 }
@@ -57,8 +58,11 @@ void help()
          "de rajouter une protection à la dissimulation.\n\n"
          "Voici les différents algorithmes que propose l'application (si option de dissimulation sélectionnée) :\n"
          "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
-         "\033[01m\033[32m--metadata\033[0m \n" "\033[01m\033[32m--eof\033[0m : end of file.\n");
-
+         "\033[01m\033[32m--metadata\033[0m \n" "\033[01m\033[32m--eof\033[0m : end of file.\n"
+         "\033[01m\033[32m--eoc\033[0m : End of Chunk (seulement pour le format FLV)."
+         "Cache les données à la fin de chaque chunk.\n"
+         "\033[01m\033[32m--junk\033[0m : Junk-chunk (seulement pour le format AVI)."
+         "Cache les données dans des chunks poubelles\n");
     printf("\n");
     exit(0);
 }
@@ -93,6 +97,8 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
         {"lsb", 0, NULL, STEGX_ALGO_LSB},
         {"metadata", 0, NULL, STEGX_ALGO_METADATA},
         {"eof", 0, NULL, STEGX_ALGO_EOF},
+        {"eoc", 0, NULL, STEGX_ALGO_EOC},
+        {"junk", 0, NULL, STEGX_ALGO_JUNK_CHUNK},
         {"password", 1, NULL, 'p'},
         {"help", 0, NULL, 'h'},
         {"about", 0, NULL, 'a'},
@@ -122,6 +128,7 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
                 break;
             case 'p':
                 com->passwd = optarg;
+                break;
             case STEGX_ALGO_LSB:
                 com->insert_info->algo = STEGX_ALGO_LSB;
                 break;
@@ -130,6 +137,12 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
                 break;
             case STEGX_ALGO_EOF:
                 com->insert_info->algo = STEGX_ALGO_EOF;
+                break;
+            case STEGX_ALGO_EOC:
+                com->insert_info->algo = STEGX_ALGO_EOC;
+                break;
+            case STEGX_ALGO_JUNK_CHUNK:
+                com->insert_info->algo = STEGX_ALGO_JUNK_CHUNK;
                 break;
             case 'h':
                 help();

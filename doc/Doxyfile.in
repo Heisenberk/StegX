@@ -238,7 +238,10 @@ TAB_SIZE               = 4
 # "Side Effects:". You can put \n's in the value part of an alias to insert
 # newlines.
 
-ALIASES                = "error=\xrefitem errors \"Errors\" \"Errors List\""
+ALIASES                = "error=\xrefitem errors \"Erreurs\" \"Codes d'erreurs\""
+ALIASES               += "sideeffect=@par Effet de bord\n"
+ALIASES               += "req=@par Prérequis\n"
+ALIASES               += "r{1}=\ref \1"
 
 # This tag can be used to specify a number of word-keyword mappings (TCL only).
 # A mapping has the form "name=value". For example adding "class=itcl::class"

@@ -54,7 +54,6 @@ int insert_eof(info_s * infos)
             fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res);
         }
     }
-
     // ecriture de la signature
     write_signature(infos);
 
