@@ -22,7 +22,6 @@ int write_signature(info_s * infos)
     assert(infos->res);
     assert(infos->hidden_name);
     assert(infos->mode != STEGX_MODE_EXTRACT);
-    int write;
     char car;
     int i = 0;int j=0;
     uint8_t algo_used;
@@ -65,22 +64,19 @@ int write_signature(info_s * infos)
             return 1;
     } else
         return 1;
-    write = fwrite(&algo_used, sizeof(uint8_t), 1, infos->res);
-    if (write == 0)
+    if (fwrite(&algo_used, sizeof(uint8_t), 1, infos->res) == 0)
         return perror("Can't write byte algo-method"), 1;
 
     // Ecriture taille du fichier a cacher (4 octets)
     uint32_t length_written = infos->hidden_length;
-    write = fwrite(&length_written, sizeof(uint32_t), 1, infos->res);
-    if (write == 0)
+    if (fwrite(&length_written, sizeof(uint32_t), 1, infos->res) == 0)
 		return perror("Can't write length hidden file"), 1;
 
     // Ecriture la taille du nom du fichier caché (1 octet)
     uint8_t length = strlen(infos->hidden_name);
     if (length > 0xFF)
         length = LENGTH_HIDDEN_NAME_MAX;
-    write = fwrite(&length, sizeof(uint8_t), 1, infos->res);
-    if (write == 0)
+    if (fwrite(&length, sizeof(uint8_t), 1, infos->res) == 0)
 		return perror("Can't write length name hidden file"), 1;
 
     // Copie du nom du fichier a cacher car on fait un xor apres
@@ -102,7 +98,8 @@ int write_signature(info_s * infos)
     i = 0;
     for (i = 0; i < length; i++) {
         car = cpy_hidden_name[i];
-        fwrite(&car, sizeof(uint8_t), 1, infos->res);
+        if(fwrite(&car, sizeof(uint8_t), 1, infos->res)==0)
+			return perror("Can't write name hidden file"), 1;
     }
     free(cpy_hidden_name);
 
@@ -113,7 +110,8 @@ int write_signature(info_s * infos)
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         for (i = 0; i < LENGTH_DEFAULT_PASSWD; i++) {
             car = infos->passwd[i];
-            fwrite(&car, sizeof(uint8_t), 1, infos->res);
+            if(fwrite(&car, sizeof(uint8_t), 1, infos->res)==0)
+				return perror("Can't write passwd"), 1;
         }
     }
 
