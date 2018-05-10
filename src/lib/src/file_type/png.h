@@ -8,15 +8,14 @@
 
 /** Adresse (offset) de la definition du chunk IHDR (octet). */
 #define PNG_DEF_IHDR 8
-/** Signature IEND */
+/** Signature IEND. */
 #define SIG_IEND 0x444E4549
-/** Longueur en octets chunk IEND */
+/** Longueur en octets chunk IEND. */
 #define LENGTH_IEND 4
-/** Longueur en octets bloc CRC */
+/** Longueur en octets bloc CRC. */
 #define LENGTH_CRC 4
-/** Longueur jusqu'au premier chunk PNG */
+/** Longueur jusqu'au premier chunk PNG. */
 #define LENGTH_SIG_PNG 8
-
 
 /** Structure du format FLV. */
 struct png {

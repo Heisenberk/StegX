@@ -173,7 +173,7 @@ int fill_host_info(info_s * infos)
         return 0;
     }
     
-    // remplit la structure BMP de infos.host.file_info
+    // remplit la structure PNG de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
         // lecture de la taille du chunk IHDR (header)
@@ -323,36 +323,25 @@ int stegx_suggest_algo(info_s * infos)
     else
         infos->hidden_length = (uint32_t) read_hidden_length;
 
-    /*
-       remplissage du tableau stegx_propos_algos pour savoir 
-       quels algos sont proposés par l'application en fonction des 
-       entrées de l'utilisateur. 
-     */
-    for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
-        if (i == STEGX_ALGO_LSB)
-            stegx_propos_algos[i] = !can_use_lsb(infos);
-        else if (i == STEGX_ALGO_EOF)
-            stegx_propos_algos[i] = !can_use_eof(infos);
-        else if (i == STEGX_ALGO_METADATA)
-            stegx_propos_algos[i] = !can_use_metadata(infos);
-        else if (i == STEGX_ALGO_EOC)
-            stegx_propos_algos[i] = !can_use_eoc(infos);
-        else if (i == STEGX_ALGO_JUNK_CHUNK)
-            stegx_propos_algos[i] = !can_use_junk_chunk(infos);
-    }
+    /* Remplissage du tableau stegx_propos_algos pour savoir 
+       quels algos sont proposés par l'application en fonction des entrées de
+       l'utilisateur. */
+    /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
+     * l'énumération. */
+    int (*can_use_algo[STEGX_NB_ALGO]) (info_s *) = {
+        can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk
+    };
+    for (algo_e i = 0; i < STEGX_NB_ALGO; i++)
+            stegx_propos_algos[i] = !(*can_use_algo[i])(infos);
     return 0;
 }
 
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
-    if (infos->mode == STEGX_MODE_EXTRACT) {
-        stegx_errno = ERR_SUGG_ALGOS;
-        return 1;
-    }
-    /* 
-       Si l'utilisateur n'a pas choisi de mot de passe, 
-       StegX va en créer un par défaut aléatoirement
-     */
+    if (infos->mode == STEGX_MODE_EXTRACT)
+        return stegx_errno = ERR_SUGG_ALGOS, 1;
+    /* Si l'utilisateur n'a pas choisi de mot de passe, 
+       on en crée un par défaut aléatoirement. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         srand(time(NULL));
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
@@ -362,16 +351,12 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
             infos->passwd[i] = 32 + (rand() % 95);
     }
 
+    assert(algo_choosen >= STEGX_ALGO_LSB && algo_choosen < STEGX_NB_ALGO);
     /* Test que l'algorithme choisis à bien été proposé comme étant possible. Si
-     * oui, alors il est sauvegardé. */
+     * oui, alors il est sauvegardé. Sinon, on lève une erreur. */
     if (stegx_propos_algos[algo_choosen])
         infos->algo = algo_choosen;
-    /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
-     * choisis EOF par défaut. */
-    else if (!stegx_propos_algos[algo_choosen]) {
-        stegx_errno = ERR_CHOICE_ALGO;
-        return 1;
-    } else
-        infos->algo = STEGX_ALGO_EOF;
+    else
+        return stegx_errno = ERR_CHOICE_ALGO, 1;
     return 0;
 }
