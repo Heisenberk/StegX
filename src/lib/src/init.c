@@ -12,12 +12,19 @@ info_s *stegx_init(stegx_choices_s * choices)
 {
     assert(choices);
     info_s *s = malloc(sizeof(info_s));
+    if (!s)
+        return perror("Can't allocate memory for info_s structure"), NULL;
     int count, begin;
     int i, j;
 
-    /* Initialisation de la variable globale de proposition des algorithmes. */
-    if (!stegx_propos_algos)
-        stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    /* Initialisation de la variable globale de proposition des algorithmes si
+     * elle n'est pas déjà initialisée. Lors du free, il remettre le pointeur à
+     * NULL pour bien spécifié que la zone n'est plus allouée : on pourrait
+     * partager cette variable entre plusieurs structures "info_s" si on imagine
+     * une interface qui appellent plusieurs fois "stegx_init" et "stegx_clear" sur
+     * des structures différentes. */
+    if (!stegx_propos_algos && !(stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e))))
+        return perror("Can't allocate memory for stegx_propos_algos tab"), NULL;
 
     //OK mode
     s->mode = choices->mode;
@@ -45,7 +52,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             err_print(ERR_PASSWD);
         }
         count++;
-        s->passwd = malloc(count * sizeof(char));
+        if (!(s->passwd = malloc(count * sizeof(char))))
+            return perror("Can't allocate memory for passwd string"), NULL;
 
         for (i = 0; i < count; i++) {
             s->passwd[i] = choices->passwd[i];
@@ -98,6 +106,8 @@ info_s *stegx_init(stegx_choices_s * choices)
             s->hidden_name = malloc((count + 1) * sizeof(char));
         else
             s->hidden_name = malloc((count - begin) * sizeof(char));
+        if (!(s->hidden_name))
+            return perror("Can't allocate memory for hidden_name string"), NULL;
         j = 0;
         int begin_cdr;
         if (begin == 0)

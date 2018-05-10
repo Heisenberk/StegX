@@ -19,8 +19,9 @@
  * l'utilisateur. Il restera les champs \r{info.hidden_length} et \r{info.algo} à
  * initialiser.
  * @param choices Structure contenant les choix de l'utilisateur.
- * @return Structure privée qui contient les informations pour réaliser la
- * dissimulation et l'extraction. 
+ * @return Pointeur sur la structure privée qui contient les informations pour
+ * réaliser la dissimulation et l'extraction si tout est ok, NULL sur une
+ * erreur. 
  */
 info_s *stegx_init(stegx_choices_s * choices);
 
@@ -66,7 +67,7 @@ int stegx_suggest_algo(info_s * infos);
  * l'utilisateur n'en à pas choisi.
  * @param infos Structure contenant les informations concernant la dissimulation.
  * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return toujours 0.
+ * @return 0 si la fonction s'est déroulée normalement, 1 en cas d'erreur.
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
 

@@ -572,29 +572,17 @@ int main(void)
     /* Liste des tests généraux. */
     const struct CMUnitTest sugg_algos_tests[] = {
         cmocka_unit_test(test_hidden_length),
-        cmocka_unit_test(test_passwd_default_length),
+        cmocka_unit_test(test_file_info_bmp_v1),
+        cmocka_unit_test(test_file_info_bmp_v2),
+        cmocka_unit_test(test_file_info_bmp_v3),
+        cmocka_unit_test(test_file_info_png_v1),
+        cmocka_unit_test(test_file_info_png_v2),
+        cmocka_unit_test(test_file_info_flv_v1),
         cmocka_unit_test(test_propos_algos_v1),
         cmocka_unit_test(test_propos_algos_v2),
         cmocka_unit_test(test_propos_algos_v3),
-        cmocka_unit_test(test_propos_algos_v4)
-    };
-    
-    /* Liste des tests pour le BMP. */
-    const struct CMUnitTest sugg_algos_tests_bmp[] = {
-        cmocka_unit_test(test_file_info_bmp_v1),
-        cmocka_unit_test(test_file_info_bmp_v2),
-        cmocka_unit_test(test_file_info_bmp_v3)
-    };
-    
-    /* Liste des tests pour le PNG. */
-    const struct CMUnitTest sugg_algos_tests_png[] = {
-        cmocka_unit_test(test_file_info_png_v1),
-        cmocka_unit_test(test_file_info_png_v2)
-    };
-    
-    /* Liste des tests pour le FLV. */
-    const struct CMUnitTest sugg_algos_tests_flv[] = {
-        cmocka_unit_test(test_file_info_flv_v1)
+        cmocka_unit_test(test_propos_algos_v4),
+        cmocka_unit_test(test_passwd_default_length)
     };
 
     /* Liste des tests pour le WAV. */

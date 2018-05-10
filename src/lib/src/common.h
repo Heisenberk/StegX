@@ -38,7 +38,7 @@ enum type {
     MP3,                        /*!< Fichier MP3. */
     AVI_COMPRESSED,             /*!< Fichier AVI compressé. */
     AVI_UNCOMPRESSED,           /*!< Fichier AVI non-compressé. */
-    FLV                         /*!< Fichier FLV. */
+    FLV                         /*!< Fichier FLV (doit rester le dernier dans la liste). */
 };
 
 /** Type des types de fichiers. */
