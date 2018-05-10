@@ -62,7 +62,7 @@ int stegx_suggest_algo(info_s * infos);
  * @brief Initialise l'algorithme à utiliser pour la dissimulation. 
  * @details A partir de la variable globale \r{stegx_propos_algos} et de
  * "algo_choosen", cette fonction permet de choisir l'algorithme à utiliser.
- * @sideeffect Remplie le champ \r{info_s.algo} avec l'algorithme choisi, ainsi
+ * @sideeffect Remplit le champ \r{info_s.algo} avec l'algorithme choisi, ainsi
  * que le champ \r{info_s.passwd} avec un mot de passe aléatoire si
  * l'utilisateur n'en à pas choisi.
  * @param infos Structure contenant les informations concernant la dissimulation.
@@ -70,5 +70,20 @@ int stegx_suggest_algo(info_s * infos);
  * @return 0 si la fonction s'est déroulée normalement, 1 en cas d'erreur.
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
+
+/** 
+ * @brief Va detecter l'algorithme utilise ainsi que le nom du fichier caché 
+ * et la taille des données cachées. 
+ * @sideeffect Remplit les champs \r{info_s.host.file_info}, \r{info_s.algo}, 
+ * \r{info_s.method}, \r{info_s.hidden_length}, \r{info_s.hidden_name}
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
+ * \r{stegx_errno}.
+ */
+int stegx_detect_algo(info_s * infos);
+
+int stegx_insert(info_s * infos);
+
+int stegx_extract(info_s * infos, char *res_path);
 
 #endif                          /* ifndef STEGX_H */

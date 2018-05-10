@@ -182,6 +182,7 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }
+    
     // remplit la structure BMP de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
@@ -262,6 +263,7 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.wav.data_size = chunk_size;
         return 0;
     }
+    
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
@@ -359,6 +361,10 @@ int stegx_suggest_algo(info_s * infos)
 
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
+    if (infos->mode == STEGX_MODE_EXTRACT) {
+        stegx_errno = ERR_SUGG_ALGOS;
+        return 1;
+    }
     /* 
        Si l'utilisateur n'a pas choisi de mot de passe, 
        StegX va en créer un par défaut aléatoirement
@@ -378,7 +384,10 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
         infos->algo = algo_choosen;
     /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
      * choisis EOF par défaut. */
-    else
+    else if (!stegx_propos_algos[algo_choosen]) {
+        stegx_errno = ERR_CHOICE_ALGO;
+        return 1;
+    } else
         infos->algo = STEGX_ALGO_EOF;
     return 0;
 }

@@ -25,18 +25,18 @@ type_e stegx_test_file_mp3(FILE * file)
     /* Lecture de la signature MP3 version ID3V1. */
     uint16_t sig_16;
     if (fseek(file, 0, SEEK_SET) == -1)
-        return UNKNOWN;
+        return perror("Can't move to MP3 ID3V1 signature"), -1;
     if (fread(&sig_16, sizeof(uint16_t), 1, file) != 1)
-        return UNKNOWN;
+        return perror("Can't read MP3 ID3V1 signature"), -1;
     if (sig_16 == SIG_MP3_ID3V1)
         return MP3;
 
     /* Lecture de la signature MP3 version ID3V2. */
     uint32_t sig_32;
     if (fseek(file, 0, SEEK_SET) == -1)
-        return UNKNOWN;
+        return perror("Can't move to MP3 ID3V2 signature"), -1;
     if (fread(&sig_32, sizeof(uint32_t), 1, file) != 1)
-        return UNKNOWN;
+        return perror("Can't read MP3 ID3V2 signature"), -1;
     /* Suppression du premier octet car on s'occupe uniquement des 3 derniers
        octets. */
     sig_32 &= 0x00FFFFFF;
@@ -44,4 +44,14 @@ type_e stegx_test_file_mp3(FILE * file)
         return MP3;
     else
         return UNKNOWN;
+}
+
+int insert_metadata_mp3(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_mp3(info_s * infos)
+{
+    return 1;
 }

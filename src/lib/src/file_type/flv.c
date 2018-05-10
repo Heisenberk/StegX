@@ -14,11 +14,11 @@ type_e stegx_test_file_flv(FILE * file)
 {
     assert(file);
     if (fseek(file, 0, SEEK_SET) == -1)
-        return UNKNOWN;
+        return perror("Can't move to FLV signature"), -1;
     // lecture de la signature FLV
     uint32_t sig_read;
     if (fread(&sig_read, sizeof(uint32_t), 1, file) != 1)
-        return UNKNOWN;
+        return perror("Can't read FLV signature"), -1;
     // on enleve 8 premiers bits car on soccupe des 3 derniers octets
     sig_read <<= 8;
     sig_read >>= 8;
@@ -26,4 +26,14 @@ type_e stegx_test_file_flv(FILE * file)
         return UNKNOWN;
     }
     return FLV;
+}
+
+int insert_metadata_flv(info_s * infos)
+{
+    return 1;
+}
+
+int extract_metadata_flv(info_s * infos)
+{
+    return 1;
 }

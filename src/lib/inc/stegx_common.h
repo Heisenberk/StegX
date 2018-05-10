@@ -55,6 +55,74 @@ typedef enum method method_e;
 typedef struct info info_s;
 
 /*
+attention les octets 8, 9, 12 et 18 ne peuvent pas etre utilisés dans 
+le premier octet de la signature StegX a cause de la signature FLV des 
+différents tags.
+*/
+
+/**
+ * \def Signature EOF avec mot de passe choisi par l'utilisateur
+ * */
+#define BYTE_EOF_WITH_PASSWD 1
+
+/**
+ * \def Signature EOF sans mot de passe choisi par l'utilisateur, choisi 
+ * aléatoirement par l'application
+ * */
+#define BYTE_EOF_WITHOUT_PASSWD 2
+
+/**
+ * \def Signature LSB avec mot de passe choisi par l'utilisateur
+ * */
+#define BYTE_LSB_WITH_PASSWD 3
+
+/**
+ * \def Signature LSB sans mot de passe choisi par l'utilisateur, choisi 
+ * aléatoirement par l'application
+ * */
+#define BYTE_LSB_WITHOUT_PASSWD 4
+
+/**
+ * \def Signature METADATA avec mot de passe choisi par l'utilisateur
+ * */
+#define BYTE_METADATA_WITH_PASSWD 5
+
+/**
+ * \def Signature METADATA sans mot de passe choisi par l'utilisateur, choisi 
+ * aléatoirement par l'application
+ * */
+#define BYTE_METADATA_WITHOUT_PASSWD 6
+
+/**
+ * \def Signature EOC avec mot de passe choisi par l'utilisateur
+ * */
+#define BYTE_EOC_WITH_PASSWD 7
+
+/**
+ * \def Signature EOC sans mot de passe choisi par l'utilisateur, choisi 
+ * aléatoirement par l'application
+ * */
+#define BYTE_EOC_WITHOUT_PASSWD 10
+
+/**
+ * \def Signature JUNK CHUNK avec mot de passe choisi par l'utilisateur
+ * */
+#define BYTE_JUNK_CHUNK_WITH_PASSWD 11
+
+/**
+ * \def Signature Junk Chunk sans mot de passe choisi par l'utilisateur, choisi 
+ * aléatoirement par l'application
+ * */
+#define BYTE_JUNK_CHUNK_WITHOUT_PASSWD 13
+
+#define LENGTH_HIDDEN_NAME_MAX 255
+
+/**
+ * \def Longueur du mot de passe choisi par défaut
+ * */
+#define LENGTH_DEFAULT_PASSWD  64       // 64 caractères sans compter le '\0'
+
+/*
  * Variables
  * =============================================================================
  */

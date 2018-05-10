@@ -41,4 +41,8 @@ typedef struct wav wav_s;
  */
 type_e stegx_test_file_wav(FILE * file);
 
+int insert_metadata_wav(info_s * infos);
+
+int extract_metadata_wav(info_s * infos);
+
 #endif
