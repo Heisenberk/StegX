@@ -281,7 +281,7 @@ void test_file_info_png_v2(void **state)
 void test_file_info_flv_v1(void **state)
 {
     (void)state;
-    // A REMPLIR
+    // A REMPLIR avec le fichier test ../../../env/test/test13.flv
     int test = 1;
     assert_int_equal(test, 1);
 }
