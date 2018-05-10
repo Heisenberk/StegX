@@ -55,9 +55,9 @@ typedef enum method method_e;
 typedef struct info info_s;
 
 /*
-attention les octets 8, 9, 12 et 18 ne peuvent pas etre utilisés dans 
-le premier octet de la signature StegX a cause de la signature FLV des 
-différents tags.
+attention les octets 8 (8 en hexa), 9 (9 en hexa), 18 (12 en hexa) et 24 (18 en hexa) 
+ne peuvent pas etre utilisés dans le premier octet de la signature StegX 
+a cause de la signature FLV des différents tags.
 */
 
 /**
