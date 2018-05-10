@@ -6,6 +6,18 @@
 
 #include "common.h"
 
+/** valeur d'un tag de type video  */
+#define VIDEO_TAG 9
+
+/** valeur d'un tag de type audio  */
+#define AUDIO_TAG 8
+
+/** valeur d'un tag de type metadata en entier non signé */
+#define METATAG 18
+
+/** valeur d'un tag de type script data en entier non signé  */
+#define SCRIPT_DATA_TAG 24
+
 /** Structure du format FLV. */
 struct flv {
     uint32_t nb_video_tag;
