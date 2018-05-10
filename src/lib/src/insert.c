@@ -89,7 +89,8 @@ int write_signature(info_s * infos)
 
     // on ecrit en BIG ENDIAN la taille du fichier a cacher (4 octets)
     // on convertit la taille du fichier a cacher de la machine en BIG ENDIAN
-    uint32_t length_written = htobe32(infos->hidden_length);
+    uint32_t length_written = infos->hidden_length;
+    printf("INSERTION %x\n",length_written);
     write = fwrite(&length_written, sizeof(uint32_t), 1, infos->res);
     if (write == 0)
         return 1;
