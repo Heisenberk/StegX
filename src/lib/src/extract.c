@@ -17,5 +17,48 @@
 
 int stegx_extract(info_s * infos, char *res_path)
 {
-    return 1;
+	int extraction;
+    if (infos->mode != STEGX_MODE_EXTRACT) {
+        stegx_errno = ERR_EXTRACT;
+        return 1;
+    }
+    
+	// ATTENTION si stdout faux --> a rajouter dans stegx_init et ici
+	
+	// Concatenation 
+	char* res_name=malloc((strlen(res_path)+strlen(infos->hidden_name)+1)*sizeof(char));
+	int i,j;
+	for(i=0;i<strlen(res_path);i++){
+		res_name[i]=res_path[i];
+	}
+	i=0;
+	for(j=strlen(res_path);j<(strlen(res_path)+strlen(infos->hidden_name));j++){
+		res_name[j]=infos->hidden_name[i];
+		i++;
+	}
+	printf("res_path:%s\n",res_path);
+	printf("hidden_name:%s\n",infos->hidden_name);
+	printf("RES_NAME:%s\n",res_name);
+	infos->res=fopen(res_name,"w");
+	if (infos->res == NULL) {
+        stegx_errno =ERR_EXTRACT;
+        return 1;
+    }
+	free(res_name);
+	
+    if (infos->algo == STEGX_ALGO_EOF) {
+        extraction = extract_eof(infos);
+    } else if (infos->algo == STEGX_ALGO_LSB) {
+        extraction = extract_lsb(infos);
+    } else if (infos->algo == STEGX_ALGO_METADATA) {
+        extraction = extract_metadata(infos);
+    } else if (infos->algo == STEGX_ALGO_EOC) {
+        extraction = extract_eoc(infos);
+    } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
+        extraction = extract_junk_chunk(infos);
+    } else {
+        stegx_errno = ERR_EXTRACT;
+        extraction = 1;
+    }
+    return extraction;
 }

@@ -223,6 +223,7 @@ int fill_host_info(info_s * infos)
                 file_length++;
             }
         }
+        
         infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
