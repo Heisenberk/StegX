@@ -18,7 +18,7 @@
 
 /** 
  * @brief Va à l'endroit de la signature dans le fichier et la lit. 
- * @param infos Structure représentant les informations concernant la dissimulation.
+ * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si la signature a bien ete lue ; 1 sinon 
  */
 static int read_signature(info_s * infos)
