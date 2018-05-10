@@ -15,24 +15,6 @@
 #include "algo/eoc.h"
 #include "algo/junk_chunk.h"
 
-/**
- * @brief fait le XOR entre le message et le mot de passe et le stocke dans message. 
- * @param *message représente le message a XOR avec le mot de passe.
- * @param *passwd représente le mot de passe choisi pour XOR le message. 
- */
-void xor(char *message, char *passwd)
-{
-    int i = 0;
-    int j = 0;
-    do {
-        message[i] = message[i] ^ passwd[j];    //XOR
-        i++;
-        j++;
-        if (passwd[j] == '\0')
-            j = 0;
-    } while (message[i] != '\0');
-}
-
 int write_signature(info_s * infos)
 {
     assert(infos->host.host);
@@ -42,10 +24,10 @@ int write_signature(info_s * infos)
     assert(infos->mode != STEGX_MODE_EXTRACT);
     int write;
     char car;
-    int i = 0;
+    int i = 0;int j=0;
     uint8_t algo_used;
 
-    // on ecrit quel algorithme a été utilisé (1 octet)
+    // Ecriture algorithme et methode utilisées (1 octet)
     if (infos->algo == STEGX_ALGO_EOF) {
         if (infos->method == STEGX_WITH_PASSWD) {
             algo_used = BYTE_EOF_WITH_PASSWD;
@@ -85,36 +67,39 @@ int write_signature(info_s * infos)
         return 1;
     write = fwrite(&algo_used, sizeof(uint8_t), 1, infos->res);
     if (write == 0)
-        return 1;
+        return perror("Can't write byte algo-method"), 1;
 
-    // on ecrit en BIG ENDIAN la taille du fichier a cacher (4 octets)
-    // on convertit la taille du fichier a cacher de la machine en BIG ENDIAN
+    // Ecriture taille du fichier a cacher (4 octets)
     uint32_t length_written = infos->hidden_length;
-    printf("INSERTION %x\n",length_written);
     write = fwrite(&length_written, sizeof(uint32_t), 1, infos->res);
     if (write == 0)
-        return 1;
+		return perror("Can't write length hidden file"), 1;
 
-    // on ecrit la taille du nom du fichier caché (1 octet)
+    // Ecriture la taille du nom du fichier caché (1 octet)
     uint8_t length = strlen(infos->hidden_name);
     if (length > 0xFF)
         length = LENGTH_HIDDEN_NAME_MAX;
     write = fwrite(&length, sizeof(uint8_t), 1, infos->res);
     if (write == 0)
-        return 1;
+		return perror("Can't write length name hidden file"), 1;
 
-    // on copie le nom du fichier a cacher car on fait un xor apres
+    // Copie du nom du fichier a cacher car on fait un xor apres
     char *cpy_hidden_name = malloc(sizeof(char) * (length + 1));
-    // on ne peut pas utiliser strlen car les 2 chaines ne sont pas de la meme longueur
     for (i = 0; i < length + 1; i++) {
         cpy_hidden_name[i] = infos->hidden_name[i];
     }
     cpy_hidden_name[length] = '\0';
 
-    // on cache le nom du fichier a cache en XOR avec le mdp (255 octets)
-    xor(cpy_hidden_name, infos->passwd);
+    // Modification de la copie du nom du fichier a cache en XOR avec le mdp (255 octets)
+    i = 0; j = 0;
+    do {
+        cpy_hidden_name[i] = cpy_hidden_name[i] ^ infos->passwd[j];    //XOR
+        i++;
+        j++;
+        if (infos->passwd[j] == '\0')
+            j = 0;
+    } while (cpy_hidden_name[i] != '\0');
     i = 0;
-    srand(time(NULL));
     for (i = 0; i < length; i++) {
         car = cpy_hidden_name[i];
         fwrite(&car, sizeof(uint8_t), 1, infos->res);
@@ -122,7 +107,7 @@ int write_signature(info_s * infos)
     free(cpy_hidden_name);
 
     /*
-       on ecrit le mot de passe si il s'agit d'un mot de passe par défaut 
+       Ecriture du mot de passe si il s'agit d'un mot de passe par défaut 
        choisi aléatoirement par l'application (64 octets)
      */
     if (infos->method == STEGX_WITHOUT_PASSWD) {

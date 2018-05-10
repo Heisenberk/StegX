@@ -82,6 +82,13 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
  */
 int stegx_detect_algo(info_s * infos);
 
+/** 
+ * @brief Va faire l'insertion selon l'algorithme, ainsi que les 
+ * fichiers en entrée choisis par l'utilisateur. 
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @return 0 si l'insertion s'et bien passé ; sinon 1 en cas d'erreur et met à jour
+ * \r{stegx_errno}.
+ */
 int stegx_insert(info_s * infos);
 
 int stegx_extract(info_s * infos, char *res_path);
