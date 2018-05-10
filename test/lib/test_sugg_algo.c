@@ -52,6 +52,11 @@ void test_hidden_length(void **state)
     assert_int_equal(test, 1);
 }
 
+/*
+ * Tests BMP
+ * ===================================================================================
+ * */
+
 void test_file_info_bmp_v1(void **state)
 {
     (void)state;
@@ -196,6 +201,11 @@ void test_file_info_bmp_v3(void **state)
     assert_int_equal(test, 1);
 }
 
+/*
+ * Tests PNG
+ * =========================================================================================
+ * */
+
 void test_file_info_png_v1(void **state)
 {
     (void)state;
@@ -278,13 +288,56 @@ void test_file_info_png_v2(void **state)
     assert_int_equal(test, 1);
 }
 
+/*
+ * Tests FLV
+ * =================================================================================
+ * */
+
 void test_file_info_flv_v1(void **state)
 {
+	//Initialisation
     (void)state;
-    // A REMPLIR
-    int test = 1;
-    assert_int_equal(test, 1);
+    info_s *infos = malloc(sizeof(info_s));
+    infos->mode = STEGX_MODE_INSERT;
+    infos->algo = STEGX_ALGO_EOF;
+    infos->method = STEGX_WITH_PASSWD;
+    infos->host.host = fopen("../../../env/test/test13.flv", "r");
+    infos->host.type = PNG;
+    infos->res = fopen("res.flv", "w");
+    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
+    strcpy(infos->hidden_name, "test2.bmp");
+    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
+    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
+    strcpy(infos->passwd, "stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+
+    stegx_suggest_algo(infos);
+
+	/* Valeurs à trouver : */
+    stegx_suggest_algo(infos);
+    // NOMBRE DE VIDEO TAG :
+    assert_int_equal(infos->host.file_info.flv.nb_video_tag, 108);
+    // NOMBRE DE METADATA TAG :
+    assert_int_equal(infos->host.file_info.flv.nb_metadata_tag, 1);
+    // TOTAL SIZE
+    assert_int_equal(infos->host.file_info.flv.file_size, 203258);
+	
+	//libération mémoire
+	if (infos->host.host != NULL)
+        fclose(infos->host.host);
+    if (infos->res != NULL)
+        fclose(infos->res);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
 }
+
+
+/*
+ * Tests proposition des algos
+ * ==================================================================================
+ * */
 
 void test_propos_algos_v1(void **state)
 {
