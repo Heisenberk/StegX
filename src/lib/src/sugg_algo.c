@@ -194,36 +194,30 @@ int fill_host_info(info_s * infos)
             return 1;
         ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
-
-        uint64_t file_length = 0;
+        
         uint8_t byte_read_png;
-        int read_iend = 0;
-        int stop_png = 0;
-        if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-            return 1;
-        // detection du chunk IEND et lecture de la taille de data (jusqu'a IEND)
-        while (stop_png == 0) {
-            if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
-                stop_png = 1;
-            else {
-                if (byte_read_png == HEXA_i)
-                    read_iend++;
-                else if ((byte_read_png == HEXA_e) && (read_iend == 1)) {
-                    read_iend++;
-                } else if ((byte_read_png == HEXA_n) && (read_iend == 2)) {
-                    read_iend++;
-                } else if ((byte_read_png == HEXA_d) && (read_iend == 3)) {
-                    read_iend++;
-                } else
-                    read_iend = 0;
-                if (read_iend == 4) {
-                    file_length = file_length + 4;
-                    stop_png = 1;
-                }
-                file_length++;
-            }
-        }
-        infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
+        uint32_t chunk_size, chunk_id;
+         
+        // Jump sur le premier chunk et lecture de son ID et de sa taille
+        if (fseek(infos->host.host,LENGTH_SIG_PNG, SEEK_SET))
+			return perror("PNG file: Can not move in the file"), 1;
+	    if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return perror("PNG file: Can't read length of chunk"), 1;
+        chunk_size=be32toh(chunk_size);
+        if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return perror("PNG file: Can't read ID of chunk"), 1;
+        // on cherche le chunk IEND pour connaitre la taille du fichier
+        while(chunk_id!= SIG_IEND){
+			if (fseek(infos->host.host,chunk_size+LENGTH_CRC, SEEK_CUR))
+				return perror("PNG file: Can not move in the file"), 1;
+			if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read ID of chunk"), 1;
+			chunk_size=be32toh(chunk_size);
+			if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read ID of chunk"), 1;
+		}
+		uint32_t file_length = ftell(infos->host.host)+LENGTH_IEND;
+		infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
 
