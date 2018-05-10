@@ -11,8 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-extern type_e check_file_format(FILE * file);
-
 /* Tests */
 
 void test_file_compatibility_v1(void **state)
@@ -115,7 +113,8 @@ void test_file_compatibility_v4(void **state)
     infos->mode = STEGX_MODE_INSERT;
     infos->algo = STEGX_ALGO_EOF;
     infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test10.wav", "r");
+    infos->host.host =
+        fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r");
     infos->res = fopen("res.bmp", "w");
     infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
     strcpy(infos->hidden_name, "test2.bmp");
@@ -146,7 +145,7 @@ void test_file_compatibility_v5(void **state)
     infos->mode = STEGX_MODE_INSERT;
     infos->algo = STEGX_ALGO_EOF;
     infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test12.mp3", "r");
+    infos->host.host = fopen("../../../env/test/mp3/MP3_Mono_44,1kHz_64kbps.mp3", "r");
     infos->res = fopen("res.bmp", "w");
     infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
     strcpy(infos->hidden_name, "test2.bmp");

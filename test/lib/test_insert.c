@@ -33,6 +33,7 @@ void test_write_signature_with_passwd(void **state)
     infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
     strcpy(infos->passwd, "stegx");
     strcpy(passwd_save, "stegx");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
     stegx_suggest_algo(infos);
     stegx_choose_algo(infos, STEGX_ALGO_EOF);
@@ -42,14 +43,10 @@ void test_write_signature_with_passwd(void **state)
         fclose(infos->host.host);
     if (infos->res != NULL)
         fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-    if (stegx_propos_algos != NULL)
-        free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
 
     uint8_t algo_read, length_name;
     uint32_t length_file;
@@ -59,7 +56,7 @@ void test_write_signature_with_passwd(void **state)
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
+    length_file = le32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);
@@ -80,13 +77,12 @@ void test_write_signature_with_passwd(void **state)
 
     int test = ((algo_read == BYTE_EOF_WITH_PASSWD) && (length_file == 14057098) &&
                 (strcmp(hidden_name, hidden_name_write) == 0));
-    fclose(f);
+    if (f != NULL)
+        fclose(f);
     if (hidden_name != NULL)
         free(hidden_name);
-    if (hidden_name_write != NULL)
-        free(hidden_name_write);
-    if (passwd_save != NULL)
-        free(passwd_save);
+    free(hidden_name_write);
+    free(passwd_save);
 
     assert_int_equal(test, 1);
 }
@@ -106,6 +102,7 @@ void test_write_signature_without_passwd(void **state)
     strcpy(infos->hidden_name, "test2.bmp");
     strcpy(hidden_name_write, "test2.bmp");
     infos->hidden = fopen("../../../env/test/test2.bmp", "r");
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
     stegx_suggest_algo(infos);
     stegx_choose_algo(infos, STEGX_ALGO_EOF);
@@ -117,14 +114,10 @@ void test_write_signature_without_passwd(void **state)
         fclose(infos->host.host);
     if (infos->res != NULL)
         fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-    if (stegx_propos_algos != NULL)
-        free(stegx_propos_algos);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
 
     uint8_t algo_read, length_name;
     uint32_t length_file;
@@ -134,7 +127,7 @@ void test_write_signature_without_passwd(void **state)
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
+    length_file = le32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);
@@ -165,15 +158,12 @@ void test_write_signature_without_passwd(void **state)
     int test = ((algo_read == BYTE_EOF_WITHOUT_PASSWD) && (length_file == 14057098) &&
                 (strcmp(hidden_name, hidden_name_write) == 0)
                 && (strcmp(passwd_read, passwd_save) == 0));
-    fclose(f);
-    if (hidden_name != NULL)
-        free(hidden_name);
-    if (hidden_name_write != NULL)
-        free(hidden_name_write);
-    if (passwd_save != NULL)
-        free(passwd_save);
-    if (passwd_read != NULL)
-        free(passwd_read);
+    if (f != NULL)
+        fclose(f);
+    free(hidden_name);
+    free(hidden_name_write);
+    free(passwd_save);
+    free(passwd_read);
 
     assert_int_equal(test, 1);
 }

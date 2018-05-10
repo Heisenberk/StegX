@@ -15,7 +15,7 @@
 #include "algo/eoc.h"
 #include "algo/junk_chunk.h"
 
-int stegx_extract(info_s * infos,char* res_path)
+int stegx_extract(info_s * infos, char *res_path)
 {
-return 1;
+    return 1;
 }

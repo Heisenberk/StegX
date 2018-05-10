@@ -6,18 +6,32 @@
 
 #include "common.h"
 
+/** Adresse (offset) de la definition du chunk IHDR (octet). */
 #define PNG_DEF_IHDR 8
-#define PNG_IEND_1 0x49
-#define PNG_IEND_2 0x45
-#define PNG_IEND_3 0x4E
-#define PNG_IEND_4 0x44
+/** Hexadecimal "i". */
+#define HEXA_i 0x49
+/** Hexadecimal "e". */
+#define HEXA_e 0x45
+/** Hexadecimal "n". */
+#define HEXA_n 0x4E
+/** Hexadecimal "d". */
+#define HEXA_d 0x44
 
+/** Structure du format FLV. */
 struct png {
     uint32_t header_size;
     uint32_t data_size;
 };
+
+/** Type du format PNG. */
 typedef struct png png_s;
 
+/**
+ * @brief Test si le fichier est un fichier PNG.
+ * @param file Fichier à tester.
+ * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
+ * @return \r{PNG} ou \r{UNKNOWN}. 
+ */
 type_e stegx_test_file_png(FILE * file);
 
 int insert_metadata_png(info_s * infos);

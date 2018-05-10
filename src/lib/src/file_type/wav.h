@@ -1,3 +1,10 @@
+/** 
+ * @file wav.h
+ * @brief Fichier WAVE.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format WAVE.
+ */
+
 #ifndef WAV_H
 #define WAV_H
 
@@ -6,23 +13,32 @@
 
 #include "common.h"
 
-#define WAV_DATA_1 0x64
-#define WAV_DATA_2 0x61
-#define WAV_DATA_3 0x74
-#define WAV_DATA_4 0x61
-#define WAV_DATA_SIZE 4
-#define WAV_SUBCHUNK_LENGTH 8
-#define WAV_CHUNK_SIZE_LOCALISATION 2
-#define WAV_NUM_CHANNELS 22
-#define WAV_NB_BLOC_ALIGN 32
+/** Signature du subchunk data. */
+#define WAV_DATA_SIGN 0x61746164
+/** Signature du subchunk fmt. */
+#define WAV_FMT_SIGN 0x20746d66
+/** Offset entre le champ situé après la taille du subchunk fmt et le nombre de bit
+ * par sample. */
+#define WAV_FMT_BPS_OFF 14
+/** Adresse du premier subchunk (octet). */
+#define WAV_SUBCHK1_ADDR 12
 
+/** Structure du format WAVE. */
 struct wav {
-    uint32_t header_size;       /*!< Offset du début de data (octet). */
+    uint32_t header_size;       /*!< Offset du début du segment data (octet). */
     uint32_t data_size;         /*!< Taille des données (octet). */
     uint32_t chunk_size;        /*!< Taille de chaque sample (bit). */
 };
+
+/** Type du format WAVE. */
 typedef struct wav wav_s;
 
+/**
+ * @brief Test si le fichier est un fichier WAVE.
+ * @param file Fichier à tester.
+ * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
+ * @return \r{WAV_PCM}, \r{WAV_NO_PCM} ou \r{UNKNOWN}. 
+ */
 type_e stegx_test_file_wav(FILE * file);
 
 int insert_metadata_wav(info_s * infos);

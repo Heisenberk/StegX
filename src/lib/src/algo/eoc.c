@@ -9,6 +9,7 @@
 
 int insert_eoc(info_s * infos)
 {
+	// a remplir
     return 1;
 }
 

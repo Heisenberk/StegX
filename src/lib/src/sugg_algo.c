@@ -1,37 +1,36 @@
-#include <endian.h>
-#include <time.h>
+/**
+ * @file sugg_algo.c
+ * @brief Proposition des algorithmes.
+ * @details Module qui contient les fonctions qui permettent de proposer et
+ * vérifier l'algorithme de stéganographie à utiliser.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <endian.h>
+#include <time.h>
 
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/**
- * \def Algorithme non disponible
- * */
-#define ALGO_UNAVAILABLE -1
+/** Longueur du mot de passe choisi par défaut. */
+#define LENGTH_DEFAULT_PASSWD  64       /* 64 caractères sans compter le '\0'. */
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme est proposé ; 1 sinon 
+ * @return 0 Si l'algorithme est proposé, 1 sinon.
  */
-int can_use_lsb(info_s * infos)
+static int can_use_lsb(info_s * infos)
 {
-    assert(infos->host.host);
-    // si le fichier hôte est un fichier BMP non compressé
-    if (infos->host.type == BMP_UNCOMPRESSED) {
-        /* 
-           Si le nombre de bits utilisés pour coder la couleur de chaque 
-           pixel est inférieur ou égal à 8 (soit 256 couleurs), le deuxième 
-           en-tête est suivi d’une table des couleurs utilisées dans l’image. 
-           LSB non proposé 
-         */
-        if (infos->host.file_info.bmp.pixel_length <= 8)
-            return 1;
-
+    assert(infos);
+    /* Si le fichier hôte est un fichier BMP non compressé. Si le nombre de bits
+     * utilisés pour coder la couleur de chaque pixel est inférieur ou égal à 8
+     * (soit 256 couleurs), le deuxième en-tête est suivi d’une table des
+     * couleurs utilisées dans l’image => LSB non proposé */
+    if (infos->host.type == BMP_UNCOMPRESSED && infos->host.file_info.bmp.pixel_length > 8) {
         // calcul du nombre d'octets représentant l'image brute
         uint64_t nb_bits_pic =
             ((infos->host.file_info.bmp.pixel_length) * (infos->host.file_info.bmp.pixel_number)) /
@@ -39,29 +38,27 @@ int can_use_lsb(info_s * infos)
         // calcul du nombre de bits modifiables pour l'algorithme LSB
         nb_bits_pic /= 4;
 
-        // si la taille du fichier a cacher est trop importante -> LSB impossible
-        if ((infos->hidden_length * 8) > nb_bits_pic) {
-            return 1;
-        }
-        return 0;
+        // si la taille du fichier a cacher est ok -> LSB possible
+        if ((infos->hidden_length * 8) <= nb_bits_pic)
+            return 0;
     }
-    // si le fichier hôte est un fichier WAV PCM
+
+    /* Si le fichier hôte est un fichier WAVE-PCM. */
     else if (infos->host.type == WAV_PCM) {
-        /* 
-           calcul du nombre de bits modifiables pour l'algorithme LSB
-           on fait -8 car data_size inclut [signature DATA](4 octets) et [taille du chunk DATA](4 octets)
-           ([nb doctets data]/[nb de bits par sample])=[nb doctets representant l'audio]
-           [nb doctets representant l'audio]*2 -> nb de bits modifiable avec LSB 
-         */
-        uint64_t nb_bits_audio =
-            (((infos->host.file_info.wav.data_size) -
-              8) / (infos->host.file_info.wav.chunk_size)) * 2;
+        /* Calcul du nombre de bits modifiables pour l'algorithme LSB :
+           ([nb d'octets de data] / ([nb de bits par sample] / 8)) = [nb de bit de poids faible d'audio]
+           [nb de bit de poids faible d'audio] * 2 = [nb de bits modifiable]
+           (car on modifie les 2 bits de poids faible par sample). */
+        uint64_t nb_bits_modif =
+            ((infos->host.file_info.wav.data_size) / (infos->host.file_info.wav.chunk_size / 8)) *
+            2;
 
-        if ((infos->hidden_length * 8) > nb_bits_audio) {
-            return 1;
-        }
+        /* Si le nombre de bit du fichier à cacher est inférieur ou égal au
+         * nombre de bit modifiables => LSB utilisable. */
+        if ((infos->hidden_length * 8) <= nb_bits_modif)
+            return 0;
     }
-
+    /* Sinon, on ne peux pas utiliser LSB. */
     else
         return 1;
 }
@@ -69,191 +66,153 @@ int can_use_lsb(info_s * infos)
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme EOF pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme est proposé ; 1 sinon 
- * dans la fonction.
+ * @return 0 si l'algorithme est proposé, 1 sinon.
  */
-int can_use_eof(info_s * infos)
+static int can_use_eof(info_s * infos)
 {
-    assert(infos->host.host);
-    // pour tous les formats proposés par StegX, on propose EOF
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-        return 0;
-    } else if (infos->host.type == PNG) {
-        return 0;
-    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
-        return 0;
-    } else if (infos->host.type == MP3) {
-        return 0;
-    } else if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED)) {
-        return 0;
-    } else if (infos->host.type == FLV) {
-        return 0;
-    } else
-        return 1;
+    assert(infos);
+    // Pour tous les formats proposés par StegX, on propose EOF.
+    return !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
- * @brief Teste si l'on peut utiliser l'algorithme MetaData pour la dissimulation. 
+ * @brief Teste si l'on peut utiliser l'algorithme Metadata pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme est proposé ; 1 sinon  
- * dans la fonction.
+ * @return 0 si l'algorithme est proposé, 1 sinon.
  */
-int can_use_metadata(info_s * infos)
+static int can_use_metadata(info_s * infos)
 {
-    assert(infos->host.host);
-    // pour tous les formats proposés par StegX, on propose MetaData
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-        // pas toujours pour BMP car cela depend de la taille 
-        // a remplir
+    assert(infos);
+    // Pas toujours pour BMP car cela depend de la taille. A remplir.
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED))
         return 0;
-    } else if (infos->host.type == PNG) {
-        return 0;
-    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
-        return 0;
-    } else if (infos->host.type == MP3) {
-        return 0;
-    } else if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED)) {
-        return 0;
-    } else if (infos->host.type == FLV) {
-        return 0;
-    } else
-        return 1;
+    // Pour tous les formats proposés par StegX, on propose Metadata.
+    return !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme EOC pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme est proposé ; 1 sinon  
- * dans la fonction.
+ * @return 0 si l'algorithme est proposé, 1 sinon.
  */
-int can_use_eoc(info_s * infos)
+static int can_use_eoc(info_s * infos)
 {
-    assert(infos->host.host);
-    // pour le format FLV, on propose EOC
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-        return 1;
-    } else if (infos->host.type == PNG) {
-        return 1;
-    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
-        return 1;
-    } else if (infos->host.type == MP3) {
-        return 1;
-    } else if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED)) {
-        return 1;
-    } else if (infos->host.type == FLV) {
+    assert(infos);
+    // Pour le format FLV, on propose EOC. Pour tous le reste, on ne propose pas EOC.
+    if (infos->host.type == FLV)
         return 0;
-    } else
+    else
         return 1;
 }
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme Junk Chunk pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'algorithme est proposé ; 1 sinon  
- * dans la fonction.
+ * @return 0 si l'algorithme est proposé, 1 sinon.
  */
-int can_use_junk_chunk(info_s * infos)
+static int can_use_junk_chunk(info_s * infos)
 {
-    assert(infos->host.host);
-    // pour le format AVI, on propose Junk Chunk
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-        return 1;
-    } else if (infos->host.type == PNG) {
-        return 1;
-    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
-        return 1;
-    } else if (infos->host.type == MP3) {
-        return 1;
-    } else if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED)) {
+    assert(infos);
+    // Pour le format AVI, on propose Junk Chunk. Pour tous le reste, on ne propose pas Junk Chunk.
+    if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED))
         return 0;
-    } else if (infos->host.type == FLV) {
-        return 1;
-    } else
+    else
         return 1;
 }
 
 /** 
- * @brief Va remplir le champ host.file_info de infos (particulière en 
- * fonction du fichier hote). 
+ * @brief Remplit les informations du fichier hôte. 
+ * @details Remplit les informations du fichier hôte en fonction du type de
+ * fichier. Effectue la lecture des données pour remplir la structure. 
+ * @sideeffect Initialise et rempli le champ \r{info_s.host.file_info}.
+ * @req \r{info_s.host.host} doit être un fichier ouvert en lecture et
+ * compatible avec l'application.
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
+ * @return 0 si tout se passe bien, sinon 1 s'il y a une erreur. 
  */
 int fill_host_info(info_s * infos)
 {
-    // si le fichier hôte a un format non reconnu
-    if (infos->host.host == NULL)
-        return 1;
-    fseek(infos->host.host, 0, SEEK_SET);
-    int i, read;
-    // remplit la structure BMP de infos.host.file_info
-    //http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
+    /* Vérifications + on set positionne au début du fichier. */
+    assert(infos && infos->host.host);
+    if (fseek(infos->host.host, 0, SEEK_SET))
+        return perror("Can't move to the beginning of the host file"), 1;
+
+    // Remplit la structure BMP de infos.host.file_info.
+    // http://www.mysti2d.net/polynesie2/ETT/C044/31/Steganographie/index.html?Formatbmp.html
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         uint32_t begin_pic, length_pic, pixel_width, pixel_height;
-        uint32_t read_begin_pic, read_length_pic, read_pixel_width, read_pixel_height;
         uint16_t pixel_length;
-        uint16_t read_pixel_length;
 
         // lecture de la taille totale du fichier
-        fseek(infos->host.host, BMP_DEF_LENGTH, SEEK_SET);
-        read = fread(&read_length_pic, sizeof(uint32_t), 1, infos->host.host);
-        // convertit read_length_pic de little-endian en l'endian de la machine
-        length_pic = le32toh(read_length_pic);
+        if (fseek(infos->host.host, BMP_DEF_LENGTH, SEEK_SET) == -1)
+            return 1;
+        if (fread(&length_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        length_pic = le32toh(length_pic);
 
         // lecture de la taille du header (qui correspond au debut de data)
-        fseek(infos->host.host, BMP_DEF_PIC, SEEK_SET);
-        read = fread(&read_begin_pic, sizeof(uint32_t), 1, infos->host.host);
-        begin_pic = le32toh(read_begin_pic);
+        if (fseek(infos->host.host, BMP_DEF_PIC, SEEK_SET) == -1)
+            return 1;
+        if (fread(&begin_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        begin_pic = le32toh(begin_pic);
 
         infos->host.file_info.bmp.header_size = begin_pic;
         infos->host.file_info.bmp.data_size = length_pic - begin_pic;
 
         // lecture du nombre de bits par pixel
-        fseek(infos->host.host, BMP_DEF_PIX_LENGTH, SEEK_SET);
-        read = fread(&read_pixel_length, sizeof(uint16_t), 1, infos->host.host);
-        pixel_length = le32toh(read_pixel_length);
+        if (fseek(infos->host.host, BMP_DEF_PIX_LENGTH, SEEK_SET) == -1)
+            return 1;
+        if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        pixel_length = le32toh(pixel_length);
         infos->host.file_info.bmp.pixel_length = pixel_length;
 
         // lecture de la largeur de l'image
-        fseek(infos->host.host, BMP_DEF_NB_PIXEL, SEEK_SET);
-        read = fread(&read_pixel_width, sizeof(uint32_t), 1, infos->host.host);
-        pixel_width = le32toh(read_pixel_width);
+        if (fseek(infos->host.host, BMP_DEF_NB_PIXEL, SEEK_SET) == -1)
+            return 1;
+        if (fread(&pixel_width, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        pixel_width = le32toh(pixel_width);
 
-        // lecture du la hauteur de l'image
-        read = fread(&read_pixel_height, sizeof(uint32_t), 1, infos->host.host);
-        pixel_height = le32toh(read_pixel_height);
+        // lecture de la hauteur de l'image
+        if (fread(&pixel_height, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        pixel_height = le32toh(pixel_height);
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }
+    
     // remplit la structure BMP de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
         // lecture de la taille du chunk IHDR (header)
-        fseek(infos->host.host, PNG_DEF_IHDR, SEEK_SET);
-        uint32_t read_ihdr_length, ihdr_length;
-        read = fread(&read_ihdr_length, sizeof(uint32_t), 1, infos->host.host);
-        // convertit read_length_pic de big-endian en l'endian de la machine
-        ihdr_length = be32toh(read_ihdr_length);
+        if (fseek(infos->host.host, PNG_DEF_IHDR, SEEK_SET) == -1)
+            return 1;
+        uint32_t ihdr_length;
+        if (fread(&ihdr_length, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return 1;
+        ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
 
         uint64_t file_length = 0;
         uint8_t byte_read_png;
         int read_iend = 0;
         int stop_png = 0;
-        fseek(infos->host.host, 0, SEEK_SET);
+        if (fseek(infos->host.host, 0, SEEK_SET) == -1)
+            return 1;
         // detection du chunk IEND et lecture de la taille de data (jusqu'a IEND)
         while (stop_png == 0) {
-            read = fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host);
-            if (read == 0)
+            if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
                 stop_png = 1;
             else {
-                if (byte_read_png == PNG_IEND_1)
+                if (byte_read_png == HEXA_i)
                     read_iend++;
-                else if ((byte_read_png == PNG_IEND_2) && (read_iend == 1)) {
+                else if ((byte_read_png == HEXA_e) && (read_iend == 1)) {
                     read_iend++;
-                } else if ((byte_read_png == PNG_IEND_3) && (read_iend == 2)) {
+                } else if ((byte_read_png == HEXA_n) && (read_iend == 2)) {
                     read_iend++;
-                } else if ((byte_read_png == PNG_IEND_4) && (read_iend == 3)) {
+                } else if ((byte_read_png == HEXA_d) && (read_iend == 3)) {
                     read_iend++;
                 } else
                     read_iend = 0;
@@ -267,102 +226,117 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
-    // remplit la structure BMP de infos.host.file_info
-    // http://soundfile.sapp.org/doc/WaveFormat/
+
+    /* Remplit la structure WAVE. */
     else if ((infos->host.type == WAV_PCM) || (infos->host.type == WAV_NO_PCM)) {
-        uint8_t byte_read_wav;  //l ecture de l'octet a chaque iteration
-        uint64_t header_length = 0;     // longueur du header
-        int stop_wav = 0;       // sort de la boucle quand on a lu les lettres "DATA"
-        int read_data = 0;      // compte les lettres "DATA"
-        // lecture de la taille du header (jusqu'a DATA)
-        while (stop_wav == 0) {
-            read = fread(&byte_read_wav, sizeof(uint8_t), 1, infos->host.host);
-            if (read == 0)
-                stop_wav = 1;
-            else {
-                if (byte_read_wav == WAV_DATA_1)
-                    read_data++;
-                else if ((byte_read_wav == WAV_DATA_2) && (read_data == 1)) {
-                    read_data++;
-                } else if ((byte_read_wav == WAV_DATA_3) && (read_data == 2)) {
-                    read_data++;
-                } else if ((byte_read_wav == WAV_DATA_4) && (read_data == 3)) {
-                    read_data++;
-                } else
-                    read_data = 0;
-                if (read_data == 4) {
-                    header_length = header_length - 4;
-                    stop_wav = 1;
-                }
-                header_length++;
+        /* Lecture de tout les subchunk depuis le premier subchunk du header
+         * jusqu'au subchunk "data". */
+        uint32_t chunk_id = 0, chunk_size = WAV_SUBCHK1_ADDR;   /* ID et taille du chunk lu. */
+        while (chunk_id != WAV_DATA_SIGN) {
+            /* On saute le chunk venant d'être lu (pour le premier : on va à
+             * l'adresse du premier subchunk). */
+            if (fseek(infos->host.host, chunk_size, SEEK_CUR))
+                return perror("WAVE file: Can't skip the subchunk currently read"), 1;
+            /* Lecture de l'ID du subchunk. */
+            if (fread(&chunk_id, sizeof(chunk_id), 1, infos->host.host) != 1)
+                return perror("WAVE file: Can't read ID of subchunk"), 1;
+            /* Lecture de la taille du subchunk. */
+            if (fread(&chunk_size, sizeof(chunk_size), 1, infos->host.host) != 1)
+                return perror("WAVE file: Can't read the size of subchunk"), 1;
+
+            /* Cas spécial : quand on lit le subchunk fmt, on en profite pour
+             * lire le nombre de bits par sample. */
+            if (chunk_id == WAV_FMT_SIGN) {
+                chunk_size -= WAV_FMT_BPS_OFF + sizeof(uint16_t);
+                if (fseek(infos->host.host, WAV_FMT_BPS_OFF, SEEK_CUR))
+                    return perror("WAVE file: Can't jump to bit per sample in the fmt subchunk"), 1;
+                if (fread
+                    (&(infos->host.file_info.wav.chunk_size), sizeof(uint16_t), 1,
+                     infos->host.host) != 1)
+                    return perror("WAVE file: Can't read number of bit per sample"), 1;
             }
         }
-        infos->host.file_info.wav.header_size = header_length;
-
-        // lecture de la taille du chunk DATA
-        uint64_t read_data_length;
-        uint64_t data_length;
-        fseek(infos->host.host, header_length + WAV_DATA_SIZE, SEEK_SET);
-        read = fread(&read_data_length, sizeof(uint64_t), 1, infos->host.host);
-        data_length = le32toh(read_data_length);
-        infos->host.file_info.wav.data_size = data_length + WAV_SUBCHUNK_LENGTH;
-
-        // lecture du nombre de channels (canaux)
-        uint16_t read_bloc_align, bloc_align;
-        uint16_t read_nb_channels, nb_channels;
-        fseek(infos->host.host, WAV_NUM_CHANNELS, SEEK_SET);
-        read = fread(&read_nb_channels, sizeof(uint16_t), 1, infos->host.host);
-        nb_channels = le32toh(read_nb_channels);
-
-        // lecture du nombre de bloc align 
-        fseek(infos->host.host, WAV_NB_BLOC_ALIGN, SEEK_SET);
-        read = fread(&read_bloc_align, sizeof(uint16_t), 1, infos->host.host);
-        bloc_align = le32toh(read_bloc_align);
-
-        // nb_bits_par_sample=(nb_bloc_align/nb_channels)*8;
-        infos->host.file_info.wav.chunk_size = (bloc_align / nb_channels) * 8;
+        /* Récupération de la taille totale du header. */
+        if ((infos->host.file_info.wav.header_size = ftell(infos->host.host)) == -1)
+            return perror("WAVE file: Can't read size of header"), 1;
+        /* Récupération de la taille de data. */
+        infos->host.file_info.wav.data_size = chunk_size;
         return 0;
     }
+    
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
+        uint8_t check_tags;
+        uint32_t header_size;
+        uint8_t tag_type;
+        uint32_t data_size;
+        uint32_t prev_tag_size;
+
+        infos->host.file_info.flv.nb_video_tag = 0;
+        infos->host.file_info.flv.nb_metadata_tag = 0;
+        infos->host.file_info.flv.file_size = 0;
+        fseek(infos->host.host, 4, SEEK_SET);
+
+        //lecture du header
+        fread(&check_tags, sizeof(check_tags), 1, infos->host.host);
+        fread(&header_size, sizeof(header_size), 1, infos->host.host);
+
+        header_size = be32toh(header_size);
+        infos->host.file_info.flv.file_size += header_size;
+        fseek(infos->host.host, 4, SEEK_CUR);
+        infos->host.file_info.flv.file_size += 4;
+
+        //lecture des tags
+        while (fread(&tag_type, sizeof(tag_type), 1, infos->host.host) == 1) {
+
+            if (tag_type == METATAG) {
+                infos->host.file_info.flv.nb_metadata_tag += 1;
+            } else if (tag_type == VIDEO_TAG) {
+                infos->host.file_info.flv.nb_video_tag += 1;
+            } else if (!(tag_type == AUDIO_TAG || tag_type == SCRIPT_DATA_TAG)) {
+                break;
+            }
+            fread(&data_size, sizeof(data_size), 1, infos->host.host);
+            //lecture de la taille des data
+            data_size = be32toh(data_size);
+            //passage en 24 bits      
+            data_size >>= 8;
+            //deplacement jusqu'au prochain previous tag size (data size + 6octets qui comportent d'autres informations non utiles) 
+            fseek(infos->host.host, data_size + 6, SEEK_CUR);
+            //lecture du previous tag size 
+            fread(&prev_tag_size, sizeof(prev_tag_size), 1, infos->host.host);
+            prev_tag_size = be32toh(prev_tag_size);
+            infos->host.file_info.flv.file_size += prev_tag_size + 4;
+        }
         return 0;
     }
-    // pour les structures AVI et MP3 leurs structures sont vides
-    else if ((infos->host.type == MP3) || (infos->host.type == AVI_COMPRESSED)
-             || (infos->host.type == AVI_UNCOMPRESSED))
-        return 0;
 
+    /* Structures AVI et MP3 : structures vides. */
+    else if (infos->host.type == MP3
+             || infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
+        return 0;
+    }
+    /* Format non reconnu => erreur. */
     else
         return 1;
 }
 
-/** 
- * @brief Va proposer les algorithmes en fonction de la structure infos. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_suggest_algo(info_s * infos)
 {
-    if (infos->mode == STEGX_MODE_EXTRACT) {
-        stegx_errno = ERR_SUGG_ALGOS;
-        return 1;
-    }
-    // remplit la structure infos->host.file_info
-    int fill = fill_host_info(infos);
-    if (fill == 1) {
-        stegx_errno = ERR_SUGG_ALGOS;
-        return 1;
-    }
+    /* Test si on est en mode insertion, si oui, remplit la structure
+       infos->host.file_info. */
+    if (infos->mode == STEGX_MODE_EXTRACT || fill_host_info(infos))
+        return stegx_errno = ERR_SUGG_ALGOS, 1;
 
-    fseek(infos->hidden, 0, SEEK_END);
-    // lecture de la taille du fichier à cacher
+    // Lecture de la taille du fichier à cacher.
+    if (fseek(infos->hidden, 0, SEEK_END))
+        return stegx_errno = ERR_SUGG_ALGOS, perror("Can't move to the end of hidden file"), 1;
     uint64_t read_hidden_length = ftell(infos->hidden);
-    if (read_hidden_length >= UINT32_MAX) {     // si overflow
-        stegx_errno = ERR_LENGTH_HIDDEN;
-        return 1;
-    } else
+    // Précaution overflow.
+    if (read_hidden_length >= UINT32_MAX)
+        return stegx_errno = ERR_LENGTH_HIDDEN, 1;
+    else
         infos->hidden_length = (uint32_t) read_hidden_length;
 
     /*
@@ -370,42 +344,24 @@ int stegx_suggest_algo(info_s * infos)
        quels algos sont proposés par l'application en fonction des 
        entrées de l'utilisateur. 
      */
-    int i, test;
-    stegx_propos_algos = malloc(NB_ALGOS * sizeof(algo_e));
-    algo_e tab_algo_possible[NB_ALGOS] = { STEGX_ALGO_EOF, STEGX_ALGO_LSB,
-        STEGX_ALGO_METADATA, STEGX_ALGO_EOC, STEGX_ALGO_JUNK_CHUNK
-    };
-    for (i = 0; i < NB_ALGOS; i++) {
-        // can_use_XXX renvoie 1 si il ne peut pas et 0 s'il le peut
-        if (i == 0)
-            test = can_use_eof(infos);
-        else if (i == 1)
-            test = can_use_lsb(infos);
-        else if (i == 2)
-            test = can_use_metadata(infos);
-        else if (i == 3)
-            test = can_use_eoc(infos);
-        else if (i == 4)
-            test = can_use_junk_chunk(infos);
-        if (test == 1)
-            stegx_propos_algos[i] = ALGO_UNAVAILABLE;
-        else {
-            stegx_propos_algos[i] = tab_algo_possible[i];
-        }
+    for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
+        if (i == STEGX_ALGO_LSB)
+            stegx_propos_algos[i] = !can_use_lsb(infos);
+        else if (i == STEGX_ALGO_EOF)
+            stegx_propos_algos[i] = !can_use_eof(infos);
+        else if (i == STEGX_ALGO_METADATA)
+            stegx_propos_algos[i] = !can_use_metadata(infos);
+        else if (i == STEGX_ALGO_EOC)
+            stegx_propos_algos[i] = !can_use_eoc(infos);
+        else if (i == STEGX_ALGO_JUNK_CHUNK)
+            stegx_propos_algos[i] = !can_use_junk_chunk(infos);
     }
     return 0;
 }
 
-/** 
- * @brief Va initialiser l'algorithme à utiliser pour la dissimulation. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return 0 si tout se passe bien ; 1 si il y a une erreur détectée dans 
- * la fonction. 
- */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
-	if (infos->mode == STEGX_MODE_EXTRACT) {
+    if (infos->mode == STEGX_MODE_EXTRACT) {
         stegx_errno = ERR_SUGG_ALGOS;
         return 1;
     }
@@ -413,50 +369,25 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
        Si l'utilisateur n'a pas choisi de mot de passe, 
        StegX va en créer un par défaut aléatoirement
      */
-    srand(time(NULL));
-    int random;
-    int i;
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        infos->passwd = malloc((LENGTH_DEFAULT_PASSWD + 1) * sizeof(char));
-        for (i = 0; i < (LENGTH_DEFAULT_PASSWD + 1); i++) {
-            random = rand() % 126;      // pour avoir des symboles ASCII
-            while (random < 32)
-                random = rand() % 126;  // symboles ASCII >=32
-            infos->passwd[i] = random;
-        }
-        infos->passwd[LENGTH_DEFAULT_PASSWD] = '\0';
+        srand(time(NULL));
+        if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
+            return perror("Can't allocate memoty for password string"), 1;
+        // Génération de symboles ASCII >= 32 et <= 126.
+        for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
+            infos->passwd[i] = 32 + (rand() % 95);
     }
 
-    if (algo_choosen == STEGX_ALGO_EOF) {
-        if (stegx_propos_algos[0] == STEGX_ALGO_EOF) {
-            infos->algo = STEGX_ALGO_EOF;
-            return 0;
-        }
-    } else if (algo_choosen == STEGX_ALGO_LSB) {
-        if (stegx_propos_algos[1] == STEGX_ALGO_LSB) {
-            infos->algo = STEGX_ALGO_LSB;
-            return 0;
-        }
-    } else if (algo_choosen == STEGX_ALGO_METADATA) {
-        if (stegx_propos_algos[2] == STEGX_ALGO_METADATA) {
-            infos->algo = STEGX_ALGO_METADATA;
-            return 0;
-        }
-    } else if (algo_choosen == STEGX_ALGO_EOC) {
-        if (stegx_propos_algos[3] == STEGX_ALGO_EOC) {
-            infos->algo = STEGX_ALGO_EOC;
-            return 0;
-        }
-    } else if (algo_choosen == STEGX_ALGO_JUNK_CHUNK) {
-        if (stegx_propos_algos[4] == STEGX_ALGO_JUNK_CHUNK) {
-            infos->algo = STEGX_ALGO_JUNK_CHUNK;
-            return 0;
-        }
-    } else {
-        if (stegx_propos_algos[0] == STEGX_ALGO_EOF) {
-            infos->algo = STEGX_ALGO_EOF;
-            return 0;
-        }
-    }
-    return 1;
+    /* Test que l'algorithme choisis à bien été proposé comme étant possible. Si
+     * oui, alors il est sauvegardé. */
+    if (stegx_propos_algos[algo_choosen])
+        infos->algo = algo_choosen;
+    /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
+     * choisis EOF par défaut. */
+    else if (!stegx_propos_algos[algo_choosen]) {
+        stegx_errno = ERR_CHOICE_ALGO;
+        return 1;
+    } else
+        infos->algo = STEGX_ALGO_EOF;
+    return 0;
 }
