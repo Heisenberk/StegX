@@ -506,12 +506,8 @@ int main(void)
         cmocka_unit_test(test_file_info_flv_v2)
     };
 
-    /* Exécute les tests. */
-
-    int failed_tests;
-    /* Si failed_tests est positif, on stop et on le renvoie. Sinon, on fait tout les tests. */
-    if ((failed_tests = cmocka_run_group_tests(sugg_algos_tests_format, test_file_info__setup, test_file_info__teardown))) {}
-    else if ((failed_tests = cmocka_run_group_tests(propos_algos_tests, test_propos_algos__setup, test_propos_algos__teardown))) {}
-    else if ((failed_tests = run_test(test_passwd_default_length))) {}
-    return failed_tests;
+    /* Exécute les tests et retourne le nombre d'erreurs. */
+    return cmocka_run_group_tests(sugg_algos_tests_format, test_file_info__setup, test_file_info__teardown)
+			+ cmocka_run_group_tests(propos_algos_tests, test_propos_algos__setup, test_propos_algos__teardown)
+			+ run_test(test_passwd_default_length);
 }

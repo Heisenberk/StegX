@@ -10,6 +10,10 @@
 #include "stegx.h"
 #include "common.h"
 
+/**
+ * Teste la vérification du format MP3.
+ * */
+
 void test_file_wav__wave_pcm_alaw_1(void **state)
 {
     (void)state;                /* Unused */

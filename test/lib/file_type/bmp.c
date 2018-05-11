@@ -10,91 +10,83 @@
 #include "stegx.h"
 #include "common.h"
 
-extern type_e check_file_format(FILE * file);
+/**
+ * Teste la vérification du format BMP.
+ * */
 
-/* Tests */
-
+/* pixels de 16 bits */
 void test_file_bmp_v1(void **state)
 {
-    // 16 bits R5 G6 B5
-    (void)state;                /* Unused */
+	(void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test1.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_COMPRESSED);
+    assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
+    fclose(f);
 }
 
+/* pixels de 16 bits */
 void test_file_bmp_v2(void **state)
 {
-    // 16 bits R5 G6 B5
-    (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test2.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_COMPRESSED);
+	(void)state;                /* Unused */
+     FILE *f = fopen("../../../env/test/test2.bmp", "r");
+	assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
+    fclose(f);
 }
 
+/* pixels de 16 bits */
 void test_file_bmp_v3(void **state)
 {
-    // 16 bits R5 G6 B5
-    (void)state;                /* Unused */
+	(void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test3.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_COMPRESSED);
+    assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
+    fclose(f);
 }
 
+ /* pixels de 24 bits */
 void test_file_bmp_v4(void **state)
 {
-    // 24 bits R8 G8 B8
-    (void)state;                /* Unused */
+	(void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test4.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_UNCOMPRESSED);
+    assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_UNCOMPRESSED);
+    fclose(f);
 }
 
+/* pixels de 32 bits */
 void test_file_bmp_v5(void **state)
 {
-    // 32 bits A8 R8 G8 B8
-    (void)state;                /* Unused */
+	(void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test5.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_COMPRESSED);
+    assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
+    fclose(f);
+
 }
 
 void test_file_bmp_v6(void **state)
 {
-    // 32 bits X8 R8 G8 B8
-    (void)state;                /* Unused */
+	(void)state;                /* Unused */
     FILE *f = fopen("../../../env/test/test6.bmp", "r");
-    type_e test = stegx_test_file_bmp(f);
-    if (f != NULL)
-        fclose(f);
-    assert_int_equal(test, BMP_COMPRESSED);
+    assert_non_null(f);
+    assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
+    fclose(f);
 }
 
-/* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest check_compatibility_tests[] = {
-
-    // tests unitaires BMP
-    cmocka_unit_test(test_file_bmp_v1),
-    cmocka_unit_test(test_file_bmp_v2),
-    cmocka_unit_test(test_file_bmp_v3),
-    cmocka_unit_test(test_file_bmp_v4),
-    cmocka_unit_test(test_file_bmp_v5),
-    cmocka_unit_test(test_file_bmp_v6),
-
-};
 
 int main(void)
 {
+	/* Structure CMocka contenant la liste des tests. */
+	const struct CMUnitTest check_compatibility_tests[] = {
+		cmocka_unit_test(test_file_bmp_v1),
+		cmocka_unit_test(test_file_bmp_v2),
+		cmocka_unit_test(test_file_bmp_v3),
+		cmocka_unit_test(test_file_bmp_v4),
+		cmocka_unit_test(test_file_bmp_v5),
+		cmocka_unit_test(test_file_bmp_v6)
+	};
+
     /* Exécute les tests. */
     return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
 }

@@ -11,7 +11,10 @@
 #include "stegx.h"
 #include "common.h"
 
-/* Tests */
+/**
+ * Setup et Teardown des tests.
+ * =====================================================================
+ *  */
 
 static int test_file_compa__setup(void **state)
 {
@@ -41,13 +44,18 @@ static int test_file_compa__teardown(void **state)
 	return 0;
 }
 
+/**
+ * Tests sur la compatibilité des fichiers.
+ * =====================================================================
+ * */ 
+ 
 void test_file_compa_v1(void **state)
 {
     info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, BMP_COMPRESSED);
     
     fclose(infos->host.host);
@@ -59,7 +67,7 @@ void test_file_compa_v2(void **state)
     infos->host.host = fopen("../../../env/test/test4.bmp", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, BMP_UNCOMPRESSED);
     
     fclose(infos->host.host);
@@ -71,7 +79,7 @@ void test_file_compa_v3(void **state)
     infos->host.host = fopen("../../../env/test/test8.png", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, PNG);
     
     fclose(infos->host.host);
@@ -83,7 +91,7 @@ void test_file_compa_v4(void **state)
     infos->host.host = fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, WAV_NO_PCM);
     
     fclose(infos->host.host);
@@ -95,7 +103,7 @@ void test_file_compa_v5(void **state)
     infos->host.host = fopen("../../../env/test/mp3/MP3_Mono_44,1kHz_64kbps.mp3", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, MP3);
     
     fclose(infos->host.host);
@@ -107,7 +115,7 @@ void test_file_compa_v6(void **state)
     infos->host.host = fopen("../../../env/test/test13.flv", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, FLV);
     
     fclose(infos->host.host);
@@ -120,7 +128,7 @@ void test_file_compa_v7(void **state)
     infos->host.host = fopen("../../../env/test/test14.avi", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, AVI_UNCOMPRESSED);
     
     fclose(infos->host.host);
@@ -133,20 +141,21 @@ void test_file_compa_v8(void **state)
     infos->host.host = fopen("../../../env/test/test16.txt", "r"),
 				assert_non_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, UNKNOWN);
     
     fclose(infos->host.host);
 
 }
 
+/* Test sur un fichier qui n'existe pas. */
 void test_file_compa_v9(void **state)
 {
     info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/inconnu", "r"),
 				assert_null(infos->host.host);
  
-    stegx_check_compatibility(infos);
+    assert_int_equal(stegx_check_compatibility(infos), 1);
     assert_int_equal(infos->host.type, UNKNOWN);
 }
 
