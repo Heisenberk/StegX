@@ -13,304 +13,158 @@
 
 /* Tests */
 
-void test_file_compatibility_v1(void **state)
+static int test_file_compa__setup(void **state)
 {
-    (void)state;
     info_s *infos = malloc(sizeof(info_s));
     infos->mode = STEGX_MODE_INSERT;
     infos->algo = STEGX_ALGO_EOF;
     infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
+    infos->res = fopen("res.bmp", "w"),
+				assert_non_null(infos->res);
+    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char)),
+				assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
+    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char)),
+				assert_non_null(infos->passwd);;
     strcpy(infos->passwd, "stegx");
-
-    stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, BMP_COMPRESSED);
+    *state = infos;
+    return 0;
 }
 
-void test_file_compatibility_v2(void **state)
+static int test_file_compa__teardown(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
-    stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, BMP_UNCOMPRESSED);
+	info_s *infos = *state;
+	fclose(infos->res);
+	free(infos->hidden_name);
+	free(infos->passwd);
+	free(infos);
+	return 0;
 }
 
-void test_file_compatibility_v3(void **state)
+void test_file_compa_v1(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test8.png", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, PNG);
+    assert_int_equal(infos->host.type, BMP_COMPRESSED);
+    
+    fclose(infos->host.host);
 }
 
-void test_file_compatibility_v4(void **state)
+void test_file_compa_v2(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host =
-        fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+   info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test4.bmp", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, WAV_NO_PCM);
+    assert_int_equal(infos->host.type, BMP_UNCOMPRESSED);
+    
+    fclose(infos->host.host);
 }
 
-void test_file_compatibility_v5(void **state)
+void test_file_compa_v3(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/mp3/MP3_Mono_44,1kHz_64kbps.mp3", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test8.png", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, MP3);
+    assert_int_equal(infos->host.type, PNG);
+    
+    fclose(infos->host.host);
 }
 
-void test_file_compatibility_v6(void **state)
+void test_file_compa_v4(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, FLV);
+    assert_int_equal(infos->host.type, WAV_NO_PCM);
+    
+    fclose(infos->host.host);
 }
 
-void test_file_compatibility_v7(void **state)
+void test_file_compa_v5(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/mp3/MP3_Mono_44,1kHz_64kbps.mp3", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, AVI_UNCOMPRESSED);
+    assert_int_equal(infos->host.type, MP3);
+    
+    fclose(infos->host.host);
 }
 
-void test_file_compatibility_v8(void **state)
+void test_file_compa_v6(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test15.tex", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
+    assert_int_equal(infos->host.type, FLV);
+    
+    fclose(infos->host.host);
 
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, UNKNOWN);
 }
 
-void test_file_compatibility_v9(void **state)
+void test_file_compa_v7(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/inconnu", "r");
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+				assert_non_null(infos->host.host);
+ 
     stegx_check_compatibility(infos);
-    type_e type = infos->host.type;
+    assert_int_equal(infos->host.type, AVI_UNCOMPRESSED);
+    
+    fclose(infos->host.host);
 
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    if (infos->hidden_name != NULL)
-        free(infos->hidden_name);
-    if (infos->passwd != NULL)
-        free(infos->passwd);
-    if (infos != NULL)
-        free(infos);
-
-    assert_int_equal(type, UNKNOWN);
 }
 
-/* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest check_compatibility_tests[] = {
+void test_file_compa_v8(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test16.txt", "r"),
+				assert_non_null(infos->host.host);
+ 
+    stegx_check_compatibility(infos);
+    assert_int_equal(infos->host.type, UNKNOWN);
+    
+    fclose(infos->host.host);
 
-    // tests unitaires compatibility
-    cmocka_unit_test(test_file_compatibility_v1),
-    cmocka_unit_test(test_file_compatibility_v2),
-    cmocka_unit_test(test_file_compatibility_v3),
-    cmocka_unit_test(test_file_compatibility_v4),
-    cmocka_unit_test(test_file_compatibility_v5),
-    cmocka_unit_test(test_file_compatibility_v6),
-    cmocka_unit_test(test_file_compatibility_v7),
-    cmocka_unit_test(test_file_compatibility_v8),
-    cmocka_unit_test(test_file_compatibility_v9),
+}
 
-};
+void test_file_compa_v9(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/inconnu", "r"),
+				assert_null(infos->host.host);
+ 
+    stegx_check_compatibility(infos);
+    assert_int_equal(infos->host.type, UNKNOWN);
+}
 
 int main(void)
 {
+	/* Structure CMocka contenant la liste des tests. */
+	const struct CMUnitTest check_compatibility_tests[] = {
+		cmocka_unit_test(test_file_compa_v1),
+		cmocka_unit_test(test_file_compa_v2),
+		cmocka_unit_test(test_file_compa_v3),
+		cmocka_unit_test(test_file_compa_v4),
+		cmocka_unit_test(test_file_compa_v5),
+		cmocka_unit_test(test_file_compa_v6),
+		cmocka_unit_test(test_file_compa_v7),
+		cmocka_unit_test(test_file_compa_v8),
+		cmocka_unit_test(test_file_compa_v9)
+	};
+	
     /* Exécute les tests. */
-    return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
+    return cmocka_run_group_tests(check_compatibility_tests, test_file_compa__setup, test_file_compa__teardown);
 }
