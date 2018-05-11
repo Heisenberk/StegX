@@ -9,6 +9,7 @@
 
 int insert_lsb(info_s * infos)
 {
+	// a remplir
     return 1;
 }
 

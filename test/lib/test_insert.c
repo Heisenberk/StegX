@@ -48,43 +48,38 @@ void test_write_signature_with_passwd(void **state)
     free(infos);
     free(stegx_propos_algos);
 
-    uint8_t algo_read, length_name;
+    uint8_t algo_read, method, length_name;
     uint32_t length_file;
     FILE *f = fopen("res1_test_insert.bmp", "r");
     // lecture de l'algorithme
     fread(&algo_read, sizeof(uint8_t), 1, f);
 
+    // lecture de la méthode de protection de donnée
+    fread(&method, sizeof(uint8_t), 1, f);
+
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);
 
     // lecture du nom du fichier caché XOR le mot de passe choisi par l'utilisateur
-    char *hidden_name = malloc((length_name + 1) * sizeof(char));
-    int i = 0, j = 0;
-    uint8_t c;
-    while (i < length_name) {
-        fread(&c, sizeof(uint8_t), 1, f);
-        hidden_name[i] = c ^ passwd_save[j];
-        i++;
-        j++;
-        if (passwd_save[j] == '\0')
-            j = 0;
+    char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
+    fread(hidden_name, sizeof(char), length_name, f);
+    for (int i = 0, j = 0 ; i < length_name ; i++) {
+        hidden_name[i] = hidden_name[i] ^ passwd_save[j];
+        j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
-    hidden_name[length_name] = '\0';
 
-    int test = ((algo_read == BYTE_EOF_WITH_PASSWD) && (length_file == 14057098) &&
-                (strcmp(hidden_name, hidden_name_write) == 0));
+    assert_int_equal(algo_read, STEGX_ALGO_EOF);
+    assert_int_equal(method, STEGX_WITH_PASSWD);
+    assert_int_equal(length_file, 14057098);
+    assert_int_equal(strcmp(hidden_name, hidden_name_write), 0);
+
     if (f != NULL)
         fclose(f);
-    if (hidden_name != NULL)
-        free(hidden_name);
     free(hidden_name_write);
     free(passwd_save);
-
-    assert_int_equal(test, 1);
 }
 
 void test_write_signature_without_passwd(void **state)
@@ -119,61 +114,50 @@ void test_write_signature_without_passwd(void **state)
     free(infos);
     free(stegx_propos_algos);
 
-    uint8_t algo_read, length_name;
+    uint8_t algo_read, method, length_name;
     uint32_t length_file;
     FILE *f = fopen("res2_test_insert.bmp", "r");
     // lecture de l'algorithme
     fread(&algo_read, sizeof(uint8_t), 1, f);
+    
+    // lecture de la méthode de protection de donnée
+    fread(&method, sizeof(uint8_t), 1, f);
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
-    length_file = be32toh(length_file);
 
     // lecture de la taille du nom du fichier caché
     fread(&length_name, sizeof(uint8_t), 1, f);
 
     // lecture du nom du fichier caché XOR le mot de passe choisi par l'utilisateur
-    char *hidden_name = malloc((length_name + 1) * sizeof(char));
-    int i = 0, j = 0;
-    uint8_t c;
-    while (i < length_name) {
-        fread(&c, sizeof(uint8_t), 1, f);
-        hidden_name[i] = c ^ passwd_save[j];
-        i++;
-        j++;
-        if (passwd_save[j] == '\0')
-            j = 0;
+    char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
+    fread(hidden_name, sizeof(char), length_name, f);
+    for (int i = 0, j = 0 ; i < length_name ; i++) {
+        hidden_name[i] = hidden_name[i] ^ passwd_save[j];
+        j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
-    hidden_name[length_name] = '\0';
 
     // lecture du mot de passe par défaut choisi aleatoirement par l'application
     // aller jusqu'au debut de la lecture du mot de passe
-    char *passwd_read = malloc((LENGTH_DEFAULT_PASSWD + 1) * sizeof(char));
-    for (i = 0; i < LENGTH_DEFAULT_PASSWD + 1; i++) {
-        fread(&c, sizeof(uint8_t), 1, f);
-        passwd_read[i] = c;
-    }
-    passwd_read[LENGTH_DEFAULT_PASSWD] = '\0';
+    char passwd_read[LENGTH_DEFAULT_PASSWD + 1] = {0};
+    fread(passwd_read, sizeof(char), LENGTH_DEFAULT_PASSWD, f);
 
-    int test = ((algo_read == BYTE_EOF_WITHOUT_PASSWD) && (length_file == 14057098) &&
-                (strcmp(hidden_name, hidden_name_write) == 0)
-                && (strcmp(passwd_read, passwd_save) == 0));
+    assert_int_equal(algo_read, STEGX_ALGO_EOF);
+    assert_int_equal(method, STEGX_WITHOUT_PASSWD);
+    assert_int_equal(length_file, 14057098);
+    assert_int_equal(strcmp(hidden_name, hidden_name_write), 0);
+    assert_int_equal(strcmp(passwd_read, passwd_save), 0);
+
     if (f != NULL)
         fclose(f);
-    free(hidden_name);
     free(hidden_name_write);
     free(passwd_save);
-    free(passwd_read);
-
-    assert_int_equal(test, 1);
 }
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
-
     cmocka_unit_test(test_write_signature_with_passwd),
     cmocka_unit_test(test_write_signature_without_passwd),
-
 };
 
 int main(void)
