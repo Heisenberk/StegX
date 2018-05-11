@@ -1,30 +1,33 @@
-#include <endian.h>
-#include <time.h>
+/**
+ * @file detect_algo.c
+ * @brief Module de détection de l'algorithme.
+ * @details Lecture de la signature d'un fichier hôte.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
-#include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "common.h"
 #include "sugg_algo.h"
 
-#include "algo/lsb.h"
-#include "algo/eof.h"
-#include "algo/metadata.h"
-#include "algo/eoc.h"
-#include "algo/junk_chunk.h"
-
 /** 
- * @brief Va à l'endroit de la signature dans le fichier et la lit. 
+ * @brief Lit la signature contenu dans le fichier hôte.
+ * @sideeffect Renseigne la structure \r{infos_s} avec les informations
+ * contenues dans la signature.
+ * @error \r{ERR_NEED_PASSWD} si le récepteur n'as pas fourni de mot de passe
+ * alors qu'il aurait dû.
  * @param infos Structure représentant les informations concernant l'extraction.
- * @return 0 si la signature a bien ete lue ; 1 sinon 
+ * @return 0 si la signature a bien été lue, sinon 1 et assigne \r{stegx_errno}
+ * à l'erreur survenue.
  */
 static int read_signature(info_s * infos)
 {
-    assert(infos);
-    assert(infos->mode == STEGX_MODE_EXTRACT);
+    assert(infos && infos->mode == STEGX_MODE_EXTRACT);
 
     uint8_t algo_read, car_read;
     uint32_t hidden_length, hidden_length_read;
@@ -160,27 +163,13 @@ static int read_signature(info_s * infos)
 
 int stegx_detect_algo(info_s * infos)
 {
-    if (infos->mode == STEGX_MODE_INSERT) {
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
-    // on remplit d'avoir la structure spécifique de infos->host.file_info
-    int fill = fill_host_info(infos);
-    if (fill == 1) {
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
-    /*
-       on lit la signature pour connaitre l'algorithme, la méthode utilisée
-       la taille des donnees cachees, le nom du fichier cache
-     */
-    int read = read_signature(infos);
-    if (read == 1) {
-        if (stegx_errno == ERR_NEED_PASSWD) {   // erreur particuliere
-            return 1;
-        }
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
+    /* Vérifie le mode d'utilisation, puis remplit la structure afin d'avoir la
+     * structure spécifique de "infos->host.file_info". */
+    if (infos->mode == STEGX_MODE_INSERT || fill_host_info(infos))
+        return stegx_errno = ERR_DETECT_ALGOS, 1;
+    /* Lecture de la signature pour connaître l'algorithme, la méthode,
+       la taille des données cachées et le nom du fichier caché. */
+    if (read_signature(infos))
+        return stegx_errno == ERR_NEED_PASSWD ? 1 : (stegx_errno = ERR_DETECT_ALGOS), 1;
     return 0;
 }
