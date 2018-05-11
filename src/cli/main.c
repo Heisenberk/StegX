@@ -57,6 +57,13 @@ int main(int argc, char *argv[])
             err_print(stegx_errno);
             return EXIT_FAILURE;
         }
+        
+        // Extraction
+        int extract = stegx_extract(infos,com->res_path);
+        if (extract == 1) {
+            err_print(stegx_errno);
+            return EXIT_FAILURE;
+        }
     }
     stegx_clear(infos);
     dest_stegx_info(com);

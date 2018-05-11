@@ -76,7 +76,7 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
  * et la taille des données cachées. 
  * @sideeffect Remplit les champs \r{info_s.host.file_info}, \r{info_s.algo}, 
  * \r{info_s.method}, \r{info_s.hidden_length}, \r{info_s.hidden_name}
- * @param infos Structure représentant les informations concernant la dissimulation.
+ * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
  */
@@ -91,6 +91,14 @@ int stegx_detect_algo(info_s * infos);
  */
 int stegx_insert(info_s * infos);
 
+/** 
+ * @brief Va faire l'extraction selon l'algorithme détecté, ainsi que les 
+ * fichiers en entrée choisis par l'utilisateur. 
+ * @sideeffect Remplit le champ \r{res}.
+ * @param infos Structure représentant les informations concernant l'extraction.
+ * @return 0 si l'extraction s'et bien passé ; sinon 1 en cas d'erreur et met à jour
+ * \r{stegx_errno}.
+ */
 int stegx_extract(info_s * infos, char *res_path);
 
 #endif                          /* ifndef STEGX_H */

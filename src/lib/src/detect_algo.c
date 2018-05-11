@@ -41,6 +41,14 @@ static int read_signature(info_s * infos)
              SEEK_SET) == -1)
             return perror("Can't move to STEGX signature"), 1;
     }
+    
+    if ((infos->host.type == PNG)) {
+        if (fseek
+            (infos->host.host,
+             infos->host.file_info.png.header_size + infos->host.file_info.png.data_size,
+             SEEK_SET) == -1)
+            return perror("Can't move to STEGX signature"), 1;
+    }
 
     /*
        on lit l'octet représentant l'algorithme utilisé et la méthode 
