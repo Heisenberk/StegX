@@ -13,305 +13,156 @@
 
 #define LENGTH_DEFAULT_PASSWD 64
 
-/**
- * Tests généraux
- * =============================================================================
- */
 
-void test_hidden_length(void **state)
+/* Setup des tests unitaires pour les formats de fichiers */
+static int test_file_info__setup(void **state)
 {
-    (void)state;
     info_s *infos = malloc(sizeof(info_s));
+    assert_non_null(infos);
     infos->mode = STEGX_MODE_INSERT;
     infos->algo = STEGX_ALGO_EOF;
     infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
-    infos->host.type = BMP_COMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
+    infos->res = fopen("res.bmp", "w"), assert_non_null(infos->res);
+    infos->hidden_name =
+        malloc((strlen("test16.txt") + 1) * sizeof(char)), assert_non_null(infos->hidden_name);
+    strcpy(infos->hidden_name, "test16.txt");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char)), assert_non_null(infos->passwd);
     strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    stegx_propos_algos =
+        malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
+    *state = infos;
+    return 0;
+}
 
-    stegx_suggest_algo(infos);
-    uint32_t hidden_length = infos->hidden_length;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
+/* Teardown des tests unitaires pour les formats de fichiers */
+static int test_file_info__teardown(void **state)
+{
+    info_s *infos = *state;
+    fclose(infos->res);
+    fclose(infos->hidden);
     free(infos->hidden_name);
     free(infos->passwd);
     free(infos);
     free(stegx_propos_algos);
-
-    int test;
-    test = (hidden_length == 14057098);
-    assert_int_equal(test, 1);
+    return 0;
 }
 
-/*
+/**
  * Tests BMP
  * ===================================================================================
  * */
 
 void test_file_info_bmp_v1(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
+    info_s *infos = *state;
+	infos->host.host = fopen("../../../env/test/test1.bmp", "r"), 
+					assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
+    
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-    uint32_t header_size = infos->host.file_info.bmp.header_size;
-    uint32_t data_size = infos->host.file_info.bmp.data_size;
-    uint32_t pixel_length = infos->host.file_info.bmp.pixel_length;
-    uint32_t pixel_number = infos->host.file_info.bmp.pixel_number;
+	//HEADER SIZE
+	assert_int_equal(infos->host.file_info.bmp.header_size, 138);
+	//DATA SIZE
+	assert_int_equal(infos->host.file_info.bmp.data_size, 14056960);
+	//PIXEL LENGTH
+	assert_int_equal(infos->host.file_info.bmp.pixel_length, 16);
+	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    /*
-       Valeurs à trouver:
-       HEADER SIZE: 138 octets 
-       DATA SIZE: 14056960 octets 
-       EVERYTHING: 14057098 octets
-       PIXEL LENGTH:16 bits
-       PIXEL WIDTH:2584
-       PIXEL HEIGHT:2720
-     */
-
-    int test;
-    test = ((header_size == 138) && (data_size == 14056960) && (pixel_length == 16)
-            && (pixel_number == 2584 * 2720));
-    assert_int_equal(test, 1);
+	fclose(infos->host.host);
 }
 
 void test_file_info_bmp_v2(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
+    info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test4.bmp", "r");
     infos->host.type = BMP_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
+    
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-    uint32_t header_size = infos->host.file_info.bmp.header_size;
-    uint32_t data_size = infos->host.file_info.bmp.data_size;
-    uint32_t pixel_length = infos->host.file_info.bmp.pixel_length;
-    uint32_t pixel_number = infos->host.file_info.bmp.pixel_number;
+	//HEADER SIZE
+	assert_int_equal(infos->host.file_info.bmp.header_size, 122);
+	//DATA SIZE
+	assert_int_equal(infos->host.file_info.bmp.data_size, 21085440);
+	//PIXEL LENGTH
+	assert_int_equal(infos->host.file_info.bmp.pixel_length, 24);
+	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    /*
-       Valeurs à trouver:
-       HEADER SIZE: 122 octets 
-       DATA SIZE: 21085440 octets 
-       EVERYTHING: 21085562 octets
-       PIXEL LENGTH:24 bits
-       PIXEL WIDTH:2584
-       PIXEL HEIGHT:2720
-     */
-
-    int test;
-    test = ((header_size == 122) && (data_size == 21085440) && (pixel_length == 24)
-            && (pixel_number == 2584 * 2720));
-    assert_int_equal(test, 1);
+	fclose(infos->host.host);
 }
 
 void test_file_info_bmp_v3(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
+    info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test6.bmp", "r");
     infos->host.type = BMP_COMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-    uint32_t header_size = infos->host.file_info.bmp.header_size;
-    uint32_t data_size = infos->host.file_info.bmp.data_size;
-    uint32_t pixel_length = infos->host.file_info.bmp.pixel_length;
-    uint32_t pixel_number = infos->host.file_info.bmp.pixel_number;
+	//HEADER SIZE
+	assert_int_equal(infos->host.file_info.bmp.header_size, 138);
+	//DATA SIZE
+	assert_int_equal(infos->host.file_info.bmp.data_size, 28113920);
+	//PIXEL LENGTH
+	assert_int_equal(infos->host.file_info.bmp.pixel_length, 32);
+	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    /*
-       Valeurs à trouver:
-       HEADER SIZE: 138 octets 
-       DATA SIZE: 28113920 octets 
-       EVERYTHING: 28114058 octets
-       PIXEL LENGTH:32 bits
-       PIXEL WIDTH:2584
-       PIXEL HEIGHT:2720
-     */
-
-    int test;
-    test = ((header_size == 138) && (data_size == 28113920) && (pixel_length == 32)
-            && (pixel_number == 2584 * 2720));
-    assert_int_equal(test, 1);
+	fclose(infos->host.host);
 }
 
-/*
+/**
  * Tests PNG
  * =========================================================================================
  * */
 
 void test_file_info_png_v1(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
+    info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test8.png", "r");
     infos->host.type = PNG;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
+     /* Valeurs à trouver: */
     stegx_suggest_algo(infos);
-    uint32_t header_size = infos->host.file_info.png.header_size;
-    uint32_t data_size = infos->host.file_info.png.data_size;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    /*
-       Valeurs à trouver:
-       LENGTH HEADER: 21
-       DATA SIZE:139005
-     */
-
-    int test;
-    test = ((header_size == 21) && (data_size == 139005));
-    assert_int_equal(test, 1);
+    //HEADER SIZE
+	assert_int_equal(infos->host.file_info.png.header_size, 21);
+	//DATA SIZE
+	assert_int_equal(infos->host.file_info.png.data_size, 139005);
+	
+    fclose(infos->host.host);
 }
 
 void test_file_info_png_v2(void **state)
 {
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test9.png", "r");
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test9.png", "r"),
+			assert_non_null(infos->host.host);
     infos->host.type = PNG;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
+    
+    /* Valeurs à trouver: */
     stegx_suggest_algo(infos);
-    uint32_t header_size = infos->host.file_info.png.header_size;
-    uint32_t data_size = infos->host.file_info.png.data_size;
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    /*
-       Valeurs à trouver:
-       LENGTH HEADER: 21
-       DATA SIZE:20525
-     */
-
-    int test;
-    test = ((header_size == 21) && (data_size == 20525));
-    assert_int_equal(test, 1);
+    //HEADER SIZE
+	assert_int_equal(infos->host.file_info.png.header_size, 21);
+	//DATA SIZE
+	assert_int_equal(infos->host.file_info.png.data_size, 20525);
+	
+    fclose(infos->host.host);
 }
 
-/*
+/**
  * Tests FLV
  * =================================================================================
  * */
 
 void test_file_info_flv_v1(void **state)
 {
-	//Initialisation
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r");
-    infos->host.type = PNG;
-    infos->res = fopen("res.flv", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test13.flv", "r"), 
+				assert_non_null(infos->host.host);
+    infos->host.type = FLV;
 
 	/* Valeurs à trouver : */
     stegx_suggest_algo(infos);
@@ -322,235 +173,14 @@ void test_file_info_flv_v1(void **state)
     // TOTAL SIZE
     assert_int_equal(infos->host.file_info.flv.file_size, 203258);
 	
-	//libération mémoire
-	if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
+	fclose(infos->host.host);
 }
 
-
-/*
- * Tests proposition des algos
- * ==================================================================================
- * */
-
-void test_propos_algos_v1(void **state)
-{
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
-    infos->host.type = BMP_COMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
-
-    int test = ((stegx_propos_algos[0] == 0) && (stegx_propos_algos[1] == 1) &&
-                (stegx_propos_algos[2] == 1) && (stegx_propos_algos[3] == 0) &&
-                (stegx_propos_algos[4] == 0));
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
-}
-
-void test_propos_algos_v2(void **state)
-{
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r");
-    infos->host.type = BMP_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
-
-    int test = ((stegx_propos_algos[0] == 1) && (stegx_propos_algos[1] == 1) &&
-                (stegx_propos_algos[2] == 1) && (stegx_propos_algos[3] == 0) &&
-                (stegx_propos_algos[4] == 0));
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
-}
-
-void test_propos_algos_v3(void **state)
-{
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r");
-    infos->host.type = FLV;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
-
-    int i;
-    for (i = 0; i < 5; i++) {
-        /* printf(">%d\n",stegx_propos_algos[i]); */
-    }
-
-    int test = ((stegx_propos_algos[0] == 0) && (stegx_propos_algos[1] == 1) &&
-                (stegx_propos_algos[2] == 1) && (stegx_propos_algos[3] == 1) &&
-                (stegx_propos_algos[4] == 0));
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
-}
-
-void test_propos_algos_v4(void **state)
-{
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r");
-    infos->host.type = AVI_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r");
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
-
-    int test = ((stegx_propos_algos[0] == 0) && (stegx_propos_algos[1] == 1) &&
-                (stegx_propos_algos[2] == 1) && (stegx_propos_algos[3] == 0) &&
-                (stegx_propos_algos[4] == 1));
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
-}
-
-void test_passwd_default_length(void **state)
-{
-    (void)state;
-    info_s *infos = malloc(sizeof(info_s));
-    infos->mode = STEGX_MODE_INSERT;
-    infos->method = STEGX_WITHOUT_PASSWD;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r");
-    infos->host.type = AVI_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
-    strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r");
-    infos->passwd = NULL;
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_suggest_algo(infos);
-    stegx_choose_algo(infos, STEGX_ALGO_EOF);
-
-    int length_passwd_default = strlen(infos->passwd);
-
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-
-    assert_int_equal(length_passwd_default, LENGTH_DEFAULT_PASSWD);
-}
 
 /**
  * Tests WAVE
  * =============================================================================
  */
-
-static int test_file_info_wav__setup(void **state)
-{
-    info_s *infos = malloc(sizeof(info_s));
-    assert_non_null(infos);
-    infos->mode = STEGX_MODE_INSERT;
-    infos->algo = STEGX_ALGO_EOF;
-    infos->method = STEGX_WITH_PASSWD;
-    infos->res = fopen("res.bmp", "w"), assert_non_null(infos->res);
-    infos->hidden_name =
-        malloc((strlen("test2.bmp") + 1) * sizeof(char)), assert_non_null(infos->hidden_name);
-    strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r"), assert_non_null(infos->hidden);
-    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char)), assert_non_null(infos->passwd);
-    strcpy(infos->passwd, "stegx");
-    stegx_propos_algos =
-        malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
-    *state = infos;
-    return 0;
-}
-
-static int test_file_info_wav__teardown(void **state)
-{
-    info_s *infos = *state;
-    fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-    return 0;
-}
 
 static void test_file_info_wav__pcm_alaw_1(void **state)
 {
@@ -616,6 +246,198 @@ static void test_file_info_wav__pcm_s16le(void **state)
 }
 
 /**
+ * Tests généraux
+ * =============================================================================
+ */
+
+/* Setup des tests unitaires pour les propositions d'algos */
+static int test_propos_algos__setup(void **state)
+{
+    info_s *infos = malloc(sizeof(info_s));
+    assert_non_null(infos);
+    infos->mode = STEGX_MODE_INSERT;
+    infos->algo = STEGX_ALGO_EOF;
+    infos->method = STEGX_WITH_PASSWD;
+    infos->res = fopen("res.bmp", "w"), assert_non_null(infos->res);
+    infos->hidden_name =
+        malloc((strlen("hide.txt") + 1) * sizeof(char)), assert_non_null(infos->hidden_name);
+    strcpy(infos->hidden_name, "hide.txt");
+    infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char)), assert_non_null(infos->passwd);
+    strcpy(infos->passwd, "stegx");
+    stegx_propos_algos =
+        malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
+    *state = infos;
+    return 0;
+}
+
+/* Teardown des tests unitaires pour les propositions d'algos */
+static int test_propos_algos__teardown(void **state)
+{
+    info_s *infos = *state;
+    fclose(infos->res);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
+    return 0;
+}
+
+/* Test vérifiant la taille du fichier à cacher */
+void test_hidden_length(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
+    infos->host.type = BMP_COMPRESSED;
+    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
+    /* Valeurs à trouver : */
+    stegx_suggest_algo(infos);
+    assert_int_equal(infos->hidden_length, 14057098);
+
+	fclose(infos->host.host);
+	fclose(infos->hidden);
+}
+
+/**
+ * Tests proposition des algos
+ * ==================================================================================
+ * */
+
+/* Test sur BMP compressé. 
+ * Le fichier à cacher est trop gros pour pouvoir proposer l'algorithme lsb
+ * */
+void test_propos_algos_v1(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
+    infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r");
+    infos->host.type = BMP_COMPRESSED;
+    
+    /* Valeurs à trouver */
+    stegx_suggest_algo(infos);
+    //LSB
+    assert_int_equal(stegx_propos_algos[0], 0);
+    //EOF
+    assert_int_equal(stegx_propos_algos[1], 1);
+    //METADATA
+    assert_int_equal(stegx_propos_algos[2], 1);
+    //EOC : end of chunk
+    assert_int_equal(stegx_propos_algos[3], 0);
+    //JUNK_CHUNK
+    assert_int_equal(stegx_propos_algos[4], 0);
+	
+	fclose(infos->host.host);
+	fclose(infos->hidden);
+}
+
+/* Test sur BMP non compressé */
+void test_propos_algos_v2(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test4.bmp", "r");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.type = BMP_UNCOMPRESSED;
+    
+    /* Valeurs à trouver */
+    stegx_suggest_algo(infos);
+    //LSB
+    assert_int_equal(stegx_propos_algos[0], 1);
+    //EOF
+    assert_int_equal(stegx_propos_algos[1], 1);
+    //METADATA
+    assert_int_equal(stegx_propos_algos[2], 1);
+    //EOC : end of chunk
+    assert_int_equal(stegx_propos_algos[3], 0);
+    //JUNK_CHUNK
+    assert_int_equal(stegx_propos_algos[4], 0);
+    
+    fclose(infos->host.host);
+    fclose(infos->hidden);
+}
+
+/* Test sur FLV */
+void test_propos_algos_v3(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test13.flv", "r");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.type = FLV;
+ 
+    /* Valeurs à trouver */
+    stegx_suggest_algo(infos);
+    //LSB
+    assert_int_equal(stegx_propos_algos[0], 0);
+    //EOF
+    assert_int_equal(stegx_propos_algos[1], 1);
+    //METADATA
+    assert_int_equal(stegx_propos_algos[2], 1);
+    //EOC : end of chunk
+    assert_int_equal(stegx_propos_algos[3], 1);
+    //JUNK_CHUNK
+    assert_int_equal(stegx_propos_algos[4], 0);
+    
+    fclose(infos->host.host);
+    fclose(infos->hidden);
+}
+
+/* Test sur l'AVI non compressé */
+void test_propos_algos_v4(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test14.avi", "r");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.type = AVI_UNCOMPRESSED;
+
+    /* Valeurs à trouver */
+    stegx_suggest_algo(infos);
+    //LSB
+    assert_int_equal(stegx_propos_algos[0], 0);
+    //EOF
+    assert_int_equal(stegx_propos_algos[1], 1);
+    //METADATA
+    assert_int_equal(stegx_propos_algos[2], 1);
+    //EOC : end of chunk
+    assert_int_equal(stegx_propos_algos[3], 0);
+    //JUNK_CHUNK
+    assert_int_equal(stegx_propos_algos[4], 1);
+    
+    fclose(infos->host.host);
+    fclose(infos->hidden);
+}
+
+/* Test la taille par défaut du mot de passe lorsque la méthode sans
+ * mot de passe a été choisit par l'utilisateur. */
+void test_passwd_default_length(void **state)
+{
+    (void)state;
+    info_s *infos = malloc(sizeof(info_s));
+    infos->mode = STEGX_MODE_INSERT;
+    infos->method = STEGX_WITHOUT_PASSWD;
+    infos->host.host = fopen("../../../env/test/test14.avi", "r");
+    infos->host.type = AVI_UNCOMPRESSED;
+    infos->res = fopen("res.bmp", "w");
+    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
+    strcpy(infos->hidden_name, "test16.txt");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r");
+    infos->passwd = NULL;
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+
+    stegx_suggest_algo(infos);
+    stegx_choose_algo(infos, STEGX_ALGO_EOF);
+
+    int length_passwd_default = strlen(infos->passwd);
+
+    fclose(infos->host.host);
+    fclose(infos->res);
+    fclose(infos->hidden);
+    free(infos->hidden_name);
+    free(infos->passwd);
+    free(infos);
+    free(stegx_propos_algos);
+
+    assert_int_equal(length_passwd_default, LENGTH_DEFAULT_PASSWD);
+}
+
+/**
  * Main
  * =============================================================================
  */
@@ -623,43 +445,37 @@ static void test_file_info_wav__pcm_s16le(void **state)
 int main(void)
 {
     /* Liste des tests généraux. */
-    const struct CMUnitTest sugg_algos_tests[] = {
+    const struct CMUnitTest propos_algos_tests[] = {
         cmocka_unit_test(test_hidden_length),
-        cmocka_unit_test(test_passwd_default_length),
         cmocka_unit_test(test_propos_algos_v1),
         cmocka_unit_test(test_propos_algos_v2),
         cmocka_unit_test(test_propos_algos_v3),
         cmocka_unit_test(test_propos_algos_v4)
     };
-    
-    /* Liste des tests pour le BMP. */
-    const struct CMUnitTest sugg_algos_tests_bmp[] = {
+
+    /* Liste des tests de chaque format. */
+    const struct CMUnitTest sugg_algos_tests_format[] = {
+        //liste des tests pour BMP
         cmocka_unit_test(test_file_info_bmp_v1),
         cmocka_unit_test(test_file_info_bmp_v2),
-        cmocka_unit_test(test_file_info_bmp_v3)
-    };
-    
-    /* Liste des tests pour le PNG. */
-    const struct CMUnitTest sugg_algos_tests_png[] = {
+        cmocka_unit_test(test_file_info_bmp_v3),
+        //Liste des tests pour le PNG
         cmocka_unit_test(test_file_info_png_v1),
-        cmocka_unit_test(test_file_info_png_v2)
-    };
-    
-    /* Liste des tests pour le FLV. */
-    const struct CMUnitTest sugg_algos_tests_flv[] = {
+        cmocka_unit_test(test_file_info_png_v2),
+        //Liste des tests pour le WAV
+        cmocka_unit_test(test_file_info_wav__pcm_alaw_1),
+        cmocka_unit_test(test_file_info_wav__pcm_alaw_2),
+        cmocka_unit_test(test_file_info_wav__pcm_s16le),
+        //Liste des tests pour le FLV
         cmocka_unit_test(test_file_info_flv_v1)
     };
 
-    /* Liste des tests pour le WAV. */
-    const struct CMUnitTest sugg_algos_tests_wav[] = {
-        cmocka_unit_test(test_file_info_wav__pcm_alaw_1),
-        cmocka_unit_test(test_file_info_wav__pcm_alaw_2),
-        cmocka_unit_test(test_file_info_wav__pcm_s16le)
-    };
-
     /* Exécute les tests. */
-    int failed_tests = cmocka_run_group_tests(sugg_algos_tests_wav,
-                                              test_file_info_wav__setup,
-                                              test_file_info_wav__teardown);
-    return failed_tests ? failed_tests : cmocka_run_group_tests(sugg_algos_tests, NULL, NULL);
+    int failed_tests = cmocka_run_group_tests(sugg_algos_tests_format,
+                                              test_file_info__setup,
+                                              test_file_info__teardown)
+                        || cmocka_run_group_tests(propos_algos_tests,
+                                              test_propos_algos__setup,
+                                              test_propos_algos__teardown);
+    return failed_tests ? failed_tests : run_test(test_passwd_default_length);
 }
