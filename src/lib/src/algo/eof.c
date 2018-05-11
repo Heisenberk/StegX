@@ -79,8 +79,6 @@ int extract_eof(info_s * infos)
 	assert(infos);
 	assert(infos->mode==STEGX_MODE_EXTRACT);
     assert(infos->algo == STEGX_ALGO_EOF);
-    int read;
-    uint32_t nb_cpy;            //nb doctets recopies
     uint32_t header_size;
     uint32_t data_size;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
@@ -90,14 +88,14 @@ int extract_eof(info_s * infos)
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)
         || (infos->host.type == PNG)) {
 			
-		// pour le format BMP
+		// pour le format BMP manipulation structure bmp
         if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
             header_size = infos->host.file_info.bmp.header_size;
             data_size = infos->host.file_info.bmp.data_size;
         } 
-        // pour le format PNG
+        // pour le format PNG manipulation structure png
         else if (infos->host.type == PNG) {
-            header_size = infos->host.file_info.png.header_size;
+            header_size = infos->host.file_info.png.header_size; 
             data_size = infos->host.file_info.png.data_size;
         }
         
@@ -122,7 +120,7 @@ int extract_eof(info_s * infos)
 		return perror("Can't make extraction EOF"), 1;
 	
 	uint8_t byte_read;
-	nb_cpy=0;
+	uint32_t nb_cpy=0;            //nb doctets recopies
 	while(nb_cpy<infos->hidden_length){
 		if (fread(&byte_read, sizeof(uint8_t), 1, infos->host.host) ==0)
 			return perror("Can't read hidden data"), 1;
