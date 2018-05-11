@@ -20,10 +20,6 @@ int write_signature(info_s * infos)
     assert(infos->host.host && infos->hidden && infos->res && infos->hidden_name
             && infos->mode != STEGX_MODE_EXTRACT);
 
-    int write;
-    char car;
-    uint8_t algo_used;
-
     /* Ecriture de l'algorithme utilisé et de la méthode de protection utilisée. */
     if (fwrite(&(infos->algo), sizeof(uint8_t), 1, infos->res) != 1)
         return perror("Sig: Can't write algo"), 1;
