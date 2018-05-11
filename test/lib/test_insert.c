@@ -5,9 +5,9 @@
 #include "cmocka.h"
 
 /* Inclusions supplémentaires. */
+#include <string.h>
 #include <errno.h>
 #include <unistd.h>
-#include <string.h>
 #include "stegx.h"
 #include "common.h"
 
@@ -68,7 +68,7 @@ void test_write_signature_with_passwd(void **state)
     fread(hidden_name, sizeof(char), length_name, f);
     for (int i = 0, j = 0 ; i < length_name ; i++) {
         hidden_name[i] = hidden_name[i] ^ passwd_save[j];
-        j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
+        j = passwd_save[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
     }
 
     assert_int_equal(algo_read, STEGX_ALGO_EOF);
@@ -134,7 +134,7 @@ void test_write_signature_without_passwd(void **state)
     fread(hidden_name, sizeof(char), length_name, f);
     for (int i = 0, j = 0 ; i < length_name ; i++) {
         hidden_name[i] = hidden_name[i] ^ passwd_save[j];
-        j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
+        j = passwd_save[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
     }
 
     // lecture du mot de passe par défaut choisi aleatoirement par l'application

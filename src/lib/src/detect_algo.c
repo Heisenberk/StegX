@@ -92,7 +92,7 @@ static int read_signature(info_s * infos)
     /* DéXOR du nom du fichier cacher. */
     for (int i = 0, j = 0 ; i < length_hidden_name ; i++) {
         infos->hidden_name[i] = infos->hidden_name[i] ^ infos->passwd[j];
-        j = infos->passwd[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
+        j = infos->passwd[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
     }
     return 0;
 }
