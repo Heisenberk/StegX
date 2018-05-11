@@ -120,16 +120,6 @@ static int can_use_junk_chunk(info_s * infos)
         return 1;
 }
 
-/** 
- * @brief Remplit les informations du fichier hôte. 
- * @details Remplit les informations du fichier hôte en fonction du type de
- * fichier. Effectue la lecture des données pour remplir la structure. 
- * @sideeffect Initialise et rempli le champ \r{info_s.host.file_info}.
- * @req \r{info_s.host.host} doit être un fichier ouvert en lecture et
- * compatible avec l'application.
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si tout se passe bien, sinon 1 s'il y a une erreur. 
- */
 int fill_host_info(info_s * infos)
 {
     /* Vérifications + on set positionne au début du fichier. */
@@ -183,7 +173,7 @@ int fill_host_info(info_s * infos)
         return 0;
     }
     
-    // remplit la structure BMP de infos.host.file_info
+    // remplit la structure PNG de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
         // lecture de la taille du chunk IHDR (header)
@@ -194,36 +184,30 @@ int fill_host_info(info_s * infos)
             return 1;
         ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
-
-        uint64_t file_length = 0;
+        
         uint8_t byte_read_png;
-        int read_iend = 0;
-        int stop_png = 0;
-        if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-            return 1;
-        // detection du chunk IEND et lecture de la taille de data (jusqu'a IEND)
-        while (stop_png == 0) {
-            if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
-                stop_png = 1;
-            else {
-                if (byte_read_png == HEXA_i)
-                    read_iend++;
-                else if ((byte_read_png == HEXA_e) && (read_iend == 1)) {
-                    read_iend++;
-                } else if ((byte_read_png == HEXA_n) && (read_iend == 2)) {
-                    read_iend++;
-                } else if ((byte_read_png == HEXA_d) && (read_iend == 3)) {
-                    read_iend++;
-                } else
-                    read_iend = 0;
-                if (read_iend == 4) {
-                    file_length = file_length + 4;
-                    stop_png = 1;
-                }
-                file_length++;
-            }
-        }
-        infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
+        uint32_t chunk_size, chunk_id;
+         
+        // Jump sur le premier chunk et lecture de son ID et de sa taille
+        if (fseek(infos->host.host,LENGTH_SIG_PNG, SEEK_SET))
+			return perror("PNG file: Can not move in the file"), 1;
+	    if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return perror("PNG file: Can't read length of chunk"), 1;
+        chunk_size=be32toh(chunk_size);
+        if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+            return perror("PNG file: Can't read ID of chunk"), 1;
+        // on cherche le chunk IEND pour connaitre la taille du fichier
+        while(chunk_id!= SIG_IEND){
+			if (fseek(infos->host.host,chunk_size+LENGTH_CRC, SEEK_CUR))
+				return perror("PNG file: Can not move in the file"), 1;
+			if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read ID of chunk"), 1;
+			chunk_size=be32toh(chunk_size);
+			if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read ID of chunk"), 1;
+		}
+		uint32_t file_length = ftell(infos->host.host)+LENGTH_IEND;
+		infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
 
@@ -339,36 +323,25 @@ int stegx_suggest_algo(info_s * infos)
     else
         infos->hidden_length = (uint32_t) read_hidden_length;
 
-    /*
-       remplissage du tableau stegx_propos_algos pour savoir 
-       quels algos sont proposés par l'application en fonction des 
-       entrées de l'utilisateur. 
-     */
-    for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
-        if (i == STEGX_ALGO_LSB)
-            stegx_propos_algos[i] = !can_use_lsb(infos);
-        else if (i == STEGX_ALGO_EOF)
-            stegx_propos_algos[i] = !can_use_eof(infos);
-        else if (i == STEGX_ALGO_METADATA)
-            stegx_propos_algos[i] = !can_use_metadata(infos);
-        else if (i == STEGX_ALGO_EOC)
-            stegx_propos_algos[i] = !can_use_eoc(infos);
-        else if (i == STEGX_ALGO_JUNK_CHUNK)
-            stegx_propos_algos[i] = !can_use_junk_chunk(infos);
-    }
+    /* Remplissage du tableau stegx_propos_algos pour savoir 
+       quels algos sont proposés par l'application en fonction des entrées de
+       l'utilisateur. */
+    /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
+     * l'énumération. */
+    int (*can_use_algo[STEGX_NB_ALGO]) (info_s *) = {
+        can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk
+    };
+    for (algo_e i = 0; i < STEGX_NB_ALGO; i++)
+            stegx_propos_algos[i] = !(*can_use_algo[i])(infos);
     return 0;
 }
 
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
-    if (infos->mode == STEGX_MODE_EXTRACT) {
-        stegx_errno = ERR_SUGG_ALGOS;
-        return 1;
-    }
-    /* 
-       Si l'utilisateur n'a pas choisi de mot de passe, 
-       StegX va en créer un par défaut aléatoirement
-     */
+    if (infos->mode == STEGX_MODE_EXTRACT)
+        return stegx_errno = ERR_SUGG_ALGOS, 1;
+    /* Si l'utilisateur n'a pas choisi de mot de passe, 
+       on en crée un par défaut aléatoirement. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         srand(time(NULL));
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
@@ -378,16 +351,12 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
             infos->passwd[i] = 32 + (rand() % 95);
     }
 
+    assert(algo_choosen >= STEGX_ALGO_LSB && algo_choosen < STEGX_NB_ALGO);
     /* Test que l'algorithme choisis à bien été proposé comme étant possible. Si
-     * oui, alors il est sauvegardé. */
+     * oui, alors il est sauvegardé. Sinon, on lève une erreur. */
     if (stegx_propos_algos[algo_choosen])
         infos->algo = algo_choosen;
-    /* Si l'utilisateur ne choisis rien ou un algorithme invalide, alors on
-     * choisis EOF par défaut. */
-    else if (!stegx_propos_algos[algo_choosen]) {
-        stegx_errno = ERR_CHOICE_ALGO;
-        return 1;
-    } else
-        infos->algo = STEGX_ALGO_EOF;
+    else
+        return stegx_errno = ERR_CHOICE_ALGO, 1;
     return 0;
 }

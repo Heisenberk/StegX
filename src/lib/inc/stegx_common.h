@@ -28,7 +28,7 @@ typedef enum mode mode_e;
 
 /**
  * Algorithmes proposés par l'application (sans prendre compte du format du
- * fichier hôte).
+ * fichier hôte) (attention, l'ordre ne doit pas être modifié).
  */
 enum algo {
     STEGX_ALGO_LSB = 0,         /*!< Least Significant Bit : modification du bit de poids faible. */
@@ -39,7 +39,7 @@ enum algo {
     STEGX_NB_ALGO               /*!< Nombres d'algorithmes proposés par l'application. */
 };
 
-/** Type d'un l'agortihme. */
+/** Type d'un algortihme proposé par l'application. */
 typedef enum algo algo_e;
 
 /** Méthode de protection des données. */

@@ -10,6 +10,7 @@
 /** Signature PNG */
 #define SIG_PNG 0x0A1A0A0D474E5089
 
+
 type_e stegx_test_file_png(FILE * file)
 {
     assert(file);
