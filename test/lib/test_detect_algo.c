@@ -63,10 +63,10 @@ void test_detect_algo_with_passwd(void **state)
        on compare l'algorithme, la méthode, la taille du fichier caché et 
        le nom du fichier caché
      */
-    int test = ((infos_extract->algo == STEGX_ALGO_EOF)
-                && (infos_extract->method == STEGX_WITH_PASSWD)
-                && (infos_extract->hidden_length == hidden_length)
-                && (strcmp(infos_extract->hidden_name, hidden_name_write1) == 0));
+    assert_int_equal(infos_extract->algo, STEGX_ALGO_EOF);
+    assert_int_equal(infos_extract->method, STEGX_WITH_PASSWD);
+    assert_int_equal(infos_extract->hidden_length, hidden_length);
+    assert_int_equal(strcmp(infos_extract->hidden_name, hidden_name_write1), 0);
 
     if (hidden_name_write1 != NULL)
         free(hidden_name_write1);
@@ -81,8 +81,6 @@ void test_detect_algo_with_passwd(void **state)
     free(infos_extract->passwd);
     free(infos_extract);
     free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
 }
 
 void test_detect_algo_without_passwd(void **state)
@@ -112,12 +110,9 @@ void test_detect_algo_without_passwd(void **state)
         fclose(infos_insert->host.host);
     if (infos_insert->res != NULL)
         fclose(infos_insert->res);
-    if (infos_insert->hidden_name != NULL)
-        free(infos_insert->hidden_name);
-    if (infos_insert != NULL)
-        free(infos_insert);
-    if (stegx_propos_algos != NULL)
-        free(stegx_propos_algos);
+    free(infos_insert->hidden_name);
+    free(infos_insert);
+    free(stegx_propos_algos);
 
     info_s *infos_extract = malloc(sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
@@ -128,14 +123,15 @@ void test_detect_algo_without_passwd(void **state)
     stegx_check_compatibility(infos_extract);
     stegx_detect_algo(infos_extract);
 
+    
     /*
        on compare l'algorithme, la méthode, la taille du fichier caché et 
        le nom du fichier caché
      */
-    int test = ((infos_extract->algo == STEGX_ALGO_EOF)
-                && (infos_extract->method == STEGX_WITHOUT_PASSWD)
-                && (infos_extract->hidden_length == hidden_length)
-                && (strcmp(infos_extract->hidden_name, hidden_name_write1) == 0));
+    assert_int_equal(infos_extract->algo, STEGX_ALGO_EOF);
+    assert_int_equal(infos_extract->method, STEGX_WITHOUT_PASSWD);
+    assert_int_equal(infos_extract->hidden_length, hidden_length);
+    assert_int_equal(strcmp(infos_extract->hidden_name, hidden_name_write1), 0);
 
     if (hidden_name_write1 != NULL)
         free(hidden_name_write1);
@@ -150,16 +146,12 @@ void test_detect_algo_without_passwd(void **state)
         free(infos_extract);
     if (stegx_propos_algos != NULL)
         free(stegx_propos_algos);
-
-    assert_int_equal(test, 1);
 }
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
-
     cmocka_unit_test(test_detect_algo_with_passwd),
     cmocka_unit_test(test_detect_algo_without_passwd),
-
 };
 
 int main(void)
