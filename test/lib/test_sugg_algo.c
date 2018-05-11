@@ -157,6 +157,7 @@ void test_file_info_png_v2(void **state)
  * =================================================================================
  * */
 
+/* Test sur un fichier FLV basic */
 void test_file_info_flv_v1(void **state)
 {
     info_s *infos = *state;
@@ -176,6 +177,25 @@ void test_file_info_flv_v1(void **state)
 	fclose(infos->host.host);
 }
 
+/* Test sur un fichier FLV avec des données écrite après l'end of file */
+void test_file_info_flv_v2(void **state)
+{
+    info_s *infos = *state;
+    infos->host.host = fopen("../../../env/test/test17.flv", "r"), 
+				assert_non_null(infos->host.host);
+    infos->host.type = FLV;
+
+	/* Valeurs à trouver : */
+    stegx_suggest_algo(infos);
+    // NOMBRE DE VIDEO TAG :
+    assert_int_equal(infos->host.file_info.flv.nb_video_tag, 2);
+    // NOMBRE DE METADATA TAG :
+    assert_int_equal(infos->host.file_info.flv.nb_metadata_tag, 1);
+    // TOTAL SIZE
+    assert_int_equal(infos->host.file_info.flv.file_size, 88722);
+	
+	fclose(infos->host.host);
+}
 
 /**
  * Tests WAVE
@@ -286,9 +306,11 @@ static int test_propos_algos__teardown(void **state)
 void test_hidden_length(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
+				assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r");
+    infos->hidden = fopen("../../../env/test/test2.bmp", "r"),
+				assert_non_null(infos->hidden);
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     assert_int_equal(infos->hidden_length, 14057098);
@@ -308,8 +330,10 @@ void test_hidden_length(void **state)
 void test_propos_algos_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r");
-    infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r");
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
+				assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
+				assert_non_null(infos->hidden);
     infos->host.type = BMP_COMPRESSED;
     
     /* Valeurs à trouver */
@@ -333,8 +357,10 @@ void test_propos_algos_v1(void **state)
 void test_propos_algos_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.host = fopen("../../../env/test/test4.bmp", "r"),
+				assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), 
+				assert_non_null(infos->hidden);
     infos->host.type = BMP_UNCOMPRESSED;
     
     /* Valeurs à trouver */
@@ -358,8 +384,10 @@ void test_propos_algos_v2(void **state)
 void test_propos_algos_v3(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+				assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
+				assert_non_null(infos->hidden);
     infos->host.type = FLV;
  
     /* Valeurs à trouver */
@@ -383,8 +411,10 @@ void test_propos_algos_v3(void **state)
 void test_propos_algos_v4(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+				assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
+				assert_non_null(infos->hidden);
     infos->host.type = AVI_UNCOMPRESSED;
 
     /* Valeurs à trouver */
@@ -412,14 +442,19 @@ void test_passwd_default_length(void **state)
     info_s *infos = malloc(sizeof(info_s));
     infos->mode = STEGX_MODE_INSERT;
     infos->method = STEGX_WITHOUT_PASSWD;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r");
+    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+				assert_non_null(infos->host.host);
     infos->host.type = AVI_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w");
-    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char));
+    infos->res = fopen("res.bmp", "w"),
+				assert_non_null(infos->res);
+    infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char)),
+				assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r");
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
+				assert_non_null(infos->host.host);
     infos->passwd = NULL;
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)),
+				assert_non_null(stegx_propos_algos);
 
     stegx_suggest_algo(infos);
     stegx_choose_algo(infos, STEGX_ALGO_EOF);
@@ -467,7 +502,8 @@ int main(void)
         cmocka_unit_test(test_file_info_wav__pcm_alaw_2),
         cmocka_unit_test(test_file_info_wav__pcm_s16le),
         //Liste des tests pour le FLV
-        cmocka_unit_test(test_file_info_flv_v1)
+        cmocka_unit_test(test_file_info_flv_v1),
+        cmocka_unit_test(test_file_info_flv_v2)
     };
 
     /* Exécute les tests. */
