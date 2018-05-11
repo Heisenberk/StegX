@@ -422,7 +422,7 @@ void test_propos_algos_v4(void **state)
     //LSB
     assert_int_equal(stegx_propos_algos[0], 0);
     //EOF
-    assert_int_equal(stegx_propos_algos[1], 1);
+    assert_int_equal(stegx_propos_algos[1], 0);
     //METADATA
     assert_int_equal(stegx_propos_algos[2], 1);
     //EOC : end of chunk
@@ -507,11 +507,11 @@ int main(void)
     };
 
     /* Exécute les tests. */
-    int failed_tests = cmocka_run_group_tests(sugg_algos_tests_format,
-                                              test_file_info__setup,
-                                              test_file_info__teardown)
-                        || cmocka_run_group_tests(propos_algos_tests,
-                                              test_propos_algos__setup,
-                                              test_propos_algos__teardown);
-    return failed_tests ? failed_tests : run_test(test_passwd_default_length);
+
+    int failed_tests;
+    /* Si failed_tests est positif, on stop et on le renvoie. Sinon, on fait tout les tests. */
+    if ((failed_tests = cmocka_run_group_tests(sugg_algos_tests_format, test_file_info__setup, test_file_info__teardown))) {}
+    else if ((failed_tests = cmocka_run_group_tests(propos_algos_tests, test_propos_algos__setup, test_propos_algos__teardown))) {}
+    else if ((failed_tests = run_test(test_passwd_default_length))) {}
+    return failed_tests;
 }

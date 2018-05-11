@@ -71,8 +71,9 @@ static int can_use_lsb(info_s * infos)
 static int can_use_eof(info_s * infos)
 {
     assert(infos);
-    // Pour tous les formats proposés par StegX, on propose EOF.
-    return !IS_FILE_TYPE(infos->host.type);
+    // Pour tous les formats proposés par StegX sauf AVI, on propose EOF.
+    return infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED ?
+        1 : !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
