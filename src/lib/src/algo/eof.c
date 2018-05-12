@@ -36,18 +36,18 @@ int insert_eof(info_s * infos)
         // Recopie du header
         while (nb_cpy < header_size) {
 			if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
-				return perror("Can't read Header"), -1;
+				return perror("Can't read Header"), 1;
             if(fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res)==0)
-				return perror("Can't writ Header"), -1;
+				return perror("Can't writ Header"), 1;
             nb_cpy++;
         }
         // Recopie du data
         nb_cpy = 0;
         while (nb_cpy < (infos->host.file_info.bmp.data_size)) {
             if(fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host)==0)
-				return perror("Can't read Data"), -1;
+				return perror("Can't read Data"), 1;
             if(fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res)==0)
-				return perror("Can't write Data"), -1;
+				return perror("Can't write Data"), 1;
             nb_cpy++;
         }
     }
@@ -82,7 +82,7 @@ int extract_eof(info_s * infos)
     uint32_t header_size;
     uint32_t data_size;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-        return perror("Can't make insertion EOF"), 1;
+        return perror("Can't make extraction EOF"), 1;
         
         // pour les formats BMP, PNG
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)
