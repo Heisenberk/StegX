@@ -45,7 +45,7 @@ int write_signature(info_s * infos)
      * (length_hidden_name octets). */
     for (int i = 0, j = 0 ; cpy_hidden_name[i] ; i++) {
         cpy_hidden_name[i] = cpy_hidden_name[i] ^ infos->passwd[j];
-        j = infos->passwd[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
+        j = infos->passwd[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
     }
     if (fwrite(cpy_hidden_name, sizeof(char), length_hidden_name, infos->res) != length_hidden_name)
         return perror("Sig: Can't write hidden file name"), 1;

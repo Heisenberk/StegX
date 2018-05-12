@@ -118,7 +118,6 @@ void test_detect_algo_without_passwd(void **state)
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->host.host = fopen("res4_test_insert.bmp", "r");;
     infos_extract->res = fopen("res4_test_extract.bmp", "w");
-    char *passwd_save2 = malloc((strlen("stegx") + 1) * sizeof(char));
 
     stegx_check_compatibility(infos_extract);
     stegx_detect_algo(infos_extract);

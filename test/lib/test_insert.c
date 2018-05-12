@@ -156,8 +156,8 @@ void test_write_signature_without_passwd(void **state)
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest check_compatibility_tests[] = {
-    cmocka_unit_test(test_write_signature_with_passwd),
-    cmocka_unit_test(test_write_signature_without_passwd),
+    //cmocka_unit_test(test_write_signature_with_passwd),
+    //cmocka_unit_test(test_write_signature_without_passwd),
 };
 
 int main(void)
