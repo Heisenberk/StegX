@@ -26,7 +26,6 @@ int stegx_extract(info_s * infos, char *res_path)
 	// ATTENTION si stdout faux --> a rajouter dans stegx_init et ici
 	
 	// Concatenation du chemin du fichier a créer et le nom du fichier caché
-	printf("TAILLE:%d\n",(strlen(res_path)+strlen(infos->hidden_name)+1));
 	char* res_name=malloc((strlen(res_path)+strlen(infos->hidden_name)+1)*sizeof(char));
 	int i,j;
 	for(i=0;i<strlen(res_path);i++){

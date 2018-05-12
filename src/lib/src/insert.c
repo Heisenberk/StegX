@@ -17,104 +17,45 @@
 
 int write_signature(info_s * infos)
 {
-    assert(infos->host.host);
-    assert(infos->hidden);
-    assert(infos->res);
-    assert(infos->hidden_name);
-    assert(infos->mode != STEGX_MODE_EXTRACT);
-    char car;
-    int i = 0;int j=0;
-    uint8_t algo_used;
+    assert(infos->host.host && infos->hidden && infos->res && infos->hidden_name
+            && infos->mode != STEGX_MODE_EXTRACT);
 
-    // Ecriture algorithme et methode utilisées (1 octet)
-    if (infos->algo == STEGX_ALGO_EOF) {
-        if (infos->method == STEGX_WITH_PASSWD) {
-            algo_used = BYTE_EOF_WITH_PASSWD;
-        } else if (infos->method == STEGX_WITHOUT_PASSWD) {
-            algo_used = BYTE_EOF_WITHOUT_PASSWD;
-        } else
-            return 1;
-    } else if (infos->algo == STEGX_ALGO_LSB) {
-        if (infos->method == STEGX_WITH_PASSWD) {
-            algo_used = BYTE_LSB_WITH_PASSWD;
-        } else if (infos->method == STEGX_WITHOUT_PASSWD) {
-            algo_used = BYTE_LSB_WITHOUT_PASSWD;
-        } else
-            return 1;
-    } else if (infos->algo == STEGX_ALGO_METADATA) {
-        if (infos->method == STEGX_WITH_PASSWD) {
-            algo_used = BYTE_METADATA_WITH_PASSWD;
-        } else if (infos->method == STEGX_WITHOUT_PASSWD) {
-            algo_used = BYTE_METADATA_WITHOUT_PASSWD;
-        } else
-            return 1;
-    } else if (infos->algo == STEGX_ALGO_EOC) {
-        if (infos->method == STEGX_WITH_PASSWD) {
-            algo_used = BYTE_EOC_WITH_PASSWD;
-        } else if (infos->method == STEGX_WITHOUT_PASSWD) {
-            algo_used = BYTE_EOC_WITHOUT_PASSWD;
-        } else
-            return 1;
-    } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
-        if (infos->method == STEGX_WITH_PASSWD) {
-            algo_used = BYTE_JUNK_CHUNK_WITH_PASSWD;
-        } else if (infos->method == STEGX_WITHOUT_PASSWD) {
-            algo_used = BYTE_JUNK_CHUNK_WITHOUT_PASSWD;
-        } else
-            return 1;
-    } else
-        return 1;
-    if (fwrite(&algo_used, sizeof(uint8_t), 1, infos->res) == 0)
-        return perror("Can't write byte algo-method"), 1;
+    /* Ecriture de l'algorithme utilisé et de la méthode de protection utilisée. */
+    if (fwrite(&(infos->algo), sizeof(uint8_t), 1, infos->res) != 1)
+        return perror("Sig: Can't write algo"), 1;
+    if (fwrite(&(infos->method), sizeof(uint8_t), 1, infos->res) != 1)
+        return perror("Sig: Can't write method"), 1;
 
-    // Ecriture taille du fichier a cacher (4 octets)
-    uint32_t length_written = infos->hidden_length;
-    if (fwrite(&length_written, sizeof(uint32_t), 1, infos->res) == 0)
-		return perror("Can't write length hidden file"), 1;
+    /* Ecriture de la taille du fichier à cacher. */
+    if (fwrite(&(infos->hidden_length), sizeof(uint32_t), 1, infos->res) != 1)
+        return perror("Sig: Can't write length hidden file"), 1;
 
-    // Ecriture la taille du nom du fichier caché (1 octet)
-    uint8_t length = strlen(infos->hidden_name);
-    if (length > 0xFF)
-        length = LENGTH_HIDDEN_NAME_MAX;
-    if (fwrite(&length, sizeof(uint8_t), 1, infos->res) == 0)
-		return perror("Can't write length name hidden file"), 1;
+    /* Ecriture de la taille du nom du fichier à cacher. */
+    uint8_t length_hidden_name = strlen(infos->hidden_name);
+    if (length_hidden_name > LENGTH_HIDDEN_NAME_MAX)
+        length_hidden_name = LENGTH_HIDDEN_NAME_MAX;
+    if (fwrite(&length_hidden_name, sizeof(uint8_t), 1, infos->res) != 1)
+        return perror("Sig: Can't write length hidden file"), 1;
 
-    // Copie du nom du fichier a cacher car on fait un xor apres
-    char *cpy_hidden_name = malloc(sizeof(char) * (length + 1));
-    for (i = 0; i < length + 1; i++) {
-        cpy_hidden_name[i] = infos->hidden_name[i];
+    /* Copie du nom du fichier a cacher car on fait un XOR après. */
+    char cpy_hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
+    strncpy(cpy_hidden_name, infos->hidden_name, length_hidden_name + 1);
+
+    /* Ecriture du XOR du nom du fichier a cacher avec le mot de passe
+     * (length_hidden_name octets). */
+    for (int i = 0, j = 0 ; cpy_hidden_name[i] ; i++) {
+        cpy_hidden_name[i] = cpy_hidden_name[i] ^ infos->passwd[j];
+        j = infos->passwd[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
-    cpy_hidden_name[length] = '\0';
+    if (fwrite(cpy_hidden_name, sizeof(char), length_hidden_name, infos->res) != length_hidden_name)
+        return perror("Sig: Can't write hidden file name"), 1;
 
-    // Modification de la copie du nom du fichier a cache en XOR avec le mdp (255 octets)
-    i = 0; j = 0;
-    do {
-        cpy_hidden_name[i] = cpy_hidden_name[i] ^ infos->passwd[j];    //XOR
-        i++;
-        j++;
-        if (infos->passwd[j] == '\0')
-            j = 0;
-    } while (cpy_hidden_name[i] != '\0');
-    i = 0;
-    for (i = 0; i < length; i++) {
-        car = cpy_hidden_name[i];
-        if(fwrite(&car, sizeof(uint8_t), 1, infos->res)==0)
-			return perror("Can't write name hidden file"), 1;
-    }
-    free(cpy_hidden_name);
-
-    /*
-       Ecriture du mot de passe si il s'agit d'un mot de passe par défaut 
-       choisi aléatoirement par l'application (64 octets)
-     */
+    /* Ecriture du mot de passe s'il s'agit d'un mot de passe par défaut 
+       choisi aléatoirement par l'application (64 octets). */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        for (i = 0; i < LENGTH_DEFAULT_PASSWD; i++) {
-            car = infos->passwd[i];
-            if(fwrite(&car, sizeof(uint8_t), 1, infos->res)==0)
-				return perror("Can't write passwd"), 1;
-        }
+        if (fwrite(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->res) != LENGTH_DEFAULT_PASSWD)
+            return perror("Sig: Can't write default password"), 1;
     }
-
     return 0;
 }
 

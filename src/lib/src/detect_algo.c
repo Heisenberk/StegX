@@ -1,194 +1,114 @@
-#include <endian.h>
-#include <time.h>
+/**
+ * @file detect_algo.c
+ * @brief Module de détection de l'algorithme.
+ * @details Lecture de la signature d'un fichier hôte.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
-#include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "common.h"
 #include "sugg_algo.h"
 
-#include "algo/lsb.h"
-#include "algo/eof.h"
-#include "algo/metadata.h"
-#include "algo/eoc.h"
-#include "algo/junk_chunk.h"
-
 /** 
- * @brief Va à l'endroit de la signature dans le fichier et la lit. 
+ * @brief Lit la signature contenu dans le fichier hôte.
+ * @sideeffect Renseigne la structure \r{infos_s} avec les informations
+ * contenues dans la signature.
+ * @error \r{ERR_NEED_PASSWD} si le récepteur n'as pas fourni de mot de passe
+ * alors qu'il aurait dû.
  * @param infos Structure représentant les informations concernant l'extraction.
- * @return 0 si la signature a bien ete lue ; 1 sinon 
+ * @return 0 si la signature a bien été lue, sinon 1 et assigne \r{stegx_errno}
+ * à l'erreur survenue.
  */
 static int read_signature(info_s * infos)
 {
-    assert(infos);
-    assert(infos->mode == STEGX_MODE_EXTRACT);
+    assert(infos && infos->mode == STEGX_MODE_EXTRACT);
 
-    uint8_t algo_read, car_read;
-    uint32_t hidden_length, hidden_length_read;
-    uint8_t length_name_hidden;
-    int read, length_passwd_default, move;
-    int ii, jj;
+    /* Longueur du nom du fichier caché. */
+    uint8_t length_hidden_name;
 
-    // on va a la signature
-    // faire ca pour chaque format /!\ --> a faire pour WAV,MP3, AVI, FLV 
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-        if (fseek
-            (infos->host.host,
-             infos->host.file_info.bmp.header_size + infos->host.file_info.bmp.data_size,
-             SEEK_SET) == -1)
-            return perror("Can't move to STEGX signature"), 1;
-    }
-    
-    if ((infos->host.type == PNG)) {
-        if (fseek
-            (infos->host.host,
-             infos->host.file_info.png.header_size + infos->host.file_info.png.data_size,
-             SEEK_SET) == -1)
-            return perror("Can't move to STEGX signature"), 1;
-    }
+    /* Saut à l'offset de la signature. Il faut prendre en compte les
+     * spécificités de chaque format. */
 
-    /*
-       on lit l'octet représentant l'algorithme utilisé et la méthode 
-       utilisée (avec ou sans mdp choisi par l'utilisateur)
-     */
-    if (fread(&algo_read, sizeof(uint8_t), 1, infos->host.host) != 1)
-        return perror("Can't read byte algo-method"), 1;
-
-    // on remplit les champs algo et method de infos
-    // cas algo EOF
-    if (algo_read == BYTE_EOF_WITH_PASSWD) {
-        infos->algo = STEGX_ALGO_EOF;
-        infos->method = STEGX_WITH_PASSWD;
-    } else if (algo_read == BYTE_EOF_WITHOUT_PASSWD) {
-        infos->algo = STEGX_ALGO_EOF;
-        infos->method = STEGX_WITHOUT_PASSWD;
+    /* BMP & WAVE (car ils ont tout les deux "header_size" et "data_size" en
+     * "uint32_t" au début de leurs structures). */
+    if (infos->host.type <= WAV_NO_PCM && infos->host.type >= BMP_COMPRESSED) {
+        if (fseek(infos->host.host, infos->host.file_info.wav.header_size +
+                    infos->host.file_info.wav.data_size, SEEK_SET))
+            return perror("BMP & WAVE: Can't move to StegX signature"), 1;
     }
-    // cas algo LSB
-    else if (algo_read == BYTE_LSB_WITH_PASSWD) {
-        infos->algo = STEGX_ALGO_LSB;
-        infos->method = STEGX_WITH_PASSWD;
-    } else if (algo_read == BYTE_LSB_WITHOUT_PASSWD) {
-        infos->algo = STEGX_ALGO_LSB;
-        infos->method = STEGX_WITHOUT_PASSWD;
+    else if (infos->host.type == PNG) {
+		if (fseek(infos->host.host, infos->host.file_info.png.header_size +
+                    infos->host.file_info.png.data_size, SEEK_SET))
+            return perror("PNG: Can't move to StegX signature"), 1;
     }
-    // cas algo METADATA
-    else if (algo_read == BYTE_METADATA_WITH_PASSWD) {
-        infos->algo = STEGX_ALGO_METADATA;
-        infos->method = STEGX_WITH_PASSWD;
-    } else if (algo_read == BYTE_METADATA_WITHOUT_PASSWD) {
-        infos->algo = STEGX_ALGO_METADATA;
-        infos->method = STEGX_WITHOUT_PASSWD;
+    else if (infos->host.type == MP3) {
     }
-    // cas algo EOC
-    else if (algo_read == BYTE_EOC_WITH_PASSWD) {
-        infos->algo = STEGX_ALGO_EOC;
-        infos->method = STEGX_WITH_PASSWD;
-    } else if (algo_read == BYTE_EOC_WITHOUT_PASSWD) {
-        infos->algo = STEGX_ALGO_EOC;
-        infos->method = STEGX_WITHOUT_PASSWD;
+    else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
     }
-    // cas algo JUNK CHUNK
-    else if (algo_read == BYTE_JUNK_CHUNK_WITH_PASSWD) {
-        infos->algo = STEGX_ALGO_JUNK_CHUNK;
-        infos->method = STEGX_WITH_PASSWD;
-    } else if (algo_read == BYTE_JUNK_CHUNK_WITHOUT_PASSWD) {
-        infos->algo = STEGX_ALGO_JUNK_CHUNK;
-        infos->method = STEGX_WITHOUT_PASSWD;
-    }
-    // on lit la taille du fichier caché
-    if (fread(&hidden_length_read, sizeof(uint32_t), 1, infos->host.host) != 1)
-        return perror("Can't read length hidden file"), 1;
-    // convertit read_length_pic de big-endian en l'endian de la machine
-    infos->hidden_length = le32toh(hidden_length_read);
-
-    // on lit la taille du nom du fichier caché
-    read = fread(&length_name_hidden, sizeof(uint8_t), 1, infos->host.host);
-    if (read == 0)
-        return perror("Can't read length name hidden file"), 1;
-    infos->hidden_name = malloc((length_name_hidden + 1) * sizeof(char));
-
-    // si l'emetteur a besoin d'un mdp et que le recepteur n'en a pas fourni 
-    if ((infos->method == STEGX_WITH_PASSWD) && (infos->passwd == NULL)) {
-        stegx_errno = ERR_NEED_PASSWD;
-        return 1;
+    else if (infos->host.type == FLV) {
     }
 
-    /*
-       si l'application a choisi un mot de passe par défaut aléatoirement
-       on va le lire afin de pourvoir récupérer le nom du fichier qui 
-       qui est XOR avec ce dernier
-     */
+    /* Lecture de l'algorithme utilisé et de la méthode de protection utilisée. */
+    if (fread(&(infos->algo), sizeof(uint8_t), 1, infos->host.host) != 1)
+        return perror("Sig: Can't read algo"), 1;
+    if (fread(&(infos->method), sizeof(uint8_t), 1, infos->host.host) != 1)
+        return perror("Sig: Can't read method"), 1;
+
+    /* Si l'émetteur a fournis un mot de passe et que le récepteur n'en a pas
+     * fourni, on lève une erreur. */
+    if ((infos->method == STEGX_WITH_PASSWD) && (infos->passwd == NULL))
+        return stegx_errno = ERR_NEED_PASSWD, 1;
+
+    /* Lecture de la taille du fichier caché. */
+    if (fread(&(infos->hidden_length), sizeof(uint32_t), 1, infos->host.host) != 1)
+        return perror("Sig: Can't read length hidden file"), 1;
+    /* Lecture de la taille du nom du fichier caché + allocation. */
+    if (fread(&length_hidden_name, sizeof(uint8_t), 1, infos->host.host) != 1)
+        return perror("Sig: Can't read name length of hidden file"), 1;
+    if (!(infos->hidden_name = calloc((length_hidden_name + 1), sizeof(char))))
+        return perror("Sig: Can't calloc for name of hidden file"), 1;
+
+    /* Lecture du nom du fichier caché XOR avec le mot de passe (choisi par
+     * l'utilisateur ou par l'application aléatoirement). */
+    if (fread(infos->hidden_name, sizeof(char), length_hidden_name, infos->host.host) != length_hidden_name)
+        return perror("Sig: Can't read the name of hidden file"), 1;
+       
+    /* Si l'application a choisi un mot de passe par défaut aléatoirement, on va
+     * le lire afin de pouvoir récupérer le nom du fichier qui est XOR avec
+     * ce dernier. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        // important car si l'utilisateur tape un mdp alors qu'il nen a pas besoin 
-        // il faut vider la memoire et realloue par dessus
-        if (infos->passwd != NULL)
-            free(infos->passwd);
-        infos->passwd = malloc((LENGTH_DEFAULT_PASSWD + 1) * sizeof(char));
-
-        // on lit le mdp ecrit dans la signature
-        if (fseek(infos->host.host, length_name_hidden, SEEK_CUR) == -1)
-            return perror("Can't read password"), 1;
-
-        for (ii = 0; ii < (LENGTH_DEFAULT_PASSWD + 1); ii++) {
-            if (fread(&car_read, sizeof(uint8_t), 1, infos->host.host) != 1)
-                return 1;
-            infos->passwd[ii] = car_read;
-        }
-        infos->passwd[LENGTH_DEFAULT_PASSWD] = '\0';
-
-        // on va au niveau du nom du fichier pour pouvoir le lire dans la signature
-        if (fseek(infos->host.host, -(LENGTH_DEFAULT_PASSWD + length_name_hidden + 1), SEEK_CUR) ==
-            -1)
-            return perror("Can't read name hidden file"), 1;
+        /* Si l'utilisateur tape un mot de passe alors qu'il n'en a pas besoin,
+         * il faut vider la memoire et réallouer par dessus. */
+        free(infos->passwd);
+        if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
+            return perror("Sig: Can't calloc password"), 1;
+        if (fread(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->host.host) != LENGTH_DEFAULT_PASSWD)
+            return perror("Sig: Can't read password"), 1;
     }
 
-    /*
-       lecture du nom du fichier caché XOR avec le mot de passe 
-       (choisi par l'utilisateur ou par l'application aléatoirement)
-     */
-    ii = 0;
-    jj = 0;
-    while (ii < length_name_hidden) {
-        if (fread(&car_read, sizeof(uint8_t), 1, infos->host.host) != 1)
-            return 1;
-        infos->hidden_name[ii] = car_read ^ infos->passwd[jj];  //XOR
-        ii++;
-        jj++;
-        if (infos->passwd[jj] == '\0')
-            jj = 0;
+    /* DéXOR du nom du fichier cacher. */
+    for (int i = 0, j = 0 ; i < length_hidden_name ; i++) {
+        infos->hidden_name[i] = infos->hidden_name[i] ^ infos->passwd[j];
+        j = infos->passwd[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
-    infos->hidden_name[length_name_hidden] = '\0';
-
-
     return 0;
 }
 
 int stegx_detect_algo(info_s * infos)
 {
-    if (infos->mode == STEGX_MODE_INSERT) {
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
-    // on remplit d'avoir la structure spécifique de infos->host.file_info
-    int fill = fill_host_info(infos);
-    if (fill == 1) {
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
-    /*
-       on lit la signature pour connaitre l'algorithme, la méthode utilisée
-       la taille des donnees cachees, le nom du fichier cache
-     */
-    int read = read_signature(infos);
-    if (read == 1) {
-        if (stegx_errno == ERR_NEED_PASSWD) {   // erreur particuliere
-            return 1;
-        }
-        stegx_errno = ERR_DETECT_ALGOS;
-        return 1;
-    }
+    /* Vérifie le mode d'utilisation, puis remplit la structure afin d'avoir la
+     * structure spécifique de "infos->host.file_info". */
+    if (infos->mode == STEGX_MODE_INSERT || fill_host_info(infos))
+        return stegx_errno = ERR_DETECT_ALGOS, 1;
+    /* Lecture de la signature pour connaître l'algorithme, la méthode,
+       la taille des données cachées et le nom du fichier caché. */
+    if (read_signature(infos))
+        return stegx_errno == ERR_NEED_PASSWD ? 1 : (stegx_errno = ERR_DETECT_ALGOS), 1;
     return 0;
 }

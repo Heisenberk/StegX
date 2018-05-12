@@ -15,9 +15,6 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
-/** Longueur du mot de passe choisi par défaut. */
-#define LENGTH_DEFAULT_PASSWD  64       /* 64 caractères sans compter le '\0'. */
-
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.

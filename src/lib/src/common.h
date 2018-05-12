@@ -27,14 +27,15 @@
 #define IS_FILE_TYPE(enum_type)                                           \
         (enum_type > UNKNOWN && enum_type <= FLV ? 1 : 0);
 
-/** Types de fichiers possibles pour le fichier hôte. */
+/** Types de fichiers possibles pour le fichier hôte (attention à ne pas changer
+ * l'ordre). */
 enum type {
     UNKNOWN = 0,                /*!< Type de fichier inconnu. */
     BMP_COMPRESSED,             /*!< Fichier BMP compressé. */
     BMP_UNCOMPRESSED,           /*!< Fichier BMP non-compressé. */
-    PNG,                        /*!< Fichier PNG. */
     WAV_PCM,                    /*!< Fichier WAVE-PCM. */
     WAV_NO_PCM,                 /*!< Fichier WAVE contenant un flux non-PCM. */
+    PNG,                        /*!< Fichier PNG. */
     MP3,                        /*!< Fichier MP3. */
     AVI_COMPRESSED,             /*!< Fichier AVI compressé. */
     AVI_UNCOMPRESSED,           /*!< Fichier AVI non-compressé. */
@@ -88,5 +89,20 @@ struct info {
     uint32_t hidden_length;     /*!< Taille du fichier à cacher / du fichier caché (octets). */
     char *passwd;               /*!< Mot de passe choisi par l'utilisateur. */
 };
+
+/*
+ * Signature
+ * =============================================================================
+ */
+
+/* Attention : les octets 8 (0x8), 9 (0x9), 18 (0x12) et 24 (0x18) ne peuvent pas
+ * etre utilisés dans le premier octet de la signature StegX à cause de la
+ * signature des différents tags dans FLV. */
+
+/** Taille maximale pour le nom du fichier caché. */
+#define LENGTH_HIDDEN_NAME_MAX 255
+
+/** Longueur du mot de passe choisi par défaut. */
+#define LENGTH_DEFAULT_PASSWD  64       /* 64 caractères sans compter le '\0'. */
 
 #endif                          /* ifndef COMMON_PRIV_H */

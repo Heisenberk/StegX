@@ -108,14 +108,14 @@ int extract_eof(info_s * infos)
     
     
     /*  
-		1 octet pour l'algo et la méthode
+		2 octets pour l'algo et la méthode
 		4 octets pour la taille du fichier caché (uint32_t)
 		1 octet pour la taille du nom du fichier caché
 		1 à 255 octets pour le nom du fichier caché (sans '\0')
 		64 octets si stegx a utilise un mot de passe par defaut 
 	*/
 	// déplacement jusqu'à la fin de la signature
-	int fseek_signature=1+4+1+strlen(infos->hidden_name)+LENGTH_DEFAULT_PASSWD*(infos->method==STEGX_WITHOUT_PASSWD);
+	int fseek_signature=2+4+1+strlen(infos->hidden_name)+LENGTH_DEFAULT_PASSWD*(infos->method==STEGX_WITHOUT_PASSWD);
 	if (fseek(infos->host.host,fseek_signature, SEEK_CUR) == -1)
 		return perror("Can't make extraction EOF"), 1;
 	
