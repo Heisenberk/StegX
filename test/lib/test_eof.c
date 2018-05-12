@@ -61,7 +61,7 @@ void test_insert_eof_bmp_with_passwd(void **state)
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract,"result/bmp/");
+    stegx_extract(infos_extract,"./");
     uint32_t hidden_length_extract=infos_extract->hidden_length;
     char* hidden_name=malloc((strlen(infos_extract->hidden_name)+1)*sizeof(char));
     strcpy(hidden_name,infos_extract->hidden_name);
@@ -81,7 +81,7 @@ void test_insert_eof_bmp_with_passwd(void **state)
     int i,test_content=1;
     uint8_t c;
     char* message=malloc((infos_extract->hidden_length+1)*sizeof(char));
-    FILE* f=fopen("result/bmp/short.txt","r");
+    FILE* f=fopen("./short.txt","r");
     if(f==NULL) test_content=0;
     for(i=0;i<(infos_extract->hidden_length)-1;i++){
 		fread(&c, sizeof(uint8_t), 1,f);
@@ -90,9 +90,10 @@ void test_insert_eof_bmp_with_passwd(void **state)
 	message[infos_extract->hidden_length-2]='\0';
 	// Test si le contenu du message a bien ete extrait
 	test_name=(strcmp(message,"voici un test tres court.")==0);
+	if(test_content==0) test_name=0;
     assert_int_equal(test_name,1);
     free(message);
-    remove("result/bmp/short.txt");
+    remove("./short.txt");
 }
 
 void test_insert_eof_bmp_without_passwd(void **state)
@@ -130,7 +131,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
     
     // extraction de short.txt dans test9bis.bmp
     stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract,"result/bmp/");
+    stegx_extract(infos_extract,"./");
     uint32_t hidden_length_extract=infos_extract->hidden_length;
     char* hidden_name=malloc((strlen(infos_extract->hidden_name)+1)*sizeof(char));
     strcpy(hidden_name,infos_extract->hidden_name);
@@ -150,7 +151,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
     int i,test_content=1;
     uint8_t c;
     char* message=malloc((infos_extract->hidden_length+1)*sizeof(char));
-    FILE* f=fopen("result/bmp/short.txt","r");
+    FILE* f=fopen("./short.txt","r");
     if(f==NULL) test_content=0;
     for(i=0;i<(infos_extract->hidden_length)-1;i++){
 		fread(&c, sizeof(uint8_t), 1,f);
@@ -162,7 +163,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
 	if(test_content==0) test_name=0;
     assert_int_equal(test_name,1);
     free(message);
-    remove("result/bmp/short.txt");
+    remove("./short.txt");
 }
 
 void test_insert_eof_png_with_passwd(void **state)
@@ -203,7 +204,7 @@ void test_insert_eof_png_with_passwd(void **state)
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract,"result/png/");
+    stegx_extract(infos_extract,"./");
     uint32_t hidden_length_extract=infos_extract->hidden_length;
     char* hidden_name=malloc((strlen(infos_extract->hidden_name)+1)*sizeof(char));
     strcpy(hidden_name,infos_extract->hidden_name);
@@ -222,7 +223,7 @@ void test_insert_eof_png_with_passwd(void **state)
     int i,test_content=1;
     uint8_t c;
     char* message=malloc((infos_extract->hidden_length+1)*sizeof(char));
-    FILE* f=fopen("result/png/short.txt","r");
+    FILE* f=fopen("./short.txt","r");
     if(f==NULL) test_content=0;
     for(i=0;i<(infos_extract->hidden_length)-1;i++){
 		fread(&c, sizeof(uint8_t), 1,f);
@@ -236,7 +237,7 @@ void test_insert_eof_png_with_passwd(void **state)
 	if(test_content==0) test_name=0;
     assert_int_equal(test_name,1);
     free(message);
-    remove("result/png/short.txt");
+    remove("./short.txt");
 }
 
 void test_insert_eof_png_without_passwd(void **state)
@@ -273,7 +274,7 @@ void test_insert_eof_png_without_passwd(void **state)
     
     // extraction de short.txt dans test8.png
     stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract,"result/png/");
+    stegx_extract(infos_extract,"./");
     uint32_t hidden_length_extract=infos_extract->hidden_length;
     char* hidden_name=malloc((strlen(infos_extract->hidden_name)+1)*sizeof(char));
     strcpy(hidden_name,infos_extract->hidden_name);
@@ -293,7 +294,7 @@ void test_insert_eof_png_without_passwd(void **state)
     int i,test_content=1;
     uint8_t c;
     char* message=malloc((infos_extract->hidden_length+1)*sizeof(char));
-    FILE* f=fopen("result/png/short.txt","r");
+    FILE* f=fopen("./short.txt","r");
     if(f==NULL) test_content=0;
     for(i=0;i<(infos_extract->hidden_length)-1;i++){
 		fread(&c, sizeof(uint8_t), 1,f);
@@ -305,7 +306,7 @@ void test_insert_eof_png_without_passwd(void **state)
 	if(test_content==0) test_name=0;
     assert_int_equal(test_name,1);
     free(message);
-    remove("result/png/short.txt");
+    remove("./short.txt");
 }
 
 /* Structure CMocka contenant la liste des tests. */

@@ -66,7 +66,8 @@ void test_write_signature_with_passwd(void **state)
     // lecture du nom du fichier caché XOR le mot de passe choisi par l'utilisateur
     char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
     fread(hidden_name, sizeof(char), length_name, f);
-    for (int i = 0, j = 0 ; i < length_name ; i++) {
+    int j=0;
+    for (int i = 0 ; i < length_name ; i++) {
         hidden_name[i] = hidden_name[i] ^ passwd_save[j];
         j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
@@ -132,7 +133,8 @@ void test_write_signature_without_passwd(void **state)
     // lecture du nom du fichier caché XOR le mot de passe choisi par l'utilisateur
     char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
     fread(hidden_name, sizeof(char), length_name, f);
-    for (int i = 0, j = 0 ; i < length_name ; i++) {
+    int j=0;
+    for (int i = 0 ; i < length_name ; i++) {
         hidden_name[i] = hidden_name[i] ^ passwd_save[j];
         j = passwd_save[j + 1] ? j++ : 0; /* Boucle sur le mot de passe. */
     }
