@@ -34,5 +34,6 @@ int insert_metadata(info_s * infos)
 
 int extract_metadata(info_s * infos)
 {
+    (void) infos; /* Unused. */
     return 1;
 }

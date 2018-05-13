@@ -11,6 +11,8 @@
 
 #include <unistd.h>
 
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 /** Nom du programme. */
 static const char *program_name = "@PROJECT_NAME@";
 /** Version du programme. */
@@ -40,5 +42,7 @@ static const char* program_logo()
     }
     return NULL;
 }
+
+#pragma GCC diagnostic pop
 
 #endif /* CONFIG_H_ */

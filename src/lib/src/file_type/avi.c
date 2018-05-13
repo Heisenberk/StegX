@@ -39,10 +39,12 @@ type_e stegx_test_file_avi(FILE * file)
 
 int insert_metadata_avi(info_s * infos)
 {
+    (void) infos; /* Unused. */
     return 1;
 }
 
 int extract_metadata_avi(info_s * infos)
 {
+    (void) infos; /* Unused. */
     return 1;
 }

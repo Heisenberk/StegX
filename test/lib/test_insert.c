@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include "stegx.h"
+#include "insert.h"
 #include "common.h"
 
 

@@ -13,34 +13,29 @@ int insert_eof(info_s * infos)
 	assert(infos);
 	assert(infos->mode==STEGX_MODE_INSERT);
     assert(infos->algo == STEGX_ALGO_EOF);
-    int read;
     uint32_t nb_cpy;            //nb doctets recopies
     uint8_t byte_cpy;           // octet recopie
     uint32_t header_size;
-    uint32_t data_size;
     // pour les formats BMP, PNG
     fseek(infos->host.host, 0, SEEK_SET);
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)
         || (infos->host.type == PNG)) {
-        if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
+        if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED))
             header_size = infos->host.file_info.bmp.header_size;
-            data_size = infos->host.file_info.bmp.data_size;
-        } else if (infos->host.type == PNG) {
+        else if (infos->host.type == PNG)
             header_size = infos->host.file_info.png.header_size;
-            data_size = infos->host.file_info.png.data_size;
-        }
 
         nb_cpy = 0;
         // on recopie le header
         while (nb_cpy < header_size) {
-            read = fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
+            fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
             fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res);
             nb_cpy++;
         }
         // on recopie le data
         nb_cpy = 0;
         while (nb_cpy < (infos->host.file_info.bmp.data_size)) {
-            read = fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
+            fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
             fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res);
             nb_cpy++;
         }
@@ -69,5 +64,6 @@ int insert_eof(info_s * infos)
 
 int extract_eof(info_s * infos)
 {
+    (void) infos; /* Unused. */
     return 1;
 }

@@ -31,7 +31,7 @@ int write_signature(info_s * infos)
         return perror("Sig: Can't write length hidden file"), 1;
 
     /* Ecriture de la taille du nom du fichier à cacher. */
-    uint8_t length_hidden_name = strlen(infos->hidden_name);
+    uint16_t length_hidden_name = strlen(infos->hidden_name);
     if (length_hidden_name > LENGTH_HIDDEN_NAME_MAX)
         length_hidden_name = LENGTH_HIDDEN_NAME_MAX;
     if (fwrite(&length_hidden_name, sizeof(uint8_t), 1, infos->res) != 1)

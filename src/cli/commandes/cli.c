@@ -160,7 +160,7 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
 void check_info(stegx_choices_s * com)
 {
     if (com->mode == STEGX_MODE_INSERT) {
-        if ((com->host_path != NULL) && (com->insert_info->algo != -1)) {
+        if ((com->host_path != NULL)) {
             printf("host_path : %s\n"
                    "hidden_path : %s\n"
                    "res_path : %s\n"

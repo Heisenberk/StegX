@@ -16,12 +16,12 @@ type_e check_file_format(FILE * file)
 {
     assert(file);
     type_e res = UNKNOWN;
-    if (res = stegx_test_file_bmp(file)) {
-    } else if (res = stegx_test_file_png(file)) {
-    } else if (res = stegx_test_file_wav(file)) {
-    } else if (res = stegx_test_file_mp3(file)) {
-    } else if (res = stegx_test_file_avi(file)) {
-    } else if (res = stegx_test_file_flv(file)) {
+    if ((res = stegx_test_file_bmp(file))) {
+    } else if ((res = stegx_test_file_png(file))) {
+    } else if ((res = stegx_test_file_wav(file))) {
+    } else if ((res = stegx_test_file_mp3(file))) {
+    } else if ((res = stegx_test_file_avi(file))) {
+    } else if ((res = stegx_test_file_flv(file))) {
     }
     return res;
 }

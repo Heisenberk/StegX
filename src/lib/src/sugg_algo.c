@@ -56,8 +56,7 @@ static int can_use_lsb(info_s * infos)
             return 0;
     }
     /* Sinon, on ne peux pas utiliser LSB. */
-    else
-        return 1;
+    return 1;
 }
 
 /** 
@@ -183,7 +182,6 @@ int fill_host_info(info_s * infos)
         ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
         
-        uint8_t byte_read_png;
         uint32_t chunk_size, chunk_id;
          
         // Jump sur le premier chunk et lecture de son ID et de sa taille
@@ -238,10 +236,8 @@ int fill_host_info(info_s * infos)
                     return perror("WAVE file: Can't read number of bit per sample"), 1;
             }
         }
-        /* Récupération de la taille totale du header. */
-        if ((infos->host.file_info.wav.header_size = ftell(infos->host.host)) == -1)
-            return perror("WAVE file: Can't read size of header"), 1;
-        /* Récupération de la taille de data. */
+        /* Récupération de la taille totale du header et de la taille de data. */
+        infos->host.file_info.wav.header_size = ftell(infos->host.host);
         infos->host.file_info.wav.data_size = chunk_size;
         return 0;
     }

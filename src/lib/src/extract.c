@@ -17,5 +17,7 @@
 
 int stegx_extract(info_s * infos, char *res_path)
 {
+    (void) infos; /* Unused. */
+    (void) res_path; /* Unused. */
     return 1;
 }
