@@ -108,6 +108,9 @@ if (WIN32)
     set (SRC_RUNTIME_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${SRC_DIR})
     set (TEST_OUTPUT_PATH ${CMAKE_BINARY_DIR}/${TEST_DIR})
 endif()
+# Flags de compilation généraux.
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3 -Wall -Wextra")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_DEBUG} -O3 -DNDEBUG")
 
 # Lecture des sources.
 add_subdirectory (${SRC_DIR})
