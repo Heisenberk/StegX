@@ -67,6 +67,7 @@ static int read_signature(info_s * infos)
     /* Lecture de la taille du nom du fichier caché + allocation. */
     if (fread(&length_hidden_name, sizeof(uint8_t), 1, infos->host.host) != 1)
         return perror("Sig: Can't read name length of hidden file"), 1;
+    free(infos->hidden_name);
     if (!(infos->hidden_name = calloc((length_hidden_name + 1), sizeof(char))))
         return perror("Sig: Can't calloc for name of hidden file"), 1;
 

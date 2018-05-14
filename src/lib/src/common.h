@@ -27,8 +27,10 @@
 #define IS_FILE_TYPE(enum_type)                                           \
         (enum_type > UNKNOWN && enum_type <= FLV ? 1 : 0);
 
-/** Types de fichiers possibles pour le fichier hôte (attention à ne pas changer
- * l'ordre). */
+/**
+ * @brief Types de fichiers possibles pour le fichier hôte.
+ * @internal Attention à ne pas changer l'ordre.
+ */
 enum type {
     UNKNOWN = 0,                /*!< Type de fichier inconnu. */
     BMP_COMPRESSED,             /*!< Fichier BMP compressé. */

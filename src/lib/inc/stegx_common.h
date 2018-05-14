@@ -74,7 +74,7 @@ algo_e *stegx_propos_algos;
 /** Informations concernant uniquement l'insertion de données. */
 struct stegx_info_insert {
     char *hidden_path;          /*!< Chaîne de caractères representant le nom du fichier a cacher (requis). */
-    algo_e algo;                /*!< Rlgorithme qui sera utilisé pour la dissimulation (requis uniquement si CLI). */
+    algo_e algo;                /*!< Algorithme qui sera utilisé pour la dissimulation (requis uniquement si CLI). */
 };
 
 /** Type des informations concernant uniquement l'insertion. */
@@ -89,7 +89,7 @@ typedef struct stegx_info_insert stegx_info_insert_s;
  */
 struct stegx_choices {
     char *host_path;            /*!< Chemin du fichier à analyser (requis). */
-    char *res_path;             /*!< Chemin du fichier résultant (requis). */
+    char *res_path;             /*!< Chemin du fichier/dossier résultant (requis). */
     char *passwd;               /*!< Mot de passe choisi par l'utilisateur (optionnel). */
     mode_e mode;                /*!< Mode d'utilisation (requis). */
     stegx_info_insert_s *insert_info;   /*!< Structure stockant les informations de l'insertion (requis si insertion). */

@@ -1,3 +1,11 @@
+/**
+ * @file init.c
+ * @brief Fonction d'initialisation et de libération de la bibliothèque.
+ * @details Fichier contenant la fonction d'initialisation de la structure
+ * privée de la bibliothèque, ainsi que sa réciproque avec la fonction de
+ * libération mémoire.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -125,14 +133,15 @@ info_s *stegx_init(stegx_choices_s * choices)
 
 void stegx_clear(info_s * infos)
 {
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->hidden != NULL)
-        fclose(infos->hidden);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
+    /* On remet tout à NULL en libérant la mémoire. */
+    if (infos->host.host)
+        infos->host.host = (fclose(infos->host.host), NULL);
+    if (infos->hidden)
+        infos->hidden = (fclose(infos->hidden), NULL);
+    if (infos->res)
+        infos->res = (fclose(infos->res), NULL);
+    infos->hidden_name = (free(infos->hidden_name), NULL);
+    infos->passwd = (free(infos->passwd), NULL);
+    infos = (free(infos), NULL);
     stegx_propos_algos = (free(stegx_propos_algos), NULL);
 }
