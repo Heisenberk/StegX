@@ -80,9 +80,18 @@ static int can_use_eof(info_s * infos)
 static int can_use_metadata(info_s * infos)
 {
     assert(infos);
-    // Pas toujours pour BMP car cela depend de la taille. A remplir.
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED))
-        return 0;
+    /* L'algorithme METADATA sur le format BMP consiste à insérer entre le 
+     * header et le debut de l'image les données cachées. L'offset de l'image 
+     * brute est écrit sur 4 octets et il ne faut pas dépasser cette taille 
+     */
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)){
+		uint64_t length=infos->hidden_length+infos->host.file_info.bmp.header_size;
+		// Si cela depasse 4 octets on ne propose pas METADATA
+		if(length>BMP_METADATA_MAX){
+			return 1;
+		}
+		return 0;
+	}
     // Pour tous les formats proposés par StegX, on propose Metadata.
     return !IS_FILE_TYPE(infos->host.type);
 }

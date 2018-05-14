@@ -14,6 +14,8 @@
 #define BMP_DEF_PIX_LENGTH 28
 /** Adresse (offset) du nombre de pixels dans l'image (octet). */
 #define BMP_DEF_NB_PIXEL 18
+/** Taille maximale lors de l'insertion metadata dans le fichier BMP. */
+#define BMP_METADATA_MAX 0xFFFFFFFF
 /** Déplacement absolu à faire pour savoir si il s'agit d'un fichier 
  * compressé ou non. 
  * */
