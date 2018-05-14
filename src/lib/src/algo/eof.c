@@ -20,6 +20,8 @@ int insert_eof(info_s * infos)
     uint32_t data_size;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make insertion EOF"), 1;
+    if (fseek(infos->hidden, 0, SEEK_SET) == -1)
+        return perror("Can't make insertion EOF"), 1;
     
     // pour les formats BMP, PNG
     if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)
