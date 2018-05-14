@@ -149,10 +149,8 @@ void test_insert_init_invalid()
 
     info_s *infos = stegx_init(choices);
 
-    int test;
     // Teste si infos est bien invalide
-    test = (infos == NULL);
-    assert_int_equal(test, 1);
+    assert_null(infos);
 
     free(choices->insert_info->hidden_path);
     free(choices->insert_info);
@@ -271,27 +269,15 @@ void test_extract_init_with_passwd()
  */
 void test_extract_init_invalid()
 {
-    stegx_choices_s *choices = malloc(sizeof(stegx_choices_s));
-    choices->host_path = malloc((strlen("inexistant") + 1) * sizeof(char));
-    strcpy(choices->host_path, "inexistant");
-    choices->res_path = malloc((strlen("./") + 1) * sizeof(char));
-    strcpy(choices->res_path, "./");
-    choices->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(choices->passwd, "stegx");
-    choices->mode = STEGX_MODE_INSERT;
-    choices->insert_info = NULL;
+    stegx_choices_s choices;
+    choices.mode = STEGX_MODE_EXTRACT;
+    choices.host_path = "inexistant";
+    choices.res_path = "./";
+    choices.passwd = "stegx";
 
-    info_s *infos = stegx_init(choices);
-
-    int test;
-    // Teste si infos est bien invalide
-    test = (infos == NULL);
-    assert_int_equal(test, 1);
-
-    free(choices->insert_info);
-    free(choices->res_path);
-    free(choices->host_path);
-    free(choices);
+    // Test si NULL est bien renvoyé.
+    assert_null(stegx_init(&choices));
+    assert_int_equal(stegx_errno, ERR_HOST);
 }
 
 /*
