@@ -173,8 +173,8 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest insert_lsb_tests[] = {
 
-    cmocka_unit_test(test_insert_lsb_bmp_with_passwd),
-    cmocka_unit_test(test_insert_lsb_bmp_without_passwd),
+    //cmocka_unit_test(test_insert_lsb_bmp_with_passwd),
+    //cmocka_unit_test(test_insert_lsb_bmp_without_passwd),
 };
 
 int main(void)

@@ -192,8 +192,8 @@ const struct CMUnitTest png_tests[] = {
     // tests unitaires PNG
     cmocka_unit_test(test_file_png_v1),
     cmocka_unit_test(test_file_png_v2),
-    cmocka_unit_test(test_metadata_png_with_passwd),
-    cmocka_unit_test(test_metadata_png_without_passwd)
+    //cmocka_unit_test(test_metadata_png_with_passwd),
+    //cmocka_unit_test(test_metadata_png_without_passwd)
 };
 
 int main(void)
