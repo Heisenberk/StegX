@@ -11,8 +11,19 @@
 #include "stegx.h"
 #include "common.h"
 
+
+void dest_stegx_info(stegx_choices_s * com)
+{
+    if (com->insert_info) {
+        free(com->insert_info);
+    }
+    free(com);
+
+}
+
 void test_insert_lsb_bmp_with_passwd(void **state)
 {
+	
 	(void)state;
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test4.bmp")+1)*sizeof(char));
@@ -25,7 +36,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
 	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
 	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
-	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	choices_insert->insert_info->algo=STEGX_ALGO_LSB;
 	int test;
 	
 	info_s *infos_insert = stegx_init(choices_insert);
@@ -43,6 +54,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
 	
 	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
 	choices_extract->host_path=malloc((strlen("./res1_test_lsb.bmp")+1)*sizeof(char));
@@ -66,6 +78,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;
@@ -99,7 +112,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
 	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
 	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
-	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	choices_insert->insert_info->algo=STEGX_ALGO_LSB;
 	int test;
 	
 	info_s *infos_insert = stegx_init(choices_insert);
@@ -117,6 +130,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
 	
 	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
 	choices_extract->host_path=malloc((strlen("./res2_test_eof.bmp")+1)*sizeof(char));
@@ -139,6 +153,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;

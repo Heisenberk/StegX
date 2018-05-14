@@ -11,6 +11,16 @@
 #include "stegx.h"
 #include "common.h"
 
+
+void dest_stegx_info(stegx_choices_s * com)
+{
+    if (com->insert_info) {
+        free(com->insert_info);
+    }
+    free(com);
+
+}
+
 void test_insert_eof_bmp_with_passwd(void **state)
 {
 	(void)state;
@@ -66,6 +76,7 @@ void test_insert_eof_bmp_with_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;
@@ -117,6 +128,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
 	
 	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
 	choices_extract->host_path=malloc((strlen("./res2_test_eof.bmp")+1)*sizeof(char));
@@ -139,6 +151,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;
@@ -190,6 +203,7 @@ void test_insert_eof_png_with_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
 	
 	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
 	choices_extract->host_path=malloc((strlen("./res3_test_eof.png")+1)*sizeof(char));
@@ -213,6 +227,7 @@ void test_insert_eof_png_with_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;
@@ -264,6 +279,7 @@ void test_insert_eof_png_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
 	
 	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
 	choices_extract->host_path=malloc((strlen("./res4_test_eof.png")+1)*sizeof(char));
@@ -286,6 +302,7 @@ void test_insert_eof_png_without_passwd(void **state)
 	assert_int_equal(test,0);
 	
 	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
 	
     uint8_t c;
     uint32_t i;
