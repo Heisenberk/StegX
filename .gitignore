@@ -1,6 +1,7 @@
 # Personal configuration files
 tags
 .gdbinit
+*.taghl
 
 # Generated files
 build
