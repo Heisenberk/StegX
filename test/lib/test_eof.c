@@ -25,7 +25,37 @@ void free_infos(info_s * infos)
 
 void test_insert_eof_bmp_with_passwd(void **state)
 {
-    (void)state;
+	(void)state;
+	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
+	choices_insert->host_path=malloc((strlen("../../../env/test/test9bis.bmp")+1)*sizeof(char));
+	strcpy(choices_insert->host_path,"../../../env/test/test9bis.bmp");
+	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->res_path,"./res1_test_eof.bmp");
+	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+	strcpy(choices_insert->passwd,"stegx");
+	choices_insert->mode=STEGX_MODE_INSERT;
+	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
+	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
+	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	
+	info_s *infos_insert = stegx_init(choices_insert);
+	
+	int test=stegx_check_compatibility(infos_insert);
+	assert_int_equal(test,0);
+	
+	test = stegx_suggest_algo(infos_insert);
+	assert_int_equal(test,0);
+	
+	test=stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+	assert_int_equal(test,0);
+	
+	test=stegx_insert(infos_insert);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_insert);
+	
+    /*(void)state;
     info_s *infos_insert = malloc(sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
     infos_insert->algo = STEGX_ALGO_EOF;
@@ -98,7 +128,8 @@ void test_insert_eof_bmp_with_passwd(void **state)
         test_name = 0;
     assert_int_equal(test_name, 1);
     free(message);
-    remove("./short.txt");
+    remove("./short.txt");*/
+    
 }
 
 void test_insert_eof_bmp_without_passwd(void **state)
