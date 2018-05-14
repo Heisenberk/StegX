@@ -11,18 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-void free_infos(info_s * infos)
-{
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
-}
-
 void test_insert_eof_bmp_with_passwd(void **state)
 {
 	(void)state;
@@ -171,7 +159,8 @@ void test_insert_eof_bmp_without_passwd(void **state)
 }
 
 void test_insert_eof_png_with_passwd(void **state)
-{	(void)state;
+{	
+	(void)state;
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test8.png")+1)*sizeof(char));
 	strcpy(choices_insert->host_path,"../../../env/test/test8.png");
