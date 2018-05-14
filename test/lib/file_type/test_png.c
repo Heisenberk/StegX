@@ -43,7 +43,7 @@ void test_metadata_png_with_passwd(void **state)
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test9.png")+1)*sizeof(char));
 	strcpy(choices_insert->host_path,"../../../env/test/test9.png");
-	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	choices_insert->res_path=malloc((strlen("./res1_test_meta.png")+1)*sizeof(char));
 	strcpy(choices_insert->res_path,"./res1_test_meta.png");
 	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
 	strcpy(choices_insert->passwd,"stegx");
@@ -118,7 +118,7 @@ void test_metadata_png_without_passwd(void **state)
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test9.png")+1)*sizeof(char));
 	strcpy(choices_insert->host_path,"../../../env/test/test9.png");
-	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	choices_insert->res_path=malloc((strlen("./res1_test_meta.png")+1)*sizeof(char));
 	strcpy(choices_insert->res_path,"./res1_test_meta.png");
 	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
 	strcpy(choices_insert->passwd,"stegx");
@@ -126,7 +126,7 @@ void test_metadata_png_without_passwd(void **state)
 	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
 	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
 	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
-	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	choices_insert->insert_info->algo=STEGX_ALGO_METADATA;
 	int test;
 	
 	info_s *infos_insert = stegx_init(choices_insert);

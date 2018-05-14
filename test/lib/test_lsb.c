@@ -28,7 +28,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test4.bmp")+1)*sizeof(char));
 	strcpy(choices_insert->host_path,"../../../env/test/test4.bmp");
-	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	choices_insert->res_path=malloc((strlen("./res1_test_lsb.bmp")+1)*sizeof(char));
 	strcpy(choices_insert->res_path,"./res1_test_lsb.bmp");
 	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
 	strcpy(choices_insert->passwd,"stegx");
@@ -105,7 +105,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test4.bmp")+1)*sizeof(char));
 	strcpy(choices_insert->host_path,"../../../env/test/test4.bmp");
-	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	choices_insert->res_path=malloc((strlen("./res2_test_lsb.bmp")+1)*sizeof(char));
 	strcpy(choices_insert->res_path,"./res2_test_lsb.bmp");
 	choices_insert->passwd=NULL;
 	choices_insert->mode=STEGX_MODE_INSERT;
