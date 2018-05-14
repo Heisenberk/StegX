@@ -11,321 +11,323 @@
 #include "stegx.h"
 #include "common.h"
 
-void free_infos(info_s * infos)
+
+void dest_stegx_info(stegx_choices_s * com)
 {
-    if (infos->host.host != NULL)
-        fclose(infos->host.host);
-    if (infos->res != NULL)
-        fclose(infos->res);
-    free(infos->hidden_name);
-    free(infos->passwd);
-    free(infos);
-    free(stegx_propos_algos);
+    if (com->insert_info) {
+        free(com->insert_info);
+    }
+    free(com);
+
 }
 
 void test_insert_eof_bmp_with_passwd(void **state)
 {
-    (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
-    infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_EOF;
-    infos_insert->method = STEGX_WITH_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test9bis.bmp", "r");
-    infos_insert->host.type = BMP_COMPRESSED;
-    infos_insert->res = fopen("res1_test_eof.bmp", "w");
-    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
-    char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
-    strcpy(infos_insert->hidden_name, "short.txt");
-    strcpy(hidden_name_write, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r");
-    infos_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos_insert->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    // insertion de short.txt dans test9bis.bmp 
-    stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
-    uint32_t hidden_length_insert = infos_insert->hidden_length;
-    stegx_insert(infos_insert);
-
-    // libéreation de infos_insert car reutilisation des memes fichiers par la suite
-    free_infos(infos_insert);
-
-    // extraction de short.txt dans test9bis.bmp
-    info_s *infos_extract = malloc(sizeof(info_s));
-    infos_extract->mode = STEGX_MODE_EXTRACT;
-    infos_extract->method = STEGX_WITH_PASSWD;
-    infos_extract->host.host = fopen("res1_test_eof.bmp", "r");
-    infos_extract->host.type = BMP_COMPRESSED;
-    infos_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos_extract->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract, "./");
-    uint32_t hidden_length_extract = infos_extract->hidden_length;
-    char *hidden_name = malloc((strlen(infos_extract->hidden_name) + 1) * sizeof(char));
-    strcpy(hidden_name, infos_extract->hidden_name);
-
-    // Test si le fichier extrait fait la bonne taille
-    int test_length = (hidden_length_insert == hidden_length_extract);
-    assert_int_equal(test_length, 1);
-
-    // Test si le même nom a bien été interprété
-    int test_name = (strcmp(hidden_name, infos_extract->hidden_name) == 0);
-    assert_int_equal(test_name, 1);
-
-    free_infos(infos_extract);
-    free(hidden_name);
-
+	(void)state;
+	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
+	choices_insert->host_path=malloc((strlen("../../../env/test/test9bis.bmp")+1)*sizeof(char));
+	strcpy(choices_insert->host_path,"../../../env/test/test9bis.bmp");
+	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->res_path,"./res1_test_eof.bmp");
+	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+	strcpy(choices_insert->passwd,"stegx");
+	choices_insert->mode=STEGX_MODE_INSERT;
+	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
+	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
+	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	int test;
 	
-    int test_content = 1;
+	info_s *infos_insert = stegx_init(choices_insert);
+	
+	test=stegx_check_compatibility(infos_insert);
+	assert_int_equal(test,0);
+	
+	test = stegx_suggest_algo(infos_insert);
+	assert_int_equal(test,0);
+	
+	test=stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+	assert_int_equal(test,0);
+	
+	test=stegx_insert(infos_insert);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_insert);
+	
+	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
+	choices_extract->host_path=malloc((strlen("./res1_test_eof.bmp")+1)*sizeof(char));
+	strcpy(choices_extract->host_path,"./res1_test_eof.bmp");
+	choices_extract->res_path=malloc((strlen("./")+1)*sizeof(char));
+	strcpy(choices_extract->res_path,"./");
+	choices_extract->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+	strcpy(choices_extract->passwd,"stegx");
+	choices_extract->mode=STEGX_MODE_EXTRACT;
+	choices_extract->insert_info=NULL;
+
+	info_s *infos_extract = stegx_init(choices_extract);	
+
+	test=stegx_check_compatibility(infos_extract);
+	assert_int_equal(test,0);
+	
+	test=stegx_detect_algo(infos_extract);
+	assert_int_equal(test,0);
+	uint32_t length_malloc=infos_extract->hidden_length;
+	test=stegx_extract(infos_extract,choices_extract->res_path);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
+	
     uint8_t c;
     uint32_t i;
-    char *message = malloc((infos_extract->hidden_length + 1) * sizeof(char));
-    FILE *f = fopen("./short.txt", "r");
-    if (f == NULL)
-        test_content = 0;
-    for (i = 0; i < (infos_extract->hidden_length) - 1; i++) {
+	char *message = malloc((length_malloc + 1) * sizeof(char));
+	FILE *f = fopen("./short.txt", "r");
+	assert_int_equal(f!=NULL,1);
+    for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
     }
-    message[infos_extract->hidden_length - 2] = '\0';
+    message[length_malloc - 2] = '\0';
     // Test si le contenu du message a bien ete extrait
-    test_name = (strcmp(message, "voici un test tres court.") == 0);
-    if (test_content == 0)
-        test_name = 0;
-    assert_int_equal(test_name, 1);
+    test = (strcmp(message, "voici un test tres court.") == 0);
+    assert_int_equal(test, 1);
     free(message);
+	
     remove("./short.txt");
+    
 }
 
 void test_insert_eof_bmp_without_passwd(void **state)
 {
-    (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
-    infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_EOF;
-    infos_insert->method = STEGX_WITHOUT_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test9bis.bmp", "r");
-    infos_insert->host.type = BMP_COMPRESSED;
-    infos_insert->res = fopen("res2_test_eof.bmp", "w");
-    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
-    char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
-    strcpy(infos_insert->hidden_name, "short.txt");
-    strcpy(hidden_name_write, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+	(void)state;
+	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
+	choices_insert->host_path=malloc((strlen("../../../env/test/test9bis.bmp")+1)*sizeof(char));
+	strcpy(choices_insert->host_path,"../../../env/test/test9bis.bmp");
+	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->res_path,"./res2_test_eof.bmp");
+	choices_insert->passwd=NULL;
+	choices_insert->mode=STEGX_MODE_INSERT;
+	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
+	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
+	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	int test;
+	
+	info_s *infos_insert = stegx_init(choices_insert);
+	
+	test=stegx_check_compatibility(infos_insert);
+	assert_int_equal(test,0);
+	
+	test = stegx_suggest_algo(infos_insert);
+	assert_int_equal(test,0);
+	
+	test=stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+	assert_int_equal(test,0);
+	
+	test=stegx_insert(infos_insert);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
+	
+	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
+	choices_extract->host_path=malloc((strlen("./res2_test_eof.bmp")+1)*sizeof(char));
+	strcpy(choices_extract->host_path,"./res2_test_eof.bmp");
+	choices_extract->res_path=malloc((strlen("./")+1)*sizeof(char));
+	strcpy(choices_extract->res_path,"./");
+	choices_extract->passwd=NULL;
+	choices_extract->mode=STEGX_MODE_EXTRACT;
+	choices_extract->insert_info=NULL;
 
-    // insertion de short.txt dans test9bis.bmp 
-    stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
-    uint32_t hidden_length_insert = infos_insert->hidden_length;
-    stegx_insert(infos_insert);
+	info_s *infos_extract = stegx_init(choices_extract);	
 
-    free_infos(infos_insert);
-
-    info_s *infos_extract = malloc(sizeof(info_s));
-    infos_extract->mode = STEGX_MODE_EXTRACT;
-    infos_extract->method = STEGX_WITHOUT_PASSWD;
-    infos_extract->host.host = fopen("res2_test_eof.bmp", "r");
-    infos_extract->host.type = BMP_COMPRESSED;
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    // extraction de short.txt dans test9bis.bmp
-    stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract, "./");
-    uint32_t hidden_length_extract = infos_extract->hidden_length;
-    char *hidden_name = malloc((strlen(infos_extract->hidden_name) + 1) * sizeof(char));
-    strcpy(hidden_name, infos_extract->hidden_name);
-
-    // Test si le fichier extrait fait la bonne taille
-    int test_length = (hidden_length_insert == hidden_length_extract);
-    assert_int_equal(test_length, 1);
-
-    // Test si le même nom a bien été interprété
-    int test_name = (strcmp(hidden_name, infos_extract->hidden_name) == 0);
-    assert_int_equal(test_name, 1);
-
-    free_infos(infos_extract);
-    free(hidden_name);
-
-	uint8_t i;
-    int test_content = 1;
+	test=stegx_check_compatibility(infos_extract);
+	assert_int_equal(test,0);
+	
+	test=stegx_detect_algo(infos_extract);
+	assert_int_equal(test,0);
+	uint32_t length_malloc=infos_extract->hidden_length;
+	test=stegx_extract(infos_extract,choices_extract->res_path);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
+	
     uint8_t c;
-    char *message = malloc((infos_extract->hidden_length + 1) * sizeof(char));
-    FILE *f = fopen("./short.txt", "r");
-    if (f == NULL)
-        test_content = 0;
-    for (i = 0; i < (infos_extract->hidden_length) - 1; i++) {
+    uint32_t i;
+	char *message = malloc((length_malloc + 1) * sizeof(char));
+	FILE *f = fopen("./short.txt", "r");
+	assert_int_equal(f!=NULL,1);
+    for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
     }
-    message[infos_extract->hidden_length - 2] = '\0';
+    message[length_malloc - 2] = '\0';
     // Test si le contenu du message a bien ete extrait
-    test_name = (strcmp(message, "voici un test tres court.") == 0);
-    if (test_content == 0)
-        test_name = 0;
-    assert_int_equal(test_name, 1);
+    test = (strcmp(message, "voici un test tres court.") == 0);
+    assert_int_equal(test, 1);
     free(message);
+	
     remove("./short.txt");
 }
 
 void test_insert_eof_png_with_passwd(void **state)
-{
-    (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
-    infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_EOF;
-    infos_insert->method = STEGX_WITH_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test8.png", "r");
-    infos_insert->host.type = PNG;
-    infos_insert->res = fopen("res3_test_eof.png", "w");
-    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
-    char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
-    strcpy(infos_insert->hidden_name, "short.txt");
-    strcpy(hidden_name_write, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r");
-    infos_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos_insert->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+{	
+	(void)state;
+	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
+	choices_insert->host_path=malloc((strlen("../../../env/test/test8.png")+1)*sizeof(char));
+	strcpy(choices_insert->host_path,"../../../env/test/test8.png");
+	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->res_path,"./res3_test_eof.png");
+	choices_insert->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+	strcpy(choices_insert->passwd,"stegx");
+	choices_insert->mode=STEGX_MODE_INSERT;
+	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
+	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
+	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	int test;
+	
+	info_s *infos_insert = stegx_init(choices_insert);
+	
+	test=stegx_check_compatibility(infos_insert);
+	assert_int_equal(test,0);
+	
+	test = stegx_suggest_algo(infos_insert);
+	assert_int_equal(test,0);
+	
+	test=stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+	assert_int_equal(test,0);
+	
+	test=stegx_insert(infos_insert);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
+	
+	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
+	choices_extract->host_path=malloc((strlen("./res3_test_eof.png")+1)*sizeof(char));
+	strcpy(choices_extract->host_path,"./res3_test_eof.png");
+	choices_extract->res_path=malloc((strlen("./")+1)*sizeof(char));
+	strcpy(choices_extract->res_path,"./");
+	choices_extract->passwd=malloc((strlen("stegx")+1)*sizeof(char));
+	strcpy(choices_extract->passwd,"stegx");
+	choices_extract->mode=STEGX_MODE_EXTRACT;
+	choices_extract->insert_info=NULL;
 
-    // insertion de short.txt dans test8.png 
-    stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
-    uint32_t hidden_length_insert = infos_insert->hidden_length;
-    stegx_insert(infos_insert);
+	info_s *infos_extract = stegx_init(choices_extract);	
 
-    free_infos(infos_insert);
-
-    // extraction de short.txt dans test8.png
-    info_s *infos_extract = malloc(sizeof(info_s));
-    infos_extract->mode = STEGX_MODE_EXTRACT;
-    infos_extract->method = STEGX_WITH_PASSWD;
-    infos_extract->host.host = fopen("res3_test_eof.png", "r");
-    infos_extract->host.type = PNG;
-    infos_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(infos_extract->passwd, "stegx");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract, "./");
-    uint32_t hidden_length_extract = infos_extract->hidden_length;
-    char *hidden_name = malloc((strlen(infos_extract->hidden_name) + 1) * sizeof(char));
-    strcpy(hidden_name, infos_extract->hidden_name);
-
-    // Test si le fichier extrait fait la bonne taille
-    int test_length = (hidden_length_insert == hidden_length_extract);
-    assert_int_equal(test_length, 1);
-
-    // Test si le même nom a bien été interprété
-    int test_name = (strcmp(hidden_name, infos_extract->hidden_name) == 0);
-    assert_int_equal(test_name, 1);
-
-    free_infos(infos_extract);
-    free(hidden_name);
-
-	uint8_t i;
-    int test_content = 1;
+	test=stegx_check_compatibility(infos_extract);
+	assert_int_equal(test,0);
+	
+	test=stegx_detect_algo(infos_extract);
+	assert_int_equal(test,0);
+	uint32_t length_malloc=infos_extract->hidden_length;
+	test=stegx_extract(infos_extract,choices_extract->res_path);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
+	
     uint8_t c;
-    char *message = malloc((infos_extract->hidden_length + 1) * sizeof(char));
-    FILE *f = fopen("./short.txt", "r");
-    if (f == NULL)
-        test_content = 0;
-    for (i = 0; i < (infos_extract->hidden_length) - 1; i++) {
+    uint32_t i;
+	char *message = malloc((length_malloc + 1) * sizeof(char));
+	FILE *f = fopen("./short.txt", "r");
+	assert_int_equal(f!=NULL,1);
+    for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
     }
-    message[infos_extract->hidden_length - 2] = '\0';
-
+    message[length_malloc - 2] = '\0';
     // Test si le contenu du message a bien ete extrait
-    printf("%s,%s", message, "voici un test tres court.");
-    test_name = (strcmp(message, "voici un test tres court.") == 0);
-    if (test_content == 0)
-        test_name = 0;
-    assert_int_equal(test_name, 1);
+    test = (strcmp(message, "voici un test tres court.") == 0);
+    assert_int_equal(test, 1);
     free(message);
+	
     remove("./short.txt");
+
 }
 
 void test_insert_eof_png_without_passwd(void **state)
 {
-    (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
-    infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_EOF;
-    infos_insert->method = STEGX_WITHOUT_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test9.png", "r");
-    infos_insert->host.type = PNG;
-    infos_insert->res = fopen("res4_test_eof.png", "w");
-    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
-    char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
-    strcpy(infos_insert->hidden_name, "short.txt");
-    strcpy(hidden_name_write, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r");
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
+	(void)state;
+	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
+	choices_insert->host_path=malloc((strlen("../../../env/test/test8.png")+1)*sizeof(char));
+	strcpy(choices_insert->host_path,"../../../env/test/test8.png");
+	choices_insert->res_path=malloc((strlen("./short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->res_path,"./res4_test_eof.png");
+	choices_insert->passwd=NULL;
+	choices_insert->mode=STEGX_MODE_INSERT;
+	choices_insert->insert_info=malloc(sizeof(stegx_info_insert_s));
+	choices_insert->insert_info->hidden_path=malloc((strlen("../../../env/test/short.txt")+1)*sizeof(char));
+	strcpy(choices_insert->insert_info->hidden_path,"../../../env/test/short.txt");
+	choices_insert->insert_info->algo=STEGX_ALGO_EOF;
+	int test;
+	
+	info_s *infos_insert = stegx_init(choices_insert);
+	
+	test=stegx_check_compatibility(infos_insert);
+	assert_int_equal(test,0);
+	
+	test = stegx_suggest_algo(infos_insert);
+	assert_int_equal(test,0);
+	
+	test=stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+	assert_int_equal(test,0);
+	
+	test=stegx_insert(infos_insert);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_insert);
+	dest_stegx_info(choices_insert);
+	
+	stegx_choices_s* choices_extract=malloc(sizeof(stegx_choices_s));
+	choices_extract->host_path=malloc((strlen("./res4_test_eof.png")+1)*sizeof(char));
+	strcpy(choices_extract->host_path,"./res4_test_eof.png");
+	choices_extract->res_path=malloc((strlen("./")+1)*sizeof(char));
+	strcpy(choices_extract->res_path,"./");
+	choices_extract->passwd=NULL;
+	choices_extract->mode=STEGX_MODE_EXTRACT;
+	choices_extract->insert_info=NULL;
 
-    // insertion de short.txt dans test8.png 
-    stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
-    uint32_t hidden_length_insert = infos_insert->hidden_length;
-    stegx_insert(infos_insert);
+	info_s *infos_extract = stegx_init(choices_extract);	
 
-    free_infos(infos_insert);
-
-    info_s *infos_extract = malloc(sizeof(info_s));
-    infos_extract->mode = STEGX_MODE_EXTRACT;
-    infos_extract->method = STEGX_WITHOUT_PASSWD;
-    infos_extract->host.host = fopen("res4_test_eof.png", "r");
-    infos_extract->host.type = PNG;
-    stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
-
-    // extraction de short.txt dans test8.png
-    stegx_detect_algo(infos_extract);
-    stegx_extract(infos_extract, "./");
-    uint32_t hidden_length_extract = infos_extract->hidden_length;
-    char *hidden_name = malloc((strlen(infos_extract->hidden_name) + 1) * sizeof(char));
-    strcpy(hidden_name, infos_extract->hidden_name);
-
-    // Test si le fichier extrait fait la bonne taille
-    int test_length = (hidden_length_insert == hidden_length_extract);
-    assert_int_equal(test_length, 1);
-
-    // Test si le même nom a bien été interprété
-    int test_name = (strcmp(hidden_name, infos_extract->hidden_name) == 0);
-    assert_int_equal(test_name, 1);
-
-    free_infos(infos_extract);
-    free(hidden_name);
-
-	uint8_t i;
-    int test_content = 1;
+	test=stegx_check_compatibility(infos_extract);
+	assert_int_equal(test,0);
+	
+	test=stegx_detect_algo(infos_extract);
+	assert_int_equal(test,0);
+	uint32_t length_malloc=infos_extract->hidden_length;
+	test=stegx_extract(infos_extract,choices_extract->res_path);
+	assert_int_equal(test,0);
+	
+	stegx_clear(infos_extract);
+	dest_stegx_info(choices_extract);
+	
     uint8_t c;
-    char *message = malloc((infos_extract->hidden_length + 1) * sizeof(char));
-    FILE *f = fopen("./short.txt", "r");
-    if (f == NULL)
-        printf("coucou");       //test_content=0;
-    for (i = 0; i < (infos_extract->hidden_length) - 1; i++) {
+    uint32_t i;
+	char *message = malloc((length_malloc + 1) * sizeof(char));
+	FILE *f = fopen("./short.txt", "r");
+	assert_int_equal(f!=NULL,1);
+    for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
     }
-    message[infos_extract->hidden_length - 2] = '\0';
+    message[length_malloc - 2] = '\0';
     // Test si le contenu du message a bien ete extrait
-    test_name = (strcmp(message, "voici un test tres court.") == 0);
-    if (test_content == 0)
-        test_name = 0;
-    assert_int_equal(test_name, 1);
+    test = (strcmp(message, "voici un test tres court.") == 0);
+    assert_int_equal(test, 1);
     free(message);
+	
     remove("./short.txt");
 }
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest insert_eof_tests[] = {
-
-    /*cmocka_unit_test(test_insert_eof_bmp_with_passwd),
-       cmocka_unit_test(test_insert_eof_bmp_without_passwd),
-       cmocka_unit_test(test_insert_eof_png_with_passwd),
-       cmocka_unit_test(test_insert_eof_png_without_passwd), */
+	cmocka_unit_test(test_insert_eof_bmp_with_passwd),
+	cmocka_unit_test(test_insert_eof_bmp_without_passwd),
+	cmocka_unit_test(test_insert_eof_png_with_passwd),
+	cmocka_unit_test(test_insert_eof_png_without_passwd)
 };
 
 int main(void)
