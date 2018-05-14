@@ -23,7 +23,7 @@ void insert_with_passwd(void **state)
 {
     /* Initialisation de l'insertion */
     (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
+    info_s *infos_insert = calloc(1, sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
     infos_insert->method = STEGX_WITH_PASSWD;
     infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
@@ -64,7 +64,7 @@ void detect_with_passwd(void **state)
     (void)state;                /* Unused. */
 
     /* Initialisation de l'extraction */
-    info_s *infos_extract = malloc(sizeof(info_s));
+    info_s *infos_extract = calloc(1, sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->host.host = fopen("res3_test_insert.bmp", "r"),
         assert_non_null(infos_extract->host.host);
@@ -103,7 +103,7 @@ void insert_without_passwd(void **state)
 {
     /* Initialisation de l'insertion */
     (void)state;
-    info_s *infos_insert = malloc(sizeof(info_s));
+    info_s *infos_insert = calloc(1, sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
     infos_insert->method = STEGX_WITHOUT_PASSWD;
     infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
@@ -140,7 +140,7 @@ void detect_without_passwd(void **state)
 {
     (void)state;                /* Unused. */
     /* Initialisation de l'extraction */
-    info_s *infos_extract = malloc(sizeof(info_s));
+    info_s *infos_extract = calloc(1, sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->host.host = fopen("res4_test_insert.bmp", "r"),
         assert_non_null(infos_extract->host.host);

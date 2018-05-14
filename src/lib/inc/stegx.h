@@ -16,12 +16,21 @@
  * @details Initialise la bibliothèque avec les choix de l'utilisateur en
  * remplissant les structures nécéssaire et en ouvrant les fichiers.
  * @sideeffect Initialise la structure \r{info_s} en fonction des choix de
- * l'utilisateur. Il restera les champs \r{info.hidden_length} et \r{info.algo} à
- * initialiser.
+ * l'utilisateur. Il restera les champs \r{info.hidden_length}, \r{info.algo}, 
+ * \r{info.host.type}, \r{info.host.file_info} à initialiser.
+ * @req La structure \r{stegx_choices_s} doit être initialisée comme indiquée
+ * dans sa description.
+ * @error \r{ERR_HOST} si une erreur survient pendant l'ouverture du fichier hôte.
+ * @error \r{ERR_HIDDEN} si une erreur survient pendant l'ouverture du fichier à caché.
+ * @error \r{ERR_RES_INSERT} si une erreur surivient pendant l'ouverture du
+ * fichier résultat lors de l'insertion.
+ * @error \r{ERR_RES_EXTRACT} si une erreur surivient pendant l'ouverture du
+ * dossier résultat lors de l'extraction.
+ * @error \r{ERR_PASSWD} si le mot de passe fourni est non-conforme.
  * @param choices Structure contenant les choix de l'utilisateur.
  * @return Pointeur sur la structure privée qui contient les informations pour
- * réaliser la dissimulation et l'extraction si tout est ok, NULL sur une
- * erreur. 
+ * réaliser la dissimulation et l'extraction, sinon NULL sur une erreur et met à
+ * jour la variable \r{stegx_errno}. 
  */
 info_s *stegx_init(stegx_choices_s * choices);
 

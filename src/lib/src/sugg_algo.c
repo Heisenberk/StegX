@@ -331,12 +331,12 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
 {
     if (infos->mode == STEGX_MODE_EXTRACT)
         return stegx_errno = ERR_SUGG_ALGOS, 1;
-    /* Si l'utilisateur n'a pas choisi de mot de passe, 
-       on en crée un par défaut aléatoirement. */
+    /* Si l'utilisateur n'a pas choisi de mot de passe, on en crée un par défaut aléatoirement. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
         srand(time(NULL));
+        free(infos->passwd);
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
-            return perror("Can't allocate memoty for password string"), 1;
+            return perror("Can't allocate memory for password string"), 1;
         // Génération de symboles ASCII >= 32 et <= 126.
         for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
             infos->passwd[i] = 32 + (rand() % 95);
