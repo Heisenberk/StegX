@@ -11,7 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -23,7 +22,6 @@ void dest_stegx_info(stegx_choices_s * com)
 
 void test_insert_lsb_bmp_with_passwd(void **state)
 {
-	
 	(void)state;
 	stegx_choices_s* choices_insert=malloc(sizeof(stegx_choices_s));
 	choices_insert->host_path=malloc((strlen("../../../env/test/test4.bmp")+1)*sizeof(char));
@@ -82,9 +80,9 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -94,9 +92,9 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
-    
+
 }
 
 void test_insert_lsb_bmp_without_passwd(void **state)
@@ -157,9 +155,9 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -169,7 +167,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
 }
 

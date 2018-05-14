@@ -11,7 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -80,9 +79,9 @@ void test_insert_eof_bmp_with_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -92,9 +91,9 @@ void test_insert_eof_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
-    
+
 }
 
 void test_insert_eof_bmp_without_passwd(void **state)
@@ -155,9 +154,9 @@ void test_insert_eof_bmp_without_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -167,7 +166,7 @@ void test_insert_eof_bmp_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
 }
 
@@ -231,9 +230,9 @@ void test_insert_eof_png_with_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -243,7 +242,7 @@ void test_insert_eof_png_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
 
 }
@@ -306,9 +305,9 @@ void test_insert_eof_png_without_passwd(void **state)
 	
     uint8_t c;
     uint32_t i;
-	char *message = malloc((length_malloc + 1) * sizeof(char));
-	FILE *f = fopen("./short.txt", "r");
-	assert_int_equal(f!=NULL,1);
+    char *message = malloc((length_malloc + 1) * sizeof(char));
+    FILE *f = fopen("./short.txt", "r");
+    assert_int_equal(f != NULL, 1);
     for (i = 0; i < (length_malloc) - 1; i++) {
         fread(&c, sizeof(uint8_t), 1, f);
         message[i] = c;
@@ -318,16 +317,16 @@ void test_insert_eof_png_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	
+
     remove("./short.txt");
 }
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest insert_eof_tests[] = {
-	cmocka_unit_test(test_insert_eof_bmp_with_passwd),
-	cmocka_unit_test(test_insert_eof_bmp_without_passwd),
-	cmocka_unit_test(test_insert_eof_png_with_passwd),
-	cmocka_unit_test(test_insert_eof_png_without_passwd)
+    cmocka_unit_test(test_insert_eof_bmp_with_passwd),
+    cmocka_unit_test(test_insert_eof_bmp_without_passwd),
+    cmocka_unit_test(test_insert_eof_png_with_passwd),
+    cmocka_unit_test(test_insert_eof_png_without_passwd)
 };
 
 int main(void)
