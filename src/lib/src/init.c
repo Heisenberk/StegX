@@ -19,7 +19,6 @@
 
 info_s *stegx_init(stegx_choices_s * choices)
 {
-    /* A FAIRE : */
     /* Lors de l'extraction et de l'insertion : */
     /* - Le fichier résultat peux être sur stdout. */
     /* Lors de l'extraction : */
@@ -43,9 +42,6 @@ info_s *stegx_init(stegx_choices_s * choices)
 
     /* Initialisation du mode. */
     s->mode = choices->mode;
-    /* Initialisation du fichier hôte. */
-    if (!(s->host.host = fopen(choices->host_path, "r")))
-        return perror(NULL), stegx_errno = ERR_HOST, NULL;
 
     /* Initialisation du mot de passe. */
     if (choices->passwd) {
@@ -57,10 +53,17 @@ info_s *stegx_init(stegx_choices_s * choices)
     } else
         s->method = STEGX_WITHOUT_PASSWD;
 
+    /* Vérification du résultat. */
+    if (!strcmp(choices->res_path, "stdout"))
+        s->res = stdout;
+
     /* Initialisations pour l'insertion. */
     if (choices->mode == STEGX_MODE_INSERT) {
+        assert(choices->insert_info);
         /* Initialisation du fichier à cacher. */
-        if (!(s->hidden = fopen(choices->insert_info->hidden_path, "r")))
+        if (!strcmp(choices->insert_info->hidden_path, "stdin"))
+            s->hidden = stdin;
+        else if (!(s->hidden = fopen(choices->insert_info->hidden_path, "r")))
             return perror(NULL), stegx_errno = ERR_HIDDEN, NULL;
         /* L'algorithme sera choisi avec stegx_choose_algo(). */
 
@@ -69,23 +72,34 @@ info_s *stegx_init(stegx_choices_s * choices)
             return perror("Can't allocate memory for the name of hidden file"), NULL;
 
         /* Initialisation et vérification du fichier résultat pour l'insertion. */
-        if (!strcmp(choices->res_path, "stdout"))
-            s->res = stdout;
-        else if (!(s->res = fopen(choices->res_path, "w")))
+        if ((s->res != stdout) && !(s->res = fopen(choices->res_path, "w")))
             return stegx_errno = ERR_RES_INSERT, NULL;
     }
 
     /* Initialisation pour l'extraction. */
     if (choices->mode == STEGX_MODE_EXTRACT) {
+        /* Vérification du fichier hôte. */
+        if (!strcmp(choices->host_path, "stdin"))
+            s->host.host = stdin;
         /* Vérification du dossier résultat pour l'extraction. */
-        struct stat st;
-        if (!stat(choices->res_path, &st)) {
-            if (!S_ISDIR(st.st_mode))
-                return stegx_errno = ERR_RES_EXTRACT, NULL;
+        if (s->res != stdout) {
+            struct stat st;
+            if (!stat(choices->res_path, &st)) {
+                if (!S_ISDIR(st.st_mode))
+                    return stegx_errno = ERR_RES_EXTRACT, NULL;
+            } else
+                return perror("Can't read properties of res path"), NULL;
         }
-        else
-            return perror("Can't read properties of res path"), NULL;
     }
+
+    /* Initialisation du fichier hôte. */
+    if ((s->host.host != stdin) && !(s->host.host = fopen(choices->host_path, "r")))
+        return perror(NULL), stegx_errno = ERR_HOST, NULL;
+
+    assert(s->mode == STEGX_MODE_INSERT || s->mode == STEGX_MODE_EXTRACT);
+    assert(s->algo >= STEGX_ALGO_LSB && s->algo < STEGX_NB_ALGO);
+    assert(s->method == STEGX_WITHOUT_PASSWD || s->method == STEGX_WITH_PASSWD);
+    assert(s->host.host);
     return s;
 }
 
