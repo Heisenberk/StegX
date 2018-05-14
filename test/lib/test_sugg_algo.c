@@ -53,22 +53,21 @@ static int test_file_info__teardown(void **state)
 void test_file_info_bmp_v1(void **state)
 {
     info_s *infos = *state;
-	infos->host.host = fopen("../../../env/test/test1.bmp", "r"), 
-					assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
-    
+
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-	//HEADER SIZE
-	assert_int_equal(infos->host.file_info.bmp.header_size, 138);
-	//DATA SIZE
-	assert_int_equal(infos->host.file_info.bmp.data_size, 14056960);
-	//PIXEL LENGTH
-	assert_int_equal(infos->host.file_info.bmp.pixel_length, 16);
-	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
-	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
+    //HEADER SIZE
+    assert_int_equal(infos->host.file_info.bmp.header_size, 138);
+    //DATA SIZE
+    assert_int_equal(infos->host.file_info.bmp.data_size, 14056960);
+    //PIXEL LENGTH
+    assert_int_equal(infos->host.file_info.bmp.pixel_length, 16);
+    //NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+    assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-	fclose(infos->host.host);
+    fclose(infos->host.host);
 }
 
 void test_file_info_bmp_v2(void **state)
@@ -76,19 +75,19 @@ void test_file_info_bmp_v2(void **state)
     info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test4.bmp", "r");
     infos->host.type = BMP_UNCOMPRESSED;
-    
+
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-	//HEADER SIZE
-	assert_int_equal(infos->host.file_info.bmp.header_size, 122);
-	//DATA SIZE
-	assert_int_equal(infos->host.file_info.bmp.data_size, 21085440);
-	//PIXEL LENGTH
-	assert_int_equal(infos->host.file_info.bmp.pixel_length, 24);
-	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
-	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
+    //HEADER SIZE
+    assert_int_equal(infos->host.file_info.bmp.header_size, 122);
+    //DATA SIZE
+    assert_int_equal(infos->host.file_info.bmp.data_size, 21085440);
+    //PIXEL LENGTH
+    assert_int_equal(infos->host.file_info.bmp.pixel_length, 24);
+    //NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+    assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-	fclose(infos->host.host);
+    fclose(infos->host.host);
 }
 
 void test_file_info_bmp_v3(void **state)
@@ -99,16 +98,16 @@ void test_file_info_bmp_v3(void **state)
 
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
-	//HEADER SIZE
-	assert_int_equal(infos->host.file_info.bmp.header_size, 138);
-	//DATA SIZE
-	assert_int_equal(infos->host.file_info.bmp.data_size, 28113920);
-	//PIXEL LENGTH
-	assert_int_equal(infos->host.file_info.bmp.pixel_length, 32);
-	//NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
-	assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
+    //HEADER SIZE
+    assert_int_equal(infos->host.file_info.bmp.header_size, 138);
+    //DATA SIZE
+    assert_int_equal(infos->host.file_info.bmp.data_size, 28113920);
+    //PIXEL LENGTH
+    assert_int_equal(infos->host.file_info.bmp.pixel_length, 32);
+    //NUMBER OF PIXELS = (pixel width (2584) * pixel height (2720))
+    assert_int_equal(infos->host.file_info.bmp.pixel_number, 7028480);
 
-	fclose(infos->host.host);
+    fclose(infos->host.host);
 }
 
 /**
@@ -122,30 +121,29 @@ void test_file_info_png_v1(void **state)
     infos->host.host = fopen("../../../env/test/test8.png", "r");
     infos->host.type = PNG;
 
-     /* Valeurs à trouver: */
+    /* Valeurs à trouver: */
     stegx_suggest_algo(infos);
     //HEADER SIZE
-	assert_int_equal(infos->host.file_info.png.header_size, 21);
-	//DATA SIZE
-	assert_int_equal(infos->host.file_info.png.data_size, 139005);
-	
+    assert_int_equal(infos->host.file_info.png.header_size, 21);
+    //DATA SIZE
+    assert_int_equal(infos->host.file_info.png.data_size, 139005);
+
     fclose(infos->host.host);
 }
 
 void test_file_info_png_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test9.png", "r"),
-			assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test9.png", "r"), assert_non_null(infos->host.host);
     infos->host.type = PNG;
-    
+
     /* Valeurs à trouver: */
     stegx_suggest_algo(infos);
     //HEADER SIZE
-	assert_int_equal(infos->host.file_info.png.header_size, 21);
-	//DATA SIZE
-	assert_int_equal(infos->host.file_info.png.data_size, 20525);
-	
+    assert_int_equal(infos->host.file_info.png.header_size, 21);
+    //DATA SIZE
+    assert_int_equal(infos->host.file_info.png.data_size, 20525);
+
     fclose(infos->host.host);
 }
 
@@ -158,11 +156,11 @@ void test_file_info_png_v2(void **state)
 void test_file_info_flv_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r"), 
-				assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+        assert_non_null(infos->host.host);
     infos->host.type = FLV;
 
-	/* Valeurs à trouver : */
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     // NOMBRE DE VIDEO TAG :
     assert_int_equal(infos->host.file_info.flv.nb_video_tag, 108);
@@ -170,19 +168,19 @@ void test_file_info_flv_v1(void **state)
     assert_int_equal(infos->host.file_info.flv.nb_metadata_tag, 1);
     // TOTAL SIZE
     assert_int_equal(infos->host.file_info.flv.file_size, 203258);
-	
-	fclose(infos->host.host);
+
+    fclose(infos->host.host);
 }
 
 /* Test sur un fichier FLV avec des données écrite après l'end of file */
 void test_file_info_flv_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test17.flv", "r"), 
-				assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test17.flv", "r"),
+        assert_non_null(infos->host.host);
     infos->host.type = FLV;
 
-	/* Valeurs à trouver : */
+    /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     // NOMBRE DE VIDEO TAG :
     assert_int_equal(infos->host.file_info.flv.nb_video_tag, 2);
@@ -190,8 +188,8 @@ void test_file_info_flv_v2(void **state)
     assert_int_equal(infos->host.file_info.flv.nb_metadata_tag, 1);
     // TOTAL SIZE
     assert_int_equal(infos->host.file_info.flv.file_size, 88722);
-	
-	fclose(infos->host.host);
+
+    fclose(infos->host.host);
 }
 
 /**
@@ -303,17 +301,15 @@ static int test_propos_algos__teardown(void **state)
 void test_hidden_length(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
-				assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r"),
-				assert_non_null(infos->hidden);
+    infos->hidden = fopen("../../../env/test/test2.bmp", "r"), assert_non_null(infos->hidden);
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     assert_int_equal(infos->hidden_length, 14057098);
 
-	fclose(infos->host.host);
-	fclose(infos->hidden);
+    fclose(infos->host.host);
+    fclose(infos->hidden);
 }
 
 /**
@@ -327,12 +323,11 @@ void test_hidden_length(void **state)
 void test_propos_algos_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"),
-				assert_non_null(infos->host.host);
+    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
-				assert_non_null(infos->hidden);
+        assert_non_null(infos->hidden);
     infos->host.type = BMP_COMPRESSED;
-    
+
     /* Valeurs à trouver */
     stegx_suggest_algo(infos);
     //LSB
@@ -345,21 +340,19 @@ void test_propos_algos_v1(void **state)
     assert_int_equal(stegx_propos_algos[3], 0);
     //JUNK_CHUNK
     assert_int_equal(stegx_propos_algos[4], 0);
-	
-	fclose(infos->host.host);
-	fclose(infos->hidden);
+
+    fclose(infos->host.host);
+    fclose(infos->hidden);
 }
 
 /* Test sur BMP non compressé */
 void test_propos_algos_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r"),
-				assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), 
-				assert_non_null(infos->hidden);
+    infos->host.host = fopen("../../../env/test/test4.bmp", "r"), assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = BMP_UNCOMPRESSED;
-    
+
     /* Valeurs à trouver */
     stegx_suggest_algo(infos);
     //LSB
@@ -372,7 +365,7 @@ void test_propos_algos_v2(void **state)
     assert_int_equal(stegx_propos_algos[3], 0);
     //JUNK_CHUNK
     assert_int_equal(stegx_propos_algos[4], 0);
-    
+
     fclose(infos->host.host);
     fclose(infos->hidden);
 }
@@ -382,11 +375,10 @@ void test_propos_algos_v3(void **state)
 {
     info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test13.flv", "r"),
-				assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
-				assert_non_null(infos->hidden);
+        assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = FLV;
- 
+
     /* Valeurs à trouver */
     stegx_suggest_algo(infos);
     //LSB
@@ -399,7 +391,7 @@ void test_propos_algos_v3(void **state)
     assert_int_equal(stegx_propos_algos[3], 1);
     //JUNK_CHUNK
     assert_int_equal(stegx_propos_algos[4], 0);
-    
+
     fclose(infos->host.host);
     fclose(infos->hidden);
 }
@@ -409,9 +401,8 @@ void test_propos_algos_v4(void **state)
 {
     info_s *infos = *state;
     infos->host.host = fopen("../../../env/test/test14.avi", "r"),
-				assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
-				assert_non_null(infos->hidden);
+        assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = AVI_UNCOMPRESSED;
 
     /* Valeurs à trouver */
@@ -426,7 +417,7 @@ void test_propos_algos_v4(void **state)
     assert_int_equal(stegx_propos_algos[3], 0);
     //JUNK_CHUNK
     assert_int_equal(stegx_propos_algos[4], 1);
-    
+
     fclose(infos->host.host);
     fclose(infos->hidden);
 }
@@ -440,18 +431,16 @@ void test_passwd_default_length(void **state)
     infos->mode = STEGX_MODE_INSERT;
     infos->method = STEGX_WITHOUT_PASSWD;
     infos->host.host = fopen("../../../env/test/test14.avi", "r"),
-				assert_non_null(infos->host.host);
+        assert_non_null(infos->host.host);
     infos->host.type = AVI_UNCOMPRESSED;
-    infos->res = fopen("res.bmp", "w"),
-				assert_non_null(infos->res);
+    infos->res = fopen("res.bmp", "w"), assert_non_null(infos->res);
     infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char)),
-				assert_non_null(infos->hidden_name);
+        assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"),
-				assert_non_null(infos->host.host);
+    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->host.host);
     infos->passwd = NULL;
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)),
-				assert_non_null(stegx_propos_algos);
+        assert_non_null(stegx_propos_algos);
 
     stegx_suggest_algo(infos);
     stegx_choose_algo(infos, STEGX_ALGO_EOF);
@@ -504,7 +493,8 @@ int main(void)
     };
 
     /* Exécute les tests et retourne le nombre d'erreurs. */
-    return cmocka_run_group_tests(sugg_algos_tests_format, test_file_info__setup, test_file_info__teardown) +
-        cmocka_run_group_tests(propos_algos_tests, test_propos_algos__setup, test_propos_algos__teardown) +
-        run_test(test_passwd_default_length);
+    return cmocka_run_group_tests(sugg_algos_tests_format, test_file_info__setup,
+                                  test_file_info__teardown) +
+        cmocka_run_group_tests(propos_algos_tests, test_propos_algos__setup,
+                               test_propos_algos__teardown) + run_test(test_passwd_default_length);
 }

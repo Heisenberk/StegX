@@ -60,12 +60,12 @@ type_e stegx_test_file_wav(FILE * file)
 
 int insert_metadata_wav(info_s * infos)
 {
-    (void) infos; /* Unused. */
+    (void)infos;                /* Unused. */
     return 1;
 }
 
 int extract_metadata_wav(info_s * infos)
 {
-    (void) infos; /* Unused. */
+    (void)infos;                /* Unused. */
     return 1;
 }

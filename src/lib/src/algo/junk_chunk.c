@@ -9,12 +9,12 @@
 
 int insert_junk_chunk(info_s * infos)
 {
-    (void) infos; /* Unused. */
+    (void)infos;                /* Unused. */
     return 1;
 }
 
 int extract_junk_chunk(info_s * infos)
 {
-    (void) infos; /* Unused. */
+    (void)infos;                /* Unused. */
     return 1;
 }

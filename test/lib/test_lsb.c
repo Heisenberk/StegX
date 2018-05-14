@@ -11,22 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-void test_file_png_v1(void **state)
-{
-    (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test8.png", "r");
-    assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
-    fclose(f);
-}
-
-void test_file_png_v2(void **state)
-{
-    (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test9.png", "r");
-    assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
-    fclose(f);
-}
-
 void free_infos(info_s * infos)
 {
     if (infos->host.host != NULL)
@@ -39,16 +23,16 @@ void free_infos(info_s * infos)
     free(stegx_propos_algos);
 }
 
-void test_metadata_png_with_passwd(void **state)
+void test_insert_lsb_bmp_with_passwd(void **state)
 {
     (void)state;
     info_s *infos_insert = malloc(sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_METADATA;
+    infos_insert->algo = STEGX_ALGO_LSB;
     infos_insert->method = STEGX_WITH_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test9.png", "r");
-    infos_insert->host.type = PNG;
-    infos_insert->res = fopen("res1_test_metadata_png.png", "w");
+    infos_insert->host.host = fopen("../../../env/test/test4.bmp", "r");
+    infos_insert->host.type = BMP_UNCOMPRESSED;
+    infos_insert->res = fopen("res1_test_eof.bmp", "w");
     infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
     char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
     strcpy(infos_insert->hidden_name, "short.txt");
@@ -60,7 +44,7 @@ void test_metadata_png_with_passwd(void **state)
 
     // insertion de short.txt dans test4.bmp 
     stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_METADATA);
+    stegx_choose_algo(infos_insert, STEGX_ALGO_LSB);
     uint32_t hidden_length_insert = infos_insert->hidden_length;
     stegx_insert(infos_insert);
 
@@ -71,8 +55,8 @@ void test_metadata_png_with_passwd(void **state)
     info_s *infos_extract = malloc(sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->method = STEGX_WITH_PASSWD;
-    infos_extract->host.host = fopen("res1_test_metadata_png.png", "r");
-    infos_extract->host.type = PNG;
+    infos_extract->host.host = fopen("res1_test_eof.bmp", "r");
+    infos_extract->host.type = BMP_UNCOMPRESSED;
     infos_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
     strcpy(infos_extract->passwd, "stegx");
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
@@ -112,19 +96,19 @@ void test_metadata_png_with_passwd(void **state)
         test_name = 0;
     assert_int_equal(test_name, 1);
     free(message);
-    //remove("./short.txt");
+    remove("./short.txt");
 }
 
-void test_metadata_png_without_passwd(void **state)
+void test_insert_lsb_bmp_without_passwd(void **state)
 {
     (void)state;
     info_s *infos_insert = malloc(sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
-    infos_insert->algo = STEGX_ALGO_METADATA;
+    infos_insert->algo = STEGX_ALGO_LSB;
     infos_insert->method = STEGX_WITHOUT_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test9.png", "r");
-    infos_insert->host.type = PNG;
-    infos_insert->res = fopen("res1_test_metadata_png.png", "w");
+    infos_insert->host.host = fopen("../../../env/test/test4.bmp", "r");
+    infos_insert->host.type = BMP_UNCOMPRESSED;
+    infos_insert->res = fopen("res2_test_eof.bmp", "w");
     infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char));
     char *hidden_name_write = malloc((strlen("short.txt") + 1) * sizeof(char));
     strcpy(infos_insert->hidden_name, "short.txt");
@@ -134,7 +118,7 @@ void test_metadata_png_without_passwd(void **state)
 
     // insertion de short.txt dans test4.bmp 
     stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_METADATA);
+    stegx_choose_algo(infos_insert, STEGX_ALGO_LSB);
     uint32_t hidden_length_insert = infos_insert->hidden_length;
     stegx_insert(infos_insert);
 
@@ -143,8 +127,8 @@ void test_metadata_png_without_passwd(void **state)
     info_s *infos_extract = malloc(sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->method = STEGX_WITHOUT_PASSWD;
-    infos_extract->host.host = fopen("res1_test_metadata_png.png", "r");
-    infos_extract->host.type = PNG;
+    infos_extract->host.host = fopen("res2_test_eof.bmp", "r");
+    infos_extract->host.type = BMP_UNCOMPRESSED;
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
 
     // extraction de short.txt dans test4.bmp
@@ -187,17 +171,14 @@ void test_metadata_png_without_passwd(void **state)
 }
 
 /* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest png_tests[] = {
+const struct CMUnitTest insert_lsb_tests[] = {
 
-    // tests unitaires PNG
-    cmocka_unit_test(test_file_png_v1),
-    cmocka_unit_test(test_file_png_v2),
-    cmocka_unit_test(test_metadata_png_with_passwd),
-    cmocka_unit_test(test_metadata_png_without_passwd)
+    cmocka_unit_test(test_insert_lsb_bmp_with_passwd),
+    cmocka_unit_test(test_insert_lsb_bmp_without_passwd),
 };
 
 int main(void)
 {
     /* Exécute les tests. */
-    return cmocka_run_group_tests(png_tests, NULL, NULL);
+    return cmocka_run_group_tests(insert_lsb_tests, NULL, NULL);
 }

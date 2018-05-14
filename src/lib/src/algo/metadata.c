@@ -9,19 +9,19 @@
 
 int insert_metadata(info_s * infos)
 {
-	assert(infos);
-	assert(infos->mode==STEGX_MODE_INSERT);
-	assert(infos->algo==STEGX_ALGO_METADATA);
-	int insertion;
-    if ((infos->host.type==BMP_COMPRESSED)||(infos->host.type==BMP_UNCOMPRESSED)) {
+    assert(infos);
+    assert(infos->mode == STEGX_MODE_INSERT);
+    assert(infos->algo == STEGX_ALGO_METADATA);
+    int insertion;
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
         insertion = insert_metadata_bmp(infos);
-    } else if (infos->host.type==PNG) {
-        insertion = insert_metadata_bmp(infos);
-    } else if ((infos->host.type == WAV_NO_PCM)||(infos->host.type == WAV_PCM)) {
+    } else if (infos->host.type == PNG) {
+        insertion = insert_metadata_png(infos);
+    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
         insertion = insert_metadata_wav(infos);
     } else if (infos->host.type == MP3) {
         insertion = insert_metadata_mp3(infos);
-    } else if ((infos->host.type == AVI_UNCOMPRESSED)||(infos->host.type == AVI_COMPRESSED)) {
+    } else if ((infos->host.type == AVI_UNCOMPRESSED) || (infos->host.type == AVI_COMPRESSED)) {
         insertion = insert_metadata_avi(infos);
     } else if (infos->host.type == FLV) {
         insertion = insert_metadata_flv(infos);
@@ -34,6 +34,25 @@ int insert_metadata(info_s * infos)
 
 int extract_metadata(info_s * infos)
 {
-    (void) infos; /* Unused. */
-    return 1;
+    assert(infos);
+    assert(infos->mode == STEGX_MODE_EXTRACT);
+    assert(infos->algo == STEGX_ALGO_METADATA);
+    int extraction;
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
+        extraction = extract_metadata_bmp(infos);
+    } else if (infos->host.type == PNG) {
+        extraction = extract_metadata_png(infos);
+    } else if ((infos->host.type == WAV_NO_PCM) || (infos->host.type == WAV_PCM)) {
+        extraction = extract_metadata_wav(infos);
+    } else if (infos->host.type == MP3) {
+        extraction = extract_metadata_mp3(infos);
+    } else if ((infos->host.type == AVI_UNCOMPRESSED) || (infos->host.type == AVI_COMPRESSED)) {
+        extraction = extract_metadata_avi(infos);
+    } else if (infos->host.type == FLV) {
+        extraction = extract_metadata_flv(infos);
+    } else {
+        stegx_errno = ERR_INSERT;
+        extraction = 1;
+    }
+    return extraction;
 }

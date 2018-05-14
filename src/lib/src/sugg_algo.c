@@ -169,7 +169,6 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }
-    
     // remplit la structure PNG de infos.host.file_info
     // http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
     else if (infos->host.type == PNG) {
@@ -181,29 +180,29 @@ int fill_host_info(info_s * infos)
             return 1;
         ihdr_length = be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
-        
+
         uint32_t chunk_size, chunk_id;
-         
+
         // Jump sur le premier chunk et lecture de son ID et de sa taille
-        if (fseek(infos->host.host,LENGTH_SIG_PNG, SEEK_SET))
-			return perror("PNG file: Can not move in the file"), 1;
-	    if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+        if (fseek(infos->host.host, LENGTH_SIG_PNG, SEEK_SET))
+            return perror("PNG file: Can not move in the file"), 1;
+        if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read length of chunk"), 1;
-        chunk_size=be32toh(chunk_size);
+        chunk_size = be32toh(chunk_size);
         if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read ID of chunk"), 1;
         // on cherche le chunk IEND pour connaitre la taille du fichier
-        while(chunk_id!= SIG_IEND){
-			if (fseek(infos->host.host,chunk_size+LENGTH_CRC, SEEK_CUR))
-				return perror("PNG file: Can not move in the file"), 1;
-			if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
-				return perror("PNG file: Can't read ID of chunk"), 1;
-			chunk_size=be32toh(chunk_size);
-			if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
-				return perror("PNG file: Can't read ID of chunk"), 1;
-		}
-		uint32_t file_length = ftell(infos->host.host)+LENGTH_IEND;
-		infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
+        while (chunk_id != SIG_IEND) {
+            if (fseek(infos->host.host, chunk_size + LENGTH_CRC, SEEK_CUR))
+                return perror("PNG file: Can not move in the file"), 1;
+            if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+                return perror("PNG file: Can't read size of chunk"), 1;
+            chunk_size = be32toh(chunk_size);
+            if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+                return perror("PNG file: Can't read ID of chunk"), 1;
+        }
+        uint32_t file_length = ftell(infos->host.host) + LENGTH_IEND;
+        infos->host.file_info.png.data_size = file_length - infos->host.file_info.png.header_size;
         return 0;
     }
 
@@ -241,7 +240,6 @@ int fill_host_info(info_s * infos)
         infos->host.file_info.wav.data_size = chunk_size;
         return 0;
     }
-    
     // remplit la structure FLV de infos.host.file_info
     // https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
     else if (infos->host.type == FLV) {
@@ -323,10 +321,9 @@ int stegx_suggest_algo(info_s * infos)
     /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
      * l'énumération. */
     int (*can_use_algo[STEGX_NB_ALGO]) (info_s *) = {
-        can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk
-    };
+    can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk};
     for (algo_e i = 0; i < STEGX_NB_ALGO; i++)
-            stegx_propos_algos[i] = !(*can_use_algo[i])(infos);
+        stegx_propos_algos[i] = !(*can_use_algo[i]) (infos);
     return 0;
 }
 

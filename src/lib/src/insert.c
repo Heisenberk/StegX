@@ -18,7 +18,7 @@
 int write_signature(info_s * infos)
 {
     assert(infos->host.host && infos->hidden && infos->res && infos->hidden_name
-            && infos->mode != STEGX_MODE_EXTRACT);
+           && infos->mode != STEGX_MODE_EXTRACT);
 
     /* Ecriture de l'algorithme utilisé et de la méthode de protection utilisée. */
     if (fwrite(&(infos->algo), sizeof(uint8_t), 1, infos->res) != 1)
@@ -38,14 +38,14 @@ int write_signature(info_s * infos)
         return perror("Sig: Can't write length hidden file"), 1;
 
     /* Copie du nom du fichier a cacher car on fait un XOR après. */
-    char cpy_hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = {0};
+    char cpy_hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = { 0 };
     strncpy(cpy_hidden_name, infos->hidden_name, length_hidden_name + 1);
 
     /* Ecriture du XOR du nom du fichier a cacher avec le mot de passe
      * (length_hidden_name octets). */
-    for (int i = 0, j = 0 ; cpy_hidden_name[i] ; i++) {
+    for (int i = 0, j = 0; cpy_hidden_name[i]; i++) {
         cpy_hidden_name[i] = cpy_hidden_name[i] ^ infos->passwd[j];
-        j = infos->passwd[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
+        j = infos->passwd[j + 1] ? j + 1 : 0;   /* Boucle sur le mot de passe. */
     }
     if (fwrite(cpy_hidden_name, sizeof(char), length_hidden_name, infos->res) != length_hidden_name)
         return perror("Sig: Can't write hidden file name"), 1;
@@ -53,7 +53,8 @@ int write_signature(info_s * infos)
     /* Ecriture du mot de passe s'il s'agit d'un mot de passe par défaut 
        choisi aléatoirement par l'application (64 octets). */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        if (fwrite(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->res) != LENGTH_DEFAULT_PASSWD)
+        if (fwrite(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->res) !=
+            LENGTH_DEFAULT_PASSWD)
             return perror("Sig: Can't write default password"), 1;
     }
     return 0;

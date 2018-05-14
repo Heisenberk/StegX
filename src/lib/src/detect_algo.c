@@ -39,16 +39,15 @@ static int read_signature(info_s * infos)
      * "uint32_t" au début de leurs structures). */
     if (infos->host.type <= WAV_NO_PCM && infos->host.type >= BMP_COMPRESSED) {
         if (fseek(infos->host.host, infos->host.file_info.wav.header_size +
-                    infos->host.file_info.wav.data_size, SEEK_SET))
+                  infos->host.file_info.wav.data_size, SEEK_SET))
             return perror("BMP & WAVE: Can't move to StegX signature"), 1;
-    }
-    else if (infos->host.type == PNG) {
-    }
-    else if (infos->host.type == MP3) {
-    }
-    else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
-    }
-    else if (infos->host.type == FLV) {
+    } else if (infos->host.type == PNG) {
+        if (fseek(infos->host.host, infos->host.file_info.png.header_size +
+                  infos->host.file_info.png.data_size, SEEK_SET))
+            return perror("PNG: Can't move to StegX signature"), 1;
+    } else if (infos->host.type == MP3) {
+    } else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
+    } else if (infos->host.type == FLV) {
     }
 
     /* Lecture de l'algorithme utilisé et de la méthode de protection utilisée. */
@@ -73,7 +72,8 @@ static int read_signature(info_s * infos)
 
     /* Lecture du nom du fichier caché XOR avec le mot de passe (choisi par
      * l'utilisateur ou par l'application aléatoirement). */
-    if (fread(infos->hidden_name, sizeof(char), length_hidden_name, infos->host.host) != length_hidden_name)
+    if (fread(infos->hidden_name, sizeof(char), length_hidden_name, infos->host.host) !=
+        length_hidden_name)
         return perror("Sig: Can't read the name of hidden file"), 1;
 
     /* Si l'application a choisi un mot de passe par défaut aléatoirement, on va
@@ -85,14 +85,15 @@ static int read_signature(info_s * infos)
         free(infos->passwd);
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
             return perror("Sig: Can't calloc password"), 1;
-        if (fread(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->host.host) != LENGTH_DEFAULT_PASSWD)
+        if (fread(infos->passwd, sizeof(char), LENGTH_DEFAULT_PASSWD, infos->host.host) !=
+            LENGTH_DEFAULT_PASSWD)
             return perror("Sig: Can't read password"), 1;
     }
 
     /* DéXOR du nom du fichier cacher. */
-    for (int i = 0, j = 0 ; i < length_hidden_name ; i++) {
+    for (int i = 0, j = 0; i < length_hidden_name; i++) {
         infos->hidden_name[i] = infos->hidden_name[i] ^ infos->passwd[j];
-        j = infos->passwd[j + 1] ? j + 1 : 0; /* Boucle sur le mot de passe. */
+        j = infos->passwd[j + 1] ? j + 1 : 0;   /* Boucle sur le mot de passe. */
     }
     return 0;
 }

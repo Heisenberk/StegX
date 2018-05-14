@@ -10,7 +10,15 @@
 #define PNG_DEF_IHDR 8
 /** Signature IEND. */
 #define SIG_IEND 0x444E4549
-/** Longueur en octets chunk IEND. */
+/** Signature IDAT */
+#define SIG_IDAT 0x54414449
+/** Signature tEXt */
+#define SIG_tEXt 0x74584574
+/** Signature tEXt STEGX PNG */
+#define SIG_STEGX_PNG 0x53544547
+/** Longueur en octets chunk IEND */
+#define LENGTH_CHUNK_IEND 12
+/** Longueur en octets signature IEND. */
 #define LENGTH_IEND 4
 /** Longueur en octets bloc CRC. */
 #define LENGTH_CRC 4

@@ -203,7 +203,7 @@ static void insert_end(struct ui *ui)
 
 static void insert_reset(GtkWidget * widget, struct ui *ui)
 {
-    (void) widget; /* Unused. */
+    (void)widget;               /* Unused. */
     /* Ré-affiche les widgets de choix de fichiers d'entrés. */
     gtk_widget_show(ui->insert.file_orig_fc);
     gtk_widget_show(ui->insert.file_orig_lbl);
