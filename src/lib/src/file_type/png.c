@@ -6,6 +6,7 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "../insert.h"
 
 /** Signature PNG */
 #define SIG_PNG 0x0A1A0A0D474E5089
@@ -28,10 +29,146 @@ type_e stegx_test_file_png(FILE * file)
 
 int insert_metadata_png(info_s * infos)
 {
-    return 1;
+	assert(infos);
+	assert(infos->mode==STEGX_MODE_INSERT);
+    assert(infos->algo==STEGX_ALGO_METADATA);
+    assert(infos->host.type==PNG);
+    if (fseek(infos->host.host, 0, SEEK_SET) == -1)
+        return perror("Can't make insertion METADATA"), 1;
+    if (fseek(infos->hidden, 0, SEEK_SET) == -1)
+        return perror("Can't make insertion METADATA"), 1;
+
+	uint32_t nb_cpy=0;
+	uint8_t byte_read_png;
+	// Recopie du header du fichier PNG
+	while(nb_cpy<infos->host.file_info.png.header_size){
+		if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read header"), 1;
+			if(fwrite(&byte_read_png, sizeof(uint8_t), 1, infos->res)==0)
+				return perror("PNG file: Can't write header"), 1;
+		nb_cpy++;
+	}
+	
+	// Recopie du data du fichier PNG
+	nb_cpy=0;
+	while(nb_cpy<infos->host.file_info.png.data_size-LENGTH_CHUNK_IEND){
+		if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read data"), 1;
+			if(fwrite(&byte_read_png, sizeof(uint8_t), 1, infos->res)==0)
+				return perror("PNG file: Can't write data"), 1;
+		nb_cpy++;
+	}
+	
+	// Creation de 2 chunks tEXt pour cacher les donnees dans le fichier PNG
+	uint32_t part_length_hidden=((infos->hidden_length)/2)+4; 
+	//+4 pour reconnaitre que ce chunk tEXt a ete cree par STEGX 
+	uint32_t part_length_hidden_big_endian=htobe32(part_length_hidden);
+	uint32_t sig=SIG_tEXt;
+	for(int i=0;i<2;i++){
+		// Recopie en big endian de la taille du chunk tEXt
+		if(fwrite(&part_length_hidden_big_endian, sizeof(uint32_t), 1, infos->res)==0)
+			return perror("PNG file: Can't write length of chunk tEXt"), 1;
+		// Recopie de la signature tEXt
+		if(fwrite(&sig, sizeof(uint32_t), 1, infos->res)==0)
+			return perror("PNG file: Can't write length of chunk tEXt"), 1;
+		// Recopie des 4 octets STEGX pour reconnaitre le chunk tEXt
+		sig=SIG_STEGX_PNG;
+		if(fwrite(&sig, sizeof(uint32_t), 1, infos->res)==0)
+			return perror("PNG file: Can't write length of chunk tEXt"), 1;
+		nb_cpy=0;
+		// Recopie des donnees a cacher
+		while(nb_cpy<(part_length_hidden-4)){
+			if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->hidden) != 1)
+				return perror("PNG file: Can't read data hidden"), 1;
+			if(fwrite(&byte_read_png, sizeof(uint8_t), 1, infos->res)==0)
+				return perror("PNG file: Can't write data hidden"), 1;
+			nb_cpy++;
+		}
+		// Ecriture du CRC du chunk tEXt nouvellement créé
+		sig=0x00;
+		if(fwrite(&sig, sizeof(uint32_t), 1, infos->res)==0)
+			return perror("PNG file: Can't write CRC of chunk tEXt"), 1;
+			
+		// pour le deuxieme chunk cree on prend les donnees restantes a cacher
+		part_length_hidden=(infos->hidden_length)-((infos->hidden_length)/2)+4;
+		part_length_hidden_big_endian=htobe32(part_length_hidden);
+		sig=SIG_tEXt;
+	}
+	
+	// Ecriture du chunk IEND 
+	nb_cpy=0;
+	while(nb_cpy<LENGTH_CHUNK_IEND){
+		if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read data"), 1;
+		if(fwrite(&byte_read_png, sizeof(uint8_t), 1, infos->res)==0)
+				return perror("PNG file: Can't write data"), 1;
+		nb_cpy++;
+	}
+	
+	// Ecriture de la signature
+    if(write_signature(infos)==1) {
+		stegx_errno=ERR_INSERT;
+		return 1;
+	}
+    return 0;
 }
 
 int extract_metadata_png(info_s * infos)
 {
-    return 1;
+	assert(infos);
+	assert(infos->mode==STEGX_MODE_EXTRACT);
+    assert(infos->algo == STEGX_ALGO_METADATA);
+    assert(infos->host.type==PNG);
+    uint32_t header_size, data_size, chunk_size, chunk_id,sig, nb_cpy;
+    uint8_t byte_read_png;
+
+	// Jump apres la signature
+    if (fseek(infos->host.host,LENGTH_SIG_PNG, SEEK_SET))
+		return perror("PNG file: Can not move in the file"), 1;
+		
+	chunk_id=0;
+	if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+		return perror("PNG file: Can't read length of chunk"), 1;
+    chunk_size=be32toh(chunk_size);
+	if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+		return perror("PNG file: Can't read ID of chunk"), 1;
+		
+	// Lecture de tous les chunks du fichier a analyser	
+	uint8_t bool_stegx_text=0;
+	do{
+		// si il s'agit d'un chunk tEXt
+		if(chunk_id==SIG_tEXt){
+			nb_cpy=0; // lecture des 4 premiers octets de data du chunk tEXt
+			if (fread(&sig, sizeof(uint32_t), 1, infos->host.host) != 1)
+				return perror("PNG file: Can't read data"), 1;
+			// si les 4 premiers octets sont STEG -> chunk tEXt utilisé par StegX
+			if(sig==SIG_STEGX_PNG) bool_stegx_text=1;
+			while(nb_cpy<(chunk_size-4)){
+				if (fread(&byte_read_png, sizeof(uint8_t), 1, infos->host.host) != 1)
+					return perror("PNG file: Can't read data"), 1;
+				if(bool_stegx_text==1){ // Ecriture des donnees cachees
+					if(fwrite(&byte_read_png, sizeof(uint8_t), 1, infos->res)==0)
+						return perror("PNG file: Can't write data"), 1;
+				}
+				nb_cpy++;
+			}
+			if (fseek(infos->host.host,LENGTH_CRC, SEEK_CUR))
+				return perror("PNG file: Can not move in the file"), 1;
+			bool_stegx_text=0;
+		}
+		
+		else{
+			if (fseek(infos->host.host,chunk_size+LENGTH_CRC, SEEK_CUR))
+				return perror("PNG file: Can not move in the file"), 1;
+		}
+		
+		// Lecture de la taille et de ID du prochain chunk (pour le prochain tour de boucle)
+		if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
+			return perror("PNG file: Can't read length of chunk"), 1;
+		chunk_size=be32toh(chunk_size);
+		if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
+			return perror("PNG file: Can't read ID of chunk"), 1;
+	}while(chunk_id!=SIG_IEND);
+
+    return 0;
 }

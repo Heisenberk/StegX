@@ -20,6 +20,8 @@ int insert_lsb(info_s * infos)
     int i;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make jump host file"), 1;
+    if (fseek(infos->hidden, 0, SEEK_SET) == -1)
+        return perror("Can't make jump hidden file"), 1;
     
     // pour les formats BMP
     if (infos->host.type == BMP_UNCOMPRESSED){

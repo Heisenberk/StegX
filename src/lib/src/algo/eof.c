@@ -38,7 +38,7 @@ int insert_eof(info_s * infos)
 			if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
 				return perror("Can't read Header"), 1;
             if(fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res)==0)
-				return perror("Can't writ Header"), 1;
+				return perror("Can't write Header"), 1;
             nb_cpy++;
         }
         // Recopie du data

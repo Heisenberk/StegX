@@ -43,7 +43,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 
 	// insertion de short.txt dans test4.bmp 
     stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
+    stegx_choose_algo(infos_insert, STEGX_ALGO_LSB);
     uint32_t hidden_length_insert=infos_insert->hidden_length;
     stegx_insert(infos_insert);
 
@@ -55,7 +55,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->method = STEGX_WITH_PASSWD;
     infos_extract->host.host = fopen("res1_test_eof.bmp", "r");
-    infos_extract->host.type = BMP_COMPRESSED;
+    infos_extract->host.type = BMP_UNCOMPRESSED;
     infos_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
     strcpy(infos_extract->passwd, "stegx");
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
@@ -115,7 +115,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 
 	// insertion de short.txt dans test4.bmp 
     stegx_suggest_algo(infos_insert);
-    stegx_choose_algo(infos_insert, STEGX_ALGO_EOF);
+    stegx_choose_algo(infos_insert, STEGX_ALGO_LSB);
     uint32_t hidden_length_insert=infos_insert->hidden_length;
     stegx_insert(infos_insert);
 
@@ -126,7 +126,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
     infos_extract->mode = STEGX_MODE_EXTRACT;
     infos_extract->method = STEGX_WITHOUT_PASSWD;
     infos_extract->host.host = fopen("res2_test_eof.bmp", "r");
-    infos_extract->host.type = BMP_COMPRESSED;
+    infos_extract->host.type = BMP_UNCOMPRESSED;
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e));
     
     // extraction de short.txt dans test4.bmp

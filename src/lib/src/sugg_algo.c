@@ -199,7 +199,7 @@ int fill_host_info(info_s * infos)
 			if (fseek(infos->host.host,chunk_size+LENGTH_CRC, SEEK_CUR))
 				return perror("PNG file: Can not move in the file"), 1;
 			if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
-				return perror("PNG file: Can't read ID of chunk"), 1;
+				return perror("PNG file: Can't read size of chunk"), 1;
 			chunk_size=be32toh(chunk_size);
 			if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
 				return perror("PNG file: Can't read ID of chunk"), 1;
