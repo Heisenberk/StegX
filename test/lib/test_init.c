@@ -47,7 +47,7 @@ void test_insert_init_without_passwd()
     assert_int_equal(test, 1);
 
     // Teste si le fichier resultat a bien ete cree 
-    test = (infos->res != NULL);
+    test = (infos->res == stdout);
     assert_int_equal(test, 1);
 
     // Teste si le mot de passe a bien ete initialise
@@ -84,9 +84,7 @@ void test_insert_init_with_passwd()
     strcpy(choices->passwd, "stegx");
     choices->mode = STEGX_MODE_INSERT;
     choices->insert_info = malloc(sizeof(stegx_info_insert_s));
-    choices->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices->insert_info->hidden_path, "../../../env/test/short.txt");
+    choices->insert_info->hidden_path = "stdin";
     choices->insert_info->algo = STEGX_ALGO_EOF;
 
     info_s *infos = stegx_init(choices);
@@ -101,12 +99,14 @@ void test_insert_init_with_passwd()
     assert_int_equal(test, 1);
 
     // Teste si le fichier a cacher a bien ete ouvert 
-    test = (infos->hidden != NULL);
-    assert_int_equal(test, 1);
+    assert_ptr_equal(infos->hidden, stdin);
 
     // Teste si le fichier resultat a bien ete cree 
     test = (infos->res != NULL);
     assert_int_equal(test, 1);
+
+    // Test que le nom du fichier à cacher à bien été découpé. */
+    assert_string_equal(infos->hidden_name, "stdin");
 
     // Teste si le mot de passe a bien ete initialise
     test = (strcmp(infos->passwd, "stegx") == 0);
@@ -119,7 +119,6 @@ void test_insert_init_with_passwd()
     if (infos->res != NULL)
         fclose(infos->res);
     free(infos);
-    free(choices->insert_info->hidden_path);
     free(choices->insert_info);
     free(choices->res_path);
     free(choices->host_path);
@@ -218,8 +217,8 @@ void test_extract_init_without_passwd()
 void test_extract_init_with_passwd()
 {
     stegx_choices_s *choices = malloc(sizeof(stegx_choices_s));
-    choices->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices->host_path, "../../../env/test/test1.bmp");
+    choices->host_path = malloc((strlen("stdin") + 1) * sizeof(char));
+    strcpy(choices->host_path, "stdin");
     choices->res_path = malloc((strlen("./") + 1) * sizeof(char));
     strcpy(choices->res_path, "./");
     choices->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -228,6 +227,7 @@ void test_extract_init_with_passwd()
     choices->insert_info = NULL;
 
     info_s *infos = stegx_init(choices);
+    assert_non_null(infos);
 
     int test;
     // Teste si le mode est correct
@@ -235,8 +235,7 @@ void test_extract_init_with_passwd()
     assert_int_equal(test, 1);
 
     // Teste si le fichier host a bien ete ouvert    
-    test = (infos->host.host != NULL);
-    assert_int_equal(test, 1);
+    assert_ptr_equal(infos->host.host, stdin);
 
     // Teste si le fichier a cacher a bien ete ouvert 
     test = (infos->hidden == NULL);
@@ -269,13 +268,14 @@ void test_extract_init_with_passwd()
  */
 void test_extract_init_invalid()
 {
+    // Initialisation.
     stegx_choices_s choices;
     choices.mode = STEGX_MODE_EXTRACT;
     choices.host_path = "inexistant";
     choices.res_path = "./";
     choices.passwd = "stegx";
 
-    // Test si NULL est bien renvoyé.
+    // Test que l'erreur est approriée.
     assert_null(stegx_init(&choices));
     assert_int_equal(stegx_errno, ERR_HOST);
 }
