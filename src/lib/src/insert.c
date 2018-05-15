@@ -21,10 +21,11 @@ int write_signature(info_s * infos)
            && infos->mode != STEGX_MODE_EXTRACT);
 
     /* Ecriture de l'algorithme utilisé et de la méthode de protection utilisée. */
-    if (fwrite(&(infos->algo), sizeof(uint8_t), 1, infos->res) != 1)
-        return perror("Sig: Can't write algo"), 1;
     if (fwrite(&(infos->method), sizeof(uint8_t), 1, infos->res) != 1)
         return perror("Sig: Can't write method"), 1;
+    if (fwrite(&(infos->algo), sizeof(uint8_t), 1, infos->res) != 1)
+        return perror("Sig: Can't write algo"), 1;
+
 
     /* Ecriture de la taille du fichier à cacher. */
     if (fwrite(&(infos->hidden_length), sizeof(uint32_t), 1, infos->res) != 1)

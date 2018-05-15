@@ -61,10 +61,10 @@ void test_write_signature_with_passwd(void **state)
     uint32_t length_file;
     char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = { 0 };
     FILE *f = fopen("res1_test_insert.bmp", "r");
-    // lecture de l'algorithme
-    fread(&algo_read, sizeof(uint8_t), 1, f);
     // lecture de la méthode de protection de donnée
     fread(&method, sizeof(uint8_t), 1, f);
+    // lecture de l'algorithme
+    fread(&algo_read, sizeof(uint8_t), 1, f);
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
     // lecture de la taille du nom du fichier caché
@@ -102,11 +102,12 @@ void test_write_signature_without_passwd(void **state)
     uint32_t length_file;
     char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = { 0 };
     FILE *f = fopen("res2_test_insert.bmp", "r");
-    // lecture de l'algorithme
-    fread(&algo_read, sizeof(uint8_t), 1, f);
-
+    
     // lecture de la méthode de protection de donnée
     fread(&method, sizeof(uint8_t), 1, f);
+    
+    // lecture de l'algorithme
+    fread(&algo_read, sizeof(uint8_t), 1, f);
 
     // lecture de la taille du fichier caché
     fread(&length_file, sizeof(uint32_t), 1, f);
@@ -142,12 +143,12 @@ int main(void)
 {
 
 /* Structure CMocka contenant la liste des tests. */
-    const struct CMUnitTest check_insert_tests[] = {
+    const struct CMUnitTest check_signature_tests[] = {
         cmocka_unit_test(test_write_signature_with_passwd),
         cmocka_unit_test(test_write_signature_without_passwd),
     };
 
     /* Exécute les tests. */
-    return cmocka_run_group_tests(check_insert_tests, test_write_signature_setup,
+    return cmocka_run_group_tests(check_signature_tests, test_write_signature_setup,
                                   test_write_signature_teardown);
 }
