@@ -14,11 +14,11 @@ void err_print(enum err_code err)
 {
     static const char *err_desc[] = {
         /* ERR_NONE */ "aucune erreur",
-        /* ERR_HOST_NULL */ "fichier host null",
-        /* ERR_HIDDEN_NULL */ "fichier à cacher null",
+        /* ERR_HOST */ "ouverture en lecture du fichier hôte impossible",
+        /* ERR_HIDDEN */ "ouverture en lecture du fichier à chacher impossible",
         /* ERR_PASSWD */ "mot de passe invalide",
-        /* ERR_RES_EXTRACT */ "le resultat en extraction doit etre un dossier",
-        /* ERR_RES_INSERT */ "le resultat est invalide pour l'insertion",
+        /* ERR_RES_EXTRACT */ "le chemin résultat pour l'extraction doit être un dossier",
+        /* ERR_RES_INSERT */ "ouverture en écriture du fichier résultat impossible",
         /* ERR_READ */ "erreur de lecture",
         /* ERR_CHECK_COMPAT */
         "erreur dans le module verification de la compatibilite des fichiers",

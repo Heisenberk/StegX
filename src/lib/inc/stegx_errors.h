@@ -15,8 +15,8 @@
  */
 enum err_code {
     ERR_NONE = 0,               /*!< Aucune erreur. */
-    ERR_HOST_NULL,              /*!< Host null. */
-    ERR_HIDDEN_NULL,            /*!< Fichier a cacher null. */
+    ERR_HOST,                   /*!< Erreur pendant l'ouverture du fichier hôte. */
+    ERR_HIDDEN,                 /*!< Erreur pendant l'ouverture du fichier à cacher. */
     ERR_PASSWD,                 /*!< Mot de passe invalide. */
     ERR_RES_EXTRACT,            /*!< Resultat doit être un dossier en extract. */
     ERR_RES_INSERT,             /*!< Resultat invalide pour l'insertion. */

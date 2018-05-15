@@ -11,6 +11,7 @@
 #include <assert.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <libgen.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -18,12 +19,17 @@
 
 info_s *stegx_init(stegx_choices_s * choices)
 {
+    /* Lors de l'extraction et de l'insertion : */
+    /* - Le fichier résultat peux être sur stdout. */
+    /* Lors de l'extraction : */
+    /* - Le fichier hôte peux être sur stdin. */
+    /* Lors de l'insertion : */
+    /* - Le fichier à cacher peux être sur stdin. */
+
     assert(choices);
-    info_s *s = malloc(sizeof(info_s));
+    info_s *s = calloc(1, sizeof(info_s));
     if (!s)
-        return perror("Can't allocate memory for info_s structure"), NULL;
-    int count, begin;
-    int i, j;
+        return perror("Can't allocate memory for library private information structure"), NULL;
 
     /* Initialisation de la variable globale de proposition des algorithmes si
      * elle n'est pas déjà initialisée. Lors du free, il remettre le pointeur à
@@ -34,100 +40,66 @@ info_s *stegx_init(stegx_choices_s * choices)
     if (!stegx_propos_algos && !(stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e))))
         return perror("Can't allocate memory for stegx_propos_algos tab"), NULL;
 
-    //OK mode
+    /* Initialisation du mode. */
     s->mode = choices->mode;
 
-    //OK host.host
-    s->host.host = fopen(choices->host_path, "r");
-    if (s->host.host == NULL) {
-        stegx_errno = ERR_HOST_NULL;
-        return NULL;
-    }
-    //OK hidden
-    if (choices->mode == STEGX_MODE_INSERT) {
-        s->hidden = fopen(choices->insert_info->hidden_path, "r");
-        if (s->hidden == NULL) {
-            stegx_errno = ERR_HIDDEN_NULL;
-            return NULL;
-        }
+    /* Initialisation du mot de passe. */
+    if (choices->passwd) {
+        s->method = STEGX_WITH_PASSWD;
+        if (!strlen(choices->passwd))
+            return stegx_errno = ERR_PASSWD, NULL;
+        if (!(s->passwd = strdup(choices->passwd)))
+            return perror("Can't allocate memory for password"), NULL;
     } else
-        s->hidden = NULL;
+        s->method = STEGX_WITHOUT_PASSWD;
 
-    //OK passwd+method
-    if (choices->passwd != NULL) {
-        count = strlen(choices->passwd);
-        if (count == 0) {
-            err_print(ERR_PASSWD);
-        }
-        count++;
-        if (!(s->passwd = malloc(count * sizeof(char))))
-            return perror("Can't allocate memory for passwd string"), NULL;
+    /* Vérification du résultat. */
+    if (!strcmp(choices->res_path, "stdout"))
+        s->res = stdout;
 
-        for (i = 0; i < count; i++) {
-            s->passwd[i] = choices->passwd[i];
-        }
-        if (choices->mode == STEGX_MODE_INSERT) {
-            s->method = STEGX_WITH_PASSWD;
-        }
-    } else {
-        if (choices->mode == STEGX_MODE_INSERT) {
-            s->method = STEGX_WITHOUT_PASSWD;
-        }
-        s->passwd = NULL;
+    /* Initialisations pour l'insertion. */
+    if (choices->mode == STEGX_MODE_INSERT) {
+        assert(choices->insert_info);
+        /* Initialisation du fichier à cacher. */
+        if (!strcmp(choices->insert_info->hidden_path, "stdin"))
+            s->hidden = stdin;
+        else if (!(s->hidden = fopen(choices->insert_info->hidden_path, "r")))
+            return perror(NULL), stegx_errno = ERR_HIDDEN, NULL;
+        /* L'algorithme sera choisi avec stegx_choose_algo(). */
+
+        /* Initialisation du nom du fichier à cacher. */
+        if (!(s->hidden_name = strdup(basename(choices->insert_info->hidden_path))))
+            return perror("Can't allocate memory for the name of hidden file"), NULL;
+
+        /* Initialisation et vérification du fichier résultat pour l'insertion. */
+        if ((s->res != stdout) && !(s->res = fopen(choices->res_path, "w")))
+            return stegx_errno = ERR_RES_INSERT, NULL;
     }
 
-    //OK res
-    struct stat st;
+    /* Initialisation pour l'extraction. */
     if (choices->mode == STEGX_MODE_EXTRACT) {
-        // si on est en EXTRACT il faut absolument que le chemin soit un dossier
-        if (stat(choices->res_path, &st) == 0) {
-            if (!S_ISDIR(st.st_mode)) {
-                stegx_errno = ERR_RES_EXTRACT;
-                return NULL;
-            }
-        }
-    }
-    if (choices->mode == STEGX_MODE_EXTRACT) {
-        s->res = NULL;
-    } else {
-        if (strcmp(choices->res_path, "stdout") == 0) {
-            s->res = stdout;
-        } else
-            s->res = fopen(choices->res_path, "w");
-        if (s->res == NULL) {
-            // le fait que res_path ne soit pas un fichier est detecte ici
-            stegx_errno = ERR_RES_INSERT;
-            return NULL;
+        /* Vérification du fichier hôte. */
+        if (!strcmp(choices->host_path, "stdin"))
+            s->host.host = stdin;
+        /* Vérification du dossier résultat pour l'extraction. */
+        if (s->res != stdout) {
+            struct stat st;
+            if (!stat(choices->res_path, &st)) {
+                if (!S_ISDIR(st.st_mode))
+                    return stegx_errno = ERR_RES_EXTRACT, NULL;
+            } else
+                return perror("Can't read properties of res path"), NULL;
         }
     }
 
-    // OK hidden_name
-    if (choices->mode == STEGX_MODE_EXTRACT) {
-        s->hidden_name = NULL;
-    } else {
-        count = strlen(choices->insert_info->hidden_path);
-        begin = count - 1;
-        while ((begin != 0) && (choices->insert_info->hidden_path[begin] != '/')) {
-            begin--;
-        }
-        if (begin == 0)
-            s->hidden_name = malloc((count + 1) * sizeof(char));
-        else
-            s->hidden_name = malloc((count - begin) * sizeof(char));
-        if (!(s->hidden_name))
-            return perror("Can't allocate memory for hidden_name string"), NULL;
-        j = 0;
-        int begin_cdr;
-        if (begin == 0)
-            begin_cdr = begin;
-        else
-            begin_cdr = begin + 1;
-        for (i = begin_cdr; i < count + 1; i++) {
-            s->hidden_name[j] = choices->insert_info->hidden_path[i];
-            j++;
-        }
-    }
+    /* Initialisation du fichier hôte. */
+    if ((s->host.host != stdin) && !(s->host.host = fopen(choices->host_path, "r")))
+        return perror(NULL), stegx_errno = ERR_HOST, NULL;
 
+    assert(s->mode == STEGX_MODE_INSERT || s->mode == STEGX_MODE_EXTRACT);
+    assert(s->algo >= STEGX_ALGO_LSB && s->algo < STEGX_NB_ALGO);
+    assert(s->method == STEGX_WITHOUT_PASSWD || s->method == STEGX_WITH_PASSWD);
+    assert(s->host.host);
     return s;
 }
 
