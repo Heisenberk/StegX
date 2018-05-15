@@ -20,9 +20,11 @@ void dest_stegx_info(stegx_choices_s * com)
 
 }
 
-void test_insert_lsb_bmp_with_passwd(void **state)
+// Test final de l'insertion/extraction LSB sur un fichier BMP avec mot de passe
+void test_lsb_bmp_with_passwd(void **state)
 {
     (void)state;
+    // Initialisation de l'insertion identique aux actions des interfaces
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path = malloc((strlen("../../../env/test/test4.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->host_path, "../../../env/test/test4.bmp");
@@ -38,6 +40,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_LSB;
     int test;
 
+	// Insertion 
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -55,6 +58,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     stegx_clear(infos_insert);
     dest_stegx_info(choices_insert);
 
+	// Initialisation de l'extraction identique aux actions des interfaces
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
     choices_extract->host_path = malloc((strlen("./res1_test_lsb.bmp") + 1) * sizeof(char));
     strcpy(choices_extract->host_path, "./res1_test_lsb.bmp");
@@ -65,6 +69,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
+	//Extraction
     info_s *infos_extract = stegx_init(choices_extract);
 
     test = stegx_check_compatibility(infos_extract);
@@ -98,7 +103,8 @@ void test_insert_lsb_bmp_with_passwd(void **state)
 
 }
 
-void test_insert_lsb_bmp_without_passwd(void **state)
+// Test final de l'insertion/extraction LSB sur un fichier BMP sans mot de passe
+void test_lsb_bmp_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -174,14 +180,14 @@ void test_insert_lsb_bmp_without_passwd(void **state)
 }
 
 /* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest insert_lsb_tests[] = {
+const struct CMUnitTest lsb_tests[] = {
 
-    cmocka_unit_test(test_insert_lsb_bmp_with_passwd),
-    cmocka_unit_test(test_insert_lsb_bmp_without_passwd),
+    cmocka_unit_test(test_lsb_bmp_with_passwd),
+    cmocka_unit_test(test_lsb_bmp_without_passwd),
 };
 
 int main(void)
 {
     /* Exécute les tests. */
-    return cmocka_run_group_tests(insert_lsb_tests, NULL, NULL);
+    return cmocka_run_group_tests(lsb_tests, NULL, NULL);
 }

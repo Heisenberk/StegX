@@ -86,7 +86,7 @@ void test_file_bmp_v6(void **state)
     fclose(f);
 }
 
-
+// Test final de l'insertion/extraction METADATA sur un fichier BMP avec mot de passe
 void test_metadata_bmp_with_passwd(void **state)
 {
     (void)state;
@@ -163,6 +163,7 @@ void test_metadata_bmp_with_passwd(void **state)
 
 }
 
+// Test final de l'insertion/extraction METADATA sur un fichier BMP sans mot de passe
 void test_metadata_bmp_without_passwd(void **state)
 {
     (void)state;
