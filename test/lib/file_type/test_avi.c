@@ -17,7 +17,7 @@
 void test_file_avi_v1(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test13.flv", "r");
+    FILE *f = fopen("../../../env/test/flv/test13.flv", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_avi(f), UNKNOWN);
     fclose(f);
@@ -26,7 +26,7 @@ void test_file_avi_v1(void **state)
 void test_file_avi_v2(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test14.avi", "r");
+    FILE *f = fopen("../../../env/test/avi/test14.avi", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_avi(f), AVI_UNCOMPRESSED);
     fclose(f);

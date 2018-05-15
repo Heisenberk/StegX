@@ -4,7 +4,7 @@
  * @details Module qui contient la fonction d'ecriture de la signature 
  * STEGX.
  */
- 
+
 #ifndef INSERT_H
 #define INSERT_H
 

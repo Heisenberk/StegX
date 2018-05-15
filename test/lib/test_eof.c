@@ -30,8 +30,8 @@ void test_eof_little_bmp_with_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/test9bis.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test9bis.bmp");
+        malloc((strlen("../../../env/test/bmp/test9bis.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test9bis.bmp");
     choices_insert->res_path = malloc((strlen("./res1_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res1_test_eof.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -39,8 +39,8 @@ void test_eof_little_bmp_with_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -98,7 +98,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	fclose(f);
+    fclose(f);
     remove("./short.txt");
 
 }
@@ -111,16 +111,16 @@ void test_eof_little_bmp_without_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/test9bis.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test9bis.bmp");
+        malloc((strlen("../../../env/test/bmp/test9bis.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test9bis.bmp");
     choices_insert->res_path = malloc((strlen("./res2_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_eof.bmp");
     choices_insert->passwd = NULL;
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -178,7 +178,7 @@ void test_eof_little_bmp_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	fclose(f);
+    fclose(f);
     remove("./short.txt");
 }
 
@@ -189,8 +189,9 @@ void test_eof_little_png_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test8.png") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test8.png");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/png/test8.png") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/png/test8.png");
     choices_insert->res_path = malloc((strlen("./res3_test_eof.png") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res3_test_eof.png");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -198,8 +199,8 @@ void test_eof_little_png_with_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -258,7 +259,7 @@ void test_eof_little_png_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	fclose(f);
+    fclose(f);
     remove("./short.txt");
 
 }
@@ -270,16 +271,17 @@ void test_eof_little_png_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test8.png") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test8.png");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/png/test8.png") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/png/test8.png");
     choices_insert->res_path = malloc((strlen("./res4_test_eof.png") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res4_test_eof.png");
     choices_insert->passwd = NULL;
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -337,7 +339,7 @@ void test_eof_little_png_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	fclose(f);
+    fclose(f);
     remove("./short.txt");
 }
 
@@ -349,8 +351,8 @@ void test_eof_big_bmp_with_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/test9bis.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test9bis.bmp");
+        malloc((strlen("../../../env/test/bmp/test9bis.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test9bis.bmp");
     choices_insert->res_path = malloc((strlen("./res1_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res1_test_eof.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -359,8 +361,10 @@ void test_eof_big_bmp_with_passwd(void **state)
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     // fichier de taille superieure a la limite etablie
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -405,12 +409,12 @@ void test_eof_big_bmp_with_passwd(void **state)
 
     FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
     assert_int_equal(f != NULL, 1);
-    
+
     // Test si le contenu du message a bien ete extrait*/
     uint32_t sig;
-    assert_int_equal(fread(&sig, sizeof(uint32_t), 1,f),1);
-    assert_int_equal((sig==SIG_RIFF), 1);
-	fclose(f);
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 
 }
@@ -423,16 +427,18 @@ void test_eof_big_bmp_without_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/test9bis.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test9bis.bmp");
+        malloc((strlen("../../../env/test/bmp/test9bis.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test9bis.bmp");
     choices_insert->res_path = malloc((strlen("./res2_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_eof.bmp");
     choices_insert->passwd = NULL;
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -477,12 +483,12 @@ void test_eof_big_bmp_without_passwd(void **state)
 
     FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
     assert_int_equal(f != NULL, 1);
-    
+
     // Test si le contenu du message a bien ete extrait*/
     uint32_t sig;
-    assert_int_equal(fread(&sig, sizeof(uint32_t), 1,f),1);
-    assert_int_equal((sig==SIG_RIFF), 1);
-	fclose(f);
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 }
 
@@ -493,8 +499,9 @@ void test_eof_big_png_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test8.png") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test8.png");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/png/test8.png") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/png/test8.png");
     choices_insert->res_path = malloc((strlen("./res3_test_eof.png") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res3_test_eof.png");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -502,8 +509,10 @@ void test_eof_big_png_with_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -547,14 +556,14 @@ void test_eof_big_png_with_passwd(void **state)
     stegx_clear(infos_extract);
     dest_stegx_info(choices_extract);
 
-     FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
     assert_int_equal(f != NULL, 1);
-    
+
     // Test si le contenu du message a bien ete extrait*/
     uint32_t sig;
-    assert_int_equal(fread(&sig, sizeof(uint32_t), 1,f),1);
-    assert_int_equal((sig==SIG_RIFF), 1);
-	fclose(f);
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 
 }
@@ -566,16 +575,19 @@ void test_eof_big_png_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test8.png") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test8.png");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/png/test8.png") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/png/test8.png");
     choices_insert->res_path = malloc((strlen("./res4_test_eof.png") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res4_test_eof.png");
     choices_insert->passwd = NULL;
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
@@ -618,14 +630,14 @@ void test_eof_big_png_without_passwd(void **state)
     stegx_clear(infos_extract);
     dest_stegx_info(choices_extract);
 
-     FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
     assert_int_equal(f != NULL, 1);
-    
+
     // Test si le contenu du message a bien ete extrait*/
     uint32_t sig;
-    assert_int_equal(fread(&sig, sizeof(uint32_t), 1,f),1);
-    assert_int_equal((sig==SIG_RIFF), 1);
-	fclose(f);
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 }
 
@@ -635,7 +647,7 @@ const struct CMUnitTest eof_tests[] = {
     cmocka_unit_test(test_eof_little_bmp_without_passwd),
     cmocka_unit_test(test_eof_little_png_with_passwd),
     cmocka_unit_test(test_eof_little_png_without_passwd),
-    
+
     cmocka_unit_test(test_eof_big_bmp_with_passwd),
     cmocka_unit_test(test_eof_big_bmp_without_passwd),
     cmocka_unit_test(test_eof_big_png_with_passwd),

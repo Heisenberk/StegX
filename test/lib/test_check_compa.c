@@ -50,7 +50,8 @@ static int test_file_compa__teardown(void **state)
 void test_file_compa_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, BMP_COMPRESSED);
@@ -61,7 +62,8 @@ void test_file_compa_v1(void **state)
 void test_file_compa_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test4.bmp", "r"), assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, BMP_UNCOMPRESSED);
@@ -72,7 +74,8 @@ void test_file_compa_v2(void **state)
 void test_file_compa_v3(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test8.png", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/png/test8.png", "r"), assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
     assert_int_equal(infos->host.type, PNG);
@@ -108,7 +111,7 @@ void test_file_compa_v5(void **state)
 void test_file_compa_v6(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+    infos->host.host = fopen("../../../env/test/flv/test13.flv", "r"),
         assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
@@ -121,7 +124,7 @@ void test_file_compa_v6(void **state)
 void test_file_compa_v7(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+    infos->host.host = fopen("../../../env/test/avi/test14.avi", "r"),
         assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
@@ -134,7 +137,7 @@ void test_file_compa_v7(void **state)
 void test_file_compa_v8(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test16.txt", "r"),
+    infos->host.host = fopen("../../../env/test/others/test16.txt", "r"),
         assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);

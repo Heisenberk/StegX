@@ -19,16 +19,16 @@
 void test_insert_init_without_passwd()
 {
     stegx_choices_s *choices = malloc(sizeof(stegx_choices_s));
-    choices->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices->host_path, "../../../env/test/test1.bmp");
+    choices->host_path = malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices->host_path, "../../../env/test/bmp/test1.bmp");
     choices->res_path = malloc((strlen("stdout") + 1) * sizeof(char));
     strcpy(choices->res_path, "stdout");
     choices->passwd = NULL;
     choices->mode = STEGX_MODE_INSERT;
     choices->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices->insert_info->algo = STEGX_ALGO_EOF;
 
     info_s *infos = stegx_init(choices);
@@ -76,8 +76,8 @@ void test_insert_init_without_passwd()
 void test_insert_init_with_passwd()
 {
     stegx_choices_s *choices = malloc(sizeof(stegx_choices_s));
-    choices->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices->host_path, "../../../env/test/test1.bmp");
+    choices->host_path = malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices->host_path, "../../../env/test/bmp/test1.bmp");
     choices->res_path = malloc((strlen("stdout") + 1) * sizeof(char));
     strcpy(choices->res_path, "stdout");
     choices->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -142,8 +142,8 @@ void test_insert_init_invalid()
     choices->mode = STEGX_MODE_INSERT;
     choices->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices->insert_info->algo = STEGX_ALGO_EOF;
 
     info_s *infos = stegx_init(choices);
@@ -166,8 +166,8 @@ void test_insert_init_invalid()
 void test_extract_init_without_passwd()
 {
     stegx_choices_s *choices = malloc(sizeof(stegx_choices_s));
-    choices->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices->host_path, "../../../env/test/test1.bmp");
+    choices->host_path = malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices->host_path, "../../../env/test/bmp/test1.bmp");
     choices->res_path = malloc((strlen("./") + 1) * sizeof(char));
     strcpy(choices->res_path, "./");
     choices->passwd = NULL;
