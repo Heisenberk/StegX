@@ -107,7 +107,7 @@ void test_metadata_png_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 
 }
@@ -118,8 +118,8 @@ void test_metadata_png_without_passwd(void **state)
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path = malloc((strlen("../../../env/test/test9.png") + 1) * sizeof(char));
     strcpy(choices_insert->host_path, "../../../env/test/test9.png");
-    choices_insert->res_path = malloc((strlen("./res1_test_meta.png") + 1) * sizeof(char));
-    strcpy(choices_insert->res_path, "./res1_test_meta.png");
+    choices_insert->res_path = malloc((strlen("./res2_test_meta.png") + 1) * sizeof(char));
+    strcpy(choices_insert->res_path, "./res2_test_meta.png");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
     strcpy(choices_insert->passwd, "stegx");
     choices_insert->mode = STEGX_MODE_INSERT;
@@ -147,8 +147,8 @@ void test_metadata_png_without_passwd(void **state)
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
-    choices_extract->host_path = malloc((strlen("./res1_test_meta.png") + 1) * sizeof(char));
-    strcpy(choices_extract->host_path, "./res1_test_meta.png");
+    choices_extract->host_path = malloc((strlen("./res2_test_meta.png") + 1) * sizeof(char));
+    strcpy(choices_extract->host_path, "./res2_test_meta.png");
     choices_extract->res_path = malloc((strlen("./") + 1) * sizeof(char));
     strcpy(choices_extract->res_path, "./");
     choices_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -184,7 +184,7 @@ void test_metadata_png_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 }
 

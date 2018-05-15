@@ -133,7 +133,7 @@ int extract_metadata_bmp(info_s * infos)
     assert(infos->algo == STEGX_ALGO_METADATA);
     assert((infos->host.type == BMP_UNCOMPRESSED)||
 		(infos->host.type == BMP_COMPRESSED));
-    uint32_t chunk_size, chunk_id, sig, nb_cpy;
+    uint32_t nb_cpy;
     uint8_t byte_read_bmp;
 
     // Jump a au debut des donnees cachees

@@ -93,7 +93,7 @@ void test_insert_lsb_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 
 }
@@ -169,7 +169,7 @@ void test_insert_lsb_bmp_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 }
 
