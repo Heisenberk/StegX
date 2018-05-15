@@ -541,7 +541,6 @@ void test_eof_big_png_with_passwd(void **state)
 
     test = stegx_detect_algo(infos_extract);
     assert_int_equal(test, 0);
-    uint32_t length_malloc = infos_extract->hidden_length;
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
@@ -613,7 +612,6 @@ void test_eof_big_png_without_passwd(void **state)
 
     test = stegx_detect_algo(infos_extract);
     assert_int_equal(test, 0);
-    uint32_t length_malloc = infos_extract->hidden_length;
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
