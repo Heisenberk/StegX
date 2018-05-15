@@ -51,10 +51,11 @@ static int read_signature(info_s * infos)
     }
 
     /* Lecture de l'algorithme utilisé et de la méthode de protection utilisée. */
-    if (fread(&(infos->algo), sizeof(uint8_t), 1, infos->host.host) != 1)
-        return perror("Sig: Can't read algo"), 1;
     if (fread(&(infos->method), sizeof(uint8_t), 1, infos->host.host) != 1)
         return perror("Sig: Can't read method"), 1;
+    if (fread(&(infos->algo), sizeof(uint8_t), 1, infos->host.host) != 1)
+        return perror("Sig: Can't read algo"), 1;
+
 
     /* Si l'émetteur a fournis un mot de passe et que le récepteur n'en a pas
      * fourni, on lève une erreur. */
