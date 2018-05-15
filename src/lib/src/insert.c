@@ -1,3 +1,10 @@
+/**
+ * @file insert.c
+ * @brief Insertion des donnees cachees dans une copie de l'hote.
+ * @details Module qui contient les fonctions qui permettent de faire 
+ * l'insertion.
+ */
+
 #include <endian.h>
 #include <time.h>
 #include <stdio.h>

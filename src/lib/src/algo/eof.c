@@ -8,6 +8,7 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "../insert.h"
+#include "../protection.h"
 
 int insert_eof(info_s * infos)
 {
@@ -58,19 +59,49 @@ int insert_eof(info_s * infos)
         stegx_errno = ERR_INSERT;
         return 1;
     }
+    
     // Ecriture des donnees du fichier a cacher
-    int i = 0;
-    // Ecriture des données à cacher en XOR avec le mot de passe
     if (fseek(infos->hidden, 0, SEEK_SET) == -1)
         return perror("Can't make insertion EOF"), 1;
-    while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
-        if (infos->passwd[i] == '\0')
-            i = 0;
-        //byte_cpy ^= (infos->passwd[i]); //XOR
-        if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
-            return perror("Can't write hidden data"), 1;
-        i++;
-    }
+    
+    /* Si le fichier a cacher est trop gros, on fait XOR avec la 
+     * suite pseudo aleatoire générée avec le mot de passe
+     * */
+    if(infos->hidden_length>LENGTH_HIDDEN_FILE_MAX){
+		srand(create_seed(infos->passwd));
+		int i = 0;  uint8_t random;
+		while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
+			random=rand()%UINT8_MAX;
+			byte_cpy=byte_cpy^random; //XOR avec le nombre pseudo aleatoire generé
+			if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
+				return perror("Can't write hidden data"), 1;
+			i++;
+		}
+	}
+	
+	/* Sinon on utilise la méthode de protection des données du mélange
+	 * des octets. 
+	 * */
+	else{
+		uint8_t* data=malloc(infos->hidden_length*sizeof(uint8_t));
+		if(!data)
+			return perror("Can't allocate memory Insertion"), 1;
+		uint32_t cursor=0;
+		// Lecture des donnees a cacher et stockage ds data
+		while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
+			data[cursor]=byte_cpy;
+			cursor++;
+		}
+		// Melange des octets dans data
+		protect_data(data,infos->hidden_length,infos->passwd,infos->mode);
+		// Ecriture des donnees dans le fichier a cacher
+		for(cursor=0;cursor<infos->hidden_length;cursor++){
+			if (fwrite(&data[cursor], sizeof(uint8_t), 1, infos->res) == 0)
+				return perror("Can't write hidden data"), 1;
+		}
+		free(data);
+	}
+	
     return 0;
 }
 
@@ -119,15 +150,47 @@ int extract_eof(info_s * infos)
     if (fseek(infos->host.host, fseek_signature, SEEK_CUR) == -1)
         return perror("Can't make extraction EOF"), 1;
 
-    uint8_t byte_read;
-    uint32_t nb_cpy = 0;        //nb doctets recopies
-    while (nb_cpy < infos->hidden_length) {
-        if (fread(&byte_read, sizeof(uint8_t), 1, infos->host.host) == 0)
-            return perror("Can't read hidden data"), 1;
-        if (fwrite(&byte_read, sizeof(uint8_t), 1, infos->res) == 0)
-            return perror("Can't write hidden data"), 1;
-        nb_cpy++;
-    }
-
+	/* Si le fichier a cacher est trop gros, on fait XOR avec la 
+     * suite pseudo aleatoire générée avec le mot de passe
+     * */
+    uint8_t byte_read, byte_cpy;
+    if(infos->hidden_length>LENGTH_HIDDEN_FILE_MAX){
+		srand(create_seed(infos->passwd));
+		int i = 0; uint8_t random;
+		while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 0) {
+			random=rand()%UINT8_MAX;
+			byte_cpy=byte_cpy^random; //XOR avec le nombre pseudo aleatoire generé
+			if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
+				return perror("Can't write hidden data"), 1;
+			i++;
+		}
+	}
+	/* Sinon on utilise la méthode de protection des données du mélange
+	 * des octets. 
+	 * */
+	else{
+		uint8_t* data=malloc(infos->hidden_length*sizeof(uint8_t));
+		if(!data)
+			return perror("Can't allocate memory Extraction"), 1;
+		
+		// Lecture des donnees a extraire et stockage ds data
+		uint32_t cursor=0;
+		while (cursor<infos->hidden_length) {
+			if(fread(&byte_read, sizeof(uint8_t), 1, infos->host.host) == 0)
+				return perror("Can't read hidden data"), 1;
+			data[cursor]=byte_read;
+			cursor++;
+		}
+		// Remise dans l'ordre des octets dans data
+		protect_data(data,infos->hidden_length,infos->passwd,infos->mode);
+		
+		// Ecriture des donnees dans le fichier a cacher
+		for(cursor=0;cursor<infos->hidden_length;cursor++){
+			if (fwrite(&data[cursor], sizeof(uint8_t), 1, infos->res) == 0)
+				return perror("Can't write hidden data"), 1;
+		}
+		free(data);
+	}
+    
     return 0;
 }

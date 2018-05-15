@@ -29,10 +29,10 @@ void insert_with_passwd(void **state)
     infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
         assert_non_null(infos_insert->host.host);
     infos_insert->host.type = BMP_COMPRESSED;
-    infos_insert->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char)),
+    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char)),
         assert_non_null(infos_insert->hidden_name);
-    strcpy(infos_insert->hidden_name, "test2.bmp");
-    infos_insert->hidden = fopen("../../../env/test/test2.bmp", "r"),
+    strcpy(infos_insert->hidden_name, "short.txt");
+    infos_insert->hidden = fopen("../../../env/test/short.txt", "r"),
         assert_non_null(infos_insert->hidden);
     infos_insert->res = fopen("res3_test_insert.bmp", "w"), assert_non_null(infos_insert->res);
     infos_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char)),
@@ -83,7 +83,7 @@ void detect_with_passwd(void **state)
     assert_int_equal(infos_extract->algo, STEGX_ALGO_EOF);
     assert_int_equal(infos_extract->method, STEGX_WITH_PASSWD);
     assert_int_equal(infos_extract->hidden_length, hidden_length);
-    assert_int_equal(strcmp(infos_extract->hidden_name, "test2.bmp"), 0);
+    assert_int_equal(strcmp(infos_extract->hidden_name, "short.txt"), 0);
 
     /* Libération de la mémoire pour l'extraction. */
     fclose(infos_extract->host.host);
@@ -109,10 +109,10 @@ void insert_without_passwd(void **state)
     infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
         assert_non_null(infos_insert->host.host);
     infos_insert->host.type = BMP_COMPRESSED;
-    infos_insert->hidden_name = malloc((strlen("test2.bmp") + 1) * sizeof(char)),
+    infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char)),
         assert_non_null(infos_insert->hidden_name);
-    strcpy(infos_insert->hidden_name, "test2.bmp");
-    infos_insert->hidden = fopen("../../../env/test/test2.bmp", "r"),
+    strcpy(infos_insert->hidden_name, "short.txt");
+    infos_insert->hidden = fopen("../../../env/test/short.txt", "r"),
         assert_non_null(infos_insert->hidden);
     infos_insert->res = fopen("res4_test_insert.bmp", "w"), assert_non_null(infos_insert->res);
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)),
@@ -156,7 +156,7 @@ void detect_without_passwd(void **state)
     assert_int_equal(infos_extract->algo, STEGX_ALGO_EOF);
     assert_int_equal(infos_extract->method, STEGX_WITHOUT_PASSWD);
     assert_int_equal(infos_extract->hidden_length, hidden_length);
-    assert_int_equal(strcmp(infos_extract->hidden_name, "test2.bmp"), 0);
+    assert_int_equal(strcmp(infos_extract->hidden_name, "short.txt"), 0);
 
     /* Libération de la mémoire pour l'extraction. */
     fclose(infos_extract->host.host);
