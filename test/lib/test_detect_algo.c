@@ -26,13 +26,13 @@ void insert_with_passwd(void **state)
     info_s *infos_insert = calloc(1, sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
     infos_insert->method = STEGX_WITH_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
+    infos_insert->host.host = fopen("../../../env/test/bmp/test1.bmp", "r"),
         assert_non_null(infos_insert->host.host);
     infos_insert->host.type = BMP_COMPRESSED;
     infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char)),
         assert_non_null(infos_insert->hidden_name);
     strcpy(infos_insert->hidden_name, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r"),
+    infos_insert->hidden = fopen("../../../env/test/others/short.txt", "r"),
         assert_non_null(infos_insert->hidden);
     infos_insert->res = fopen("res3_test_insert.bmp", "w"), assert_non_null(infos_insert->res);
     infos_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char)),
@@ -106,13 +106,13 @@ void insert_without_passwd(void **state)
     info_s *infos_insert = calloc(1, sizeof(info_s));
     infos_insert->mode = STEGX_MODE_INSERT;
     infos_insert->method = STEGX_WITHOUT_PASSWD;
-    infos_insert->host.host = fopen("../../../env/test/test1.bmp", "r"),
+    infos_insert->host.host = fopen("../../../env/test/bmp/test1.bmp", "r"),
         assert_non_null(infos_insert->host.host);
     infos_insert->host.type = BMP_COMPRESSED;
     infos_insert->hidden_name = malloc((strlen("short.txt") + 1) * sizeof(char)),
         assert_non_null(infos_insert->hidden_name);
     strcpy(infos_insert->hidden_name, "short.txt");
-    infos_insert->hidden = fopen("../../../env/test/short.txt", "r"),
+    infos_insert->hidden = fopen("../../../env/test/others/short.txt", "r"),
         assert_non_null(infos_insert->hidden);
     infos_insert->res = fopen("res4_test_insert.bmp", "w"), assert_non_null(infos_insert->res);
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)),

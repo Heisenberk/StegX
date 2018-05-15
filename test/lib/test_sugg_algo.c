@@ -23,7 +23,8 @@ static int test_file_info__setup(void **state)
     infos->hidden_name =
         malloc((strlen("test16.txt") + 1) * sizeof(char)), assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->hidden =
+        fopen("../../../env/test/others/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->passwd = malloc((strlen("stegx") + 1) * sizeof(char)), assert_non_null(infos->passwd);
     strcpy(infos->passwd, "stegx");
     stegx_propos_algos =
@@ -53,7 +54,8 @@ static int test_file_info__teardown(void **state)
 void test_file_info_bmp_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
 
     /* Valeurs à trouver : */
@@ -73,7 +75,7 @@ void test_file_info_bmp_v1(void **state)
 void test_file_info_bmp_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r");
+    infos->host.host = fopen("../../../env/test/bmp/test4.bmp", "r");
     infos->host.type = BMP_UNCOMPRESSED;
 
     /* Valeurs à trouver : */
@@ -93,7 +95,7 @@ void test_file_info_bmp_v2(void **state)
 void test_file_info_bmp_v3(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test6.bmp", "r");
+    infos->host.host = fopen("../../../env/test/bmp/test6.bmp", "r");
     infos->host.type = BMP_COMPRESSED;
 
     /* Valeurs à trouver : */
@@ -118,7 +120,7 @@ void test_file_info_bmp_v3(void **state)
 void test_file_info_png_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test8.png", "r");
+    infos->host.host = fopen("../../../env/test/png/test8.png", "r");
     infos->host.type = PNG;
 
     /* Valeurs à trouver: */
@@ -134,7 +136,8 @@ void test_file_info_png_v1(void **state)
 void test_file_info_png_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test9.png", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/png/test9.png", "r"), assert_non_null(infos->host.host);
     infos->host.type = PNG;
 
     /* Valeurs à trouver: */
@@ -156,7 +159,7 @@ void test_file_info_png_v2(void **state)
 void test_file_info_flv_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+    infos->host.host = fopen("../../../env/test/flv/test13.flv", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = FLV;
 
@@ -176,7 +179,7 @@ void test_file_info_flv_v1(void **state)
 void test_file_info_flv_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test17.flv", "r"),
+    infos->host.host = fopen("../../../env/test/flv/test17.flv", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = FLV;
 
@@ -301,9 +304,10 @@ static int test_propos_algos__teardown(void **state)
 void test_hidden_length(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r"), assert_non_null(infos->hidden);
+    infos->hidden = fopen("../../../env/test/bmp/test2.bmp", "r"), assert_non_null(infos->hidden);
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     assert_int_equal(infos->hidden_length, 14057098);
@@ -323,8 +327,10 @@ void test_hidden_length(void **state)
 void test_propos_algos_v1(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
+    infos->host.host =
+        fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
+    infos->hidden =
+        fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
         assert_non_null(infos->hidden);
     infos->host.type = BMP_COMPRESSED;
 
@@ -349,8 +355,10 @@ void test_propos_algos_v1(void **state)
 void test_propos_algos_v2(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test4.bmp", "r"), assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test4.bmp", "r"), assert_non_null(infos->host.host);
+    infos->hidden =
+        fopen("../../../env/test/others/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = BMP_UNCOMPRESSED;
 
     /* Valeurs à trouver */
@@ -374,9 +382,10 @@ void test_propos_algos_v2(void **state)
 void test_propos_algos_v3(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test13.flv", "r"),
+    infos->host.host = fopen("../../../env/test/flv/test13.flv", "r"),
         assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->hidden =
+        fopen("../../../env/test/others/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = FLV;
 
     /* Valeurs à trouver */
@@ -400,9 +409,10 @@ void test_propos_algos_v3(void **state)
 void test_propos_algos_v4(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+    infos->host.host = fopen("../../../env/test/avi/test14.avi", "r"),
         assert_non_null(infos->host.host);
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->hidden);
+    infos->hidden =
+        fopen("../../../env/test/others/test16.txt", "r"), assert_non_null(infos->hidden);
     infos->host.type = AVI_UNCOMPRESSED;
 
     /* Valeurs à trouver */
@@ -430,14 +440,15 @@ void test_passwd_default_length(void **state)
     info_s *infos = malloc(sizeof(info_s));
     infos->mode = STEGX_MODE_INSERT;
     infos->method = STEGX_WITHOUT_PASSWD;
-    infos->host.host = fopen("../../../env/test/test14.avi", "r"),
+    infos->host.host = fopen("../../../env/test/avi/test14.avi", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = AVI_UNCOMPRESSED;
     infos->res = fopen("res.bmp", "w"), assert_non_null(infos->res);
     infos->hidden_name = malloc((strlen("test16.txt") + 1) * sizeof(char)),
         assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test16.txt");
-    infos->hidden = fopen("../../../env/test/test16.txt", "r"), assert_non_null(infos->host.host);
+    infos->hidden =
+        fopen("../../../env/test/others/test16.txt", "r"), assert_non_null(infos->host.host);
     infos->passwd = NULL;
     stegx_propos_algos = malloc(STEGX_NB_ALGO * sizeof(algo_e)),
         assert_non_null(stegx_propos_algos);

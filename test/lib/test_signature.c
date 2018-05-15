@@ -19,12 +19,14 @@ static int test_write_signature_setup(void **state)
     assert_non_null(infos);
     infos->mode = STEGX_MODE_INSERT;
     infos->algo = STEGX_ALGO_EOF;
-    infos->host.host = fopen("../../../env/test/test1.bmp", "r"), assert_non_null(infos->host.host);
+    infos->host.host =
+        fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->host.type = BMP_COMPRESSED;
     infos->hidden_name =
         malloc((strlen("test2.bmp") + 1) * sizeof(char)), assert_non_null(infos->hidden_name);
     strcpy(infos->hidden_name, "test2.bmp");
-    infos->hidden = fopen("../../../env/test/test2.bmp", "r"), assert_non_null(infos->hidden_name);
+    infos->hidden =
+        fopen("../../../env/test/bmp/test2.bmp", "r"), assert_non_null(infos->hidden_name);
     stegx_propos_algos =
         malloc(STEGX_NB_ALGO * sizeof(algo_e)), assert_non_null(stegx_propos_algos);
     *state = infos;
@@ -102,10 +104,10 @@ void test_write_signature_without_passwd(void **state)
     uint32_t length_file;
     char hidden_name[LENGTH_HIDDEN_NAME_MAX + 1] = { 0 };
     FILE *f = fopen("res2_test_insert.bmp", "r");
-    
+
     // lecture de la méthode de protection de donnée
     fread(&method, sizeof(uint8_t), 1, f);
-    
+
     // lecture de l'algorithme
     fread(&algo_read, sizeof(uint8_t), 1, f);
 

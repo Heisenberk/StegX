@@ -11,7 +11,6 @@
 #include "stegx.h"
 #include "common.h"
 
-
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -21,7 +20,6 @@ void dest_stegx_info(stegx_choices_s * com)
 
 }
 
-
 /**
  * Teste la vérification du format BMP.
  * */
@@ -30,7 +28,7 @@ void dest_stegx_info(stegx_choices_s * com)
 void test_file_bmp_v1(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test1.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test1.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
     fclose(f);
@@ -40,7 +38,7 @@ void test_file_bmp_v1(void **state)
 void test_file_bmp_v2(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test2.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test2.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
     fclose(f);
@@ -50,7 +48,7 @@ void test_file_bmp_v2(void **state)
 void test_file_bmp_v3(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test3.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test3.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
     fclose(f);
@@ -60,7 +58,7 @@ void test_file_bmp_v3(void **state)
 void test_file_bmp_v4(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test4.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test4.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_UNCOMPRESSED);
     fclose(f);
@@ -70,7 +68,7 @@ void test_file_bmp_v4(void **state)
 void test_file_bmp_v5(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test5.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test5.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
     fclose(f);
@@ -80,7 +78,7 @@ void test_file_bmp_v5(void **state)
 void test_file_bmp_v6(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/test6.bmp", "r");
+    FILE *f = fopen("../../../env/test/bmp/test6.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
     fclose(f);
@@ -91,8 +89,9 @@ void test_metadata_bmp_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test1.bmp");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test1.bmp");
     choices_insert->res_path = malloc((strlen("./res1_test_meta.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res1_test_meta.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -100,8 +99,8 @@ void test_metadata_bmp_with_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
@@ -158,7 +157,7 @@ void test_metadata_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-	fclose(f);
+    fclose(f);
     remove("./short.txt");
 
 }
@@ -168,8 +167,9 @@ void test_metadata_bmp_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
-    choices_insert->host_path = malloc((strlen("../../../env/test/test1.bmp") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/test1.bmp");
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test1.bmp");
     choices_insert->res_path = malloc((strlen("./res2_test_meta.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_meta.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -177,8 +177,8 @@ void test_metadata_bmp_without_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/short.txt") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/short.txt");
+        malloc((strlen("../../../env/test/others/short.txt") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/others/short.txt");
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
@@ -251,8 +251,8 @@ int main(void)
         cmocka_unit_test(test_file_bmp_v4),
         cmocka_unit_test(test_file_bmp_v5),
         cmocka_unit_test(test_file_bmp_v6),
-		cmocka_unit_test(test_metadata_bmp_with_passwd),
-		cmocka_unit_test(test_metadata_bmp_without_passwd)
+        cmocka_unit_test(test_metadata_bmp_with_passwd),
+        cmocka_unit_test(test_metadata_bmp_without_passwd)
     };
 
     /* Exécute les tests. */

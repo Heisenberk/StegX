@@ -56,7 +56,6 @@ static int read_signature(info_s * infos)
     if (fread(&(infos->algo), sizeof(uint8_t), 1, infos->host.host) != 1)
         return perror("Sig: Can't read algo"), 1;
 
-
     /* Si l'émetteur a fournis un mot de passe et que le récepteur n'en a pas
      * fourni, on lève une erreur. */
     if ((infos->method == STEGX_WITH_PASSWD) && (infos->passwd == NULL))
