@@ -20,7 +20,8 @@ void dest_stegx_info(stegx_choices_s * com)
 
 }
 
-void test_insert_eof_bmp_with_passwd(void **state)
+// Test final de l'insertion/extraction EOF sur un fichier BMP avec mot de passe
+void test_eof_bmp_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -93,12 +94,13 @@ void test_insert_eof_bmp_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 
 }
 
-void test_insert_eof_bmp_without_passwd(void **state)
+// Test final de l'insertion/extraction EOF sur un fichier BMP sans mot de passe
+void test_eof_bmp_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -170,11 +172,12 @@ void test_insert_eof_bmp_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 }
 
-void test_insert_eof_png_with_passwd(void **state)
+// Test final de l'insertion/extraction EOF sur un fichier PNG avec mot de passe
+void test_eof_png_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -247,12 +250,13 @@ void test_insert_eof_png_with_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 
 }
 
-void test_insert_eof_png_without_passwd(void **state)
+// Test final de l'insertion/extraction EOF sur un fichier PNG sans mot de passe
+void test_eof_png_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -323,20 +327,20 @@ void test_insert_eof_png_without_passwd(void **state)
     test = (strcmp(message, "voici un test tres court.") == 0);
     assert_int_equal(test, 1);
     free(message);
-
+	fclose(f);
     remove("./short.txt");
 }
 
 /* Structure CMocka contenant la liste des tests. */
-const struct CMUnitTest insert_eof_tests[] = {
-    cmocka_unit_test(test_insert_eof_bmp_with_passwd),
-    cmocka_unit_test(test_insert_eof_bmp_without_passwd),
-    cmocka_unit_test(test_insert_eof_png_with_passwd),
-    cmocka_unit_test(test_insert_eof_png_without_passwd)
+const struct CMUnitTest eof_tests[] = {
+    cmocka_unit_test(test_eof_bmp_with_passwd),
+    cmocka_unit_test(test_eof_bmp_without_passwd),
+    cmocka_unit_test(test_eof_png_with_passwd),
+    cmocka_unit_test(test_eof_png_without_passwd)
 };
 
 int main(void)
 {
     /* Exécute les tests. */
-    return cmocka_run_group_tests(insert_eof_tests, NULL, NULL);
+    return cmocka_run_group_tests(eof_tests, NULL, NULL);
 }
