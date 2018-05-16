@@ -68,14 +68,14 @@ int insert_eof(info_s * infos)
      * */
     if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
         srand(create_seed(infos->passwd));
-        int i = 0;
+        //int i = 0; // A ENLVER???
         uint8_t random;
         while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
             random = rand() % UINT8_MAX;
             byte_cpy = byte_cpy ^ random;       //XOR avec le nombre pseudo aleatoire generé
             if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
                 return perror("Can't write hidden data"), 1;
-            i++;
+            //i++;
         }
     }
 
@@ -156,14 +156,12 @@ int extract_eof(info_s * infos)
     uint8_t byte_read, byte_cpy;
     if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
         srand(create_seed(infos->passwd));
-        int i = 0;
         uint8_t random;
         while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 0) {
             random = rand() % UINT8_MAX;
             byte_cpy = byte_cpy ^ random;       //XOR avec le nombre pseudo aleatoire generé
             if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
                 return perror("Can't write hidden data"), 1;
-            i++;
         }
     }
     /* Sinon on utilise la méthode de protection des données du mélange

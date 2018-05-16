@@ -7,6 +7,7 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "../insert.h"
+#include "../protection.h"
 
 /** Signature BMP */
 #define SIG_BMP 0x4D42
@@ -98,13 +99,41 @@ int insert_metadata_bmp(info_s * infos)
     }
 
     // Ecriture des donnees du fichier a cacher
-    nb_cpy = 0;
-    while (nb_cpy < infos->hidden_length) {
-        if (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 1)
-            return perror("BMP file: Can't read data host"), 1;
-        if (fwrite(&byte_read_bmp, sizeof(uint8_t), 1, infos->res) == 0)
-            return perror("BMP file: Can't write data host"), 1;
-        nb_cpy++;
+    /* Si le fichier a cacher est trop gros, on fait XOR avec la 
+     * suite pseudo aleatoire générée avec le mot de passe
+     * */
+    if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+        srand(create_seed(infos->passwd));
+        uint8_t random;
+        while (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 0) {
+            random = rand() % UINT8_MAX;
+            byte_read_bmp = byte_read_bmp ^ random;       //XOR avec le nombre pseudo aleatoire generé
+            if (fwrite(&byte_read_bmp, sizeof(uint8_t), 1, infos->res) == 0)
+                return perror("Can't write hidden data"), 1;
+        }
+    }
+
+    /* Sinon on utilise la méthode de protection des données du mélange
+     * des octets. 
+     * */
+    else {
+        uint8_t *data = malloc(infos->hidden_length * sizeof(uint8_t));
+        if (!data)
+            return perror("Can't allocate memory Insertion"), 1;
+        uint32_t cursor = 0;
+        // Lecture des donnees a cacher et stockage ds data
+        while (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 0) {
+            data[cursor] = byte_read_bmp;
+            cursor++;
+        }
+        // Melange des octets dans data
+        protect_data(data, infos->hidden_length, infos->passwd, infos->mode);
+        // Ecriture des donnees dans le fichier a cacher
+        for (cursor = 0; cursor < infos->hidden_length; cursor++) {
+            if (fwrite(&data[cursor], sizeof(uint8_t), 1, infos->res) == 0)
+                return perror("Can't write hidden data"), 1;
+        }
+        free(data);
     }
 
     // Recopie de data du fichier BMP
@@ -131,22 +160,55 @@ int extract_metadata_bmp(info_s * infos)
     assert(infos->mode == STEGX_MODE_EXTRACT);
     assert(infos->algo == STEGX_ALGO_METADATA);
     assert((infos->host.type == BMP_UNCOMPRESSED) || (infos->host.type == BMP_COMPRESSED));
-    uint32_t nb_cpy;
-    uint8_t byte_read_bmp;
 
     // Jump a au debut des donnees cachees
     if (fseek
         (infos->host.host, (infos->host.file_info.bmp.header_size) - (infos->hidden_length),
          SEEK_SET))
         return perror("BMP file: Can not move in the file"), 1;
+        
     // Extraction des donnees cachees
-    nb_cpy = 0;
-    while (nb_cpy < (infos->hidden_length)) {
-        if (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->host.host) == 0)
-            return perror("BMP file: Can't read data host"), 1;
-        if (fwrite(&byte_read_bmp, sizeof(uint8_t), 1, infos->res) == 0)
-            return perror("BMP file: Can't write data host"), 1;
-        nb_cpy++;
+    /* Si le fichier a cacher est trop gros, on fait XOR avec la 
+     * suite pseudo aleatoire générée avec le mot de passe
+     * */
+    uint8_t byte_read, byte_cpy;
+    if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+        srand(create_seed(infos->passwd));
+        int i = 0;
+        uint8_t random;
+        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 0) {
+            random = rand() % UINT8_MAX;
+            byte_cpy = byte_cpy ^ random;       //XOR avec le nombre pseudo aleatoire generé
+            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
+                return perror("Can't write hidden data"), 1;
+            i++;
+        }
+    }
+    /* Sinon on utilise la méthode de protection des données du mélange
+     * des octets. 
+     * */
+    else {
+        uint8_t *data = malloc(infos->hidden_length * sizeof(uint8_t));
+        if (!data)
+            return perror("Can't allocate memory Extraction"), 1;
+
+        // Lecture des donnees a extraire et stockage ds data
+        uint32_t cursor = 0;
+        while (cursor < infos->hidden_length) {
+            if (fread(&byte_read, sizeof(uint8_t), 1, infos->host.host) == 0)
+                return perror("Can't read hidden data"), 1;
+            data[cursor] = byte_read;
+            cursor++;
+        }
+        // Remise dans l'ordre des octets dans data
+        protect_data(data, infos->hidden_length, infos->passwd, infos->mode);
+
+        // Ecriture des donnees dans le fichier a cacher
+        for (cursor = 0; cursor < infos->hidden_length; cursor++) {
+            if (fwrite(&data[cursor], sizeof(uint8_t), 1, infos->res) == 0)
+                return perror("Can't write hidden data"), 1;
+        }
+        free(data);
     }
 
     return 0;

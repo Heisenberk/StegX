@@ -11,6 +11,8 @@
 #include "stegx.h"
 #include "common.h"
 
+#define SIG_RIFF 0x46464952
+
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -84,8 +86,10 @@ void test_file_bmp_v6(void **state)
     fclose(f);
 }
 
-// Test final de l'insertion/extraction METADATA sur un fichier BMP avec mot de passe
-void test_metadata_bmp_with_passwd(void **state)
+/* Test final de l'insertion/extraction METADATA sur un fichier BMP avec 
+ * mot de passe et un petit fichier a cacher (< a la limite etablie)
+ **/
+void test_metadata_little_bmp_with_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -118,6 +122,7 @@ void test_metadata_bmp_with_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -141,6 +146,7 @@ void test_metadata_bmp_with_passwd(void **state)
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_extract);
     stegx_clear(infos_extract);
 
     uint8_t c;
@@ -162,8 +168,10 @@ void test_metadata_bmp_with_passwd(void **state)
 
 }
 
-// Test final de l'insertion/extraction METADATA sur un fichier BMP sans mot de passe
-void test_metadata_bmp_without_passwd(void **state)
+/* Test final de l'insertion/extraction EOF sur un fichier BMP sans 
+ * mot de passe et un petit fichier a cacher (< a la limite etablie)
+ **/
+void test_metadata_little_bmp_without_passwd(void **state)
 {
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
@@ -172,8 +180,7 @@ void test_metadata_bmp_without_passwd(void **state)
     strcpy(choices_insert->host_path, "../../../env/test/bmp/test1.bmp");
     choices_insert->res_path = malloc((strlen("./res2_test_meta.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_meta.bmp");
-    choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(choices_insert->passwd, "stegx");
+    choices_insert->passwd = NULL;
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
@@ -196,6 +203,7 @@ void test_metadata_bmp_without_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -203,8 +211,7 @@ void test_metadata_bmp_without_passwd(void **state)
     strcpy(choices_extract->host_path, "./res2_test_meta.bmp");
     choices_extract->res_path = malloc((strlen("./") + 1) * sizeof(char));
     strcpy(choices_extract->res_path, "./");
-    choices_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
-    strcpy(choices_extract->passwd, "stegx");
+    choices_extract->passwd = NULL;
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
@@ -241,6 +248,152 @@ void test_metadata_bmp_without_passwd(void **state)
     remove("./short.txt");
 }
 
+/* Test final de l'insertion/extraction METADATA sur un fichier BMP avec 
+ * mot de passe et un gros fichier a cacher (> a la limite etablie)
+ **/
+void test_metadata_big_bmp_with_passwd(void **state)
+{
+    (void)state;
+    stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test1.bmp");
+    choices_insert->res_path = malloc((strlen("./res3_test_meta.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->res_path, "./res3_test_meta.bmp");
+    choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
+    strcpy(choices_insert->passwd, "stegx");
+    choices_insert->mode = STEGX_MODE_INSERT;
+    choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
+    choices_insert->insert_info->hidden_path =
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+    choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
+    int test;
+
+    info_s *infos_insert = stegx_init(choices_insert);
+
+    test = stegx_check_compatibility(infos_insert);
+    assert_int_equal(test, 0);
+
+    test = stegx_suggest_algo(infos_insert);
+    assert_int_equal(test, 0);
+
+    test = stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+    assert_int_equal(test, 0);
+
+    test = stegx_insert(infos_insert);
+    assert_int_equal(test, 0);
+
+	dest_stegx_info(choices_insert);
+    stegx_clear(infos_insert);
+
+    stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
+    choices_extract->host_path = malloc((strlen("./res3_test_meta.bmp") + 1) * sizeof(char));
+    strcpy(choices_extract->host_path, "./res3_test_meta.bmp");
+    choices_extract->res_path = malloc((strlen("./") + 1) * sizeof(char));
+    strcpy(choices_extract->res_path, "./");
+    choices_extract->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
+    strcpy(choices_extract->passwd, "stegx");
+    choices_extract->mode = STEGX_MODE_EXTRACT;
+    choices_extract->insert_info = NULL;
+
+    info_s *infos_extract = stegx_init(choices_extract);
+
+    test = stegx_check_compatibility(infos_extract);
+    assert_int_equal(test, 0);
+
+    test = stegx_detect_algo(infos_extract);
+    assert_int_equal(test, 0);
+    
+    test = stegx_extract(infos_extract, choices_extract->res_path);
+    assert_int_equal(test, 0);
+
+	dest_stegx_info(choices_extract);
+    stegx_clear(infos_extract);
+    
+    FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    assert_int_equal(f != NULL, 1);
+
+    // Test si le contenu du message a bien ete extrait*/
+    uint32_t sig;
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
+    remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+
+}
+
+/* Test final de l'insertion/extraction EOF sur un fichier BMP sans 
+ * mot de passe et un gros fichier a cacher (> a la limite etablie)
+ **/
+void test_metadata_big_bmp_without_passwd(void **state)
+{
+    (void)state;
+    stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
+    choices_insert->host_path =
+        malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->host_path, "../../../env/test/bmp/test1.bmp");
+    choices_insert->res_path = malloc((strlen("./res4_test_meta.bmp") + 1) * sizeof(char));
+    strcpy(choices_insert->res_path, "./res4_test_meta.bmp");
+    choices_insert->passwd = NULL;
+    choices_insert->mode = STEGX_MODE_INSERT;
+    choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
+    choices_insert->insert_info->hidden_path =
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+    choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
+    int test;
+
+    info_s *infos_insert = stegx_init(choices_insert);
+
+    test = stegx_check_compatibility(infos_insert);
+    assert_int_equal(test, 0);
+
+    test = stegx_suggest_algo(infos_insert);
+    assert_int_equal(test, 0);
+
+    test = stegx_choose_algo(infos_insert, choices_insert->insert_info->algo);
+    assert_int_equal(test, 0);
+
+    test = stegx_insert(infos_insert);
+    assert_int_equal(test, 0);
+
+	dest_stegx_info(choices_insert);
+    stegx_clear(infos_insert);
+
+    stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
+    choices_extract->host_path = malloc((strlen("./res4_test_meta.bmp") + 1) * sizeof(char));
+    strcpy(choices_extract->host_path, "./res4_test_meta.bmp");
+    choices_extract->res_path = malloc((strlen("./") + 1) * sizeof(char));
+    strcpy(choices_extract->res_path, "./");
+    choices_extract->passwd = NULL;
+    choices_extract->mode = STEGX_MODE_EXTRACT;
+    choices_extract->insert_info = NULL;
+
+    info_s *infos_extract = stegx_init(choices_extract);
+
+    test = stegx_check_compatibility(infos_extract);
+    assert_int_equal(test, 0);
+
+    test = stegx_detect_algo(infos_extract);
+    assert_int_equal(test, 0);
+    test = stegx_extract(infos_extract, choices_extract->res_path);
+    assert_int_equal(test, 0);
+
+    stegx_clear(infos_extract);
+    dest_stegx_info(choices_extract);
+
+    FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    assert_int_equal(f != NULL, 1);
+
+    // Test si le contenu du message a bien ete extrait*/
+    uint32_t sig;
+    assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
+    assert_int_equal((sig == SIG_RIFF), 1);
+    fclose(f);
+    remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+}
+
 int main(void)
 {
     /* Structure CMocka contenant la liste des tests. */
@@ -251,8 +404,10 @@ int main(void)
         cmocka_unit_test(test_file_bmp_v4),
         cmocka_unit_test(test_file_bmp_v5),
         cmocka_unit_test(test_file_bmp_v6),
-        cmocka_unit_test(test_metadata_bmp_with_passwd),
-        cmocka_unit_test(test_metadata_bmp_without_passwd)
+        cmocka_unit_test(test_metadata_little_bmp_with_passwd),
+        cmocka_unit_test(test_metadata_little_bmp_without_passwd),
+        cmocka_unit_test(test_metadata_big_bmp_with_passwd),
+        cmocka_unit_test(test_metadata_big_bmp_without_passwd),
     };
 
     /* Exécute les tests. */
