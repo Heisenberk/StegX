@@ -58,6 +58,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -81,8 +82,9 @@ void test_eof_little_bmp_with_passwd(void **state)
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_extract);
     stegx_clear(infos_extract);
-    dest_stegx_info(choices_extract);
+    
 
     uint8_t c;
     uint32_t i;
@@ -382,6 +384,7 @@ void test_eof_big_bmp_with_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
+	dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
