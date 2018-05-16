@@ -14,11 +14,7 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
-
-/** Valeur du tableau done pour savoir si un élément n'a pas été vu. */
-#define NOT_DONE 0
-/** Valeur du tableau done pour savoir si un élément a été vu. */
-#define DONE 1
+#include "protection.h"
 
 unsigned int create_seed(char *passwd)
 {

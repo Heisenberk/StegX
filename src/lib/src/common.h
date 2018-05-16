@@ -107,8 +107,4 @@ struct info {
 /** Longueur du mot de passe choisi par défaut. */
 #define LENGTH_DEFAULT_PASSWD  64       /* 64 caractères sans compter le '\0'. */
 
-/** Taille du fichier a cacher à partir duquel on utilise un XOR au lieu du 
- *  melange aleatoire des octets cachés. */
-#define LENGTH_HIDDEN_FILE_MAX 150000
-
 #endif                          /* ifndef COMMON_PRIV_H */

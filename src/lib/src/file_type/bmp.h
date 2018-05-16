@@ -44,4 +44,25 @@ int insert_metadata_bmp(info_s * infos);
 
 int extract_metadata_bmp(info_s * infos);
 
+/** 
+ * @brief Cache les octets de data dans pixels selon l'algorithme de 
+ * protection des données LSB pour BMP. 
+ * @details Pour l'insertion, à partir du mot de passe, est créé un seed. 
+ * Puis les octets contenus dans data seront mélangés dans des pixels 
+ * aléatoires. Pour l'extraction, la seed va permettre de remettre dans 
+ * le bon ordre les octets mélangés.
+ * @param pixels Tableau d'octets representant les pixels.
+ * @param pixels_length Taille du tableau pixels (correspond à la taille du 
+ * bloc data dans BMP). 
+ * @param data Tableau d'octets representant les donnees a cacher.
+ * @param data_length Taille du tableau data (correspond à la taille des
+ * données a cacher).
+ * @param passwd Mot de passe à partir duquel un seed sera créé pour la suite 
+ * pseudo aleatoire nécessaire au mélange des octets de tab. 
+ * @param mode Mode qui peut être \req{STEGX_STEGX_MODE_INSERT} ou 
+ * \req{STEGX_MODE_EXTRACT}. 
+ * @return 0 si le melange des donnees s'est bien passé ; 1 sinon 
+ */
+int protect_data_lsb_bmp(uint8_t* pixels, uint32_t pixels_length, uint8_t* data, uint32_t data_length, char* passwd, mode_e mode);
+
 #endif

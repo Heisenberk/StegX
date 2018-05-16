@@ -394,6 +394,47 @@ void test_metadata_big_bmp_without_passwd(void **state)
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 }
 
+void test_protection_lsb_bmp_insert(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(8*sizeof(uint8_t));
+	pixels[0]=pixels[1]=pixels[2]=pixels[3]=pixels[4]=pixels[5]=pixels[6]=pixels[7]=255;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=100; data[1]=231;
+	assert_int_equal(protect_data_lsb_bmp(pixels,8,data,2,"stegx",STEGX_MODE_INSERT),0);
+
+	// ordre aleatoire : 4,1,7,0,2,3,6,5 (stegx)
+	assert_int_equal(pixels[0],252);
+	assert_int_equal(pixels[1],254);
+	assert_int_equal(pixels[2],255);
+	assert_int_equal(pixels[3],254);
+	assert_int_equal(pixels[4],253);
+	assert_int_equal(pixels[5],255);
+	assert_int_equal(pixels[6],253);
+	assert_int_equal(pixels[7],253);
+	free(data);
+	free(pixels);
+}
+
+void test_protection_lsb_bmp_extract(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(8*sizeof(uint8_t));
+	pixels[0]=252; pixels[1]=254; pixels[2]=255; pixels[3]=254;
+	pixels[4]=253; pixels[5]=255; pixels[6]=253; pixels[7]=253;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=data[1]=0;
+	int i;
+	for(i=0;i<8;i++){
+		printf("%d\n",pixels[i]);
+	}
+	protect_data_lsb_bmp(pixels,8,data,2,"stegx",STEGX_MODE_EXTRACT);
+	assert_int_equal(data[0],100);
+	assert_int_equal(data[1],231);
+	free(pixels);
+	free(data);
+}
+
 int main(void)
 {
     /* Structure CMocka contenant la liste des tests. */
@@ -408,6 +449,8 @@ int main(void)
         cmocka_unit_test(test_metadata_little_bmp_without_passwd),
         cmocka_unit_test(test_metadata_big_bmp_with_passwd),
         cmocka_unit_test(test_metadata_big_bmp_without_passwd),
+       // cmocka_unit_test(test_protection_lsb_bmp_insert),
+        cmocka_unit_test(test_protection_lsb_bmp_extract),
     };
 
     /* Exécute les tests. */
