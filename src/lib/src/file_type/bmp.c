@@ -104,14 +104,12 @@ int insert_metadata_bmp(info_s * infos)
      * */
     if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
         srand(create_seed(infos->passwd));
-        int i = 0;
         uint8_t random;
         while (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 0) {
             random = rand() % UINT8_MAX;
             byte_read_bmp = byte_read_bmp ^ random;       //XOR avec le nombre pseudo aleatoire generé
             if (fwrite(&byte_read_bmp, sizeof(uint8_t), 1, infos->res) == 0)
                 return perror("Can't write hidden data"), 1;
-            i++;
         }
     }
 

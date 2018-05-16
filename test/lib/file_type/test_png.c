@@ -366,7 +366,6 @@ const struct CMUnitTest png_tests[] = {
     cmocka_unit_test(test_metadata_little_png_without_passwd),
     cmocka_unit_test(test_metadata_big_png_with_passwd),
     cmocka_unit_test(test_metadata_big_png_without_passwd),
-    // IL FAUT FERMER LES FICHIERS!!!!!!!
 
 };
 
