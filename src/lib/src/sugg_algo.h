@@ -1,8 +1,9 @@
-/** 
+/**
  * @file sugg_algo.h
- * @brief Module de proposition des algorithmes.
- * @details Contient les fonctions concernant la proposition des algorithmes
- * ainsi que la fonction privée pour lire le fichier hôte.
+ * @brief Proposition des algorithmes.
+ * @details Module qui contient les fonctions qui permettent de proposer et de
+ * vérifier l'algorithme de stéganographie à utiliser, ainsi que la fonction de
+ * lecture/d'analyse du fichier hôte.
  */
 
 #ifndef SUGG_ALGOS_H

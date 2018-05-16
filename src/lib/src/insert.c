@@ -1,8 +1,8 @@
 /**
  * @file insert.c
- * @brief Insertion des donnees cachees dans une copie de l'hote.
- * @details Module qui contient les fonctions qui permettent de faire 
- * l'insertion.
+ * @brief Insertion des données cachées dans une copie de l'hôte.
+ * @details Module qui contient la fonction d'insertion et la fonction
+ * d'écriture de la signature.
  */
 
 #include <endian.h>
@@ -69,24 +69,16 @@ int write_signature(info_s * infos)
 
 int stegx_insert(info_s * infos)
 {
-    int insertion;
-    if (infos->mode != STEGX_MODE_INSERT) {
-        stegx_errno = ERR_INSERT;
-        return 1;
-    }
-    if (infos->algo == STEGX_ALGO_EOF) {
-        insertion = insert_eof(infos);
-    } else if (infos->algo == STEGX_ALGO_LSB) {
-        insertion = insert_lsb(infos);
-    } else if (infos->algo == STEGX_ALGO_METADATA) {
-        insertion = insert_metadata(infos);
-    } else if (infos->algo == STEGX_ALGO_EOC) {
-        insertion = insert_eoc(infos);
-    } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
-        insertion = insert_junk_chunk(infos);
-    } else {
-        stegx_errno = ERR_INSERT;
-        insertion = 1;
-    }
-    return insertion;
+    /* Vérification. */
+    if (infos->mode != STEGX_MODE_INSERT)
+        return stegx_errno = ERR_INSERT, 1;
+    /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
+     * l'énumération. */
+    assert(infos->algo >= STEGX_ALGO_LSB && infos->algo < STEGX_NB_ALGO);
+    static int (*insert_algo[STEGX_NB_ALGO]) (info_s *) = {
+        insert_lsb, insert_eof, insert_metadata, insert_eoc, insert_junk_chunk
+    };
+    /* Insertion en appellant la fonction selon le format. */
+    const int res = (*insert_algo[infos->algo]) (infos);
+    return !res ? 0 : (stegx_errno = ERR_INSERT, 1);
 }

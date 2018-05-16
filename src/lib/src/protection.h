@@ -1,6 +1,8 @@
 /**
- * @file protection.c
+ * @file protection.h
  * @brief Algorithme de protection des données avec le mot de passe.
+ * @details Module gérant la création d'une seed à partir d'un mot de passe et
+ * l'algorithme de protection des données cachées.
  */
 
 #ifndef PROTECTION_H

@@ -1,9 +1,14 @@
-#include <endian.h>
-#include <time.h>
+/**
+ * @file extract.c
+ * @brief Extraction des données cachées dans un fichier hôte.
+ * @details Module qui contient la fonction d'extraction de données.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <string.h>
+#include <time.h>
 
 #include "common.h"
 #include "stegx_common.h"
@@ -17,12 +22,12 @@
 
 int stegx_extract(info_s * infos, char *res_path)
 {
-    int extraction;
-    if (infos->mode != STEGX_MODE_EXTRACT) {
-        stegx_errno = ERR_EXTRACT;
-        return 1;
-    }
+    /* Vérification. */
+    if (infos->mode != STEGX_MODE_EXTRACT)
+        return stegx_errno = ERR_EXTRACT, 1;
+
     // ATTENTION si stdout faux --> a rajouter dans stegx_init et ici
+    // A REFAIRE AVEC STRCAT() POUR EVITER CODE SPAGHETTI
 
     // Concatenation du chemin du fichier a créer et le nom du fichier caché
     char *res_name = malloc((strlen(res_path) + strlen(infos->hidden_name) + 1) * sizeof(char));
@@ -43,19 +48,13 @@ int stegx_extract(info_s * infos, char *res_path)
     }
     free(res_name);
 
-    if (infos->algo == STEGX_ALGO_EOF) {
-        extraction = extract_eof(infos);
-    } else if (infos->algo == STEGX_ALGO_LSB) {
-        extraction = extract_lsb(infos);
-    } else if (infos->algo == STEGX_ALGO_METADATA) {
-        extraction = extract_metadata(infos);
-    } else if (infos->algo == STEGX_ALGO_EOC) {
-        extraction = extract_eoc(infos);
-    } else if (infos->algo == STEGX_ALGO_JUNK_CHUNK) {
-        extraction = extract_junk_chunk(infos);
-    } else {
-        stegx_errno = ERR_EXTRACT;
-        extraction = 1;
-    }
-    return extraction;
+    /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
+     * l'énumération. */
+    assert(infos->algo >= STEGX_ALGO_LSB && infos->algo < STEGX_NB_ALGO);
+    static int (*extract_algo[STEGX_NB_ALGO]) (info_s *) = {
+        extract_lsb, extract_eof, extract_metadata, extract_eoc, extract_junk_chunk
+    };
+    /* Extraction en appellant la fonction selon le format. */
+    const int res = (*extract_algo[infos->algo]) (infos);
+    return !res ? 0 : (stegx_errno = ERR_EXTRACT, 1);
 }

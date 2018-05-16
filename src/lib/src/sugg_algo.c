@@ -1,8 +1,9 @@
 /**
  * @file sugg_algo.c
  * @brief Proposition des algorithmes.
- * @details Module qui contient les fonctions qui permettent de proposer et
- * vérifier l'algorithme de stéganographie à utiliser.
+ * @details Module qui contient les fonctions qui permettent de proposer et de
+ * vérifier l'algorithme de stéganographie à utiliser, ainsi que la fonction de
+ * lecture/d'analyse du fichier hôte.
  */
 
 #include <stdio.h>
@@ -331,7 +332,8 @@ int stegx_suggest_algo(info_s * infos)
     /* Les fonctions de ce tableau doivent être déclarés dans l'ordre de
      * l'énumération. */
     int (*can_use_algo[STEGX_NB_ALGO]) (info_s *) = {
-    can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk};
+        can_use_lsb, can_use_eof, can_use_metadata, can_use_eoc, can_use_junk_chunk
+    };
     for (algo_e i = 0; i < STEGX_NB_ALGO; i++)
         stegx_propos_algos[i] = !(*can_use_algo[i]) (infos);
     return 0;

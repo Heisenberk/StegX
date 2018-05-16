@@ -1,3 +1,10 @@
+/**
+ * @file check_compa.c
+ * @brief Module de vérification de la compatibilité.
+ * @details Vérification de la compatibilité des fichiers en entrée, détection
+ * du type du fichier hôte.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -5,6 +12,9 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "common.h"
+
+/** Nombre de fonctions de test d'un type de fichier. */
+#define STEGX_TEST_FILE_NB 6
 
 /**
  * @brief Retourne le type du fichier. 
@@ -15,14 +25,13 @@
 type_e check_file_format(FILE * file)
 {
     assert(file);
+    type_e (*test_file[STEGX_TEST_FILE_NB]) (FILE *) = {
+        stegx_test_file_bmp, stegx_test_file_png, stegx_test_file_wav,
+        stegx_test_file_mp3, stegx_test_file_avi, stegx_test_file_flv
+    };
     type_e res = UNKNOWN;
-    if ((res = stegx_test_file_bmp(file))) {
-    } else if ((res = stegx_test_file_png(file))) {
-    } else if ((res = stegx_test_file_wav(file))) {
-    } else if ((res = stegx_test_file_mp3(file))) {
-    } else if ((res = stegx_test_file_avi(file))) {
-    } else if ((res = stegx_test_file_flv(file))) {
-    }
+    for (int i = 0; i < STEGX_TEST_FILE_NB && res == UNKNOWN; i++)
+        res = (*test_file[i]) (file);
     return res;
 }
 
