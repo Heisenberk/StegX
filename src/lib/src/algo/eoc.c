@@ -147,7 +147,7 @@ int insert_eoc(info_s * infos)
     			fwrite(&prev_tag_size,sizeof(uint32_t),1,infos->res);
     			cpt_video_tag+=1;
 			}
-        }while(cpt_video_tag<infos->host.file_info.flv.nb_video_tag-1);
+        }while(cpt_video_tag<infos->host.file_info.flv.nb_video_tag);
 	}
 	while(fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host)==1)
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
