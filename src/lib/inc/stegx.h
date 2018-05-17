@@ -113,8 +113,9 @@ int stegx_insert(info_s * infos);
  * @brief Va faire l'extraction selon l'algorithme détecté, ainsi que les 
  * fichiers en entrée choisis par l'utilisateur. 
  * @sideeffect Remplit le champ \r{res}.
+ * @error \r{ERR_EXTRACT} si une erreur survient lors de l'extraction.
  * @param infos Structure représentant les informations concernant l'extraction.
- * @return 0 si l'extraction s'et bien passé ; sinon 1 en cas d'erreur et met à jour
+ * @return 0 si l'extraction s'est bien passé, sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
  */
 int stegx_extract(info_s * infos, char *res_path);
