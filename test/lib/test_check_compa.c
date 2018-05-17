@@ -140,7 +140,7 @@ void test_file_compa_v8(void **state)
     infos->host.host = fopen("../../../env/test/others/test16.txt", "r"),
         assert_non_null(infos->host.host);
 
-    assert_int_equal(stegx_check_compatibility(infos), 0);
+    assert_int_equal(stegx_check_compatibility(infos), 1);
     assert_int_equal(infos->host.type, UNKNOWN);
 
     fclose(infos->host.host);

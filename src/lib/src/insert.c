@@ -76,9 +76,7 @@ int stegx_insert(info_s * infos)
      * l'énumération. */
     assert(infos->algo >= STEGX_ALGO_LSB && infos->algo < STEGX_NB_ALGO);
     static int (*insert_algo[STEGX_NB_ALGO]) (info_s *) = {
-        insert_lsb, insert_eof, insert_metadata, insert_eoc, insert_junk_chunk
-    };
+    insert_lsb, insert_eof, insert_metadata, insert_eoc, insert_junk_chunk};
     /* Insertion en appellant la fonction selon le format. */
-    const int res = (*insert_algo[infos->algo]) (infos);
-    return !res ? 0 : (stegx_errno = ERR_INSERT, 1);
+    return (*insert_algo[infos->algo]) (infos) ? (stegx_errno = ERR_INSERT, 1) : 0;
 }

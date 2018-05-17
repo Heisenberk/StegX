@@ -52,8 +52,7 @@ int stegx_extract(info_s * infos, char *res_path)
      * l'énumération. */
     assert(infos->algo >= STEGX_ALGO_LSB && infos->algo < STEGX_NB_ALGO);
     static int (*extract_algo[STEGX_NB_ALGO]) (info_s *) = {
-        extract_lsb, extract_eof, extract_metadata, extract_eoc, extract_junk_chunk
-    };
+    extract_lsb, extract_eof, extract_metadata, extract_eoc, extract_junk_chunk};
     /* Extraction en appellant la fonction selon le format. */
     const int res = (*extract_algo[infos->algo]) (infos);
     return !res ? 0 : (stegx_errno = ERR_EXTRACT, 1);
