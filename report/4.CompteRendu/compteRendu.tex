@@ -95,7 +95,13 @@ dans le fichier à analyser (flèche 12).
 Tous ces modules et sous-modules seront coordonnées grâce aux interfaces 
 graphique et en ligne de commande (a), proposées par StegX. 
 
-\section{Explications techniques}
+
+\section{Description du fonctionnement}
+
+Pour montrer le fonctionnement de l'application, nous allons proposer un 
+exemple pour dissimulation et un autre pour l'extraction, correspondant 
+à une communication entre Alice et Bob, surveillée par Oscar. 
+Les données sont issues d'une réelle utilisation de StegX. 
 
 \subsection{Prérequis}
 
@@ -106,14 +112,102 @@ dissimulation d'un autre fichier.
 De plus, on suppose que, lors de l'extraction, l'utilisateur fournit à 
 l'application un fichier contenant des données cachées par StegX. 
 
-\section{Description du fonctionnement}
+\subsection{Fonctionnement des modules}
 
-Pour montrer le fonctionnement de l'application, nous allons proposer un 
-exemple pour dissimulation et un autre pour l'extraction, correspondant 
-à une communication entre Alice et Bob, surveillée par Oscar. 
-Les données sont issues d'une réelle utilisation de StegX. 
+\subsubsection{Fonctionnement du module Vérification de la compatibilité des 
+fichiers}
 
-\subsection{Fonctionnement de l'insertion des données dans un exemple}
+Ce module est commun à l'insertion et l'extraction. Il correspond à la 
+recherche détaillée de la nature du fichier hôte. 
+Pour cela, il va y avoir une batterie de tests durant lesquels les
+signatures des différents formats proposés par l'application vont être recherché. 
+Si l'une d'elle est reconnu, cela signifie qu'il s'agit du format en question. 
+A la fin de la batterie de tests, si le format n'a pas été reconnu, 
+l'application renvoie une erreur : en effet, elle ne peut pas utiliser ce 
+fichier là pour dissimuler ou extraire des données. 
+
+\subsubsection{Fonctionnement de Proposition des algorithmes de stéganographie}
+
+Dans ce module, l'application va lire en détails les particularités du fichier 
+hôte. En effet, dans le module précédent, nous avons trouvé le format. Il 
+faut maintenant lire le header du fichier pour l'interpréter correctement 
+par la suite. Lorsque les données spécifiques du fichier ont été trouvées, 
+une batterie de tests sur les différents algorithmes proposés par l'application
+permettra de déterminer quels algorithmes sont possibles avec la nature 
+du fichier hôte et la taille du fichier à cacher. 
+Après cette batterie de tests, la récupération du choix de l'utilisateur 
+permettra de déterminer son choix d'algorithme à utiliser lors de l'insertion. 
+
+\subsubsection{Fonctionnement de Détection de l'algorithme de stéganographie}
+
+Ce module correspond à la lecture de la signature StegX. En fonction du 
+format du fichier à analyser, le décalage de la lecture de la signature StegX
+dans le fichier ne sera pas le même. Cette lecture sera déterminante pour 
+découvrir l'algorithme utilisé, le nom du fichier caché et la taille de 
+ce dernier. 
+
+\subsubsection{Fonctionnement de Insertion}
+
+Lorsque le fichier à cacher, l'algorithme de stéganographie à utiliser, 
+la nature du fichier hôte, le mot de passe (s'il y en a un) et l'emplacement 
+du fichier à créer sont connus, il est temps de réaliser la dissimulation. 
+Chaque algorithme diffère plus ou moins pour chaque format. 
+L'étape commune est le fait que si le fichier à cacher est trop grand, 
+l'utilisation du mot de passe permettra de générer (à partir d'une graine), 
+une suite de nombres pseudo-aléatoires afin de faire un XOR avec chaque 
+octet du fichier à cacher. Si la taille le permet, les octets à cacher 
+seront mélangés (grâce au mot de passe) afin de rendre impossible l'extraction 
+par une personne inconnue. 
+
+\subsubsection{Fonctionnement de Extraction}
+
+De la même manière que l'insertion, lorsque le nom du fichier caché, la taille 
+du fichier caché, l'algorithme, le mot de passe (s'il y en a un) et l'emplacement
+du fichier prochainement extrait sont connus, l'extraction peut commencer. 
+Le mot de passe permettra de retrouver la même suite de nombres pseudo-aléatoires 
+pour XOR avec les octets extraits (si le fichier caché est trop gros). 
+Si sa taille le permet, le fichier caché sera créé en remettant dans l'ordre 
+les octets extraits. 
+
+\subsection{Description technique de la signature StegX}
+
+La signature StegX est primordiale dans l'insertion puisqu'elle permet au 
+destinataire de pouvoir interpréter ce que l'émetteur a voulu lui communiquer. 
+Pour cela, cette signature doit avoir plusieurs champs : 
+\begin {enumerate}
+\item Identificateur de la méthode (1 octet) : cette variable correspond au 
+champ \textit{method} de la structure privée \textit{info\_s}. L'octet ne 
+peut prendre que deux valeurs possibles : la méthode avec ou sans mot de 
+passe. Si l'émetteur choisit un mot de passe, StegX récupèrera ce mot de 
+passe pour réaliser l'insertion de façon sécurisée. Le destinataire devra 
+choisir le même mot de passe pour extraire les données correctement. 
+Si par contre, l'émetteur ne choisit pas de mot de passe, StegX va en choisir 
+un au hasard et faire les mêmes manipulations qu'avec un mot de passe. 
+Le mot de passe par défaut devra donc être écrit dans la signature afin que 
+le destinataire puisse extraire. 
+\item Identificateur de l'algorithme (1 octet) : cette variable représente 
+l'algorithme utilisé par l'émetteur pour que le récepteur extrait correctement 
+les données. 
+\item Taille du fichier caché (4 octets) : ce nombre représente en octets 
+la taille du fichier caché dans le fichier hôte. Il a une taille maximale 
+de $2^{32}$ octets, soit 4 GB. Ce nombre est écrit en little endian. 
+\item Taille du nom du fichier caché (1 octet) : cet octet représente le 
+nombre de caractères du nom du fichier caché sans compter le caractère de 
+fin '$\backslash$0'. Si lors de la dissimulation l'émetteur donne un fichier 
+dont le nom est trop long, son nom sera coupé à 255 caractères. 
+\item Nom du fichier caché (entre 1 et 255 octets) : représente le nom du 
+fichier caché. Ce nom va être XOR avec le mot de passe (par défaut ou choisi
+par l'utilisateur) : ainsi, si le récepteur choisit un mot de passe différent, 
+il ne pourra même pas connaître le nom du fichier caché. 
+\item Mot de passe (64 octets) : représente le mot de passe par défaut choisi 
+aléatoirement par l'application. Si la méthode est avec mot de passe, 
+ce champ n'existe pas car c'est le destinataire qui doit le connaître et 
+non l'application qui doit l'extraire. 
+\end{enumerate}
+
+\subsection{Fonctionnement dans un exemple}
+
+\subsubsection{Fonctionnement de l'insertion des données par un exemple}
 
 Alice choisit de dissimuler le message dans une image qu'elle veut envoyer 
 à Bob à l'aide de l'interface graphique. 
@@ -142,10 +236,10 @@ Dans cet exemple, Alice choisit l'algorithme EOF.
 La prochaine étape est celle de l'insertion. Pour la stéganographie EOF, 
 StegX va écrire dans /home/user/Documents/piece\_jointe.bmp le fichier hôte. 
 Ensuite, la signature StegX est écrite dans lequel on a l'identificateur 
-de l'algorithme (1 octet), la taille du fichier caché noté en Big Endian 
-(sur 4 octets), la taille du nom du fichier caché (1 octet) et le nom du 
-fichier caché XOR avec le mot de passe "alicebob" choisi au début (255 octets 
-maximum). 
+de la méthode (1 octet), l'identificateur de l'algorithme (1 octet), la 
+taille du fichier caché noté en Big Endian (sur 4 octets), la taille du 
+nom du fichier caché (1 octet) et le nom du fichier caché XOR avec le mot 
+de passe "alicebob" choisi au début (255 octets maximum). 
 Enfin, les données cachées sont également écrites avec le XOR du mot de passe. 
 
 Alice pourra donc envoyer le fichier piece\_jointe.bmp qui aura une taille 
@@ -155,7 +249,7 @@ Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun
 soupçon en voyant piece\_jointe.bmp qui semble être une image comme une 
 autre. 
 
-\subsection{Fonctionnement de l'extraction des données dans un exemple}
+\subsubsection{Fonctionnement de l'extraction des données par un exemple}
 
 Bob reçoit sur le canal non sûr le fichier piece\_jointe.bmp et sait que 
 ce fichier contient des données cachées. Pour les extraire, Bob choisit 
@@ -293,9 +387,5 @@ Enfin, nous n'avions pas de chef de projet. Cette décision nous a été très
 favorable du fait que chacun a eu la maturité de comprendre les enjeux de 
 ce grand projet. En effet, ces enjeux étaient grands et c'est pour cela 
 que le projet IN608 est la matière la plus travaillée du semestre. 
-
-\newpage
-
-\section{Annexe}
 
 \end{document}
