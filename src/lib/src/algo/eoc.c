@@ -6,6 +6,8 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "../insert.h"
+#include "../protection.h"
 
 int insert_eoc(info_s * infos)
 {
@@ -19,6 +21,7 @@ int insert_eoc(info_s * infos)
     uint32_t prev_tag_size;
     uint32_t data_per_vtag=infos->hidden_length/infos->host.file_info.flv.nb_video_tag;
     uint32_t reste=infos->hidden_length%infos->host.file_info.flv.nb_video_tag;
+   
     //infos->host.file_info.flv.
      if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make insertion EOF"), 1;
@@ -36,9 +39,9 @@ int insert_eoc(info_s * infos)
             cursor++;
          }
         protect_data(data,infos->host.file_info.flv.nb_video_tag,infos->passwd, infos->mode);
-    // à mettre à la fin
+    
     	//recopie header
-    	for(int j=0;j<9;j++){
+    	for(int j=0;j<13;j++){
     		if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
                 return perror("Can't read Header"), 1;
             if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
@@ -48,15 +51,19 @@ int insert_eoc(info_s * infos)
     	
     	
     	do{
+
     		//recherche video tag
     		fread(&tag_type, sizeof(uint8_t), 1, infos->host.host);
-    		if (byte_cpy!=9){
+    		if (tag_type!=9){
     		    	fwrite(&tag_type, sizeof(uint8_t), 1, infos->res);
     		    	fread(&data_size, sizeof(data_size), 1, infos->host.host);
     		    	fwrite(&data_size, sizeof(uint32_t), 1, infos->res);
     		    	//passage en 24 bits      
+            	  	  	data_size = be32toh(data_size);
             	  	data_size >>= 8;
-    		    	data_size = be32toh(data_size);
+            		
+            	  	
+    		    	
         			//recopie data + 6 octets
         			for(uint32_t j=0;j<data_size+6;j++){
         				fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
@@ -73,8 +80,13 @@ int insert_eoc(info_s * infos)
     			/* /!\ */
     			uint8_t tmp = data_size; //l'octet de droite qui fait parti des datas
     			//passage en 24 bits      
+            	data_size = be32toh(data_size);
             	data_size >>= 8;
-    			data_size = be32toh(data_size);
+            	
+
+            	
+            
+    			
     			
             	uint32_t data_size_host=data_size;
             	// /!\ verifier que la taille à inscrire < 2^24
@@ -82,7 +94,7 @@ int insert_eoc(info_s * infos)
 					data_size+=reste+data_per_vtag;
 				} //cas particulier dernier tag
             	else {
-					data_size+=reste+data_per_vtag;
+					data_size+=data_per_vtag;
 				}
             	
             	
@@ -91,11 +103,12 @@ int insert_eoc(info_s * infos)
             	uint8_t tmp4=data_size>>16;
             	//recopie data size en big endian
 
-            	fwrite(&tmp2,sizeof(uint8_t),1,infos->res);
-            	fwrite(&tmp3,sizeof(uint8_t),1,infos->res);
             	fwrite(&tmp4,sizeof(uint8_t),1,infos->res);
+            	fwrite(&tmp3,sizeof(uint8_t),1,infos->res);
+            	fwrite(&tmp2	,sizeof(uint8_t),1,infos->res);
             	fwrite(&tmp,sizeof(uint8_t),1,infos->res);
             	//copie des data d'origine + 6 octets
+
             	for(uint32_t j=0;j<data_size_host+6;j++){
         				fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
     			  		fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res);
@@ -128,20 +141,20 @@ int insert_eoc(info_s * infos)
 					prev_tag_size += reste+data_per_vtag; //cas particulier dernier tag
 					} 
             	else {
-					prev_tag_size += reste+data_per_vtag;
+					prev_tag_size +=data_per_vtag;
 					}	
     			prev_tag_size =htobe32(prev_tag_size);
     			fwrite(&prev_tag_size,sizeof(uint32_t),1,infos->res);
     			cpt_video_tag+=1;
 			}
-        }while(cpt_video_tag<infos->host.file_info.flv.nb_video_tag);
+        }while(cpt_video_tag<infos->host.file_info.flv.nb_video_tag-1);
 	}
-	while(fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host))
+	while(fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host)==1)
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 		
    
     return 0;
-}
+}	
 
 int extract_eoc(info_s * infos)
 {
