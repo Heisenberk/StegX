@@ -53,7 +53,7 @@ void help()
          "\033[01m\033[32m-o, --host [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
          "\033[01m\033[32m-c, --hide [nom_fichier]\033[0m (si option de dissimulation sélectionnée)"
          "\n\t Le nom du fichier à cacher.\n\n"
-         "\033[01m\033[32m-r, --result [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat.\n\n"
+         "\033[01m\033[32m-r, --result [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat (pour l'insertion) ou le dossier où créer le résultat extrait (pour l'extraction).\n\n"
          "\033[01m\033[32m-p, --password [password]\033[0m (optionnel)\n\t Pour ajouter un mot de passe permettant "
          "de rajouter une protection à la dissimulation.\n\n"
          "Voici les différents algorithmes que propose l'application (si option de dissimulation sélectionnée) :\n"
