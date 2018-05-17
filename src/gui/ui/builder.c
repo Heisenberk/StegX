@@ -90,7 +90,7 @@ static void ui_build_insert(struct ui_insert *ins)
     /* Dialogues. */
     ins->dial_anal_cond = "Un des paramètres requis n'a pas été rempli !\n\n"
         "Veuillez vérifier que le fichier hôte et le fichier à cacher ont bien "
-        "été choisis.";
+        "été choisis, ainsi que le dossier et le nom du fichier de sortie.";
     ins->dial_anal_proc = "Analyse des fichiers en cours... \n\n" "Veuillez patienter.";
     ins->dial_anal_end = "Analyse du fichier hôte et du fichier à cacher "
         "terminée. \n\nVous pouvez désormais sélectionner l'algorithme à utiliser "
@@ -98,8 +98,7 @@ static void ui_build_insert(struct ui_insert *ins)
     ins->dial_anal_err = "Erreur durant l'analyse du fichier hôte. \n\n"
         "Veuillez sélectionner un fichier compatible avec l'application.";
     ins->dial_dissi_cond = "Un des paramètres requis n'a pas été rempli ! \n\n"
-        "Veuillez vérifier que le dossier et le nom du fichier à créer ont bien "
-        "été choisis.";
+        "Veuillez vérifier que l'algorithme de stéganographie à utilisé à été choisi.";
     ins->dial_dissi_proc = "Dissimulation des données en cours... \n\n" "Veuillez patienter.";
     ins->dial_dissi_end = "Dissimulation des données terminée avec succès.";
     ins->dial_dissi_err = "Erreur durant la dissimulation des données.";

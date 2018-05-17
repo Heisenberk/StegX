@@ -16,15 +16,22 @@
 #include "struct.h"
 #include "misc.h"
 
+/* Variables.
+ * ============================================================================= */
+
 /**
  * @brief Liste des noms des algorithmes.
  * @internal Les noms doivent être dans l'ordre de l'énumération de la
  * bibliothèque.
  * */
-static const char *algos_lst[] = { 
-    "Least Significant Bit", "End-Of-File", "Metadonnée", 
+static const char *algos_lst[] = {
+    "Least Significant Bit", "End-Of-File", "Metadonnée",
     "End-Of-Chunk", "Junk chunk"
 };
+
+/** Permet de faire la correspondance entre l'indice de l'algorithme dans la liste
+ * proposé à l'utilisateur et l'indice de l'algorithme dans l'énumération. */
+static int algos_ind[STEGX_NB_ALGO];
 
 /**
  * Variable globale au module signal qui contient le numéro de l'état de
@@ -33,6 +40,9 @@ static const char *algos_lst[] = {
  * la dissmulation (1).
  */
 static int insert_state = 0;
+
+/* Fonctions (déclarations).
+ * ============================================================================= */
 
 /** 
  * Lancement de l'étape courante de l'onglet dissimulation.
@@ -107,16 +117,16 @@ static gboolean extrac_do(gpointer data);
  */
 static void extrac_end(struct ui *ui);
 
+/* Fonctions (implémentation).
+ * ============================================================================= */
+
 static void insert_start(GtkWidget * widget, struct ui *ui)
 {
-    /* Test de la condition en fonction de l'état. */
-    int cond = (insert_state == 0) ?
-        gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc))
-        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)) :
-        gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
-        && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "");
-    /* Si la condition est remplie. */
-    if (cond) {
+    /* Si les paramètres nécéssaires ont bien étés remplis par l'utilisateur. */
+    if (gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
+        && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "")) {
         /* Création du dialogue à afficher pour patienter. */
         gchar *msg = insert_state == 0 ? ui->insert.dial_anal_proc : ui->insert.dial_dissi_proc;
         ui->insert.dial = ui_msg_dial_new(ui->window, msg, UI_DIAL_INFO_WAIT);
@@ -136,30 +146,47 @@ static void insert_start(GtkWidget * widget, struct ui *ui)
 
 static gboolean insert_do(gpointer data)
 {
-    struct ui *ui = (struct ui *)data;   /* Interface. */
-    static stegx_choices_s steg_choices; /* Choix pour la bibliothèque de stéganographie. */
-    static info_s * steg_info;           /* Structure pour la bibliothèque de stéganographie. */
+    struct ui *ui = (struct ui *)data;  /* Interface. */
+    static stegx_choices_s steg_choices;        /* Structure publique. */
+    static stegx_info_insert_s insert_info;     /* Structure d'insertion publique. */
+    static info_s *steg_info;   /* Structure privée. */
 
     /* Si on doit faire l'analyse. */
-    if (insert_state == 0) {
-        printf("Fichier hôte : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc)));
-        printf("Fichier à cacher : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)));
+    if (!insert_state) {
+        /* Remplissage des champs de la structure publique. */
+        steg_choices.insert_info = &insert_info;
+        // Fichier hôte.
+        steg_choices.host_path =
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc));
+        // Mot de passe.
+        char *passwd = strdup(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
+        steg_choices.passwd = strlen(passwd) ? passwd : NULL;
+        // Mode.
+        steg_choices.mode = STEGX_MODE_INSERT;
+        // Fichier à cacher.
+        insert_info.hidden_path =
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc));
+        // Fichier résultat. 
+        steg_choices.res_path =
+            calloc(strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent))) + 1 +
+                   strlen(gtk_file_chooser_get_filename
+                          (GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))), sizeof(char));
+        strcat(steg_choices.res_path,
+               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
+        strcat(steg_choices.res_path, gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
+
+        /* Initialisation de la bibliothèque avec les choix puis vérifie la
+         * compatibilité. Enfin, analyse quels algorithmes peuvent êtres
+         * utilisés. On s'arrête s'il y a une erreur dans une de ces fonctions. */
+        if ((steg_info = stegx_init(&steg_choices)) && !stegx_check_compatibility(steg_info))
+            stegx_suggest_algo(steg_info);
     }
     /* Si c'est la dissimulation. */
     else {
-        printf("Dossier du fichier à créer : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
-        printf("Nom du fichier à créer : %s\n",
-               gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
-        printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
-        printf("Algorithme choisis : %s\n",
-               algos_lst[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]);
-    }
-    /* Traitement. */
-    for (int i = 0; i < 1000000000; i++) {
-        /* ret = 0; */
+        /* Sélection de l'algorithme et lancement de la dissimulation. */
+        if (!stegx_choose_algo
+            (steg_info, algos_ind[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]))
+            stegx_insert(steg_info);
     }
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->insert.dial), 0);
@@ -179,26 +206,31 @@ static void insert_end(struct ui *ui)
         if (!insert_state) {
             /* Mise à jour du bouton pour la dissimulation. */
             gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_dissi);
-            /* Retire les widgets de sélection des fichiers d'entrés de
-             * l'affichage. */
-            gtk_widget_hide(ui->insert.file_orig_fc);
-            gtk_widget_hide(ui->insert.file_orig_lbl);
-            gtk_widget_hide(ui->insert.file_to_hide_fc);
-            gtk_widget_hide(ui->insert.file_to_hide_lbl);
+            /* Retire les widgets de sélection des paramètre de stéganographie. */
+            gtk_widget_hide(ui->insert.file_orig_fc), gtk_widget_hide(ui->insert.file_orig_lbl);
+            gtk_widget_hide(ui->insert.file_to_hide_fc),
+                gtk_widget_hide(ui->insert.file_to_hide_lbl);
+            gtk_widget_hide(ui->insert.file_out_dir_fc),
+                gtk_widget_hide(ui->insert.file_out_dir_lbl);
+            gtk_widget_hide(ui->insert.file_out_name_ent),
+                gtk_widget_hide(ui->insert.file_out_name_lbl);
+            gtk_widget_hide(ui->insert.passwd_ent), gtk_widget_hide(ui->insert.passwd_lbl);
             /* Ajoute le choix de sélection de l'algorithme. */
-            for (algo_e i = 0; i < STEGX_NB_ALGO; i++) {
-                /* if (stegx_propos_algos[i]) */
-                    /* gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb), */
-                            /* algos_lst[i]); */
+            for (algo_e i = 0, ind = 0; i < STEGX_NB_ALGO; i++) {
+                if (stegx_propos_algos[i]) {
+                    algos_ind[ind++] = i;       /* indice de l'algorithme dans la liste <=> indice de l'algorithme dans l'énumération. */
+                    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb),
+                                                   algos_lst[i]);
+                }
             }
             gtk_combo_box_set_active(GTK_COMBO_BOX(ui->insert.algos_cb), 0);
             gtk_widget_show(ui->insert.algos_lbl);
             gtk_widget_show(ui->insert.algos_cb);
+            insert_state = 1;
         }
         /* Si c'est l'insertion. */
         else
             insert_reset(NULL, ui);
-        insert_state ^= 1;
     }
     /* Si le traitement à échoué. */
     else {
@@ -207,6 +239,8 @@ static void insert_end(struct ui *ui)
         /* Mise à jour du bouton pour relancer le traitement. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but), insert_state == 0 ?
                              ui->insert.but_txt_anal : ui->insert.but_txt_dissi);
+        /* Affichage de l'erreur précise sur stderr. */
+        err_print(stegx_errno);
     }
     /* Affichage du dialogue de fin. */
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
@@ -216,16 +250,21 @@ static void insert_end(struct ui *ui)
 static void insert_reset(GtkWidget * widget, struct ui *ui)
 {
     (void)widget;               /* Unused. */
-    /* Ré-affiche les widgets de choix de fichiers d'entrés. */
-    gtk_widget_show(ui->insert.file_orig_fc);
-    gtk_widget_show(ui->insert.file_orig_lbl);
-    gtk_widget_show(ui->insert.file_to_hide_fc);
-    gtk_widget_show(ui->insert.file_to_hide_lbl);
-    /* Cache le widget permettant de choisir l'algorithme. */
+    /* Ré-affiche les widgets de choix de stéganographie. */
+    gtk_widget_show(ui->insert.file_orig_fc), gtk_widget_show(ui->insert.file_orig_lbl);
+    gtk_widget_show(ui->insert.file_to_hide_fc), gtk_widget_show(ui->insert.file_to_hide_lbl);
+    gtk_widget_show(ui->insert.file_out_dir_fc), gtk_widget_show(ui->insert.file_out_dir_lbl);
+    gtk_widget_show(ui->insert.file_out_name_ent), gtk_widget_show(ui->insert.file_out_name_lbl);
+    gtk_widget_show(ui->insert.passwd_ent), gtk_widget_show(ui->insert.passwd_lbl);
+    /* Cache le widget permettant de choisir l'algorithme et le réinitialise. */
     gtk_widget_hide(ui->insert.algos_lbl);
     gtk_widget_hide(ui->insert.algos_cb);
+    gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb));
     /* Re-configure le bon label du bouton. */
     gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_anal);
+    /* Ré-initialisation de l'état. */
+    insert_state = 0;
+    stegx_errno = ERR_NONE;
 }
 
 static void extrac_start(GtkWidget * widget, struct ui *ui)
