@@ -45,9 +45,11 @@ void stegx_clear(info_s * infos);
 /**
  * @brief Vérifie la compatibilité des fichiers.
  * @sideeffect Remplit le champ \r{info_s.host.type} de la structure \r{info_s}.
+ * @error \r{ERR_CHECK_COMPAT} si la vérification de la compatibilité a échouée.
  * @param infos Structure privée qui contient les informations pour réaliser la
  * dissimulation et l'extraction. 
- * @return 0 si la vérification s'est bien déroulée, sinon 1 en cas d'erreur.
+ * @return 0 si la vérification s'est bien déroulée, sinon 1 en cas d'erreur et
+ * met à jour \r{stegx_errno}.
  */
 int stegx_check_compatibility(info_s * infos);
 
@@ -74,9 +76,12 @@ int stegx_suggest_algo(info_s * infos);
  * @sideeffect Remplit le champ \r{info_s.algo} avec l'algorithme choisi, ainsi
  * que le champ \r{info_s.passwd} avec un mot de passe aléatoire si
  * l'utilisateur n'en à pas choisi.
+ * @error \r{ERR_SUGG_ALGOS} si la fonction est mal utilisée (mauvais mode).
+ * @error \r{ERR_CHOICE_ALGO} si l'algorithme choisi n'est pas disponible.
  * @param infos Structure contenant les informations concernant la dissimulation.
  * @param algo_choosen Algorithme choisi par l'utilisateur. 
- * @return 0 si la fonction s'est déroulée normalement, 1 en cas d'erreur.
+ * @return 0 si la fonction s'est déroulée normalement, 1 en cas d'erreur et met
+ * à jour la variable \r{stegx_errno}.
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
 
@@ -97,9 +102,10 @@ int stegx_detect_algo(info_s * infos);
 /** 
  * @brief Va faire l'insertion selon l'algorithme, ainsi que les 
  * fichiers en entrée choisis par l'utilisateur. 
+ * @error \r{ERR_INSERT} si une erreur survient durant la dissimulation.
  * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si l'insertion s'et bien passé ; sinon 1 en cas d'erreur et met à jour
- * \r{stegx_errno}.
+ * @return 0 si l'insertion s'et bien passé, sinon 1 en cas d'erreur et met à
+ * jour \r{stegx_errno}.
  */
 int stegx_insert(info_s * infos);
 
@@ -107,8 +113,9 @@ int stegx_insert(info_s * infos);
  * @brief Va faire l'extraction selon l'algorithme détecté, ainsi que les 
  * fichiers en entrée choisis par l'utilisateur. 
  * @sideeffect Remplit le champ \r{res}.
+ * @error \r{ERR_EXTRACT} si une erreur survient lors de l'extraction.
  * @param infos Structure représentant les informations concernant l'extraction.
- * @return 0 si l'extraction s'et bien passé ; sinon 1 en cas d'erreur et met à jour
+ * @return 0 si l'extraction s'est bien passé, sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
  */
 int stegx_extract(info_s * infos, char *res_path);

@@ -8,64 +8,79 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
 #include <gtk/gtk.h>
+#include "stegx.h"
+
 #include "common/config.h"
 #include "struct.h"
 #include "misc.h"
 
-/** Nombre d'algorithme à proposer. */
-#define ALGO_NB 3
-
-/** Liste d'algorithmes proposés. */
-static const char *algos_lst[] = { "LSB", "EOF", "Metadonnées" };
+/* Variables.
+ * ============================================================================= */
 
 /**
- * Variable globale au module signal qui contient le code de retour de la fonction
- * de traitement de la bibliothèque appellée par le thread créé.
- */
-static int ret;
+ * @brief Liste des noms des algorithmes.
+ * @internal Les noms doivent être dans l'ordre de l'énumération de la
+ * bibliothèque.
+ * */
+static const char *algos_lst[] = {
+    "Least Significant Bit", "End-Of-File", "Metadonnée",
+    "End-Of-Chunk", "Junk chunk"
+};
+
+/** Permet de faire la correspondance entre l'indice de l'algorithme dans la liste
+ * proposé à l'utilisateur et l'indice de l'algorithme dans l'énumération. */
+static int algos_ind[STEGX_NB_ALGO];
 
 /**
  * Variable globale au module signal qui contient le numéro de l'état de
- * l'interface graphique pour le module dissimulation. L'état correspond à si on
- * doit effectuer l'analyse (0) ou effectuer la dissmulation (1).
+ * l'interface graphique pour le module dissimulation.
+ * @details L'état correspond à si on doit effectuer l'analyse (0) ou effectuer
+ * la dissmulation (1).
  */
 static int insert_state = 0;
 
+/* Fonctions (déclarations).
+ * ============================================================================= */
+
 /** 
- * @brief Lancement de l'étape courante de l'onglet dissimulation
+ * Lancement de l'étape courante de l'onglet dissimulation.
  * @details Lance l'analyse des fichiers entrés par l'utilisateur ou l'insertion
- * des données du fichier à cacher dans le fichier hôte. Met à jour l'interface
- * pendant le traitement et lance le thread chargé du traitement.
+ * des données du fichier à cacher dans le fichier hôte.
+ * @sideeffect Met à jour l'interface pendant le traitement et lance le thread
+ * chargé du traitement.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
 static void insert_start(GtkWidget * widget, struct ui *ui);
 
 /** 
- * @brief Exécution de l'étape courante de l'onglet dissimulation
+ * Exécution de l'étape courante de l'onglet dissimulation.
  * @details Exécute l'analyse des fichiers entrés par l'utilisateur ou
- * l'insertion des données du fichier caché dans le fichier hôte. Met à jour la
- * variable "ret" avec le code de retour du traitement.
+ * l'insertion des données du fichier caché dans le fichier hôte.
+ * @sideeffect Met à jour la variable \r{stegx_errno} avec le code de retour du
+ * traitement.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
  */
 static gboolean insert_do(gpointer data);
 
 /**
- * @brief Termine l'étape courante de l'onglet dissimulation
+ * Termine l'étape courante de l'onglet dissimulation.
  * @details Récupère le code de retour de la fonction de la bibliothèque. Si
  * tout est ok, si on effectué l'analyse on passe à l'étape suivante ; si on à
  * effectué l'insertion on revient à l'état inital. Sinon, on revient à la même
- * étape. La fonction met à jours les widgets et affiche les messages de
- * dialogue en conséquence.
+ * étape.
+ * @sideeffect Met à jours les widgets et affiche les messages de dialogue en
+ * conséquence.
  * @param ui Structure de l'interface utilisateur.
  */
 static void insert_end(struct ui *ui);
 
 /**
- * @brief Réinitialisation de la dissimulation
- * @details Réinitialisation de l'affichage des widgets dans l'onglet insertion
+ * Réinitialisation de la dissimulation.
+ * @sideeffect Réinitialisation de l'affichage des widgets dans l'onglet insertion
  * et revient dans l'état initial d'analyse.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
@@ -73,42 +88,45 @@ static void insert_end(struct ui *ui);
 static void insert_reset(GtkWidget * widget, struct ui *ui);
 
 /**
- * @brief Lancement de l'extraction
- * @details Lance l'extraction du fichier caché. Met à jour l'interface pendant
- * le traitement et lance le thread chargé de de l'extraction.
+ * Lancement de l'extraction.
+ * @details Lance l'extraction du fichier caché.
+ * @sideffect Met à jour l'interface pendant le traitement et lance le thread
+ * chargé de de l'extraction.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
  */
 static void extrac_start(GtkWidget * widget, struct ui *ui);
 
 /** 
- * @brief Exécution de l'extraction
+ * Exécution de l'extraction.
  * @details Exécute l'extraction des données du fichier caché dans le fichier
- * hôte. Met à jour la variable "ret" avec le code de retour de l'extraction.
+ * hôte.
+ * @sideeffect Met à jour la variable \r{stegx_errno} avec le code de retour de
+ * l'extraction.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
  */
 static gboolean extrac_do(gpointer data);
 
 /**
- * @brief Termine l'extraction
- * @details Récupère le code de retour de la fonction de la bibliothèque. La
- * fonction met à jours les widgets et affiche les messages de dialogue en
+ * Termine l'extraction.
+ * @details Récupère le code de retour de la fonction de la bibliothèque.
+ * @sideeffect Met à jour les widgets et affiche les messages de dialogue en
  * conséquence.
  * @param ui Structure de l'interface utilisateur.
  */
 static void extrac_end(struct ui *ui);
 
+/* Fonctions (implémentation).
+ * ============================================================================= */
+
 static void insert_start(GtkWidget * widget, struct ui *ui)
 {
-    /* Test de la condition en fonction de l'état. */
-    int cond = (insert_state == 0) ?
-        gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc))
-        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)) :
-        gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
-        && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "");
-    /* Si la condition est remplie. */
-    if (cond) {
+    /* Si les paramètres nécéssaires ont bien étés remplis par l'utilisateur. */
+    if (gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))
+        && strcmp(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)), "")) {
         /* Création du dialogue à afficher pour patienter. */
         gchar *msg = insert_state == 0 ? ui->insert.dial_anal_proc : ui->insert.dial_dissi_proc;
         ui->insert.dial = ui_msg_dial_new(ui->window, msg, UI_DIAL_INFO_WAIT);
@@ -128,28 +146,58 @@ static void insert_start(GtkWidget * widget, struct ui *ui)
 
 static gboolean insert_do(gpointer data)
 {
-    struct ui *ui = (struct ui *)data;
+    struct ui *ui = (struct ui *)data;  /* Interface. */
+    static stegx_choices_s steg_choices;        /* Structure publique. */
+    static stegx_info_insert_s insert_info;     /* Structure d'insertion publique. */
+    static info_s *steg_info;   /* Structure privée. */
+
     /* Si on doit faire l'analyse. */
-    if (insert_state == 0) {
-        printf("Fichier hôte : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc)));
-        printf("Fichier à cacher : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc)));
+    if (!insert_state) {
+        /* Remplissage des champs de la structure publique. */
+        steg_choices.insert_info = &insert_info;
+        // Fichier hôte.
+        steg_choices.host_path =
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc));
+        // Mot de passe.
+        steg_choices.passwd = strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent))) ?
+            strdup(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent))) : NULL;
+        // Mode.
+        steg_choices.mode = STEGX_MODE_INSERT;
+        // Fichier à cacher.
+        insert_info.hidden_path =
+            gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc));
+        // Fichier résultat. 
+        steg_choices.res_path =
+            calloc(strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent))) + 2 +
+                   strlen(gtk_file_chooser_get_filename
+                          (GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))), sizeof(char));
+        strcat(steg_choices.res_path,
+               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
+        strcat(steg_choices.res_path, "/");
+        strcat(steg_choices.res_path, gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
+
+        /* Initialisation de la bibliothèque avec les choix puis vérifie la
+         * compatibilité. Enfin, analyse quels algorithmes peuvent êtres
+         * utilisés. On s'arrête s'il y a une erreur dans une de ces fonctions. */
+        if ((steg_info = stegx_init(&steg_choices)) && !stegx_check_compatibility(steg_info))
+            stegx_suggest_algo(steg_info);
     }
     /* Si c'est la dissimulation. */
     else {
-        printf("Dossier du fichier à créer : %s\n",
-               gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
-        printf("Nom du fichier à créer : %s\n",
-               gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
-        printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
-        printf("Algorithme choisis : %s\n",
-               algos_lst[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]);
+        /* Sélection de l'algorithme et lancement de la dissimulation. */
+        if (!stegx_choose_algo
+            (steg_info, algos_ind[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]))
+            stegx_insert(steg_info);
     }
-    /* Traitement. */
-    for (int i = 0; i < 1000000000; i++) {
-        ret = 0;
+
+    /* Libération de la mémoire et fermeture des flux si on a terminé la
+     * dissimulation sans erreur ou s'il y a eu une erreur à l'analyse
+     * (=> prochaine étape = début de l'analyse). */
+    if ((!insert_state && stegx_errno) || (insert_state && !stegx_errno)) {
+        stegx_clear(steg_info);
+        free(steg_choices.passwd), free(steg_choices.res_path);
     }
+
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->insert.dial), 0);
     gtk_widget_destroy(ui->insert.dial);
@@ -161,32 +209,38 @@ static gboolean insert_do(gpointer data)
 static void insert_end(struct ui *ui)
 {
     /* Si le traitement à réussi. */
-    if (!ret) {
+    if (!stegx_errno) {
         gchar *msg = (insert_state == 0) ? ui->insert.dial_anal_end : ui->insert.dial_dissi_end;
         ui->insert.dial = ui_msg_dial_new(ui->window, msg, UI_DIAL_INFO_OK);
         /* Si c'est l'analyse. */
-        if (insert_state == 0) {
+        if (!insert_state) {
             /* Mise à jour du bouton pour la dissimulation. */
             gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_dissi);
-            /* Retire les widgets de sélection des fichiers d'entrés de
-             * l'affichage. */
-            gtk_widget_hide(ui->insert.file_orig_fc);
-            gtk_widget_hide(ui->insert.file_orig_lbl);
-            gtk_widget_hide(ui->insert.file_to_hide_fc);
-            gtk_widget_hide(ui->insert.file_to_hide_lbl);
+            /* Retire les widgets de sélection des paramètre de stéganographie. */
+            gtk_widget_hide(ui->insert.file_orig_fc), gtk_widget_hide(ui->insert.file_orig_lbl);
+            gtk_widget_hide(ui->insert.file_to_hide_fc),
+                gtk_widget_hide(ui->insert.file_to_hide_lbl);
+            gtk_widget_hide(ui->insert.file_out_dir_fc),
+                gtk_widget_hide(ui->insert.file_out_dir_lbl);
+            gtk_widget_hide(ui->insert.file_out_name_ent),
+                gtk_widget_hide(ui->insert.file_out_name_lbl);
+            gtk_widget_hide(ui->insert.passwd_ent), gtk_widget_hide(ui->insert.passwd_lbl);
             /* Ajoute le choix de sélection de l'algorithme. */
-            for (int i = 0; i < ALGO_NB; i++) {
-                gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb),
-                                               algos_lst[i]);
+            for (algo_e i = 0, ind = 0; i < STEGX_NB_ALGO; i++) {
+                if (stegx_propos_algos[i]) {
+                    algos_ind[ind++] = i;       /* indice de l'algorithme dans la liste <=> indice de l'algorithme dans l'énumération. */
+                    gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb),
+                                                   algos_lst[i]);
+                }
             }
             gtk_combo_box_set_active(GTK_COMBO_BOX(ui->insert.algos_cb), 0);
             gtk_widget_show(ui->insert.algos_lbl);
             gtk_widget_show(ui->insert.algos_cb);
+            insert_state = 1;
         }
         /* Si c'est l'insertion. */
         else
             insert_reset(NULL, ui);
-        insert_state ^= 1;
     }
     /* Si le traitement à échoué. */
     else {
@@ -195,6 +249,9 @@ static void insert_end(struct ui *ui)
         /* Mise à jour du bouton pour relancer le traitement. */
         gtk_button_set_label(GTK_BUTTON(ui->insert.but), insert_state == 0 ?
                              ui->insert.but_txt_anal : ui->insert.but_txt_dissi);
+        /* Affichage de l'erreur précise sur stderr. */
+        err_print(stegx_errno);
+        stegx_errno = ERR_NONE;
     }
     /* Affichage du dialogue de fin. */
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
@@ -204,48 +261,75 @@ static void insert_end(struct ui *ui)
 static void insert_reset(GtkWidget * widget, struct ui *ui)
 {
     (void)widget;               /* Unused. */
-    /* Ré-affiche les widgets de choix de fichiers d'entrés. */
-    gtk_widget_show(ui->insert.file_orig_fc);
-    gtk_widget_show(ui->insert.file_orig_lbl);
-    gtk_widget_show(ui->insert.file_to_hide_fc);
-    gtk_widget_show(ui->insert.file_to_hide_lbl);
-    /* Cache le widget permettant de choisir l'algorithme. */
+    /* Ré-affiche les widgets de choix de stéganographie. */
+    gtk_widget_show(ui->insert.file_orig_fc), gtk_widget_show(ui->insert.file_orig_lbl);
+    gtk_widget_show(ui->insert.file_to_hide_fc), gtk_widget_show(ui->insert.file_to_hide_lbl);
+    gtk_widget_show(ui->insert.file_out_dir_fc), gtk_widget_show(ui->insert.file_out_dir_lbl);
+    gtk_widget_show(ui->insert.file_out_name_ent), gtk_widget_show(ui->insert.file_out_name_lbl);
+    gtk_widget_show(ui->insert.passwd_ent), gtk_widget_show(ui->insert.passwd_lbl);
+    /* Cache le widget permettant de choisir l'algorithme et le réinitialise. */
     gtk_widget_hide(ui->insert.algos_lbl);
     gtk_widget_hide(ui->insert.algos_cb);
+    gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT(ui->insert.algos_cb));
     /* Re-configure le bon label du bouton. */
     gtk_button_set_label(GTK_BUTTON(ui->insert.but), ui->insert.but_txt_anal);
+    /* Ré-initialisation de l'état. */
+    insert_state = 0;
+    stegx_errno = ERR_NONE;
 }
 
 static void extrac_start(GtkWidget * widget, struct ui *ui)
 {
-    /* Si les conditions nécéssaires ne sont pas remplies. */
-    if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
-        || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
-        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
-        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
-        gtk_widget_destroy(ui->extrac.dial);
-    } else {
+    /* Si les paramètres nécéssaires ont bien étés remplis par l'utilisateur. */
+    if (gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
         /* Création du dialogue d'attente puis lancement du thread de travaille. */
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(extrac_do, ui);
         /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->extrac.but_txt_proc);
         gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+    } else {
+        /* Création du dialogue d'avertissement puis affichage. */
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
+        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+        gtk_widget_destroy(ui->extrac.dial);
     }
 }
 
 static gboolean extrac_do(gpointer data)
 {
-    struct ui *ui = (struct ui *)data;
-    /* Processing. */
-    printf("Fichier hôte : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc)));
-    printf("Dossier du fichier résultant : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
-    printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent)));
-    for (int i = 0; i < 1000000000; i++) {
-        ret = 0;
-    }
+    struct ui *ui = (struct ui *)data;  /* Interface. */
+    static stegx_choices_s steg_choices;        /* Structure publique. */
+    static info_s *steg_info;   /* Structure privée. */
+
+    /* Remplissage des champs de la structure publique. */
+    steg_choices.insert_info = NULL;
+    // Fichier hôte.
+    steg_choices.host_path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc));
+    // Mot de passe.
+    steg_choices.passwd = strlen(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) ?
+        strdup(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) : NULL;
+    // Mode.
+    steg_choices.mode = STEGX_MODE_EXTRACT;
+    // Fichier résultat. 
+    steg_choices.res_path = calloc(strlen(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))) + 2, sizeof(char));
+    strcat(steg_choices.res_path, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
+    strcat(steg_choices.res_path, "/");
+
+    /* Initialisation de la bibliothèque avec les choix puis vérifie la
+     * compatibilité. Ensuite, analyse le fichier hôte et l'algorithme
+     * utilisé lors de la dissimulation. Finalement, on lance l'extraction
+     * du fichier caché. On s'arrête s'il y a une erreur dans une de ces
+     * fonctions. */
+    if ((steg_info = stegx_init(&steg_choices)) && !stegx_check_compatibility(steg_info)
+            && !stegx_detect_algo(steg_info))
+        stegx_extract(steg_info, steg_choices.res_path);
+
+    /* Libération de la mémoire et fermeture des flux. */
+    stegx_clear(steg_info);
+    free(steg_choices.passwd), free(steg_choices.res_path);
+
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->extrac.dial), 0);
     gtk_widget_destroy(ui->extrac.dial);
@@ -257,11 +341,15 @@ static gboolean extrac_do(gpointer data)
 static void extrac_end(struct ui *ui)
 {
     /* Si l'extraction à réussie. */
-    if (!ret)
+    if (!stegx_errno)
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_end, UI_DIAL_INFO_OK);
     /* Si l'extraction à échouée. */
-    else
+    else {
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_err, UI_DIAL_ERR);
+        /* Affichage de l'erreur précise sur stderr. */
+        err_print(stegx_errno);
+        stegx_errno = ERR_NONE;
+    }
     /* Mise à jour du bouton pour relancer l'extraction. */
     gtk_button_set_label(GTK_BUTTON(ui->extrac.but), ui->extrac.but_txt);
     /* Affichage du dialogue de fin. */
@@ -270,7 +358,7 @@ static void extrac_end(struct ui *ui)
 }
 
 /**
- * @brief Affiche le dialogue "à propos"
+ * Affiche le dialogue "à propos".
  * @details Construit et affiche le dialogue d'informations "à propos".
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.

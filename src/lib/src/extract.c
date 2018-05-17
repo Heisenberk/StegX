@@ -27,7 +27,7 @@ int stegx_extract(info_s * infos, char *res_path)
         return stegx_errno = ERR_EXTRACT, 1;
 
     // ATTENTION si stdout faux --> a rajouter dans stegx_init et ici
-    // A REFAIRE AVEC STRCAT() POUR EVITER CODE SPAGHETTI
+    // A REFAIRE AVEC STRCAT() POUR EVITER CODE SPAGHETTI.
 
     // Concatenation du chemin du fichier a créer et le nom du fichier caché
     char *res_name = malloc((strlen(res_path) + strlen(infos->hidden_name) + 1) * sizeof(char));
@@ -52,9 +52,7 @@ int stegx_extract(info_s * infos, char *res_path)
      * l'énumération. */
     assert(infos->algo >= STEGX_ALGO_LSB && infos->algo < STEGX_NB_ALGO);
     static int (*extract_algo[STEGX_NB_ALGO]) (info_s *) = {
-        extract_lsb, extract_eof, extract_metadata, extract_eoc, extract_junk_chunk
-    };
+        extract_lsb, extract_eof, extract_metadata, extract_eoc, extract_junk_chunk};
     /* Extraction en appellant la fonction selon le format. */
-    const int res = (*extract_algo[infos->algo]) (infos);
-    return !res ? 0 : (stegx_errno = ERR_EXTRACT, 1);
+    return (*extract_algo[infos->algo]) (infos) ? (stegx_errno = ERR_EXTRACT, 1) : 0;
 }

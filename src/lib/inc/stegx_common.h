@@ -90,7 +90,7 @@ typedef struct stegx_info_insert stegx_info_insert_s;
  * doivent pointer sur des zones mémoires allouées.
  */
 struct stegx_choices {
-    char *host_path;            /*!< Chemin du fichier à analyser (requis). */
+    char *host_path;            /*!< Chemin du fichier hôte à analyser (requis). */
     char *res_path;             /*!< Chemin du fichier/dossier résultant (requis). */
     char *passwd;               /*!< Mot de passe choisi par l'utilisateur (optionnel). */
     mode_e mode;                /*!< Mode d'utilisation (requis). */
