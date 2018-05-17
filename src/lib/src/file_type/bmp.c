@@ -102,7 +102,7 @@ int insert_metadata_bmp(info_s * infos)
     /* Si le fichier a cacher est trop gros, on fait XOR avec la 
      * suite pseudo aleatoire générée avec le mot de passe
      * */
-    if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+    if (infos->hidden_length > LENGTH_FILE_MAX) {
         srand(create_seed(infos->passwd));
         uint8_t random;
         while (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 0) {
@@ -172,7 +172,7 @@ int extract_metadata_bmp(info_s * infos)
      * suite pseudo aleatoire générée avec le mot de passe
      * */
     uint8_t byte_read, byte_cpy;
-    if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+    if (infos->hidden_length > LENGTH_FILE_MAX) {
         srand(create_seed(infos->passwd));
         int i = 0;
         uint8_t random;

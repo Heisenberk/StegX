@@ -76,7 +76,7 @@ int insert_metadata_png(info_s * infos)
 	 * on fait un XOR avec les nombres pseudo aleatoires generes à partir 
 	 * du seed (grace au mot de passe)
 	 **/
-	if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+	if (infos->hidden_length > LENGTH_FILE_MAX) {
 		srand(create_seed(infos->passwd));
 		uint8_t random;
 		for(length=0;length<infos->hidden_length;length++){
@@ -211,7 +211,7 @@ int extract_metadata_png(info_s * infos)
 	 * on fait un XOR avec les nombres pseudo aleatoires generes à partir 
 	 * du seed (grace au mot de passe)
 	 **/
-    if (infos->hidden_length > LENGTH_HIDDEN_FILE_MAX) {
+    if (infos->hidden_length > LENGTH_FILE_MAX) {
 		srand(create_seed(infos->passwd));
 		uint8_t random;
 		for(length=0;length<infos->hidden_length;length++){
