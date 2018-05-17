@@ -1,3 +1,10 @@
+/** 
+ * @file flv.h
+ * @brief Fichier FLV.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format FLV.
+ */
+
 #ifndef FLV_H
 #define FLV_H
 
@@ -18,7 +25,9 @@
 /** valeur d'un tag de type script data en entier non signé  */
 #define SCRIPT_DATA_TAG 24
 
-/** Structure du format FLV. */
+/**
+ * @brief Structure du format FLV.
+ */
 struct flv {
     uint32_t nb_video_tag;
     uint32_t nb_metadata_tag;

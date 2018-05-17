@@ -1,3 +1,10 @@
+/** 
+ * @file png.h
+ * @brief Fichier PNG.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format PNG.
+ */
+
 #ifndef PNG_H
 #define PNG_H
 
@@ -25,7 +32,9 @@
 /** Longueur jusqu'au premier chunk PNG. */
 #define LENGTH_SIG_PNG 8
 
-/** Structure du format FLV. */
+/**
+ * @brief Structure du format PNG.
+ */
 struct png {
     uint32_t header_size;
     uint32_t data_size;

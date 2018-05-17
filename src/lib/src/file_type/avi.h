@@ -1,3 +1,10 @@
+/** 
+ * @file avi.h
+ * @brief Fichier AVI.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format AVI.
+ */
+
 #ifndef AVI_H
 #define AVI_H
 
@@ -5,7 +12,9 @@
 
 #include "common.h"
 
-/** Structure du format AVI. */
+/**
+ * @brief Structure du format AVI.
+ */
 struct avi {
 
 };

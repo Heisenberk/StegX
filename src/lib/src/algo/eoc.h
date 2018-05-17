@@ -1,3 +1,9 @@
+/** 
+ * @file eoc.h
+ * @brief Algorithme EOC.
+ * @details Contient les fonctions concernant l'algorithme EOC.
+ */
+
 #ifndef EOC_H
 #define EOC_H
 

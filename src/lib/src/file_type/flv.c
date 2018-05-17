@@ -1,3 +1,10 @@
+/** 
+ * @file flv.c
+ * @brief Fichier FLV.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format FLV.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

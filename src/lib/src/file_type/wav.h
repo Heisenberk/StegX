@@ -23,12 +23,15 @@
 /** Adresse du premier subchunk (octet). */
 #define WAV_SUBCHK1_ADDR 12
 
-/** Structure du format WAVE. */
+/**
+ * @brief Structure du formatWAVE.
+ */
 struct wav {
     uint32_t header_size;       /*!< Offset du début du segment data (octet). */
     uint32_t data_size;         /*!< Taille des données (octet). */
     uint32_t chunk_size;        /*!< Taille de chaque sample (bit). */
 };
+
 
 /** Type du format WAVE. */
 typedef struct wav wav_s;

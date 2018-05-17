@@ -1,3 +1,9 @@
+/** 
+ * @file eof.h
+ * @brief Algorithme EOF.
+ * @details Contient les fonctions concernant l'algorithme EOF.
+ */
+
 #ifndef EOF_H
 #define EOF_H
 

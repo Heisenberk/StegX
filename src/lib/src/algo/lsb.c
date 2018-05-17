@@ -1,3 +1,9 @@
+/** 
+ * @file lsb.c
+ * @brief Algorithme LSB.
+ * @details Contient les fonctions concernant l'algorithme LSB.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

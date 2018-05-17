@@ -1,3 +1,9 @@
+/** 
+ * @file metadata.c
+ * @brief Algorithme METADATA.
+ * @details Contient les fonctions concernant l'algorithme METADATA.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

@@ -59,7 +59,9 @@ typedef enum type type_e;
 #include "file_type/avi.h"
 #include "file_type/flv.h"
 
-/** Informations concernant le fichier hôte. */
+/**
+ * @brief Informations concernant le fichier hôte.
+ */
 struct host_info {
     FILE *host;                 /*!< Pointeur vers le fichier hôte. */
     type_e type;                /*!< Type du fichier hôte. */
@@ -76,9 +78,10 @@ struct host_info {
 /** Type du fichier hôte. */
 typedef struct host_info host_info_s;
 
+
 /**
- * Informations utiles aux fonctions de la bibliothèque pour l'insertion et la
- * dissimulation. 
+ * @brief Informations utiles aux fonctions de la bibliothèque pour l'insertion et la
+ * dissimulation.
  */
 struct info {
     mode_e mode;                /*!< Mode d'utilisation de la bibliothèque (requis). */

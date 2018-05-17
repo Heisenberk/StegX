@@ -1,3 +1,9 @@
+/** 
+ * @file metadata.h
+ * @brief Algorithme METADATA.
+ * @details Contient les fonctions concernant l'algorithme METADATA.
+ */
+
 #ifndef METADATA_H
 #define METADATA_H
 

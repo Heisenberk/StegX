@@ -1,3 +1,10 @@
+/** 
+ * @file bmp.h
+ * @brief Fichier BMP.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format BMP.
+ */
+
 #ifndef BMP_H
 #define BMP_H
 
@@ -21,7 +28,9 @@
  * */
 #define ADDRESS_BMP_COMPRESS 30
 
-/** Structure du format BMP. */
+/**
+ * @brief Structure du format BMP.
+ */
 struct bmp {
     uint32_t header_size;
     uint32_t data_size;

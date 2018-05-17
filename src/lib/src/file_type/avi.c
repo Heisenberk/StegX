@@ -1,3 +1,10 @@
+/** 
+ * @file avi.c
+ * @brief Fichier AVI.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format AVI.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

@@ -1,3 +1,9 @@
+/** 
+ * @file eoc.c
+ * @brief Algorithme EOC.
+ * @details Contient les fonctions concernant l'algorithme EOC.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

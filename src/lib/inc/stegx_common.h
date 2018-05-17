@@ -71,7 +71,9 @@ algo_e *stegx_propos_algos;
  * =============================================================================
  */
 
-/** Informations concernant uniquement l'insertion de données. */
+/**
+ * @brief Informations concernant uniquement l'insertion de données. 
+ */
 struct stegx_info_insert {
     char *hidden_path;          /*!< Chaîne de caractères representant le nom du fichier a cacher (requis). */
     algo_e algo;                /*!< Algorithme qui sera utilisé pour la dissimulation (requis uniquement si CLI). */

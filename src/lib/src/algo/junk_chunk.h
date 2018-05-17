@@ -1,3 +1,9 @@
+/** 
+ * @file junk_chunk.h
+ * @brief Algorithme JUNK CHUNK.
+ * @details Contient les fonctions concernant l'algorithme JUNK CHUNK.
+ */
+
 #ifndef JUNK_CHUNK_H
 #define JUNK_CHUNK_H
 

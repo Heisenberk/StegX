@@ -1,3 +1,10 @@
+/** 
+ * @file png.c
+ * @brief Fichier PNG.
+ * @details Contient les informations (fonctions, types, structures) relatives
+ * aux fichiers au format PNG.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>

@@ -1,3 +1,9 @@
+/** 
+ * @file lsb.h
+ * @brief Algorithme LSB.
+ * @details Contient les fonctions concernant l'algorithme LSB.
+ */
+
 #ifndef LSB_H
 #define LSB_H
 

@@ -12,7 +12,9 @@
 
 #include "common.h"
 
-/** Structure du format MP3. */
+/**
+ * @brief Structure du format MP3.
+ */
 struct mp3 {
 };
 
