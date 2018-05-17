@@ -78,7 +78,6 @@ struct host_info {
 /** Type du fichier hôte. */
 typedef struct host_info host_info_s;
 
-
 /**
  * @brief Informations utiles aux fonctions de la bibliothèque pour l'insertion et la
  * dissimulation.

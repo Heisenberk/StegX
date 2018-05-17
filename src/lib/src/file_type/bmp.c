@@ -114,7 +114,7 @@ int insert_metadata_bmp(info_s * infos)
         uint8_t random;
         while (fread(&byte_read_bmp, sizeof(uint8_t), 1, infos->hidden) != 0) {
             random = rand() % UINT8_MAX;
-            byte_read_bmp = byte_read_bmp ^ random;       //XOR avec le nombre pseudo aleatoire generé
+            byte_read_bmp = byte_read_bmp ^ random;     //XOR avec le nombre pseudo aleatoire generé
             if (fwrite(&byte_read_bmp, sizeof(uint8_t), 1, infos->res) == 0)
                 return perror("Can't write hidden data"), 1;
         }
@@ -173,7 +173,7 @@ int extract_metadata_bmp(info_s * infos)
         (infos->host.host, (infos->host.file_info.bmp.header_size) - (infos->hidden_length),
          SEEK_SET))
         return perror("BMP file: Can not move in the file"), 1;
-        
+
     // Extraction des donnees cachees
     /* Si le fichier a cacher est trop gros, on fait XOR avec la 
      * suite pseudo aleatoire générée avec le mot de passe

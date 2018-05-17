@@ -306,15 +306,19 @@ static gboolean extrac_do(gpointer data)
     /* Remplissage des champs de la structure publique. */
     steg_choices.insert_info = NULL;
     // Fichier hôte.
-    steg_choices.host_path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc));
+    steg_choices.host_path =
+        gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc));
     // Mot de passe.
     steg_choices.passwd = strlen(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) ?
         strdup(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) : NULL;
     // Mode.
     steg_choices.mode = STEGX_MODE_EXTRACT;
     // Fichier résultat. 
-    steg_choices.res_path = calloc(strlen(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))) + 2, sizeof(char));
-    strcat(steg_choices.res_path, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
+    steg_choices.res_path =
+        calloc(strlen(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))) +
+               2, sizeof(char));
+    strcat(steg_choices.res_path,
+           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
     strcat(steg_choices.res_path, "/");
 
     /* Initialisation de la bibliothèque avec les choix puis vérifie la
@@ -323,7 +327,7 @@ static gboolean extrac_do(gpointer data)
      * du fichier caché. On s'arrête s'il y a une erreur dans une de ces
      * fonctions. */
     if ((steg_info = stegx_init(&steg_choices)) && !stegx_check_compatibility(steg_info)
-            && !stegx_detect_algo(steg_info))
+        && !stegx_detect_algo(steg_info))
         stegx_extract(steg_info, steg_choices.res_path);
 
     /* Libération de la mémoire et fermeture des flux. */

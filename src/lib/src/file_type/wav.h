@@ -32,7 +32,6 @@ struct wav {
     uint32_t chunk_size;        /*!< Taille de chaque sample (bit). */
 };
 
-
 /** Type du format WAVE. */
 typedef struct wav wav_s;
 

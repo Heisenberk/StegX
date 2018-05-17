@@ -74,7 +74,7 @@ void test_metadata_little_png_with_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_insert);
+    dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -98,7 +98,7 @@ void test_metadata_little_png_with_passwd(void **state)
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_extract);
+    dest_stegx_info(choices_extract);
     stegx_clear(infos_extract);
 
     uint8_t c;
@@ -155,7 +155,7 @@ void test_metadata_little_png_without_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_insert);
+    dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -235,7 +235,7 @@ void test_metadata_big_png_with_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_insert);
+    dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -259,7 +259,7 @@ void test_metadata_big_png_with_passwd(void **state)
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_extract);
+    dest_stegx_info(choices_extract);
     stegx_clear(infos_extract);
 
     uint8_t c;
@@ -281,7 +281,6 @@ void test_metadata_big_png_with_passwd(void **state)
 
 }
 
-
 /* Test final de l'insertion/extraction METADATA sur un fichier PNG sans 
  * mot de passe et un gros fichier a cacher (> a la limite etablie)
  **/
@@ -298,8 +297,10 @@ void test_metadata_big_png_without_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->insert_info->hidden_path, "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->insert_info->hidden_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
@@ -317,7 +318,7 @@ void test_metadata_big_png_without_passwd(void **state)
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
 
-	dest_stegx_info(choices_insert);
+    dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -342,7 +343,7 @@ void test_metadata_big_png_without_passwd(void **state)
 
     stegx_clear(infos_extract);
     dest_stegx_info(choices_extract);
-    
+
     FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
     assert_int_equal(f != NULL, 1);
 
@@ -354,14 +355,13 @@ void test_metadata_big_png_without_passwd(void **state)
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 }
 
-
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest png_tests[] = {
 
     // tests unitaires PNG
     cmocka_unit_test(test_file_png_v1),
     cmocka_unit_test(test_file_png_v2),
-   
+
     cmocka_unit_test(test_metadata_little_png_with_passwd),
     cmocka_unit_test(test_metadata_little_png_without_passwd),
     cmocka_unit_test(test_metadata_big_png_with_passwd),

@@ -72,6 +72,7 @@ int extract_metadata_bmp(info_s * infos);
  * \req{STEGX_MODE_EXTRACT}. 
  * @return 0 si le melange des donnees s'est bien passé ; 1 sinon 
  */
-int protect_data_lsb_bmp(uint8_t* pixels, uint32_t pixels_length, uint8_t* data, uint32_t data_length, char* passwd, mode_e mode);
+int protect_data_lsb_bmp(uint8_t * pixels, uint32_t pixels_length, uint8_t * data,
+                         uint32_t data_length, char *passwd, mode_e mode);
 
 #endif
