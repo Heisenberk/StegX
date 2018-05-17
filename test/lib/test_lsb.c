@@ -10,6 +10,7 @@
 #include <string.h>
 #include "stegx.h"
 #include "common.h"
+#include "algo/lsb.h"
 
 void dest_stegx_info(stegx_choices_s * com)
 {
@@ -57,6 +58,7 @@ void test_lsb_little_bmp_with_passwd(void **state)
 
     test = stegx_insert(infos_insert);
     assert_int_equal(test, 0);
+    uint32_t length_insert = infos_insert->hidden_length;
 
     stegx_clear(infos_insert);
     dest_stegx_info(choices_insert);
@@ -83,6 +85,8 @@ void test_lsb_little_bmp_with_passwd(void **state)
     uint32_t length_malloc = infos_extract->hidden_length;
     test = stegx_extract(infos_extract, choices_extract->res_path);
     assert_int_equal(test, 0);
+    
+    assert_int_equal(length_malloc, length_insert);
 
     stegx_clear(infos_extract);
     dest_stegx_info(choices_extract);
@@ -103,7 +107,6 @@ void test_lsb_little_bmp_with_passwd(void **state)
     free(message);
     fclose(f);
     remove("./short.txt");
-
 }
 
 /* Test final de l'insertion/extraction LSB sur un fichier BMP sans 
@@ -350,14 +353,97 @@ void test_lsb_big_bmp_without_passwd(void **state)
     remove("./short.txt");
 }
 
+void test_protection_lsb_bmp_insert_pixels_egal_data(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(8*sizeof(uint8_t));
+	pixels[0]=pixels[1]=pixels[2]=pixels[3]=pixels[4]=pixels[5]=pixels[6]=pixels[7]=255;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=100; data[1]=231;
+	assert_int_equal(protect_data_lsb(pixels,8,data,2,"stegx",STEGX_MODE_INSERT),0);
+
+	// ordre aleatoire : 4,1,7,0,2,3,6,5 (stegx)
+	assert_int_equal(pixels[0],252);
+	assert_int_equal(pixels[1],254);
+	assert_int_equal(pixels[2],255);
+	assert_int_equal(pixels[3],254);
+	assert_int_equal(pixels[4],253);
+	assert_int_equal(pixels[5],255);
+	assert_int_equal(pixels[6],253);
+	assert_int_equal(pixels[7],253);
+	free(data);
+	free(pixels);
+}
+
+void test_protection_lsb_bmp_extract_pixels_egal_data(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(8*sizeof(uint8_t));
+	pixels[0]=252; pixels[1]=254; pixels[2]=255; pixels[3]=254;
+	pixels[4]=253; pixels[5]=255; pixels[6]=253; pixels[7]=253;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=data[1]=0;
+
+	protect_data_lsb(pixels,8,data,2,"stegx",STEGX_MODE_EXTRACT);
+	assert_int_equal(data[0],100);
+	assert_int_equal(data[1],231);
+	free(pixels);
+	free(data);
+}
+
+void test_protection_lsb_bmp_insert_pixels_sup_data(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(10*sizeof(uint8_t));
+	pixels[0]=pixels[1]=pixels[2]=pixels[3]=pixels[4]=pixels[5]=pixels[6]=pixels[7]=pixels[8]=pixels[9]=255;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=100; data[1]=231;
+	assert_int_equal(protect_data_lsb(pixels,8,data,2,"stegx",STEGX_MODE_INSERT),0);
+
+	// ordre aleatoire : 4,1,7,0,2,3,6,5 (stegx)
+	assert_int_equal(pixels[0],252);
+	assert_int_equal(pixels[1],254);
+	assert_int_equal(pixels[2],255);
+	assert_int_equal(pixels[3],254);
+	assert_int_equal(pixels[4],253);
+	assert_int_equal(pixels[5],255);
+	assert_int_equal(pixels[6],253);
+	assert_int_equal(pixels[7],253);
+	assert_int_equal(pixels[8],255); // non modifié
+	assert_int_equal(pixels[9],255); // non modifié
+	//assert_int_equal(pixels[
+	
+	free(data);
+	free(pixels);
+}
+
+void test_protection_lsb_bmp_extract_pixels_sup_data(void **state)
+{
+	(void) state;
+	uint8_t* pixels=malloc(8*sizeof(uint8_t));
+	pixels[0]=252; pixels[1]=254; pixels[2]=255; pixels[3]=254;
+	pixels[4]=253; pixels[5]=255; pixels[6]=253; pixels[7]=253;
+	pixels[8]=255; pixels[9]=255;
+	uint8_t* data=malloc(2*sizeof(uint8_t));
+	data[0]=data[1]=0;
+
+	protect_data_lsb(pixels,8,data,2,"stegx",STEGX_MODE_EXTRACT);
+	assert_int_equal(data[0],100);
+	assert_int_equal(data[1],231); 
+	free(pixels);
+	free(data);
+}
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest lsb_tests[] = {
-
-    //cmocka_unit_test(test_lsb_little_bmp_with_passwd),
-    //cmocka_unit_test(test_lsb_little_bmp_without_passwd),
+    cmocka_unit_test(test_lsb_little_bmp_with_passwd),
+    cmocka_unit_test(test_lsb_little_bmp_without_passwd),
     cmocka_unit_test(test_lsb_big_bmp_with_passwd),
     cmocka_unit_test(test_lsb_big_bmp_without_passwd),
+    cmocka_unit_test(test_protection_lsb_bmp_insert_pixels_egal_data),
+    cmocka_unit_test(test_protection_lsb_bmp_extract_pixels_egal_data),
+    cmocka_unit_test(test_protection_lsb_bmp_insert_pixels_sup_data),
+    cmocka_unit_test(test_protection_lsb_bmp_extract_pixels_sup_data),
 };
 
 int main(void)
