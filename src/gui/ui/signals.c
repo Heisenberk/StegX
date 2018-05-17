@@ -168,11 +168,12 @@ static gboolean insert_do(gpointer data)
             gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_to_hide_fc));
         // Fichier résultat. 
         steg_choices.res_path =
-            calloc(strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent))) + 1 +
+            calloc(strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent))) + 2 +
                    strlen(gtk_file_chooser_get_filename
                           (GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc))), sizeof(char));
         strcat(steg_choices.res_path,
                gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_out_dir_fc)));
+        strcat(steg_choices.res_path, "/");
         strcat(steg_choices.res_path, gtk_entry_get_text(GTK_ENTRY(ui->insert.file_out_name_ent)));
 
         /* Initialisation de la bibliothèque avec les choix puis vérifie la
@@ -241,6 +242,7 @@ static void insert_end(struct ui *ui)
                              ui->insert.but_txt_anal : ui->insert.but_txt_dissi);
         /* Affichage de l'erreur précise sur stderr. */
         err_print(stegx_errno);
+        stegx_errno = ERR_NONE;
     }
     /* Affichage du dialogue de fin. */
     gtk_dialog_run(GTK_DIALOG(ui->insert.dial));
