@@ -159,8 +159,8 @@ static gboolean insert_do(gpointer data)
         steg_choices.host_path =
             gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->insert.file_orig_fc));
         // Mot de passe.
-        char *passwd = strdup(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent)));
-        steg_choices.passwd = strlen(passwd) ? passwd : NULL;
+        steg_choices.passwd = strlen(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent))) ?
+            strdup(gtk_entry_get_text(GTK_ENTRY(ui->insert.passwd_ent))) : NULL;
         // Mode.
         steg_choices.mode = STEGX_MODE_INSERT;
         // Fichier à cacher.
@@ -189,6 +189,15 @@ static gboolean insert_do(gpointer data)
             (steg_info, algos_ind[gtk_combo_box_get_active(GTK_COMBO_BOX(ui->insert.algos_cb))]))
             stegx_insert(steg_info);
     }
+
+    /* Libération de la mémoire et fermeture des flux si on a terminé la
+     * dissimulation sans erreur ou s'il y a eu une erreur à l'analyse
+     * (=> prochaine étape = début de l'analyse). */
+    if ((!insert_state && stegx_errno) || (insert_state && !stegx_errno)) {
+        stegx_clear(steg_info);
+        free(steg_choices.passwd), free(steg_choices.res_path);
+    }
+
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->insert.dial), 0);
     gtk_widget_destroy(ui->insert.dial);
@@ -271,34 +280,56 @@ static void insert_reset(GtkWidget * widget, struct ui *ui)
 
 static void extrac_start(GtkWidget * widget, struct ui *ui)
 {
-    /* Si les conditions nécéssaires ne sont pas remplies. */
-    if (!gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
-        || !gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
-        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
-        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
-        gtk_widget_destroy(ui->extrac.dial);
-    } else {
+    /* Si les paramètres nécéssaires ont bien étés remplis par l'utilisateur. */
+    if (gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))
+        && gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc))) {
         /* Création du dialogue d'attente puis lancement du thread de travaille. */
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_proc, UI_DIAL_INFO_WAIT);
         gdk_threads_add_idle(extrac_do, ui);
         /* On met à jour le texte du bouton et on affiche le dialogue précédemment créé. */
         gtk_button_set_label(GTK_BUTTON(widget), ui->extrac.but_txt_proc);
         gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+    } else {
+        /* Création du dialogue d'avertissement puis affichage. */
+        ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_cond, UI_DIAL_WARN);
+        gtk_dialog_run(GTK_DIALOG(ui->extrac.dial));
+        gtk_widget_destroy(ui->extrac.dial);
     }
 }
 
 static gboolean extrac_do(gpointer data)
 {
-    struct ui *ui = (struct ui *)data;
-    /* Processing. */
-    printf("Fichier hôte : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc)));
-    printf("Dossier du fichier résultant : %s\n",
-           gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
-    printf("Mot de passe : %s\n", gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent)));
-    for (int i = 0; i < 1000000000; i++) {
-        /* ret = 0; */
-    }
+    struct ui *ui = (struct ui *)data;  /* Interface. */
+    static stegx_choices_s steg_choices;        /* Structure publique. */
+    static info_s *steg_info;   /* Structure privée. */
+
+    /* Remplissage des champs de la structure publique. */
+    steg_choices.insert_info = NULL;
+    // Fichier hôte.
+    steg_choices.host_path = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_orig_fc));
+    // Mot de passe.
+    steg_choices.passwd = strlen(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) ?
+        strdup(gtk_entry_get_text(GTK_ENTRY(ui->extrac.passwd_ent))) : NULL;
+    // Mode.
+    steg_choices.mode = STEGX_MODE_EXTRACT;
+    // Fichier résultat. 
+    steg_choices.res_path = calloc(strlen(gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc))) + 2, sizeof(char));
+    strcat(steg_choices.res_path, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(ui->extrac.file_out_dir_fc)));
+    strcat(steg_choices.res_path, "/");
+
+    /* Initialisation de la bibliothèque avec les choix puis vérifie la
+     * compatibilité. Ensuite, analyse le fichier hôte et l'algorithme
+     * utilisé lors de la dissimulation. Finalement, on lance l'extraction
+     * du fichier caché. On s'arrête s'il y a une erreur dans une de ces
+     * fonctions. */
+    if ((steg_info = stegx_init(&steg_choices)) && !stegx_check_compatibility(steg_info)
+            && !stegx_detect_algo(steg_info))
+        stegx_extract(steg_info, steg_choices.res_path);
+
+    /* Libération de la mémoire et fermeture des flux. */
+    stegx_clear(steg_info);
+    free(steg_choices.passwd), free(steg_choices.res_path);
+
     /* Suppression du dialogue en cours. */
     gtk_dialog_response(GTK_DIALOG(ui->extrac.dial), 0);
     gtk_widget_destroy(ui->extrac.dial);
@@ -313,8 +344,12 @@ static void extrac_end(struct ui *ui)
     if (!stegx_errno)
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_end, UI_DIAL_INFO_OK);
     /* Si l'extraction à échouée. */
-    else
+    else {
         ui->extrac.dial = ui_msg_dial_new(ui->window, ui->extrac.dial_err, UI_DIAL_ERR);
+        /* Affichage de l'erreur précise sur stderr. */
+        err_print(stegx_errno);
+        stegx_errno = ERR_NONE;
+    }
     /* Mise à jour du bouton pour relancer l'extraction. */
     gtk_button_set_label(GTK_BUTTON(ui->extrac.but), ui->extrac.but_txt);
     /* Affichage du dialogue de fin. */
