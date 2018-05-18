@@ -63,7 +63,7 @@ info_s *stegx_init(stegx_choices_s * choices)
         /* Initialisation du fichier à cacher. */
         if (!strcmp(choices->insert_info->hidden_path, "stdin"))
             s->hidden = stdin;
-        else if (!(s->hidden = fopen(choices->insert_info->hidden_path, "r")))
+        else if (!(s->hidden = fopen(choices->insert_info->hidden_path, "rb")))
             return perror(NULL), stegx_errno = ERR_HIDDEN, NULL;
         /* L'algorithme sera choisi avec stegx_choose_algo(). */
 
@@ -72,7 +72,7 @@ info_s *stegx_init(stegx_choices_s * choices)
             return perror("Can't allocate memory for the name of hidden file"), NULL;
 
         /* Initialisation et vérification du fichier résultat pour l'insertion. */
-        if ((s->res != stdout) && !(s->res = fopen(choices->res_path, "w")))
+        if ((s->res != stdout) && !(s->res = fopen(choices->res_path, "wb")))
             return stegx_errno = ERR_RES_INSERT, NULL;
     }
 
@@ -93,7 +93,7 @@ info_s *stegx_init(stegx_choices_s * choices)
     }
 
     /* Initialisation du fichier hôte. */
-    if ((s->host.host != stdin) && !(s->host.host = fopen(choices->host_path, "r")))
+    if ((s->host.host != stdin) && !(s->host.host = fopen(choices->host_path, "rb")))
         return perror(NULL), stegx_errno = ERR_HOST, NULL;
 
     assert(s->mode == STEGX_MODE_INSERT || s->mode == STEGX_MODE_EXTRACT);

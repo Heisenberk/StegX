@@ -41,7 +41,7 @@ int stegx_extract(info_s * infos, char *res_path)
         i++;
     }
     res_name[strlen(res_path) + strlen(infos->hidden_name)] = '\0';
-    infos->res = fopen(res_name, "w");
+    infos->res = fopen(res_name, "wb");
     if (infos->res == NULL) {
         stegx_errno = ERR_EXTRACT;
         return 1;

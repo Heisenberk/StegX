@@ -22,11 +22,8 @@ int insert_eoc(info_s * infos)
     uint32_t data_per_vtag=infos->hidden_length/infos->host.file_info.flv.nb_video_tag;
     uint32_t reste=infos->hidden_length%infos->host.file_info.flv.nb_video_tag;
    
-    //infos->host.file_info.flv.
-     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-        return perror("Can't make insertion EOF"), 1;
-    
-    
+    if (fseek(infos->host.host, 0, SEEK_SET) == -1)
+        return perror("Can't do insertion EOC"), 1;
 
     if(infos->host.file_info.flv.nb_video_tag<256){
     	uint8_t *data = malloc(infos->host.file_info.flv.nb_video_tag * sizeof(uint8_t));
@@ -152,13 +149,83 @@ int insert_eoc(info_s * infos)
 	while(fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host)==1)
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 		
-   
+    write_signature(infos);
     return 0;
 }	
 
 int extract_eoc(info_s * infos)
 {
-    (void)infos;                /* Unused. */
-    return 1;
-}
+	uint8_t byte_cpy;
+    uint32_t data_size;
+    uint8_t tag_type; 
+    uint32_t cpt_video_tag=0;
+	uint32_t data_jump;
+	uint32_t write_data;
+	assert(infos);
+    assert(infos->mode == STEGX_MODE_EXTRACT);
+    assert(infos->algo == STEGX_ALGO_EOC);
+   // uint32_t prev_tag_size;
+    uint32_t data_per_vtag=infos->hidden_length/infos->host.file_info.flv.nb_video_tag;
+    uint32_t reste=infos->hidden_length%infos->host.file_info.flv.nb_video_tag;
+   
+   
+   if (fseek(infos->host.host, 0, SEEK_SET) == -1)
+        return perror("Can't do extraction EOC"), 1;
 
+	/* Initialisation de protect data */
+   if(infos->host.file_info.flv.nb_video_tag<256){
+		uint8_t *data = malloc(infos->host.file_info.flv.nb_video_tag * sizeof(uint8_t));
+        if (!data)
+           	return perror("Can't allocate memory Insertion"), 1;
+        uint32_t cursor = 0;
+        
+        for(uint8_t i=0;i<infos->host.file_info.flv.nb_video_tag;i++){
+            data[cursor]=i;
+            cursor++;
+        }
+		protect_data(data,infos->host.file_info.flv.nb_video_tag,infos->passwd, infos->mode);
+		
+		uint8_t k=0;
+
+		do {
+			fseek(infos->host.host, 13, SEEK_SET);
+			cursor = 0;
+			while(data[cursor] != k)
+				cursor++;
+			cpt_video_tag = 0;
+			/* Recherche du tag vidéo numéro cursor */
+			while(cursor != (cpt_video_tag - 1)){
+				fread(&tag_type, sizeof(uint8_t), 1, infos->host.host);
+				if(tag_type == 9)
+					cpt_video_tag++;
+				fread(&data_size, sizeof(uint32_t), 1, infos->host.host);
+				//passage en 24 bits      
+				data_size = be32toh(data_size);
+				data_size >>= 8;
+				/* Si c'est pas un tag vidéo, on jump 
+				 * les 6 octets après data_size + les data + le previous tag size (4 octets) */ 
+				if(cursor != (cpt_video_tag - 1))
+					fseek(infos->host.host, data_size + 10, SEEK_CUR);
+			}
+			
+			/* Calcul le nombre d'octets à sauter pour arriver avant les données à récupérer */
+			if (cpt_video_tag==infos->host.file_info.flv.nb_video_tag){
+				data_jump = data_size - reste - data_per_vtag + 6; //cas particulier dernier tag
+				write_data = reste + data_per_vtag;
+			}
+			else {
+				data_jump = data_size - data_per_vtag;
+				write_data = data_per_vtag;
+			}
+			fseek(infos->host.host, data_jump, SEEK_CUR);
+			/* Recopie des données dans le fichhier resultat */
+			for(uint32_t i = 0; i < write_data; i++){
+				fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
+				fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
+			} 
+			
+			k++;
+		}while(k != infos->host.file_info.flv.nb_video_tag-1);
+	}
+	return 0;
+}
