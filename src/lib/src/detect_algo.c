@@ -99,6 +99,16 @@ static int read_signature(info_s * infos)
     return 0;
 }
 
+int sig_fseek(FILE* f, char * h, method_e m)
+{
+    /* 2 octets pour l'algorithme et la méthode.
+     * 4 octets pour la taille du fichier caché (uint32_t).
+     * 1 octet pour la taille du nom du fichier caché.
+     * 1 à 255 octets pour le nom du fichier caché (sans '\0').
+     * 64 octets si StegX à utilisé un mot de passe par defaut . */
+    return fseek(f, 2 + 4 + 1 + strlen(h) + LENGTH_DEFAULT_PASSWD * (m == STEGX_WITHOUT_PASSWD), SEEK_CUR);
+}
+
 int stegx_detect_algo(info_s * infos)
 {
     /* Vérifie le mode d'utilisation, puis remplit la structure afin d'avoir la
