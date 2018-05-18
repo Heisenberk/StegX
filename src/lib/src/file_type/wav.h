@@ -24,7 +24,8 @@
 #define WAV_SUBCHK1_ADDR 12
 
 /**
- * @brief Structure du formatWAVE.
+ * @brief Structure du format WAVE.
+ * @internal Ne pas changer les deux premiers membres (ordre et type).
  */
 struct wav {
     uint32_t header_size;       /*!< Offset du début du segment data (octet). */

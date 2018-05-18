@@ -35,16 +35,12 @@ static int read_signature(info_s * infos)
     /* Saut à l'offset de la signature. Il faut prendre en compte les
      * spécificités de chaque format. */
 
-    /* BMP & WAVE (car ils ont tout les deux "header_size" et "data_size" en
-     * "uint32_t" au début de leurs structures). */
-    if (infos->host.type <= WAV_NO_PCM && infos->host.type >= BMP_COMPRESSED) {
+    /* BMP, PNG et WAVE (car ils ont tout les trois "header_size" et "data_size"
+     * en "uint32_t" au début de leurs structures). */
+    if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
         if (fseek(infos->host.host, infos->host.file_info.wav.header_size +
                   infos->host.file_info.wav.data_size, SEEK_SET))
-            return perror("BMP & WAVE: Can't move to StegX signature"), 1;
-    } else if (infos->host.type == PNG) {
-        if (fseek(infos->host.host, infos->host.file_info.png.header_size +
-                  infos->host.file_info.png.data_size, SEEK_SET))
-            return perror("PNG: Can't move to StegX signature"), 1;
+            return perror("BMP, PNG & WAVE: Can't move to StegX signature"), 1;
     } else if (infos->host.type == MP3) {
     } else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
     } else if (infos->host.type == FLV) {
@@ -97,6 +93,16 @@ static int read_signature(info_s * infos)
         j = infos->passwd[j + 1] ? j + 1 : 0;   /* Boucle sur le mot de passe. */
     }
     return 0;
+}
+
+int sig_fseek(FILE* f, char * h, method_e m)
+{
+    /* 2 octets pour l'algorithme et la méthode.
+     * 4 octets pour la taille du fichier caché (uint32_t).
+     * 1 octet pour la taille du nom du fichier caché.
+     * 1 à 255 octets pour le nom du fichier caché (sans '\0').
+     * 64 octets si StegX à utilisé un mot de passe par defaut . */
+    return fseek(f, 2 + 4 + 1 + strlen(h) + LENGTH_DEFAULT_PASSWD * (m == STEGX_WITHOUT_PASSWD), SEEK_CUR);
 }
 
 int stegx_detect_algo(info_s * infos)

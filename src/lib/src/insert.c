@@ -5,7 +5,6 @@
  * d'écriture de la signature.
  */
 
-//#include <endian.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>

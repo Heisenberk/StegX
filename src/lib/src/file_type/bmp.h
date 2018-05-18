@@ -30,6 +30,7 @@
 
 /**
  * @brief Structure du format BMP.
+ * @internal Ne pas changer les deux premiers membres (ordre et type).
  */
 struct bmp {
     uint32_t header_size;

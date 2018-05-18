@@ -34,6 +34,7 @@
 
 /**
  * @brief Structure du format PNG.
+ * @internal Ne pas changer les deux premiers membres (ordre et type).
  */
 struct png {
     uint32_t header_size;
