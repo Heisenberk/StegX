@@ -64,7 +64,7 @@ typedef struct info info_s;
  * Si stegx_propos_algo[i] est égal à 1, alors on peut utiliser l'aglorithme
  * correspondant à algo_e égal à i. Sinon, on ne peut pas.
  */
-algo_e *stegx_propos_algos;
+extern algo_e *stegx_propos_algos;
 
 /*
  * Structures

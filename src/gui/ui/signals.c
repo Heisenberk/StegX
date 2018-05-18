@@ -31,7 +31,7 @@ static const char *algos_lst[] = {
 
 /** Permet de faire la correspondance entre l'indice de l'algorithme dans la liste
  * proposé à l'utilisateur et l'indice de l'algorithme dans l'énumération. */
-static int algos_ind[STEGX_NB_ALGO];
+static int algos_ind[STEGX_NB_ALGO] = { -1 };
 
 /**
  * Variable globale au module signal qui contient le numéro de l'état de

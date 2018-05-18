@@ -36,7 +36,7 @@ enum err_code {
  * Variable mise à la disposition des fonctions de la bibliothèque pour y
  * inscrire leur code d'erreur.
  */
-enum err_code stegx_errno;
+extern enum err_code stegx_errno;
 
 /**
  * Affiche le message d'erreur sur la sortie d'erreur en fonction du code

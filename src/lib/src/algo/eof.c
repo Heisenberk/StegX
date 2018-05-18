@@ -45,7 +45,7 @@ int insert_eof(info_s * infos)
         while (nb_cpy < header_size) {
             if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
                 return perror("Can't read Header"), 1;
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
+            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) != 1)
                 return perror("Can't writ Header"), 1;
             nb_cpy++;
         }
@@ -53,9 +53,9 @@ int insert_eof(info_s * infos)
         // Recopie du data
         nb_cpy = 0;
         while (nb_cpy < data_size) {
-            if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) == 0)
+            if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
                 return perror("Can't read Data"), 1;
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
+            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) != 1)
                 return perror("Can't write Data"), 1;
             nb_cpy++;
         }

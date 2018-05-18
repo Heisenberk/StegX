@@ -10,6 +10,9 @@
 
 #include "stegx_errors.h"
 
+/* Initialisation. */
+enum err_code stegx_errno = ERR_NONE;
+
 void err_print(enum err_code err)
 {
     static const char *err_desc[] = {
