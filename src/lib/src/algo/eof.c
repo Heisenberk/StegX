@@ -17,6 +17,53 @@
 #include "protection.h"
 #include "detect_algo.h"
 
+/** Taille d'un buffer de copie. */
+#define BUFSIZE 4096
+
+/**
+ * @brief Écrit des données XORées avec un mot de passe.
+ * @internal Pas de gestion d'erreur dans la boucle car cela ralentit beaucoup.
+ * Si tout à été bien fait avant, il ne devrait pas y avoir d'erreur !
+ * @param src Fichier où lire la donnée.
+ * @param res Fichier où écrire la donnée.
+ * @param passwd Mot de passe utilisé pour générer la seed.
+ * @return 0 si tout est ok, 1 s'il y a eu une erreur lors de la lecture du
+ * fichier source.
+ */
+static int data_xor_write(FILE * src, FILE * res, const char * passwd)
+{
+    srand(create_seed(passwd));
+    for (uint8_t b ; fread(&b, sizeof(b), 1, src) == 1 ;)
+        fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
+    return ferror(src);
+}
+
+/**
+ * @brief Écrit des données mélangé ou remise en ordre avec un mot de passe.
+ * @param src Fichier où lire la donnée.
+ * @param res Fichier où écrire la donnée.
+ * @param pass Mot de passe utilisé pour générer la seed.
+ * @param len Longueur des données à cacher / cacher.
+ * @param m Mode d'utilisation (insertion ou extraction).
+ * @return 0 si tout est ok, 1 s'il y a eu une erreur.
+ */
+static int data_scramble_write(FILE * src, FILE * res, const char * pass,
+        const uint32_t len, const mode_e m)
+{
+    uint8_t *data = malloc(len * sizeof(uint8_t));
+    if (!data)
+        return perror("EOF: Can't allocate memory for copy hidden file"), 1;
+    // Copie les données de fichier source dans data.
+    if (fread(data, sizeof(*data), len, src) != len)
+        return perror("EOF: Can't make a copy of hidden file"), 1;
+    // Mélange ou remet en ordre les octets dans data.
+    protect_data(data, len, pass, m);
+    // Écriture des données dans le fichier resultat.
+    if (fwrite(data, sizeof(*data), len, res) != len)
+        return perror("EOF: Can't write hidden data"), 1;
+    return free(data), 0;
+}
+
 int insert_eof(info_s * infos)
 {
     /* Initialisation. */
@@ -28,15 +75,13 @@ int insert_eof(info_s * infos)
     if (fseek(infos->hidden, 0, SEEK_SET))
         return perror("EOF: Can't jump to the beginning of the hidden file"), 1;
 
-    // Octet lu.
-    uint8_t byte_cpy;
-
     /* Déplacement à l'offset où il faut écrire la signature. */
     // Formats BMP, PNG, WAVE (structures identiques dans l'union).
     if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
         // Recopie du fichier hôte.
-        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) == 1) {
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) != 1)
+        uint size;
+        for (uint8_t b[BUFSIZE] ; (size = fread(b, sizeof(*b), BUFSIZE, infos->host.host)); ) {
+            if (fwrite(b, sizeof(*b), size, infos->res) != size)
                 return perror("EOF: Can't write a copy of the host file"), 1;
         }
         if (ferror(infos->host.host))
@@ -51,31 +96,12 @@ int insert_eof(info_s * infos)
 
     /* Si le fichier à cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
-    if (infos->hidden_length > LENGTH_FILE_MAX) {
-        srand(create_seed(infos->passwd));
-        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
-            byte_cpy = byte_cpy ^ (rand() % UINT8_MAX);       // XOR avec le nombre pseudo aleatoire generé.
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
-                return perror("EOF: Can't write XORed hidden data"), 1;
-        }
-    }
+    if (infos->hidden_length > LENGTH_FILE_MAX)
+        return data_xor_write(infos->hidden, infos->res, infos->passwd) ? perror("EOF: Can't write XORed hidden data"), 1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
-    else {
-        uint8_t *data = malloc(infos->hidden_length * sizeof(uint8_t));
-        if (!data)
-            return perror("EOF: Can't allocate memory for copy hidden file"), 1;
-        // Copie les données de fichier à cacher dans data.
-        if (fread(data, sizeof(uint8_t), infos->hidden_length, infos->hidden) != infos->hidden_length)
-            return perror("EOF: Can't make a copy of hidden file"), 1;
-        // Mélange des octets dans data.
-        protect_data(data, infos->hidden_length, infos->passwd, infos->mode);
-        // Écriture des données dans le fichier à cacher.
-        if (fwrite(data, sizeof(uint8_t), infos->hidden_length, infos->res) != infos->hidden_length)
-            return perror("EOF: Can't write hidden data"), 1;
-        free(data);
-    }
-    return 0;
+    return data_scramble_write(infos->hidden, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
+        perror("EOF: Can't write scrambled hidden data"), 1 : 0;
 }
 
 int extract_eof(info_s * infos)
@@ -86,9 +112,6 @@ int extract_eof(info_s * infos)
     assert(infos->algo == STEGX_ALGO_EOF);
     if (fseek(infos->host.host, 0, SEEK_SET))
         return perror("EOF: Can't jump to the beginning of the host file"), 1;
-
-    // Octet lu.
-    uint8_t byte_cpy;
 
     /* Déplacement à l'offset où la signature est écrite. */
     // Formats BMP, PNG, WAVE (structures identiques dans l'union).
@@ -105,29 +128,11 @@ int extract_eof(info_s * infos)
 
     /* Si le fichier cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
-    if (infos->hidden_length > LENGTH_FILE_MAX) {
-        srand(create_seed(infos->passwd));
-        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 0) {
-            byte_cpy = byte_cpy ^ (rand() % UINT8_MAX);       // XOR avec le nombre pseudo aleatoire generé.
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
-                return perror("EOF: Can't write deXORed hidden data"), 1;
-        }
-    }
+    if (infos->hidden_length > LENGTH_FILE_MAX)
+        return data_xor_write(infos->host.host, infos->res, infos->passwd) ? perror("EOF: Can't write deXORed hidden data"), 1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
-    else {
-        uint8_t *data = malloc(infos->hidden_length * sizeof(uint8_t));
-        if (!data)
-            return perror("EOF: Can't allocate memory for copy hidden file"), 1;
-        // Copie les données de fichier cacher dans data.
-        if (fread(data, sizeof(uint8_t), infos->hidden_length, infos->host.host) != infos->hidden_length)
-            return perror("EOF: Can't make a copy of hidden file"), 1;
-        // Remise dans l'ordre des octets dans data.
-        protect_data(data, infos->hidden_length, infos->passwd, infos->mode);
-        // Écriture des données dans le fichier résultat.
-        if (fwrite(data, sizeof(uint8_t), infos->hidden_length, infos->res) != infos->hidden_length)
-            return perror("EOF: Can't write hidden data"), 1;
-        free(data);
-    }
+    return data_scramble_write(infos->host.host, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
+        perror("EOF: Can't write descrambled hidden data"), 1 : 0;
     return 0;
 }

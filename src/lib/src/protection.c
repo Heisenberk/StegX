@@ -18,7 +18,7 @@
 #include "stegx_errors.h"
 #include "protection.h"
 
-unsigned int create_seed(char *passwd)
+unsigned int create_seed(const char *passwd)
 {
     unsigned int srand_nb = 0;
     int j = 0;
@@ -31,7 +31,7 @@ unsigned int create_seed(char *passwd)
     return srand_nb;
 }
 
-int protect_data(uint8_t * tab, uint32_t hidden_length, char *passwd, mode_e mode)
+int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode_e mode)
 {
 
     // copie temporaire de tab car le resultat sera dans tab
