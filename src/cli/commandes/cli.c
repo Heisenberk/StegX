@@ -160,20 +160,11 @@ void fill_info(stegx_choices_s * com, const int argc, char *const *argv)
 void check_info(stegx_choices_s * com)
 {
     if (com->mode == STEGX_MODE_INSERT) {
-        if ((com->host_path != NULL)) {
-            printf("host_path : %s\n"
-                   "hidden_path : %s\n"
-                   "res_path : %s\n"
-                   "algo : %d\n"
-                   "password : %s\n", com->host_path, com->insert_info->hidden_path,
-                   com->res_path, com->insert_info->algo, com->passwd);
-        } else {
-            unvalid_line("fichier hôte ou algorithme non renseigné.\n");
+        if ((com->host_path == NULL)) {
+            unvalid_line("Fichier hôte ou algorithme non renseigné.\n");
             exit(-1);
-        }
+		}
     } else if (com->mode == STEGX_MODE_EXTRACT) {
-        printf("host_path : %s\n"
-               "res_path : %s\n" "password : %s\n", com->host_path, com->res_path, com->passwd);
     } else {
         unvalid_line("");
         exit(-1);
@@ -186,5 +177,4 @@ void dest_stegx_info(stegx_choices_s * com)
         free(com->insert_info);
     }
     free(com);
-
 }
