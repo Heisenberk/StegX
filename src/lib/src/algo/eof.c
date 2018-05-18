@@ -13,101 +13,67 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
-#include "../insert.h"
-#include "../protection.h"
+#include "insert.h"
+#include "protection.h"
 
 int insert_eof(info_s * infos)
 {
+    /* Initialisation. */
     assert(infos);
     assert(infos->mode == STEGX_MODE_INSERT);
     assert(infos->algo == STEGX_ALGO_EOF);
-    uint32_t nb_cpy;            //nb doctets recopies
-    uint8_t byte_cpy;           // octet recopie
-    uint32_t header_size;
-    uint32_t data_size;
-    if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-        return perror("Can't make insertion EOF"), 1;
-    if (fseek(infos->hidden, 0, SEEK_SET) == -1)
-        return perror("Can't make insertion EOF"), 1;
+    if (fseek(infos->host.host, 0, SEEK_SET))
+        return perror("EOF: Can't jump to the beginning of the host file"), 1;
+    if (fseek(infos->hidden, 0, SEEK_SET))
+        return perror("EOF: Can't jump to the beginning of the hidden file"), 1;
 
-    // pour les formats BMP, PNG
-    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)
-        || (infos->host.type == PNG)) {
-        if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
-            header_size = infos->host.file_info.bmp.header_size;
-            data_size = infos->host.file_info.bmp.data_size;
-        } else if (infos->host.type == PNG) {
-            header_size = infos->host.file_info.png.header_size;
-            data_size = infos->host.file_info.png.data_size;
-        }
-        // Recopie du header
-        nb_cpy = 0;
-        while (nb_cpy < header_size) {
-            if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
-                return perror("Can't read Header"), 1;
+    // Octet lu.
+    uint8_t byte_cpy;
+
+    /* Déplacement à l'offset où il faut écrire la signature. */
+    // Formats BMP, PNG, WAVE.
+    if (((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= WAV_NO_PCM)) || (infos->host.type == PNG)) {
+        // Recopie du fichier hôte.
+        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) == 1) {
             if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) != 1)
-                return perror("Can't writ Header"), 1;
-            nb_cpy++;
+                return perror("EOF: Can't write a copy of the host file"), 1;
         }
-
-        // Recopie du data
-        nb_cpy = 0;
-        while (nb_cpy < data_size) {
-            if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
-                return perror("Can't read Data"), 1;
-            if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) != 1)
-                return perror("Can't write Data"), 1;
-            nb_cpy++;
-        }
+        if (ferror(infos->host.host))
+            return perror("EOF: Can't read a copy of the host file"), 1;
     }
-    // Ecriture de la signature
-    if (write_signature(infos) == 1) {
-        stegx_errno = ERR_INSERT;
-        return 1;
-    }
-    // Ecriture des donnees du fichier a cacher
-    if (fseek(infos->hidden, 0, SEEK_SET) == -1)
-        return perror("Can't make insertion EOF"), 1;
 
-    /* Si le fichier a cacher est trop gros, on fait XOR avec la 
-     * suite pseudo aleatoire générée avec le mot de passe
-     * */
+    // Ecriture de la signature.
+    if (write_signature(infos) == 1)
+        return stegx_errno = ERR_INSERT, 1;
+
+    // Ecriture des données du fichier a cacher.
+
+    /* Si le fichier a cacher est trop gros, on fait un XOR avec la 
+     * suite pseudo aleatoire générée avec le mot de passe. */
     if (infos->hidden_length > LENGTH_FILE_MAX) {
         srand(create_seed(infos->passwd));
-        //int i = 0; // A ENLVER???
-        uint8_t random;
         while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
-            random = rand() % UINT8_MAX;
-            byte_cpy = byte_cpy ^ random;       //XOR avec le nombre pseudo aleatoire generé
+            byte_cpy = byte_cpy ^ (rand() % UINT8_MAX);       // XOR avec le nombre pseudo aleatoire generé.
             if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
-                return perror("Can't write hidden data"), 1;
-            //i++;
+                return perror("EOF: Can't write XORed hidden data"), 1;
         }
     }
-
     /* Sinon on utilise la méthode de protection des données du mélange
-     * des octets. 
-     * */
+     * des octets. */
     else {
         uint8_t *data = malloc(infos->hidden_length * sizeof(uint8_t));
         if (!data)
             return perror("Can't allocate memory Insertion"), 1;
-        uint32_t cursor = 0;
-        // Lecture des donnees a cacher et stockage ds data
-        while (fread(&byte_cpy, sizeof(uint8_t), 1, infos->hidden) != 0) {
-            data[cursor] = byte_cpy;
-            cursor++;
-        }
-        // Melange des octets dans data
+        // Copie les données de fichier à cacher dans data.
+        if (fread(data, sizeof(uint8_t), infos->hidden_length, infos->hidden) != infos->hidden_length)
+            return perror("EOF: Can't make a copy of hidden file"), 1;
+        // Mélange des octets dans data.
         protect_data(data, infos->hidden_length, infos->passwd, infos->mode);
-        // Ecriture des donnees dans le fichier a cacher
-        for (cursor = 0; cursor < infos->hidden_length; cursor++) {
-            if (fwrite(&data[cursor], sizeof(uint8_t), 1, infos->res) == 0)
-                return perror("Can't write hidden data"), 1;
-        }
+        // Écriture des données dans le fichier à cacher.
+        if (fwrite(data, sizeof(uint8_t), infos->hidden_length, infos->res) != infos->hidden_length)
+            return perror("EOF: Can't write hidden data"), 1;
         free(data);
     }
-
     return 0;
 }
 
