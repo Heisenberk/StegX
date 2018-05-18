@@ -15,6 +15,7 @@
 #include "stegx_errors.h"
 #include "../insert.h"
 #include "../protection.h"
+#include "../endian.h"
 
 /** Signature BMP */
 #define SIG_BMP 0x4D42
@@ -70,7 +71,6 @@ int insert_metadata_bmp(info_s * infos)
         return perror("BMP file: Can't write data host"), 1;
 
     // Ecriture de la nouvelle taille du fichier (incluant les donnees a cacher)
-    new_length_file = htole32(new_length_file);
     if (fwrite(&new_length_file, sizeof(uint32_t), 1, infos->res) == 0)
         return perror("BMP file: Can't write data host"), 1;
 
@@ -91,7 +91,6 @@ int insert_metadata_bmp(info_s * infos)
         return perror("BMP file: Can not move in the file"), 1;
     // Ecriture du nouvel offset apres insertion des donnees cachees
     begin_def_pic = infos->host.file_info.bmp.header_size + infos->hidden_length;
-    begin_def_pic = htole32(begin_def_pic);
     if (fwrite(&begin_def_pic, sizeof(uint32_t), 1, infos->res) == 0)
         return perror("BMP file: Can't write data host"), 1;
 

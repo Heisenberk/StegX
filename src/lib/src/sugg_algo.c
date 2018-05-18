@@ -11,20 +11,10 @@
 #include <assert.h>
 #include <time.h>
 
+#include "endian.h"
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
-
-/** 
- * @brief Convertit val lue en big endian dans l'ordre des octets de la machine
- * de l'utilisateur. 
- * @param nb nombre a convertir.
- * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
- */
-uint32_t stegx_be32toh(uint32_t nb){
-    nb = ((nb << 8) & 0xFF00FF00) | ((nb >> 8) & 0xFF00FF); 
-    return (nb << 16) | (nb >> 16);
-}
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 

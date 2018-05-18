@@ -15,6 +15,7 @@
 #include "stegx_errors.h"
 #include "../insert.h"
 #include "../protection.h"
+#include "../endian.h"
 
 /** Signature PNG */
 #define SIG_PNG 0x0A1A0A0D474E5089
@@ -100,7 +101,7 @@ int insert_metadata_png(info_s * infos)
     uint32_t part_length_hidden = ((infos->hidden_length) / 2) + 4;
     //+4 pour reconnaitre que ce chunk tEXt a ete cree par STEGX 
     length = 0;
-    uint32_t part_length_hidden_big_endian = htobe32(part_length_hidden);
+    uint32_t part_length_hidden_big_endian = stegx_htobe32(part_length_hidden);
     uint32_t sig = SIG_tEXt;
     for (int i = 0; i < 2; i++) {
         // Recopie en big endian de la taille du chunk tEXt
@@ -128,7 +129,7 @@ int insert_metadata_png(info_s * infos)
 
         // pour le deuxieme chunk cree on prend les donnees restantes a cacher
         part_length_hidden = (infos->hidden_length) - ((infos->hidden_length) / 2) + 4;
-        part_length_hidden_big_endian = htobe32(part_length_hidden);
+        part_length_hidden_big_endian = stegx_htobe32(part_length_hidden);
         sig = SIG_tEXt;
     }
 
@@ -167,7 +168,7 @@ int extract_metadata_png(info_s * infos)
     chunk_id = 0;
     if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
         return perror("PNG file: Can't read length of chunk"), 1;
-    chunk_size = be32toh(chunk_size);
+    chunk_size = stegx_be32toh(chunk_size);
     if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
         return perror("PNG file: Can't read ID of chunk"), 1;
 
@@ -210,7 +211,7 @@ int extract_metadata_png(info_s * infos)
         // Lecture de la taille et de ID du prochain chunk (pour le prochain tour de boucle)
         if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read length of chunk"), 1;
-        chunk_size = be32toh(chunk_size);
+        chunk_size = stegx_be32toh(chunk_size);
         if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read ID of chunk"), 1;
     } while (chunk_id != SIG_IEND);
