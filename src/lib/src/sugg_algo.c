@@ -9,12 +9,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <endian.h>
 #include <time.h>
 
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+
+/** 
+ * @brief Convertit val lue en big endian dans l'ordre des octets de la machine
+ * de l'utilisateur. 
+ * @param nb nombre a convertir.
+ * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
+ */
+uint32_t stegx_be32toh(uint32_t nb){
+    nb = ((nb << 8) & 0xFF00FF00) | ((nb >> 8) & 0xFF00FF); 
+    return (nb << 16) | (nb >> 16);
+}
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
@@ -146,14 +156,14 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&length_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        length_pic = le32toh(length_pic);
+        //length_pic = le32toh(length_pic);
 
         // lecture de la taille du header (qui correspond au debut de data)
         if (fseek(infos->host.host, BMP_DEF_PIC, SEEK_SET) == -1)
             return 1;
         if (fread(&begin_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        begin_pic = le32toh(begin_pic);
+        //begin_pic = le32toh(begin_pic);
 
         infos->host.file_info.bmp.header_size = begin_pic;
         infos->host.file_info.bmp.data_size = length_pic - begin_pic;
@@ -163,7 +173,7 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        pixel_length = le32toh(pixel_length);
+        //pixel_length = le32toh(pixel_length);
         infos->host.file_info.bmp.pixel_length = pixel_length;
 
         // lecture de la largeur de l'image
@@ -171,12 +181,12 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&pixel_width, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        pixel_width = le32toh(pixel_width);
+        //pixel_width = le32toh(pixel_width);
 
         // lecture de la hauteur de l'image
         if (fread(&pixel_height, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        pixel_height = le32toh(pixel_height);
+        //pixel_height = le32toh(pixel_height);
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }
@@ -189,7 +199,7 @@ int fill_host_info(info_s * infos)
         uint32_t ihdr_length;
         if (fread(&ihdr_length, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        ihdr_length = be32toh(ihdr_length);
+        ihdr_length = stegx_be32toh(ihdr_length);
         infos->host.file_info.png.header_size = PNG_DEF_IHDR + ihdr_length;
 
         uint32_t chunk_size, chunk_id;
@@ -199,7 +209,7 @@ int fill_host_info(info_s * infos)
             return perror("PNG file: Can not move in the file"), 1;
         if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read length of chunk"), 1;
-        chunk_size = be32toh(chunk_size);
+        chunk_size = stegx_be32toh(chunk_size);
         if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
             return perror("PNG file: Can't read ID of chunk"), 1;
         // on cherche le chunk IEND pour connaitre la taille du fichier
@@ -208,7 +218,7 @@ int fill_host_info(info_s * infos)
                 return perror("PNG file: Can not move in the file"), 1;
             if (fread(&chunk_size, sizeof(uint32_t), 1, infos->host.host) != 1)
                 return perror("PNG file: Can't read size of chunk"), 1;
-            chunk_size = be32toh(chunk_size);
+            chunk_size = stegx_be32toh(chunk_size);
             if (fread(&chunk_id, sizeof(uint32_t), 1, infos->host.host) != 1)
                 return perror("PNG file: Can't read ID of chunk"), 1;
         }
@@ -269,7 +279,7 @@ int fill_host_info(info_s * infos)
         fread(&check_tags, sizeof(check_tags), 1, infos->host.host);
         fread(&header_size, sizeof(header_size), 1, infos->host.host);
 
-        header_size = be32toh(header_size);
+        header_size = stegx_be32toh(header_size);
         infos->host.file_info.flv.file_size += header_size;
         fseek(infos->host.host, 4, SEEK_CUR);
         infos->host.file_info.flv.file_size += 4;
@@ -286,14 +296,14 @@ int fill_host_info(info_s * infos)
             }
             fread(&data_size, sizeof(data_size), 1, infos->host.host);
             //lecture de la taille des data
-            data_size = be32toh(data_size);
+            data_size = stegx_be32toh(data_size);
             //passage en 24 bits      
             data_size >>= 8;
             //deplacement jusqu'au prochain previous tag size (data size + 6octets qui comportent d'autres informations non utiles) 
             fseek(infos->host.host, data_size + 6, SEEK_CUR);
             //lecture du previous tag size 
             fread(&prev_tag_size, sizeof(prev_tag_size), 1, infos->host.host);
-            prev_tag_size = be32toh(prev_tag_size);
+            prev_tag_size = stegx_be32toh(prev_tag_size);
             infos->host.file_info.flv.file_size += prev_tag_size + 4;
         }
         return 0;

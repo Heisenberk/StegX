@@ -13,6 +13,17 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 
+/** 
+ * @brief Convertit val lue en little endian en big endian. 
+ * @param nb nombre a convertir.
+ * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
+ */
+uint32_t stegx_htobe32(uint32_t nb){
+    nb = ((nb << 8) & 0xFF00FF00) | ((nb >> 8) & 0xFF00FF); 
+    return (nb << 16) | (nb >> 16);
+    
+}
+
 int insert_eoc(info_s * infos)
 {
     (void)infos;                /* Unused. */
