@@ -7,7 +7,7 @@
 #ifndef LSB_H
 #define LSB_H
 
-#include <stdio.h>
+#include <stdint.h>
 
 #include "common.h"
 

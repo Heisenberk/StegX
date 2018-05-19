@@ -13,7 +13,7 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "protection.h"
-#include "../insert.h"
+#include "insert.h"
 
 int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, uint32_t data_length,
                      char *passwd, mode_e mode)
@@ -137,8 +137,9 @@ int insert_lsb(info_s * infos)
     if (fseek(infos->hidden, 0, SEEK_SET) == -1)
         return perror("Can't make jump hidden file"), 1;
 
-    // pour le format BMP
-    if (infos->host.type == BMP_UNCOMPRESSED) {
+    // pour le format BMP et WAVE
+    assert(infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM);
+    if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
 
         // Recopie du header dans le fichier resultat -> taille du header de l'hote
         while (nb_cpy < (infos->host.file_info.bmp.header_size)) {
@@ -156,7 +157,7 @@ int insert_lsb(info_s * infos)
         /* Si la taille du fichier a cacher ou le nombre de pixels est 
          * trop importante -> LSB sur les pixels dans l'ordre d'écriture 
          * dans le fichier hote */
-        if ((infos->hidden_length > LENGTH_FILE_MAX)
+        if ((infos->hidden_length > LENGTH_FILE_MAX || infos->host.type == WAV_PCM)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             mask_host = 0xFC;   // 11111100 en binaire
 
@@ -247,7 +248,6 @@ int insert_lsb(info_s * infos)
         }
         return 0;
     }
-    // ICI METTRE UN ELSE IF WAV 
     // si les formats ne sont pas corrects erreur 
     return 1;
 }
@@ -263,15 +263,15 @@ int extract_lsb(info_s * infos)
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make extraction LSB"), 1;
 
-    // pour les formats BMP
-    if (infos->host.type == BMP_UNCOMPRESSED) {
+    // pour les formats BMP et WAVE
+    if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
         header_size = infos->host.file_info.bmp.header_size;
 
         // déplacement jusqu'au debut de l'image brute
         if (fseek(infos->host.host, header_size, SEEK_SET) == -1)
             return perror("Can't make extraction EOF"), 1;
 
-        if ((infos->hidden_length > LENGTH_FILE_MAX)
+        if ((infos->hidden_length > LENGTH_FILE_MAX || infos->host.type == WAV_PCM)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             nb_cpy = 0;
             int i;

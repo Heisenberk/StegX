@@ -27,12 +27,26 @@
  * @return 0 si tout est ok, 1 s'il y a eu une erreur lors de la lecture du
  * fichier source.
  */
-static int data_xor_write(FILE * src, FILE * res, const char * passwd)
+static int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
 {
     srand(create_seed(passwd));
     for (uint8_t b ; fread(&b, sizeof(b), 1, src) == 1 ;)
         fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
     return ferror(src);
+}
+
+/**
+ * @brief Écrit des données XORées avec un mot de passe.
+ * @sideeffect Modifie le tableau src pour y écrire les données.
+ * @param src Tableau où lire et écrire la donnée.
+ * @param passwd Mot de passe utilisé pour générer la seed.
+ * @param len Taille du tableau source.
+ */
+static void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len)
+{
+    srand(create_seed(passwd));
+    for (uint32_t i = 0 ; i < len ; i++)
+        src[i] ^= rand() % UINT8_MAX;
 }
 
 /**
@@ -53,8 +67,11 @@ static int data_scramble_write(FILE * src, FILE * res, const char * pass,
     // Copie les données de fichier source dans data.
     if (fread(data, sizeof(*data), len, src) != len)
         return perror("EOF: Can't make a copy of hidden file"), 1;
-    // Mélange ou remet en ordre les octets dans data.
-    protect_data(data, len, pass, m);
+    // Mélange ou remet en ordre les octets dans data, et les XOR ou les déXOR.
+    if (m)
+        protect_data(data, len, pass, m), data_xor_write_tab(data, pass, len);
+    else
+        data_xor_write_tab(data, pass, len), protect_data(data, len, pass, m);
     // Écriture des données dans le fichier resultat.
     if (fwrite(data, sizeof(*data), len, res) != len)
         return perror("EOF: Can't write hidden data"), 1;
@@ -83,6 +100,14 @@ int insert_eof(info_s * infos)
         if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
+    //Format FLV
+    if(infos->host.type == FLV){
+		//Recopie du fichier hôte.
+		for(uint8_t b; fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1;)
+			fwrite(&b, sizeof(uint8_t), 1, infos->res);
+		if (ferror(infos->host.host))
+            return perror("EOF: Can't read a copy of the host file"), 1;
+    }
 
     /* Écriture de la signature. */
     if (write_signature(infos))
@@ -93,7 +118,7 @@ int insert_eof(info_s * infos)
     /* Si le fichier à cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
     if (infos->hidden_length > LENGTH_FILE_MAX)
-        return data_xor_write(infos->hidden, infos->res, infos->passwd) ? perror("EOF: Can't write XORed hidden data"), 1 : 0;
+        return data_xor_write_file(infos->hidden, infos->res, infos->passwd) ? perror("EOF: Can't write XORed hidden data"), 1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
     return data_scramble_write(infos->hidden, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
@@ -115,6 +140,11 @@ int extract_eof(info_s * infos)
         if (fseek(infos->host.host, infos->host.file_info.bmp.header_size + infos->host.file_info.png.data_size, SEEK_SET))
             return perror("EOF: Can't jump to StegX signature"), 1;
     }
+    //Format FLV
+    if(infos->host.type == FLV) {
+		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
+			return perror("EOF: Can't jump to StegX signature"), 1;
+    }
 
     /* Saut de la signature. */
     if (sig_fseek(infos->host.host, infos->hidden_name, infos->method))
@@ -125,7 +155,7 @@ int extract_eof(info_s * infos)
     /* Si le fichier cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
     if (infos->hidden_length > LENGTH_FILE_MAX)
-        return data_xor_write(infos->host.host, infos->res, infos->passwd) ? perror("EOF: Can't write deXORed hidden data"), 1 : 0;
+        return data_xor_write_file(infos->host.host, infos->res, infos->passwd) ? perror("EOF: Can't write deXORed hidden data"), 1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
     return data_scramble_write(infos->host.host, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?

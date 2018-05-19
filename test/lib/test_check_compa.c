@@ -87,7 +87,7 @@ void test_file_compa_v4(void **state)
 {
     info_s *infos = *state;
     infos->host.host =
-        fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r"),
+        fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav", "r"),
         assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);

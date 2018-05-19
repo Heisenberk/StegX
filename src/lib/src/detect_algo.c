@@ -44,6 +44,8 @@ static int read_signature(info_s * infos)
     } else if (infos->host.type == MP3) {
     } else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
     } else if (infos->host.type == FLV) {
+		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
+            return perror("FLV: Can't move to StegX signature"), 1;
     }
 
     /* Lecture de l'algorithme utilisé et de la méthode de protection utilisée. */
