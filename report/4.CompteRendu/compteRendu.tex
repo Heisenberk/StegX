@@ -314,6 +314,114 @@ ce format.
 
 \section{Changements mineurs des spécifications}
 
+\subsection{Changements de noms}
+
+Le nom de la variable globale \textit{algo\_e* proposition} qui va sauvegarder 
+les algorithmes possibles lors de l'insertion a changé et devient 
+\textit{stegx\_propos\_algos}. 
+
+Les deux noms de fonctions \textit{int insert(info\_s* infos)} et 
+\textit{int extract(info\_s* infos, char* res\_path)} deviennent 
+\textit{stegx\_insert} et \textit{stegx\_extract}. 
+
+\subsection{Ajouts de fonctions pour éviter la répétition de code}
+
+Pour l'algorithme de protection des données qui consiste à mélanger/remettre
+en ordre les octets du fichier caché, l'équipe de conception a créé plusieurs 
+fonctions qui sont utilisés dans tous les algorithmes proposés par StegX. 
+Il fallait donc créer ces fonctions afin d'éviter une répétition de code :
+ 
+\begin{lstlisting}[language=c]
+unsigned int create_seed (const char* passwd); 
+\end{lstlisting}
+
+Elle consiste à créer à partir du mot de passe une graine permettant de 
+générer une suite pseudo-aléatoire. Cette suite sera utilisée pour le 
+mélange et le XOR des octets à cacher. 
+\newline
+\underline{Entrée :}
+\begin{itemize}
+\item \textit{*passwd :} Mot de passe utilisé pour créer la graine. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{unsigned int :} renvoie la graine de la suite pseudo aléatoire.
+Elle sera le paramètre de la fonction \textit{srand} pour initialiser cette 
+suite.   
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int protect_data (uint8_t* tab, uint32_t hidden_length, const char* passwd, 
+	mode_e mode); 
+\end{lstlisting}
+
+Cette fonction fait le mélange ou réarrange les octets selon l'algorithme 
+de protection des données. Lors de l'insertion, les octets seront mélangés 
+et lors de l'extraction, les octets seront remis dans le bon ordre.  
+\newline
+\underline{Entrées :}
+\begin{itemize}
+\item \textit{*tab :} Tableau d'octets à réarranger. 
+\item \textit{hidden\_length :} Taille du tableau tab.
+\item \textit{*passwd :} Mot de passe utilisé pour générer la graine. 
+\item \textit{mode :} Mode qui peut être soit STEGX\_MODE\_INSERT ou 
+STEGX\_MODE\_EXTRACT. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien.  
+\newline 
+\end{itemize}
+
+Pour l'algorithme EOF, lors de l'insertion et l'extraction, l'utilisation 
+du XOR et de l'algorithme de protection des données étaient nécessaires. 
+L'équipe StegX a donc créé deux fonctions pour éviter la répétition de code : 
+
+\begin{lstlisting}[language=c]
+int data_xor_write (FILE* src, FILE* res, const char* passwd); 
+\end{lstlisting}
+
+Elle va écrire les données XORés avec la suite générée par le mot de passe. 
+\newline
+\underline{Entrées :}
+\begin{itemize}
+\item \textit{* src :} Fichier où lire les données à XORé. 
+\item \textit{* res :} Fichier où écrire les données à XORé. 
+\item \textit{*passwd :} Mot de passe utilisé pour créer la graine. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int data_scramble_write (FILE* src, FILE* res, const char* passwd, 
+	const uint32_t len, const mode_e m); 
+\end{lstlisting}
+
+Elle va écrire les données mélangées ou remises en ordre grâce au mot de 
+passe. 
+\newline
+\underline{Entrées :}
+\begin{itemize}
+\item \textit{* src :} Fichier où lire les données à XORé. 
+\item \textit{* res :} Fichier où écrire les données à XORé. 
+\item \textit{*passwd :} Mot de passe utilisé pour créer la graine. 
+\item \textit{len :} Longueur des données à cacher/cachées. 
+\item \textit{m :} Mode d'utilisation (STEGX\_MODE\_INSERT ou STEGX\_MODE\_EXTRACT). 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie 1 si il y a une erreur détectée dans cette 
+fonction et 0 si tout se passe bien. 
+\newline 
+\end{itemize}
+
+
 \section{Comparaison estimation - implémentation}
 
 \small
