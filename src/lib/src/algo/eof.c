@@ -83,6 +83,14 @@ int insert_eof(info_s * infos)
         if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
+    //Format FLV
+    if(infos->host.type == FLV){
+		//Recopie du fichier hôte.
+		for(uint8_t b; fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1;)
+			fwrite(&b, sizeof(uint8_t), 1, infos->res);
+		if (ferror(infos->host.host))
+            return perror("EOF: Can't read a copy of the host file"), 1;
+    }
 
     /* Écriture de la signature. */
     if (write_signature(infos))
@@ -114,6 +122,11 @@ int extract_eof(info_s * infos)
     if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
         if (fseek(infos->host.host, infos->host.file_info.bmp.header_size + infos->host.file_info.png.data_size, SEEK_SET))
             return perror("EOF: Can't jump to StegX signature"), 1;
+    }
+    //Format FLV
+    if(infos->host.type == FLV) {
+		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
+			return perror("EOF: Can't jump to StegX signature"), 1;
     }
 
     /* Saut de la signature. */
