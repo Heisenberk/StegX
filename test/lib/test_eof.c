@@ -805,7 +805,7 @@ void test_eof_big_png_without_passwd(void **state)
     remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
 }
 
-/* Test final de l'insertion/extraction EOF sur un fichier BMP avec 
+/* Test final de l'insertion/extraction EOF sur un fichier WAV avec 
  * mot de passe et un gros fichier a cacher (> a la limite etablie)
  **/
 void test_eof_big_wav_with_passwd(void **state)
@@ -882,7 +882,7 @@ void test_eof_big_wav_with_passwd(void **state)
 
 }
 
-/* Test final de l'insertion/extraction EOF sur un fichier BMP sans 
+/* Test final de l'insertion/extraction EOF sur un fichier WAV sans 
  * mot de passe et un gros fichier a cacher (> a la limite etablie)
  **/
 void test_eof_big_wav_without_passwd(void **state)
