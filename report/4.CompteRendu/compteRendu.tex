@@ -16,6 +16,7 @@
 \usepackage{listings}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{array,multirow,makecell}
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
@@ -300,7 +301,8 @@ Nous avons donc trouvé une solution : la création de fonctions de
 conversion entre les deux endianness. L'équipe StegX pouvait utiliser la 
 librairie \textit{endian.h} mais l'application est multi-plateforme (Linux 
 et Windows) et cette librairie n'était pas standard. Le meilleur moyen était 
-donc de reproduire ces fonctions de conversion pour l'application. 
+donc de reproduire ces fonctions de conversion pour l'application 
+\label{endian}. 
 
 \subsection{Etude des différents formats \& algorithme Metadata}
 
@@ -332,7 +334,7 @@ fonctions qui sont utilisés dans tous les algorithmes proposés par StegX.
 Il fallait donc créer ces fonctions afin d'éviter une répétition de code :
  
 \begin{lstlisting}[language=c]
-unsigned int create_seed (const char* passwd); 
+unsigned int create_seed (const char* passwd)
 \end{lstlisting}
 
 Elle consiste à créer à partir du mot de passe une graine permettant de 
@@ -353,17 +355,30 @@ suite.
 
 \begin{lstlisting}[language=c]
 int protect_data (uint8_t* tab, uint32_t hidden_length, const char* passwd, 
-	mode_e mode); 
+	mode_e mode)
+int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, 
+	uint32_t data_length, char *passwd, mode_e mode)
 \end{lstlisting}
 
-Cette fonction fait le mélange ou réarrange les octets selon l'algorithme 
-de protection des données. Lors de l'insertion, les octets seront mélangés 
-et lors de l'extraction, les octets seront remis dans le bon ordre.  
-\newline
+La première fonction fait le mélange ou réarrange les octets à cacher selon 
+l'algorithme de protection des données. Lors de l'insertion, les octets seront 
+mélangés et lors de l'extraction, les octets seront remis dans le bon ordre. 
+La première fonction sera utilisée par tous les algorithmes de stéganographie 
+d'insertion et extraction exceptée l'algorithme LSB.  
+De la même manière, pour enlever la répétition de code pour l'algorithme 
+LSB lors de la protection des données, la deuxième fonction permet de 
+dissimuler/extraire les octets cachés dans des pixels (image) et des 
+échantillons (audio) différents. Elle sera utilisée uniquement pour les 
+algorithmes d'insertion et d'extraction LSB. 
+
 \underline{Entrées :}
 \begin{itemize}
-\item \textit{*tab :} Tableau d'octets à réarranger. 
-\item \textit{hidden\_length :} Taille du tableau tab.
+\item \textit{*tab (1) :} Tableau d'octets à réarranger. 
+\item \textit{hidden\_length (1) :} Taille du tableau tab.
+\item \textit{*pixels (2) :} Tableau d'octets du fichier hôte. 
+\item \textit{pixels\_length (2) :} Taille du tableau pixels. 
+\item \textit{*data (2) :} Tableau d'octets à cacher. 
+\item \textit{data\_length (2) :} Taille du tableau data. 
 \item \textit{*passwd :} Mot de passe utilisé pour générer la graine. 
 \item \textit{mode :} Mode qui peut être soit STEGX\_MODE\_INSERT ou 
 STEGX\_MODE\_EXTRACT. 
@@ -380,7 +395,7 @@ du XOR et de l'algorithme de protection des données étaient nécessaires.
 L'équipe StegX a donc créé deux fonctions pour éviter la répétition de code : 
 
 \begin{lstlisting}[language=c]
-int data_xor_write (FILE* src, FILE* res, const char* passwd); 
+int data_xor_write_file (FILE* src, FILE* res, const char* passwd)
 \end{lstlisting}
 
 Elle va écrire les données XORés avec la suite générée par le mot de passe. 
@@ -400,7 +415,7 @@ fonction et 0 si tout se passe bien.
 
 \begin{lstlisting}[language=c]
 int data_scramble_write (FILE* src, FILE* res, const char* passwd, 
-	const uint32_t len, const mode_e m); 
+	const uint32_t len, const mode_e m)
 \end{lstlisting}
 
 Elle va écrire les données mélangées ou remises en ordre grâce au mot de 
@@ -421,6 +436,63 @@ fonction et 0 si tout se passe bien.
 \newline 
 \end{itemize}
 
+Pour éviter une répétition de code pour l'algorithme EOF où il faut se 
+déplacer jusqu'à la fin de la signature pour lire/écrire les données cachées
+ ou à cacher, une nouvelle fonction a été créée : 
+
+\begin{lstlisting}[language=c]
+int sig_fseek(FILE* f, char * h, method_e m)
+\end{lstlisting}
+\underline{Entrées :}
+\begin{itemize}
+\item \textit{* f :} Fichier où faire le saut. 
+\item \textit{* h :} Nom du fichier caché écrit dans la signature. 
+\item \textit{m :} Méthode avec ou sans mot de passe par défaut. 
+\end{itemize}
+\underline{Sortie :} 
+\begin{itemize}
+\item \textit{int :} renvoie la valeur du fseek lors du saut. 
+\newline 
+\end{itemize}
+
+\subsection{Ajouts pour l'optimisation}
+
+Tout d'abord, par soucis d'optimisation afin d'éviter à un futur développeur 
+de se tromper lors de mises à jour de StegX, nous avons rajouté un champ 
+\textit{STEGX\_NB\_ALGO} \underline{mis en dernier} dans l'énumération \textit{algo\_e}. 
+Cet ajout permet de connaître facilement le nombre d'algorithmes implémentés 
+utile surtout dans le module \textit{Proposition des algorithmes de stéganographie}. 
+\newline
+
+Pour permettre un débuggage précis, l'équipe StegX a créé une énumération qui
+recense toutes les erreurs possibles dans StegX : \textit{enum err\_code}. 
+Ainsi, si il y a une erreur en plein milieu d'une extraction, l'utilisateur 
+pourra identifier le problème très facilement. Vu que cette gestion d'erreurs 
+est effectuée par les deux interfaces, il fallait donc la créer dans les 
+fichiers sources de la librairie et non dans chaque interface. De plus, 
+une fonction \textit{void err\_print(const enum err\_code err)} permet aux 
+interfaces de montrer à l'utilisateur s'il y a un problème. 
+\newline
+
+La taille d'un type \textit{int} peut dépendre en fonction de l'architecture
+de la machine de l'utilisateur : en effet, il peut être égal à 2 ou à 4 octets. 
+De ce fait, pour uniformiser cette nuance, nous avons changé le type 
+\textit{int hidden\_length} de \textit{struct info} par \textit{uint32\_t}. 
+Ainsi, cela permet d'avoir 4 octets pour toutes les machines. 
+\newline 
+
+Comme vu précédemment dans le paragraphe \ref{endian}, il a fallu créer 
+des fonctions de conversion d'entiers d'un endian à un autre : 
+
+\begin{lstlisting}[language=c]
+uint32_t stegx_htobe32(uint32_t nb)
+uint32_t stegx_be32toh(uint32_t nb)
+\end{lstlisting}
+
+La première fonction permet de convertir de passer de \textit{nb} little 
+endian en big endian. 
+La deuxième fonction consiste à passer de \textit{nb} de big endian en 
+little endian. 
 
 \section{Comparaison estimation - implémentation}
 
@@ -461,7 +533,7 @@ fonction et 0 si tout se passe bien.
 % on pensait que fill_host_info sera ds verification 
 % cest pr ca que ca fait bcp pour verification et peu pour proposition
 
-\section{Bilan du produit}
+\section{Bilan technique du produit}
 
 Le produit StegX répond bien aux objectifs : faire de la stéganographie 
 et de la stéganalyse sur des fichiers de type image, audio et vidéo en 
@@ -475,17 +547,38 @@ En plus de répondre aux objectifs, l'équipe de conception s'est efforcée
 à répondre aux nombreux besoins du client, qui doit rester la personne la 
 satisfaite du produit. 
 
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  \multirow{2}*{\textbf{Format pris en charge par l'application}} & \multicolumn{5}{c|}{\textbf{Algorithmes proposés}} \\
+   \cline{2-6}
+    & \textbf{LSB} & \textbf{EOF} & \textbf{Metadata} 
+    &\textbf{EOC} & \textbf{Junk Chunk} \\
+  \hline
+  BMP & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{\checkmark} &  & \\
+  \hline      
+  PNG & \textbf{\checkmark} & \textbf{\checkmark} & & & \\
+  \hline
+  WAV & & & & & \\
+  \hline 
+  MP3 & & & & & \\
+  \hline 
+  AVI & & & & & \\
+  \hline
+  FLV & & & & & \\
+  \hline
+\end{tabular}
+
 \section{Conclusion sur l'organisation interne au sein du projet}
 
 Durant le semestre 6 de la dernière année de licence informatique à Versailles, 
-l'équipe StegX s'est réuni pour créer une application en rapport à la 
+l'équipe StegX s'est réunie pour créer une application en rapport à la 
 cryptographie. 
 De ce fait, tous les membres de l'équipe de conception se sont efforcés à
 travailler de façon professionnelle et ordonnée. En effet, ils leur tenaient 
 à coeur de mettre en application toute la méthodologie informatique acquise 
-durant la Licence. 
+durant la licence. 
 Par ailleurs, en raison de la grande charge de travail, il a fallu, dès le 
-début du projet, de diviser la conception selon les trois différents types 
+début du projet, diviser la conception selon les trois différents types 
 dont StegX doit se charger (image, audio et vidéo). 
 Cette division de charge de travail impliquait que chacun devait réaliser 
 une partie de la conception. 
@@ -493,6 +586,13 @@ une partie de la conception.
 Enfin, nous n'avions pas de chef de projet. Cette décision nous a été très 
 favorable du fait que chacun a eu la maturité de comprendre les enjeux de 
 ce grand projet. En effet, ces enjeux étaient grands et c'est pour cela 
-que le projet IN608 est la matière la plus travaillée du semestre. 
+que le projet IN608 est la matière la plus travaillée du semestre. C'était 
+d'ailleurs le projet préféré de la licence car il était de très grande 
+envergure et dont l'équipe a proposé le sujet. 
+
+Damien Delaunay a été absent durant plusieurs entretiens avec le client 
+en raison de graves problèmes familiaux. Cela ne l'a pas empêché de travailler 
+durant le semestre lors des réunions et les conférences entre les membres 
+de l'équipe StegX. 
 
 \end{document}
