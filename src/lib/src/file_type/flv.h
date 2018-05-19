@@ -29,9 +29,9 @@
  * @brief Structure du format FLV.
  */
 struct flv {
-    uint32_t nb_video_tag;
-    uint32_t nb_metadata_tag;
-    uint32_t file_size;
+    uint32_t nb_video_tag; /*!< Nombre de chunks video dans le fichier. */
+    uint32_t nb_metadata_tag; /*!< Nombre de chunks metadonnees dans le fichier. */
+    uint32_t file_size; /*!< Taille du fichier en octets. */
 };
 
 /** Type du format FLV. */
@@ -41,12 +41,24 @@ typedef struct flv flv_s;
  * @brief Test si le fichier est un fichier FLV.
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
- * @return \r{FLV} ou \r{UNKNOWN}. 
+ * @return \r{FLV}, \r{UNKNOWN} ou -1 en cas d'erreur. 
  */
 type_e stegx_test_file_flv(FILE * file);
 
+/** 
+ * @brief Va inserer les donnees cachees en utilisant l'algorithme Metadata 
+ * dans le format FLV. 
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ */
 int insert_metadata_flv(info_s * infos);
 
+/** 
+ * @brief Va extraire les donnees cachees en utilisant l'algorithme Metadata
+ * dans le formar FLV. 
+ * @param infos Structure représentant les informations concernant l'extraction.
+ * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ */
 int extract_metadata_flv(info_s * infos);
 
 #endif

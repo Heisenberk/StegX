@@ -37,8 +37,8 @@
  * @internal Ne pas changer les deux premiers membres (ordre et type).
  */
 struct png {
-    uint32_t header_size;
-    uint32_t data_size;
+    uint32_t header_size; /*!< Taille du Header en octets. */
+    uint32_t data_size; /*!< Taille du chunk Data en octets. */
 };
 
 /** Type du format PNG. */
@@ -48,12 +48,24 @@ typedef struct png png_s;
  * @brief Test si le fichier est un fichier PNG.
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
- * @return \r{PNG} ou \r{UNKNOWN}. 
+ * @return \r{PNG}, \r{UNKNOWN}, -1 en cas d'erreur. 
  */
 type_e stegx_test_file_png(FILE * file);
 
+/** 
+ * @brief Va inserer les donnees cachees en utilisant l'algorithme Metadata 
+ * dans le format PNG. 
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ */
 int insert_metadata_png(info_s * infos);
 
+/** 
+ * @brief Va extraire les donnees cachees en utilisant l'algorithme Metadata
+ * dans le formar PNG. 
+ * @param infos Structure représentant les informations concernant l'extraction.
+ * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ */
 int extract_metadata_png(info_s * infos);
 
 #endif

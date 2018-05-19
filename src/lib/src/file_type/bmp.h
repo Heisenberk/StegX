@@ -33,10 +33,10 @@
  * @internal Ne pas changer les deux premiers membres (ordre et type).
  */
 struct bmp {
-    uint32_t header_size;
-    uint32_t data_size;
-    uint32_t pixel_length;
-    uint32_t pixel_number;
+    uint32_t header_size; /*!< Taille du Header en octets. */
+    uint32_t data_size; /*!< Taille du bloc Data en octets. */
+    uint32_t pixel_length; /*!< Nombre de bits par pixels. */
+    uint32_t pixel_number; /*!< Nombre de pixels dans l'image. */
 };
 
 /** Type du format BMP. */
@@ -46,34 +46,24 @@ typedef struct bmp bmp_s;
  * @brief Test si le fichier est un fichier BMP.
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
- * @return \r{BMP_COMPRESSED}, \r{BMP_UNCOMPRESSED} ou \r{UNKNOWN}. 
+ * @return \r{BMP_COMPRESSED}, \r{BMP_UNCOMPRESSED} \r{UNKNOWN}, -1 en cas d'erreur. 
  */
 type_e stegx_test_file_bmp(FILE * file);
 
+/** 
+ * @brief Va inserer les donnees cachees en utilisant l'algorithme Metadata 
+ * dans le format BMP. 
+ * @param infos Structure représentant les informations concernant la dissimulation.
+ * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ */
 int insert_metadata_bmp(info_s * infos);
 
-int extract_metadata_bmp(info_s * infos);
-
 /** 
- * @brief Cache les octets de data dans pixels selon l'algorithme de 
- * protection des données LSB pour BMP. 
- * @details Pour l'insertion, à partir du mot de passe, est créé un seed. 
- * Puis les octets contenus dans data seront mélangés dans des pixels 
- * aléatoires. Pour l'extraction, la seed va permettre de remettre dans 
- * le bon ordre les octets mélangés.
- * @param pixels Tableau d'octets representant les pixels.
- * @param pixels_length Taille du tableau pixels (correspond à la taille du 
- * bloc data dans BMP). 
- * @param data Tableau d'octets representant les donnees a cacher.
- * @param data_length Taille du tableau data (correspond à la taille des
- * données a cacher).
- * @param passwd Mot de passe à partir duquel un seed sera créé pour la suite 
- * pseudo aleatoire nécessaire au mélange des octets de tab. 
- * @param mode Mode qui peut être \req{STEGX_STEGX_MODE_INSERT} ou 
- * \req{STEGX_MODE_EXTRACT}. 
- * @return 0 si le melange des donnees s'est bien passé ; 1 sinon 
+ * @brief Va extraire les donnees cachees en utilisant l'algorithme Metadata
+ * dans le formar BMP. 
+ * @param infos Structure représentant les informations concernant l'extraction.
+ * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
  */
-int protect_data_lsb_bmp(uint8_t * pixels, uint32_t pixels_length, uint8_t * data,
-                         uint32_t data_length, char *passwd, mode_e mode);
+int extract_metadata_bmp(info_s * infos);
 
 #endif

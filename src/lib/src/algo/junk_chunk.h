@@ -21,7 +21,7 @@ int insert_junk_chunk(info_s * infos);
 
 /** 
  * @brief Va extraire les donnees cachees en utilisant l'algorithme Junk Chunk. 
- * @param infos Structure représentant les informations concernant la dissimulation.
+ * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
  */

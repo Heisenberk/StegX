@@ -61,7 +61,7 @@ typedef struct info info_s;
 
 /**
  * Variable globale pointant sur un tableau de booléen de taille \r{STEGX_NB_ALGO}.
- * Si stegx_propos_algo[i] est égal à 1, alors on peut utiliser l'aglorithme
+ * Si stegx_propos_algo[i] est égal à 1, alors on peut utiliser l'algorithme
  * correspondant à algo_e égal à i. Sinon, on ne peut pas.
  */
 extern algo_e *stegx_propos_algos;
