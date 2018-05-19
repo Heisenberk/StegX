@@ -17,7 +17,7 @@
 void test_file_mp3__wave_pcm_alaw(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r");
+    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_mp3(f), UNKNOWN);
     fclose(f);
 }
@@ -25,7 +25,7 @@ void test_file_mp3__wave_pcm_alaw(void **state)
 void test_file_mp3__wave_pcm_s16le(void **state)
 {
     (void)state;                /* Unused */
-    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r");
+    FILE *f = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Stereo_44,1kHz.wav", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_mp3(f), UNKNOWN);
     fclose(f);
 }

@@ -297,10 +297,10 @@ void test_metadata_big_png_without_passwd(void **state)
     choices_insert->mode = STEGX_MODE_INSERT;
     choices_insert->insert_info = malloc(sizeof(stegx_info_insert_s));
     choices_insert->insert_info->hidden_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav") +
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav") +
                 1) * sizeof(char));
     strcpy(choices_insert->insert_info->hidden_path,
-           "../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+           "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav");
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
@@ -344,7 +344,7 @@ void test_metadata_big_png_without_passwd(void **state)
     stegx_clear(infos_extract);
     dest_stegx_info(choices_extract);
 
-    FILE *f = fopen("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r");
+    FILE *f = fopen("./WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav", "r");
     assert_int_equal(f != NULL, 1);
 
     // Test si le contenu du message a bien ete extrait*/
@@ -352,7 +352,7 @@ void test_metadata_big_png_without_passwd(void **state)
     assert_int_equal(fread(&sig, sizeof(uint32_t), 1, f), 1);
     assert_int_equal((sig == SIG_RIFF), 1);
     fclose(f);
-    remove("./WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav");
+    remove("./WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav");
 }
 
 /* Structure CMocka contenant la liste des tests. */

@@ -137,7 +137,8 @@ int insert_lsb(info_s * infos)
     if (fseek(infos->hidden, 0, SEEK_SET) == -1)
         return perror("Can't make jump hidden file"), 1;
 
-    // pour le format BMP
+    // pour le format BMP et WAVE
+    assert(infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM);
     if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
 
         // Recopie du header dans le fichier resultat -> taille du header de l'hote
@@ -156,7 +157,7 @@ int insert_lsb(info_s * infos)
         /* Si la taille du fichier a cacher ou le nombre de pixels est 
          * trop importante -> LSB sur les pixels dans l'ordre d'écriture 
          * dans le fichier hote */
-        if ((infos->hidden_length > LENGTH_FILE_MAX)
+        if ((infos->hidden_length > LENGTH_FILE_MAX || infos->host.type == WAV_PCM)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             mask_host = 0xFC;   // 11111100 en binaire
 
@@ -247,7 +248,6 @@ int insert_lsb(info_s * infos)
         }
         return 0;
     }
-    // ICI METTRE UN ELSE IF WAV 
     // si les formats ne sont pas corrects erreur 
     return 1;
 }
@@ -263,7 +263,7 @@ int extract_lsb(info_s * infos)
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make extraction LSB"), 1;
 
-    // pour les formats BMP
+    // pour les formats BMP et WAVE
     if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
         header_size = infos->host.file_info.bmp.header_size;
 
@@ -271,7 +271,7 @@ int extract_lsb(info_s * infos)
         if (fseek(infos->host.host, header_size, SEEK_SET) == -1)
             return perror("Can't make extraction EOF"), 1;
 
-        if ((infos->hidden_length > LENGTH_FILE_MAX)
+        if ((infos->hidden_length > LENGTH_FILE_MAX || infos->host.type == WAV_PCM)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             nb_cpy = 0;
             int i;

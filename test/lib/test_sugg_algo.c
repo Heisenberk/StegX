@@ -204,7 +204,7 @@ static void test_file_info_wav__pcm_alaw_1(void **state)
 {
     info_s *infos = *state;
     infos->host.host =
-        fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_1.wav", "r"),
+        fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = WAV_NO_PCM;
 
@@ -225,7 +225,7 @@ static void test_file_info_wav__pcm_alaw_2(void **state)
 {
     info_s *infos = *state;
     infos->host.host =
-        fopen("../../../env/test/wave/WAVE_PCM(ALAW)_Mono_44,1kHz_16bits_2.wav", "r"),
+        fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = WAV_NO_PCM;
 
@@ -246,7 +246,7 @@ static void test_file_info_wav__pcm_s16le(void **state)
 {
     info_s *infos = *state;
     infos->host.host =
-        fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
+        fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Stereo_44,1kHz.wav", "r"),
         assert_non_null(infos->host.host);
     infos->host.type = WAV_NO_PCM;
 
@@ -330,7 +330,7 @@ void test_propos_algos_v1(void **state)
     infos->host.host =
         fopen("../../../env/test/bmp/test1.bmp", "r"), assert_non_null(infos->host.host);
     infos->hidden =
-        fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Mono_44,1kHz_16bits.wav", "r"),
+        fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Stereo_44,1kHz.wav", "r"),
         assert_non_null(infos->hidden);
     infos->host.type = BMP_COMPRESSED;
 
