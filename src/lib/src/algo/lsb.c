@@ -13,7 +13,7 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "protection.h"
-#include "../insert.h"
+#include "insert.h"
 
 int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, uint32_t data_length,
                      char *passwd, mode_e mode)
@@ -138,7 +138,7 @@ int insert_lsb(info_s * infos)
         return perror("Can't make jump hidden file"), 1;
 
     // pour le format BMP
-    if (infos->host.type == BMP_UNCOMPRESSED) {
+    if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
 
         // Recopie du header dans le fichier resultat -> taille du header de l'hote
         while (nb_cpy < (infos->host.file_info.bmp.header_size)) {
@@ -264,7 +264,7 @@ int extract_lsb(info_s * infos)
         return perror("Can't make extraction LSB"), 1;
 
     // pour les formats BMP
-    if (infos->host.type == BMP_UNCOMPRESSED) {
+    if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
         header_size = infos->host.file_info.bmp.header_size;
 
         // déplacement jusqu'au debut de l'image brute
