@@ -491,7 +491,7 @@ uint32_t stegx_be32toh(uint32_t nb)
 
 La première fonction permet de convertir de passer de \textit{nb} little 
 endian en big endian. 
-La deuxième fonction consiste à passer de \textit{nb} de big endian en 
+La deuxième fonction consiste à passer \textit{nb} de big endian en 
 little endian. 
 
 \section{Comparaison estimation - implémentation}
@@ -547,6 +547,10 @@ En plus de répondre aux objectifs, l'équipe de conception s'est efforcée
 à répondre aux nombreux besoins du client, qui doit rester la personne la 
 satisfaite du produit. 
 
+En ce qui concerne les algorithmes proposés par StegX en fonction des 
+formats pris en charge, voici le bilan de ce que propose l'application : 
+\newline
+
 \begin{tabular}{|c|c|c|c|c|c|}
   \hline
   \multirow{2}*{\textbf{Format pris en charge par l'application}} & \multicolumn{5}{c|}{\textbf{Algorithmes proposés}} \\
@@ -558,7 +562,7 @@ satisfaite du produit.
   \hline      
   PNG & \textbf{\checkmark} & \textbf{\checkmark} & & & \\
   \hline
-  WAV & & & & & \\
+  WAV & & \textbf{\checkmark} & & & \\
   \hline 
   MP3 & & & & & \\
   \hline 
@@ -567,6 +571,10 @@ satisfaite du produit.
   FLV & & & & & \\
   \hline
 \end{tabular}
+
+
+Pour rappel, l'algorithme LSB n'est proposé que pour les formats 
+BMP et WAV-PCM. L'algorithme EOC est proposé pour le format FLV. 
 
 \section{Conclusion sur l'organisation interne au sein du projet}
 
