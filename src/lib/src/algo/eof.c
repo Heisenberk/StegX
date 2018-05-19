@@ -17,9 +17,6 @@
 #include "protection.h"
 #include "detect_algo.h"
 
-/** Taille d'un buffer de copie. */
-#define BUFSIZE 4096
-
 /**
  * @brief Écrit des données XORées avec un mot de passe.
  * @internal Pas de gestion d'erreur dans la boucle car cela ralentit beaucoup.
@@ -78,12 +75,11 @@ int insert_eof(info_s * infos)
     /* Déplacement à l'offset où il faut écrire la signature. */
     // Formats BMP, PNG, WAVE (structures identiques dans l'union).
     if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
-        // Recopie du fichier hôte.
-        uint size;
-        for (uint8_t b[BUFSIZE] ; (size = fread(b, sizeof(*b), BUFSIZE, infos->host.host)); ) {
-            if (fwrite(b, sizeof(*b), size, infos->res) != size)
-                return perror("EOF: Can't write a copy of the host file"), 1;
-        }
+        // Recopie du fichier hôte. Utilisation de la taille et d'un compteur pour ne pas copier des données indésirables
+        // qui serait à la fin du fichier. Pas des gestion d'erreur sur infos->res pour accélérer le traitement.
+        for (unsigned int cnt = 0, size = infos->host.file_info.bmp.header_size + infos->host.file_info.bmp.data_size, b;
+                fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1 && cnt < size; cnt++)
+            fwrite(&b, sizeof(uint8_t), 1, infos->res);
         if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
