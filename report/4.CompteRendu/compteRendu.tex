@@ -507,19 +507,19 @@ little endian.
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
     Interface en ligne & Estimation : 200 lignes & Estimation : 30 heures & BASKEVITCH Claire \& \\ 
-    de commande & Implémentation : X lignes & Implémentation : X heures & BESSAC Tristan \\
+    de commande & Implémentation : 200 lignes & Implémentation : 30 heures & BESSAC Tristan \\
   \hline
   Interface & Estimation : 400 lignes & Estimation : 30 heures & AYOUB Pierre \& \\
-  graphique & Implémentation : X lignes & Implémentation : X heures & DELAUNAY Damien \\
+  graphique & Implémentation : 400 lignes & Implémentation : 30 heures & DELAUNAY Damien \\
   \hline
-  Vérification de la & Estimation : 300 lignes & Estimation : 30 heures& CAUMES Clément \& \\
-   compatibilité des fichiers & Implémentation : X lignes & Implémentation : X heures & DOUDOUH Yassin \\
+  Vérification de la & Estimation : 300 lignes & Estimation : 30 heures & CAUMES Clément \& \\
+   compatibilité des fichiers & Implémentation : 150 lignes & Implémentation : 15 heures & DOUDOUH Yassin \\
   \hline
     Proposition des algos & Estimation : 100 lignes & Estimation : 15 heures & CAUMES Clément \& \\
-   de stéganographie & Implémentation : X lignes & Implémentation : X heures & DOUDOUH Yassin \\
+   de stéganographie & Implémentation : 210 lignes & Implémentation : 30 heures & DOUDOUH Yassin \\
   \hline
     Détection de l'algo & Estimation : 100 lignes & Estimation : 15 heures & AYOUB Pierre \& \\
-   de stéganographie & Implémentation : X lignes & Implémentation : X heures & DELAUNAY Damien \\
+   de stéganographie & Implémentation : 60 lignes & Implémentation : 15 heures & DELAUNAY Damien \\
   \hline
   Dissimulation \& Extraction & Estimation : 250 lignes & Estimation : 40 heures & CAUMES Clément \& \\
    fichiers images & Implémentation : X lignes & Implémentation : X heures & DOUDOUH Yassin \\
@@ -532,6 +532,24 @@ little endian.
   \hline
 \end{tabular}
 \normalsize
+
+En comparant l'estimation du nombre de lignes établie dans le cahier des 
+charges et le nombre de lignes codées lors de l'implémentation, on remarque 
+plusieurs détails : 
+
+\begin{itemize}
+\item L'estimation pour les deux interfaces ont été justes malgré le fait 
+que l'équipe StegX ne connaissait pas GTK+. Elle a dû faire une estimation 
+globale qui a été finalement juste. 
+\item On peut voir que le module \textit{Vérification de la compatibilité}
+est 2 fois plus long que l'estimation et que le module \textit{Proposition 
+des algorithmes} est 2 fois plus court que l'estimation. Cela s'explique 
+par le fait que, lors de l'élaboration du cahier des charges l'équipe StegX
+pensait que trouver les détails nécessaires à l'insertion (rôle de la fonction 
+\textit{fill\_host\_info} devait se faire dans le module \textit{Proposition 
+des algorithmes} et non dans celui-ci.  
+
+\end{itemize}
 
 % expliquer quil ya une grosse difference pour la proposition des algos 
 % on pensait que fill_host_info sera ds verification 
@@ -564,13 +582,13 @@ formats pris en charge, voici le bilan de ce que propose l'application :
   \hline
   BMP & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{\checkmark} &  & \\
   \hline      
-  PNG & \textbf{\checkmark} & \textbf{\checkmark} & & & \\
+  PNG &  & \textbf{\checkmark} & \textbf{\checkmark} & & \\
   \hline
   WAV & & \textbf{\checkmark} & & & \\
   \hline 
   MP3 & & & & & \\
   \hline 
-  AVI & & & & & \\
+  AVI & & & & & \textbf{\checkmark}\\
   \hline
   FLV & & \textbf{\checkmark} & & \textbf{\checkmark} & \\
   \hline
