@@ -46,22 +46,4 @@ typedef struct wav wav_s;
  */
 type_e stegx_test_file_wav(FILE * file);
 
-/** 
- * @brief Va inserer les donnees cachees en utilisant l'algorithme Metadata 
- * dans le format WAV. 
- * @param infos Structure représentant les informations concernant la dissimulation.
- * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
- * @author Pierre Ayoub et Damien Delaunay
- */
-int insert_metadata_wav(info_s * infos);
-
-/** 
- * @brief Va extraire les donnees cachees en utilisant l'algorithme Metadata
- * dans le formar WAV. 
- * @param infos Structure représentant les informations concernant l'extraction.
- * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
- * @author Pierre Ayoub et Damien Delaunay
- */
-int extract_metadata_wav(info_s * infos);
-
 #endif

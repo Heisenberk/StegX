@@ -57,15 +57,3 @@ type_e stegx_test_file_wav(FILE * file)
     else
         return WAV_NO_PCM;
 }
-
-int insert_metadata_wav(info_s * infos)
-{
-    (void)infos;                /* Unused. */
-    return 1;
-}
-
-int extract_metadata_wav(info_s * infos)
-{
-    (void)infos;                /* Unused. */
-    return 1;
-}
