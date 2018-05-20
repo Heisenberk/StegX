@@ -56,6 +56,9 @@ static int can_use_lsb(info_s * infos)
         if ((infos->hidden_length * 8) <= nb_bits_modif)
             return 0;
     }
+    /* Si le fichier hote est un fichier MP3 (condition à compléter). */
+    else if (infos->host.type == MP3)
+        return 0;
     /* Sinon, on ne peux pas utiliser LSB. */
     return 1;
 }

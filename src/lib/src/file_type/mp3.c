@@ -13,35 +13,14 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
-
-/** Signature du MP3 version ID3V1. */
-#define SIG_MP3_ID3V1 0xFBFF
-/** Signature du MP3 version ID3V2. */
-#define SIG_MP3_ID3V2 0x334449
+#include "mp3.h"
 
 type_e stegx_test_file_mp3(FILE * file)
 {
     assert(file);
-    /* Lecture de la signature MP3 version ID3V1. */
-    uint16_t sig_16;
-    if (fseek(file, 0, SEEK_SET) == -1)
-        return perror("Can't move to MP3 ID3V1 signature"), -1;
-    if (fread(&sig_16, sizeof(uint16_t), 1, file) != 1)
-        return perror("Can't read MP3 ID3V1 signature"), -1;
-    if (sig_16 == SIG_MP3_ID3V1)
-        return MP3;
-
-    /* Lecture de la signature MP3 version ID3V2. */
-    uint32_t sig_32;
-    if (fseek(file, 0, SEEK_SET) == -1)
-        return perror("Can't move to MP3 ID3V2 signature"), -1;
-    if (fread(&sig_32, sizeof(uint32_t), 1, file) != 1)
-        return perror("Can't read MP3 ID3V2 signature"), -1;
-    /* Suppression du premier octet car on s'occupe uniquement des 3 derniers
-       octets. */
-    sig_32 &= 0x00FFFFFF;
-    if (sig_32 == SIG_MP3_ID3V2)
-        return MP3;
-    else
-        return UNKNOWN;
+    uint32_t sig = 0;
+    if (fseek(file, 0, SEEK_SET) || (fread(&sig, sizeof(uint32_t), 1, file) != 1))
+        return perror("MP3 test file: Can't read MP3 signature"), -1;
+    return (sig & MASK_MP3_MPEGX_LAYER3) == SIG_MP3_MPEG1_LAYER3 || (sig & MASK_MP3_MPEGX_LAYER3) == SIG_MP3_MPEG2_LAYER3
+        || (sig & MASK_MP3_ID3V2) == SIG_MP3_ID3V2 ? MP3 : UNKNOWN;
 }
