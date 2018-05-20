@@ -22,7 +22,7 @@
  *  melange aleatoire des octets cachés.
  *  LSB -> nb d'octets pour les pixels et taille du fichier a cacher 
  *  METADATA/EOF -> taille du fichier a cacher */
-#define LENGTH_FILE_MAX 150000
+#define LENGTH_FILE_MAX 50000
 
 /** 
  * @brief Cree un seed a partir d'un mot de passe. 
