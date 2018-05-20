@@ -12,6 +12,7 @@
  * @error Liste des codes d'erreurs de la bibliothèque. Utilisé dans le retour des
  * fonctions et dans la correspondance erreur <=> message. Le code 0 signifie
  * (sauf cas particulier) qu'aucune erreur ne s'est produite.
+ * @author Pierre Ayoub
  */
 enum err_code {
     ERR_NONE = 0,               /*!< Aucune erreur. */
@@ -35,6 +36,7 @@ enum err_code {
 /**
  * Variable mise à la disposition des fonctions de la bibliothèque pour y
  * inscrire leur code d'erreur.
+ * @author Pierre Ayoub
  */
 extern enum err_code stegx_errno;
 
@@ -42,6 +44,7 @@ extern enum err_code stegx_errno;
  * Affiche le message d'erreur sur la sortie d'erreur en fonction du code
  * d'erreur spécifié.
  * @param err Code d'erreur.
+ * @author Pierre Ayoub
  */
 void err_print(const enum err_code err);
 

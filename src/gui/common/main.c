@@ -17,6 +17,7 @@
  * @param app Pointeur vers l'application à laquelle est liée ce signal.
  * @param ui Pointeur vers la structure de l'interface utilisateur à laquelle
  * sera liée l'application.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void activate(GtkApplication * app, ui_t * ui)
 {
@@ -45,6 +46,7 @@ static void activate(GtkApplication * app, ui_t * ui)
  * @param argv Tableau de chaîne de caractères contenant les arguments passés à
  * l'application.
  * @return Code de retour de l'application (0 si aucune erreur).
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int main(int argc, char **argv)
 {

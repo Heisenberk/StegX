@@ -28,6 +28,7 @@
  * @brief Cree un seed a partir d'un mot de passe. 
  * @param passwd Mot de passe a partir duquel on veut creer un seed.
  * @return unsigned int représentant le seed a creer. 
+ * @author Pierre Ayoub
  */
 unsigned int create_seed(const char *passwd);
 
@@ -44,7 +45,8 @@ unsigned int create_seed(const char *passwd);
  * pseudo aleatoire nécessaire au mélange des octets de tab. 
  * @param mode Mode qui peut être \req{STEGX_STEGX_MODE_INSERT} ou 
  * \req{STEGX_MODE_EXTRACT}. 
- * @return 0 si le melange des donnees s'est bien passé ; 1 sinon 
+ * @return 0 si le melange des donnees s'est bien passé ; 1 sinon. 
+ * @author Clément Caumes
  */
 int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode_e mode);
 

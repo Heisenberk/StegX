@@ -31,6 +31,7 @@
  * @return Pointeur sur la structure privée qui contient les informations pour
  * réaliser la dissimulation et l'extraction, sinon NULL sur une erreur et met à
  * jour la variable \r{stegx_errno}. 
+ * @author Clément Caumes et Pierre Ayoub
  */
 info_s *stegx_init(stegx_choices_s * choices);
 
@@ -39,6 +40,7 @@ info_s *stegx_init(stegx_choices_s * choices);
  * @req Avoir appelé \r{stegx_init} sur le paramètre "infos".
  * @sideeffect Libère la mémoire de la structure \r{info_s}.
  * @param infos Structure à libérer. 
+ * @author Clément Caumes et Pierre Ayoub
  */
 void stegx_clear(info_s * infos);
 
@@ -50,6 +52,7 @@ void stegx_clear(info_s * infos);
  * dissimulation et l'extraction. 
  * @return 0 si la vérification s'est bien déroulée, sinon 1 en cas d'erreur et
  * met à jour \r{stegx_errno}.
+ * @author Clément Caumes et Yassin Doudouh
  */
 int stegx_check_compatibility(info_s * infos);
 
@@ -66,6 +69,7 @@ int stegx_check_compatibility(info_s * infos);
  * @param infos Structure contenant les informations concernant la dissimulation.
  * @return 0 si tout se passe bien, sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}. 
+ * @author Clément Caumes et Yassin Doudouh
  */
 int stegx_suggest_algo(info_s * infos);
 
@@ -82,6 +86,7 @@ int stegx_suggest_algo(info_s * infos);
  * @param algo_choosen Algorithme choisi par l'utilisateur. 
  * @return 0 si la fonction s'est déroulée normalement, 1 en cas d'erreur et met
  * à jour la variable \r{stegx_errno}.
+ * @author Clément Caumes et Yassin Doudouh
  */
 int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
 
@@ -96,6 +101,7 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen);
  * requis.
  * @return 0 si la détection s'est bien déroulée, sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int stegx_detect_algo(info_s * infos);
 
@@ -106,6 +112,7 @@ int stegx_detect_algo(info_s * infos);
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'insertion s'et bien passé, sinon 1 en cas d'erreur et met à
  * jour \r{stegx_errno}.
+ * @author Clément Caumes et Pierre Ayoub
  */
 int stegx_insert(info_s * infos);
 
@@ -117,6 +124,7 @@ int stegx_insert(info_s * infos);
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'extraction s'est bien passé, sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Clément Caumes et Pierre Ayoub
  */
 int stegx_extract(info_s * infos, char *res_path);
 

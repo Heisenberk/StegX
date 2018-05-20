@@ -23,6 +23,7 @@
  * l'application.
  * @param enum_type Enumération de type à tester.
  * @return 1 si le type est connu, 0 sinon.
+ * @author Pierre Ayoub
  */
 #define IS_FILE_TYPE(enum_type)                                           \
         (enum_type > UNKNOWN && enum_type <= FLV ? 1 : 0);

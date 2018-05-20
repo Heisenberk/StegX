@@ -10,6 +10,7 @@
  * @brief Onglet dissimulation
  * @details Contient tout les widgets utilisés pour l'onglet dissimulation de
  * données.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct ui_insert {
     /* Statique. */
@@ -50,6 +51,7 @@ struct ui_insert {
  * @brief Onglet extraction
  * @details Contient tout les widgets utilisés pour l'onglet extraction de
  * données.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct ui_extrac {
     GtkWidget *tab;             /*!< Grille contenant les widgets de l'onglet. */
@@ -74,6 +76,7 @@ struct ui_extrac {
  * @brief Onglet information
  * @details Contient tout les widgets utilisés pour l'onglet d'information sur
  * le logiciel.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct ui_about {
     GtkWidget *tab;             /*!< Grille contenant les widgets de l'onglet. */
@@ -85,6 +88,7 @@ struct ui_about {
  * @brief Menu
  * @details Menu principal de l'application. Contient les widgets utilisés dans
  * le menu ainsi que le widget du menu lui-même.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct ui_menu {
     GtkWidget *bar;             /*!< Barre du menu. */
@@ -95,6 +99,7 @@ struct ui_menu {
  * @brief Interface utilisateur
  * @details Contient tout les widgets utilisés dans l'interface
  * utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct ui {
     GtkWidget *window;          /*!< Fenêtre principale. */

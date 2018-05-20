@@ -31,6 +31,7 @@
 /**
  * @brief Structure du format BMP.
  * @internal Ne pas changer les deux premiers membres (ordre et type).
+ * @author Clément Caumes et Yassin Doudouh
  */
 struct bmp {
     uint32_t header_size; /*!< Taille du Header en octets. */
@@ -47,6 +48,7 @@ typedef struct bmp bmp_s;
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
  * @return \r{BMP_COMPRESSED}, \r{BMP_UNCOMPRESSED} \r{UNKNOWN}, -1 en cas d'erreur. 
+ * @author Clément Caumes et Yassin Doudouh
  */
 type_e stegx_test_file_bmp(FILE * file);
 
@@ -55,6 +57,7 @@ type_e stegx_test_file_bmp(FILE * file);
  * dans le format BMP. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ * @author Clément Caumes et Yassin Doudouh
  */
 int insert_metadata_bmp(info_s * infos);
 
@@ -63,6 +66,7 @@ int insert_metadata_bmp(info_s * infos);
  * dans le formar BMP. 
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ * @author Clément Caumes et Yassin Doudouh
  */
 int extract_metadata_bmp(info_s * infos);
 

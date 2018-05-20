@@ -26,6 +26,7 @@
  * @param passwd Mot de passe utilisé pour générer la seed.
  * @return 0 si tout est ok, 1 s'il y a eu une erreur lors de la lecture du
  * fichier source.
+ * @author Pierre Ayoub
  */
 static int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
 {
@@ -41,6 +42,7 @@ static int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
  * @param src Tableau où lire et écrire la donnée.
  * @param passwd Mot de passe utilisé pour générer la seed.
  * @param len Taille du tableau source.
+ * @author Pierre Ayoub
  */
 static void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len)
 {
@@ -57,6 +59,7 @@ static void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_
  * @param len Longueur des données à cacher / cacher.
  * @param m Mode d'utilisation (insertion ou extraction).
  * @return 0 si tout est ok, 1 s'il y a eu une erreur.
+ * @author Pierre Ayoub
  */
 static int data_scramble_write(FILE * src, FILE * res, const char * pass,
         const uint32_t len, const mode_e m)

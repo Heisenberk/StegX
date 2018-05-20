@@ -20,6 +20,7 @@
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 Si l'algorithme est proposé, 1 sinon.
+ * @author Clément Caumes (BMP) et Pierre Ayoub (WAV)
  */
 static int can_use_lsb(info_s * infos)
 {
@@ -64,6 +65,7 @@ static int can_use_lsb(info_s * infos)
  * @brief Teste si l'on peut utiliser l'algorithme EOF pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé, 1 sinon.
+ * @author Clément Caumes
  */
 static int can_use_eof(info_s * infos)
 {
@@ -77,6 +79,7 @@ static int can_use_eof(info_s * infos)
  * @brief Teste si l'on peut utiliser l'algorithme Metadata pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé, 1 sinon.
+ * @author Clément Caumes
  */
 static int can_use_metadata(info_s * infos)
 {
@@ -102,6 +105,7 @@ static int can_use_metadata(info_s * infos)
  * @brief Teste si l'on peut utiliser l'algorithme EOC pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé, 1 sinon.
+ * @author Clément Caumes
  */
 static int can_use_eoc(info_s * infos)
 {
@@ -117,6 +121,7 @@ static int can_use_eoc(info_s * infos)
  * @brief Teste si l'on peut utiliser l'algorithme Junk Chunk pour la dissimulation. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme est proposé, 1 sinon.
+ * @author Clément Caumes
  */
 static int can_use_junk_chunk(info_s * infos)
 {
@@ -146,14 +151,12 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&length_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        //length_pic = le32toh(length_pic);
 
         // lecture de la taille du header (qui correspond au debut de data)
         if (fseek(infos->host.host, BMP_DEF_PIC, SEEK_SET) == -1)
             return 1;
         if (fread(&begin_pic, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        //begin_pic = le32toh(begin_pic);
 
         infos->host.file_info.bmp.header_size = begin_pic;
         infos->host.file_info.bmp.data_size = length_pic - begin_pic;
@@ -163,7 +166,6 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        //pixel_length = le32toh(pixel_length);
         infos->host.file_info.bmp.pixel_length = pixel_length;
 
         // lecture de la largeur de l'image
@@ -171,12 +173,10 @@ int fill_host_info(info_s * infos)
             return 1;
         if (fread(&pixel_width, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        //pixel_width = le32toh(pixel_width);
 
         // lecture de la hauteur de l'image
         if (fread(&pixel_height, sizeof(uint32_t), 1, infos->host.host) != 1)
             return 1;
-        //pixel_height = le32toh(pixel_height);
         infos->host.file_info.bmp.pixel_number = pixel_width * pixel_height;
         return 0;
     }

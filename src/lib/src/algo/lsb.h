@@ -28,7 +28,8 @@
  * pseudo aleatoire nécessaire au mélange des octets de tab. 
  * @param mode Mode qui peut être \req{STEGX_STEGX_MODE_INSERT} ou 
  * \req{STEGX_MODE_EXTRACT}. 
- * @return 0 si le melange des donnees s'est bien passé ; 1 sinon .
+ * @return 0 si le melange des donnees s'est bien passé ; 1 sinon. 
+ * @author Clement Caumes
  */
 int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, uint32_t data_length,
                      char *passwd, mode_e mode);
@@ -38,6 +39,7 @@ int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, u
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme a bien ete inseré ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Clement Caumes et Pierre Ayoub 
  */
 int insert_lsb(info_s * infos);
 
@@ -46,6 +48,7 @@ int insert_lsb(info_s * infos);
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Clément Caumes et Pierre Ayoub
  */
 int extract_lsb(info_s * infos);
 

@@ -14,6 +14,7 @@
 
 /**
  * @brief Structure du format AVI.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 struct avi {
 };
@@ -27,6 +28,7 @@ typedef struct avi avi_s;
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
  * @return \r{AVI_UNCOMPRESSED}, \r{AVI_COMPRESSED}, \r{UNKNOWN} ou -1 en 
  * cas d'erreur. 
+ * @author Clément Caumes, Claire Baskevitch et Tristan Bessac
  */
 type_e stegx_test_file_avi(FILE * file);
 
@@ -35,6 +37,7 @@ type_e stegx_test_file_avi(FILE * file);
  * dans le format AVI. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int insert_metadata_avi(info_s * infos);
 
@@ -43,6 +46,7 @@ int insert_metadata_avi(info_s * infos);
  * dans le formar AVI. 
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int extract_metadata_avi(info_s * infos);
 

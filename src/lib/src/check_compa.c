@@ -21,6 +21,7 @@
  * @param *file fichier à tester.
  * @return type_e représentant les différents types pris en charge par 
  * l'application. 
+ * @author Clément Caumes et Yassin Doudouh
  */
 type_e check_file_format(FILE * file)
 {

@@ -22,6 +22,8 @@
  * @error \r{ERR_CHOICE_ALGO} si l'algorithme choisi n'est pas disponible.
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si tout se passe bien, sinon 1 s'il y a une erreur. 
+ * @author Clément Caumes et Yassin Doudouh (BMP et PNG), Pierre Ayoub et Damien 
+ * Delaunay (MP3 et WAV), Claire Baskevitch et Tristan Bessac (AVI et FLV)
  */
 int fill_host_info(info_s * infos);
 

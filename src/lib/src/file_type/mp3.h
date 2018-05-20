@@ -14,6 +14,7 @@
 
 /**
  * @brief Structure du format MP3.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct mp3 {
 };
@@ -26,6 +27,7 @@ typedef struct mp3 mp3_s;
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
  * @return \r{MP3}, \r{UNKNOWN} ou -1 en cas d'erreur. 
+ * @author Clément Caumes, Pierre Ayoub et Damien Delaunay
  */
 type_e stegx_test_file_mp3(FILE * file);
 
@@ -34,6 +36,7 @@ type_e stegx_test_file_mp3(FILE * file);
  * dans le format MP3. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int insert_metadata_mp3(info_s * infos);
 
@@ -42,6 +45,7 @@ int insert_metadata_mp3(info_s * infos);
  * dans le formar MP3. 
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int extract_metadata_mp3(info_s * infos);
 

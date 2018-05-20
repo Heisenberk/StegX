@@ -23,6 +23,7 @@ enum ui_dial_type {
  * @details Crée un widget une grille et l'initialise avec les propriétés voulus
  * dans notre application.
  * @return GtkWidget Pointeur sur le widget.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 GtkWidget *ui_grid_init();
 
@@ -34,6 +35,7 @@ GtkWidget *ui_grid_init();
  * @param str Chaîne de caractère à afficher.
  * @param ui_type Nature du dialogue.
  * @return GtkWidget* Widget de type "GtkMessageDialog" prêt à être affiché.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 GtkWidget *ui_msg_dial_new(GtkWidget * win, const gchar * str, enum ui_dial_type ui_type);
 

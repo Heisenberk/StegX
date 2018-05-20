@@ -27,6 +27,7 @@
 
 /**
  * @brief Structure du format FLV.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 struct flv {
     uint32_t nb_video_tag; /*!< Nombre de chunks video dans le fichier. */
@@ -42,6 +43,7 @@ typedef struct flv flv_s;
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
  * @return \r{FLV}, \r{UNKNOWN} ou -1 en cas d'erreur. 
+ * @author Claire Baskevitch et Tristan Bessac
  */
 type_e stegx_test_file_flv(FILE * file);
 
@@ -50,6 +52,7 @@ type_e stegx_test_file_flv(FILE * file);
  * dans le format FLV. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int insert_metadata_flv(info_s * infos);
 
@@ -58,6 +61,7 @@ int insert_metadata_flv(info_s * infos);
  * dans le formar FLV. 
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int extract_metadata_flv(info_s * infos);
 

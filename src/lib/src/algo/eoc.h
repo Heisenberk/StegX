@@ -16,6 +16,7 @@
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme a bien ete inseré ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int insert_eoc(info_s * infos);
 
@@ -24,6 +25,7 @@ int insert_eoc(info_s * infos);
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
+ * @author Claire Baskevitch et Tristan Bessac
  */
 int extract_eoc(info_s * infos);
 

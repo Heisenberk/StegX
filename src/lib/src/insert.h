@@ -18,6 +18,7 @@
  * par défaut si l'utilisateur n'a pas choisi de mot de passe (64 octets).
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si la signature a bien ete écrite, 1 sinon.
+ * @author Clément Caumes
  */
 int write_signature(info_s * infos);
 

@@ -26,6 +26,7 @@
 /**
  * @brief Structure du format WAVE.
  * @internal Ne pas changer les deux premiers membres (ordre et type).
+ * @author Pierre Ayoub et Damien Delaunay
  */
 struct wav {
     uint32_t header_size;       /*!< Offset du début du segment data (octet). */
@@ -41,6 +42,7 @@ typedef struct wav wav_s;
  * @param file Fichier à tester.
  * @req Le pointeur ne doit pas être null et le fichier ouvert en lecture.
  * @return \r{WAV_PCM}, \r{WAV_NO_PCM}, \r{UNKNOWN} ou -1 en cas d'erreur. 
+ * @author Clément Caumes, Pierre Ayoub et Damien Delaunay
  */
 type_e stegx_test_file_wav(FILE * file);
 
@@ -49,6 +51,7 @@ type_e stegx_test_file_wav(FILE * file);
  * dans le format WAV. 
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si les données ont bien été inserées ; sinon 1 en cas d'erreur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int insert_metadata_wav(info_s * infos);
 
@@ -57,6 +60,7 @@ int insert_metadata_wav(info_s * infos);
  * dans le formar WAV. 
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si les données ont bien été extraites ; sinon 1 en cas d'erreur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 int extract_metadata_wav(info_s * infos);
 

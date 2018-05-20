@@ -23,6 +23,7 @@
  * @brief Liste des noms des algorithmes.
  * @internal Les noms doivent être dans l'ordre de l'énumération de la
  * bibliothèque.
+ * @author Pierre Ayoub et Damien Delaunay
  * */
 static const char *algos_lst[] = {
     "Least Significant Bit", "End-Of-File", "Metadonnée",
@@ -38,6 +39,7 @@ static int algos_ind[STEGX_NB_ALGO] = { -1 };
  * l'interface graphique pour le module dissimulation.
  * @details L'état correspond à si on doit effectuer l'analyse (0) ou effectuer
  * la dissmulation (1).
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static int insert_state = 0;
 
@@ -52,6 +54,7 @@ static int insert_state = 0;
  * chargé du traitement.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void insert_start(GtkWidget * widget, struct ui *ui);
 
@@ -63,6 +66,7 @@ static void insert_start(GtkWidget * widget, struct ui *ui);
  * traitement.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static gboolean insert_do(gpointer data);
 
@@ -75,6 +79,7 @@ static gboolean insert_do(gpointer data);
  * @sideeffect Met à jours les widgets et affiche les messages de dialogue en
  * conséquence.
  * @param ui Structure de l'interface utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void insert_end(struct ui *ui);
 
@@ -84,6 +89,7 @@ static void insert_end(struct ui *ui);
  * et revient dans l'état initial d'analyse.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void insert_reset(GtkWidget * widget, struct ui *ui);
 
@@ -94,6 +100,7 @@ static void insert_reset(GtkWidget * widget, struct ui *ui);
  * chargé de de l'extraction.
  * @param widget Bouton qui a émis le signal.
  * @param ui Structure de l'interface utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void extrac_start(GtkWidget * widget, struct ui *ui);
 
@@ -105,6 +112,7 @@ static void extrac_start(GtkWidget * widget, struct ui *ui);
  * l'extraction.
  * @param data Structure de l'interface utilisateur.
  * @return gboolean Code indiquant de supprimer le thread.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static gboolean extrac_do(gpointer data);
 
@@ -114,6 +122,7 @@ static gboolean extrac_do(gpointer data);
  * @sideeffect Met à jour les widgets et affiche les messages de dialogue en
  * conséquence.
  * @param ui Structure de l'interface utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void extrac_end(struct ui *ui);
 

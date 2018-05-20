@@ -17,6 +17,7 @@
  * widgets. Ne connecte aucun signal.
  * @param ui Pointeur vers la structure de l'interface utilisateur sur laquelle
  * il faut construire l'affichage.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 void ui_build(struct ui *ui);
 

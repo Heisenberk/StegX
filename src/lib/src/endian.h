@@ -14,6 +14,7 @@
  * @brief Convertit val lue en little endian en big endian. 
  * @param nb nombre a convertir.
  * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
+ * @author Clément Caumes
  */
 uint32_t stegx_htobe32(uint32_t nb);
 
@@ -22,6 +23,7 @@ uint32_t stegx_htobe32(uint32_t nb);
  * machine de l'utilisateur. 
  * @param nb nombre a convertir.
  * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
+ * @author Clément Caumes
  */
 uint32_t stegx_be32toh(uint32_t nb);
 

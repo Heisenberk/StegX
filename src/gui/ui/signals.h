@@ -15,6 +15,7 @@
  * @details Connecte les signaux aux widgets de la fenêtre principale.
  * @param ui Pointeur vers la structure de l'interface utilisateur sur laquelle
  * il faut configurer les signaux.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 void ui_signal_init(struct ui *ui);
 

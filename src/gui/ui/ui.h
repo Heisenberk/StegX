@@ -18,6 +18,7 @@ typedef struct ui ui_t;
  * donnée. Construit les widgets et configure les signaux.
  * @param window Pointeur vers la fenêtre sur laquelle construire l'interface utilisateur.
  * @param ui Pointeur vers l'interface utilisateur à remplir.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 void ui_create(GtkWidget * window, struct ui *ui);
 
@@ -25,6 +26,7 @@ void ui_create(GtkWidget * window, struct ui *ui);
  * @brief Initialisation de l'interface utilisateur
  * @details Permet d'allouer la mémoire pour l'interface utilisateur.
  * @return Pointeur sur l'interface utilisateur prête à être construite.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 ui_t *ui_init();
 
@@ -32,6 +34,7 @@ ui_t *ui_init();
  * @brief Suppression de l'interface utilisateur
  * @details Permet de désallouer la mémoire utilisée pour l'interface
  * utilisateur.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 void ui_delete(ui_t * ui);
 

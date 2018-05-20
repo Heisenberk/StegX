@@ -24,6 +24,7 @@
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si la signature a bien été lue, sinon 1 et assigne \r{stegx_errno}
  * à l'erreur survenue.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static int read_signature(info_s * infos)
 {

@@ -18,6 +18,7 @@
  * aussi les messages utilisés pendant les différentes étapes de l'insertion.
  * @param ins Pointeur vers une structure d'onglet de dissimulation vers
  * laquelle lier les widgets construits.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void ui_build_insert(struct ui_insert *ins)
 {
@@ -109,6 +110,7 @@ static void ui_build_insert(struct ui_insert *ins)
  * @details Construit et place les widgets de l'onglet de l'extraction.
  * @param extr Pointeur vers une structure d'onglet d'extraction vers laquelle
  * lier les widgets construits.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void ui_build_extrac(struct ui_extrac *extr)
 {
@@ -159,6 +161,7 @@ static void ui_build_extrac(struct ui_extrac *extr)
  * @details Initialise le menu utilisateur et construit puis place les widgets
  * du menu.
  * @param menu Structure du menu vers laquelle lier les widgets construits.
+ * @author Pierre Ayoub et Damien Delaunay
  */
 static void ui_build_menu(struct ui_menu *menu)
 {
