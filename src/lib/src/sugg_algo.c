@@ -94,8 +94,9 @@ static int can_use_metadata(info_s * infos)
         }
         return 0;
     }
-    // Pour tous les formats proposés par StegX, on propose Metadata.
-    return !IS_FILE_TYPE(infos->host.type);
+    // Pour tous les formats proposés par StegX sauf MP3 et WAVE, on propose Metadata.
+    return infos->host.type == WAV_PCM || infos->host.type == WAV_NO_PCM || infos->host.type == MP3 ?
+        1 : !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
