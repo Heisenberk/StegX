@@ -296,7 +296,7 @@ int fill_host_info(info_s * infos)
             prev_tag_size = be32toh(prev_tag_size);
             infos->host.file_info.flv.file_size += prev_tag_size + 4;
         }
-        if(fread(&check_tags, sizeof(uint8_t), 1, infos->host.host))
+        if(infos->mode == STEGX_MODE_INSERT && fread(&check_tags, sizeof(uint8_t), 1, infos->host.host))
 			return perror("Fichier flv ayant des données en fin de fichier. Fichier incompatible pour l'insertion."), 1;
         return 0;
     }
