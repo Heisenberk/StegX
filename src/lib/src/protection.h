@@ -48,4 +48,47 @@ unsigned int create_seed(const char *passwd);
  */
 int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode_e mode);
 
+
+
+
+/**
+ * @brief Écrit des données XORées avec un mot de passe.
+ * @internal Pas de gestion d'erreur dans la boucle car cela ralentit beaucoup.
+ * Si tout à été bien fait avant, il ne devrait pas y avoir d'erreur !
+ * @param src Fichier où lire la donnée.
+ * @param res Fichier où écrire la donnée.
+ * @param passwd Mot de passe utilisé pour générer la seed.
+ * @return 0 si tout est ok, 1 s'il y a eu une erreur lors de la lecture du
+ * fichier source.
+ */
+int data_xor_write_file(FILE * src, FILE * res, const char * passwd);
+
+
+
+
+/**
+ * @brief Écrit des données XORées avec un mot de passe.
+ * @sideeffect Modifie le tableau src pour y écrire les données.
+ * @param src Tableau où lire et écrire la donnée.
+ * @param passwd Mot de passe utilisé pour générer la seed.
+ * @param len Taille du tableau source.
+ */
+void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len);
+
+
+
+/**
+ * @brief Écrit des données mélangé ou remise en ordre avec un mot de passe.
+ * @param src Fichier où lire la donnée.
+ * @param res Fichier où écrire la donnée.
+ * @param pass Mot de passe utilisé pour générer la seed.
+ * @param len Longueur des données à cacher / cacher.
+ * @param m Mode d'utilisation (insertion ou extraction).
+ * @return 0 si tout est ok, 1 s'il y a eu une erreur.
+ */
+int data_scramble_write(FILE * src, FILE * res, const char * pass,
+        const uint32_t len, const mode_e m);
+
+
+
 #endif
