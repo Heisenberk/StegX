@@ -191,11 +191,138 @@ sélectionner StegX et cliquer sur désinstaller.
 
 \section{Manuel du développeur}
 
+\subsection{Tests unitaires}
+
+Pour réaliser les tests unitaires : 
+\begin{itemize}
+\item Aller dans le dossier "build/".
+\item Taper sur le terminal "make check". Les fichiers créés seront créés 
+dans le dossier "build/". 
+\end{itemize}
+\vspace{0.5cm}
+\hspace{3cm}
+\includegraphics[scale=0.45]{pictures/check.png}
+\vspace{1cm}
+
 \section{Manuel de l'utilisateur}
 
 \subsection{Interface en ligne de commande}
 
+Pour voir la présentation de l'application en ligne de commande :
+\begin{itemize}
+\item Taper sur le terminal "stegx -a".
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{0.5cm}
+\includegraphics[scale=0.6]{pictures/present.png}
+\vspace{1cm}
+
+Pour visualiser les différentes commandes : 
+\begin{itemize}
+\item Taper sur le terminal "stegx -h".
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{-0.5cm}
+\includegraphics[scale=0.5]{pictures/help.png}
+\vspace{1cm}
+
+\subsubsection{Insertion}
+
+Pour réaliser une insertion, voici un exemple réalisé sur de vrais 
+fichiers : 
+
+\vspace{0.5cm}
+\hspace{-2cm}
+\includegraphics[scale=0.8]{pictures/insertion.png}
+\vspace{1cm}
+
+\subsubsection{Extraction}
+
+Pour réaliser une extraction, voici un exemple réalisé sur de vrais 
+fichiers :
+
+\vspace{0.5cm}
+\includegraphics[scale=0.8]{pictures/extraction.png}
+
 \subsection{Interface graphique}
 
+Pour utiliser l'application avec l'interface graphique, taper sur le 
+terminal "stegx-gui" ou cliquer sur l'icône de StegX dans les raccourcis 
+logiciels. 
+
+Pour visualiser la présentation de l'application, cliquer sur "A propos". 
+
+\vspace{0.5cm}
+\hspace{2cm}
+\includegraphics[scale=0.8]{pictures/a_propos.png}
+\vspace{1cm}
+
+\subsubsection{Insertion}
+
+Pour faire une dissimulation d'un fichier à cacher dans un fichier hôte : 
+\begin{itemize}
+\item Cliquer sur "Dissimulation".
+\item Choisir un fichier hôte. 
+\item Choisir un fichier à cacher. 
+\item Choisir l'emplacement du fichier à créer. 
+\item Choisir un nom pour le fichier à créer. 
+\item Choisir un mot de passe [facultatif]. 
+\item Cliquer sur "Analyser". 
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{-2cm}
+\includegraphics[scale=0.8]{pictures/ouverture2.png}
+\vspace{1cm}
+\hspace{0.2cm}
+\includegraphics[scale=0.8]{pictures/insertion_1.png}
+
+L'analyse du fichier hôte et du fichier à cacher est terminée: 
+\begin{itemize}
+\item Cliquer sur "Valider". 
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{2cm}
+\includegraphics[scale=0.8]{pictures/insertion_2.png}
+\vspace{1cm}
+
+Un ou plusieurs algorithmes est proposé : 
+\begin{itemize}
+\item Choisir l'algorithme à utiliser pour la dissimulation.
+\item Cliquer sur "Dissimuler". 
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{2cm}
+\includegraphics[scale=0.8]{pictures/insertion_3.png}
+\vspace{1cm}
+
+\subsubsection{Extraction}
+
+Pour réaliser une extraction d'un fichier caché dans un fichier à analyser : 
+\begin{itemize}
+\item Cliquer sur "Extraction".
+\item Choisir un fichier hôte (fichier à analyser). 
+\item Choisir l'emplacement du fichier extrait. 
+\item Choisir un mot de passe [facultatif]. 
+\item Cliquer sur "Extraire". 
+\end{itemize}
+
+\vspace{0.5cm}
+\hspace{-2cm}
+\includegraphics[scale=0.8]{pictures/extraction_1.png}
+\vspace{1cm}
+\hspace{0.2cm}
+\includegraphics[scale=0.8]{pictures/extraction_2.png}
+
+Lorsque l'extraction est terminée, une fenêtre s'ouvre : 
+
+\vspace{0.5cm}
+\hspace{2.5cm}
+\includegraphics[scale=0.8]{pictures/extraction_3.png}
+\vspace{1cm}
 
 \end{document}
