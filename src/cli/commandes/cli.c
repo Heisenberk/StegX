@@ -163,7 +163,7 @@ void check_info(stegx_choices_s * com)
         if ((com->host_path == NULL)) {
             unvalid_line("Fichier hôte ou algorithme non renseigné.\n");
             exit(-1);
-		}
+        }
     } else if (com->mode == STEGX_MODE_EXTRACT) {
     } else {
         unvalid_line("");

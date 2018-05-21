@@ -16,6 +16,6 @@
  * @return Valeur de "fseek".
  * @author Pierre Ayoub et Damien Delaunay
  */
-int sig_fseek(FILE* f, char * h, method_e m);
+int sig_fseek(FILE * f, char *h, method_e m);
 
 #endif                          /* ifndef DETECT_ALGO_H */

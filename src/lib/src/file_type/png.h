@@ -38,8 +38,8 @@
  * @author Clément Caumes et Yassin Doudouh
  */
 struct png {
-    uint32_t header_size; /*!< Taille du Header en octets. */
-    uint32_t data_size; /*!< Taille du chunk Data en octets. */
+    uint32_t header_size;       /*!< Taille du Header en octets. */
+    uint32_t data_size;         /*!< Taille du chunk Data en octets. */
 };
 
 /** Type du format PNG. */

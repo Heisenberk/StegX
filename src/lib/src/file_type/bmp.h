@@ -34,10 +34,10 @@
  * @author Clément Caumes et Yassin Doudouh
  */
 struct bmp {
-    uint32_t header_size; /*!< Taille du Header en octets. */
-    uint32_t data_size; /*!< Taille du bloc Data en octets. */
-    uint32_t pixel_length; /*!< Nombre de bits par pixels. */
-    uint32_t pixel_number; /*!< Nombre de pixels dans l'image. */
+    uint32_t header_size;       /*!< Taille du Header en octets. */
+    uint32_t data_size;         /*!< Taille du bloc Data en octets. */
+    uint32_t pixel_length;      /*!< Nombre de bits par pixels. */
+    uint32_t pixel_number;      /*!< Nombre de pixels dans l'image. */
 };
 
 /** Type du format BMP. */

@@ -191,8 +191,10 @@ void test_eof_little_wav_with_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->host_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
     choices_insert->res_path = malloc((strlen("./res1_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res1_test_eof.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -273,8 +275,10 @@ void test_eof_little_wav_without_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->host_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
     choices_insert->res_path = malloc((strlen("./res2_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_eof.bmp");
     choices_insert->passwd = NULL;
@@ -973,8 +977,10 @@ void test_eof_big_wav_with_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->host_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
     choices_insert->res_path = malloc((strlen("./res1_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res1_test_eof.bmp");
     choices_insert->passwd = malloc((strlen("stegx") + 1) * sizeof(char));
@@ -1050,8 +1056,10 @@ void test_eof_big_wav_without_passwd(void **state)
     (void)state;
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
-        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") + 1) * sizeof(char));
-    strcpy(choices_insert->host_path, "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
+        malloc((strlen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav") +
+                1) * sizeof(char));
+    strcpy(choices_insert->host_path,
+           "../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav");
     choices_insert->res_path = malloc((strlen("./res2_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_insert->res_path, "./res2_test_eof.bmp");
     choices_insert->passwd = NULL;
@@ -1264,7 +1272,6 @@ void test_eof_big_flv_without_passwd(void **state)
     fclose(f);
     remove("./WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav");
 }
-
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest eof_tests[] = {

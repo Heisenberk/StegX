@@ -45,7 +45,7 @@ static int read_signature(info_s * infos)
     } else if (infos->host.type == MP3) {
     } else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
     } else if (infos->host.type == FLV) {
-		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
+        if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
             return perror("FLV: Can't move to StegX signature"), 1;
     }
 
@@ -98,14 +98,15 @@ static int read_signature(info_s * infos)
     return 0;
 }
 
-int sig_fseek(FILE* f, char * h, method_e m)
+int sig_fseek(FILE * f, char *h, method_e m)
 {
     /* 2 octets pour l'algorithme et la méthode.
      * 4 octets pour la taille du fichier caché (uint32_t).
      * 1 octet pour la taille du nom du fichier caché.
      * 1 à 255 octets pour le nom du fichier caché (sans '\0').
      * 64 octets si StegX a utilisé un mot de passe par defaut . */
-    return fseek(f, 2 + 4 + 1 + strlen(h) + LENGTH_DEFAULT_PASSWD * (m == STEGX_WITHOUT_PASSWD), SEEK_CUR);
+    return fseek(f, 2 + 4 + 1 + strlen(h) + LENGTH_DEFAULT_PASSWD * (m == STEGX_WITHOUT_PASSWD),
+                 SEEK_CUR);
 }
 
 int stegx_detect_algo(info_s * infos)

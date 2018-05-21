@@ -30,9 +30,9 @@
  * @author Claire Baskevitch et Tristan Bessac
  */
 struct flv {
-    uint32_t nb_video_tag; /*!< Nombre de chunks video dans le fichier. */
-    uint32_t nb_metadata_tag; /*!< Nombre de chunks metadonnees dans le fichier. */
-    uint32_t file_size; /*!< Taille du fichier en octets. */
+    uint32_t nb_video_tag;      /*!< Nombre de chunks video dans le fichier. */
+    uint32_t nb_metadata_tag;   /*!< Nombre de chunks metadonnees dans le fichier. */
+    uint32_t file_size;         /*!< Taille du fichier en octets. */
 };
 
 /** Type du format FLV. */

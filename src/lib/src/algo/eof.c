@@ -28,10 +28,10 @@
  * fichier source.
  * @author Pierre Ayoub
  */
-static int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
+static int data_xor_write_file(FILE * src, FILE * res, const char *passwd)
 {
     srand(create_seed(passwd));
-    for (uint8_t b ; fread(&b, sizeof(b), 1, src) == 1 ;)
+    for (uint8_t b; fread(&b, sizeof(b), 1, src) == 1;)
         fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
     return ferror(src);
 }
@@ -44,10 +44,10 @@ static int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
  * @param len Taille du tableau source.
  * @author Pierre Ayoub
  */
-static void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len)
+static void data_xor_write_tab(uint8_t * src, const char *passwd, const uint32_t len)
 {
     srand(create_seed(passwd));
-    for (uint32_t i = 0 ; i < len ; i++)
+    for (uint32_t i = 0; i < len; i++)
         src[i] ^= rand() % UINT8_MAX;
 }
 
@@ -61,8 +61,8 @@ static void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_
  * @return 0 si tout est ok, 1 s'il y a eu une erreur.
  * @author Pierre Ayoub
  */
-static int data_scramble_write(FILE * src, FILE * res, const char * pass,
-        const uint32_t len, const mode_e m)
+static int data_scramble_write(FILE * src, FILE * res, const char *pass,
+                               const uint32_t len, const mode_e m)
 {
     uint8_t *data = malloc(len * sizeof(uint8_t));
     if (!data)
@@ -97,18 +97,19 @@ int insert_eof(info_s * infos)
     if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
         // Recopie du fichier hôte. Utilisation de la taille et d'un compteur pour ne pas copier des données indésirables
         // qui serait à la fin du fichier. Pas des gestion d'erreur sur infos->res pour accélérer le traitement.
-        for (unsigned int cnt = 0, size = infos->host.file_info.bmp.header_size + infos->host.file_info.bmp.data_size, b;
-                fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1 && cnt < size; cnt++)
+        for (unsigned int cnt = 0, size =
+             infos->host.file_info.bmp.header_size + infos->host.file_info.bmp.data_size, b;
+             fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1 && cnt < size; cnt++)
             fwrite(&b, sizeof(uint8_t), 1, infos->res);
         if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
     //Format FLV
-    if(infos->host.type == FLV){
-		//Recopie du fichier hôte.
-		for(uint8_t b; fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1;)
-			fwrite(&b, sizeof(uint8_t), 1, infos->res);
-		if (ferror(infos->host.host))
+    if (infos->host.type == FLV) {
+        //Recopie du fichier hôte.
+        for (uint8_t b; fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1;)
+            fwrite(&b, sizeof(uint8_t), 1, infos->res);
+        if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
 
@@ -121,11 +122,14 @@ int insert_eof(info_s * infos)
     /* Si le fichier à cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
     if (infos->hidden_length > LENGTH_FILE_MAX)
-        return data_xor_write_file(infos->hidden, infos->res, infos->passwd) ? perror("EOF: Can't write XORed hidden data"), 1 : 0;
+        return data_xor_write_file(infos->hidden, infos->res,
+                                   infos->passwd) ? perror("EOF: Can't write XORed hidden data"),
+            1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
-    return data_scramble_write(infos->hidden, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
-        perror("EOF: Can't write scrambled hidden data"), 1 : 0;
+    return data_scramble_write(infos->hidden, infos->res, infos->passwd, infos->hidden_length,
+                               infos->mode) ? perror("EOF: Can't write scrambled hidden data"),
+        1 : 0;
 }
 
 int extract_eof(info_s * infos)
@@ -140,13 +144,15 @@ int extract_eof(info_s * infos)
     /* Déplacement à l'offset où la signature est écrite. */
     // Formats BMP, PNG, WAVE (structures identiques dans l'union).
     if ((infos->host.type >= BMP_COMPRESSED) && (infos->host.type <= PNG)) {
-        if (fseek(infos->host.host, infos->host.file_info.bmp.header_size + infos->host.file_info.png.data_size, SEEK_SET))
+        if (fseek
+            (infos->host.host,
+             infos->host.file_info.bmp.header_size + infos->host.file_info.png.data_size, SEEK_SET))
             return perror("EOF: Can't jump to StegX signature"), 1;
     }
     //Format FLV
-    if(infos->host.type == FLV) {
-		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
-			return perror("EOF: Can't jump to StegX signature"), 1;
+    if (infos->host.type == FLV) {
+        if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
+            return perror("EOF: Can't jump to StegX signature"), 1;
     }
 
     /* Saut de la signature. */
@@ -158,10 +164,13 @@ int extract_eof(info_s * infos)
     /* Si le fichier cacher est trop gros, on fait un XOR avec la 
      * suite pseudo aléatoire générée avec le mot de passe. */
     if (infos->hidden_length > LENGTH_FILE_MAX)
-        return data_xor_write_file(infos->host.host, infos->res, infos->passwd) ? perror("EOF: Can't write deXORed hidden data"), 1 : 0;
+        return data_xor_write_file(infos->host.host, infos->res,
+                                   infos->passwd) ? perror("EOF: Can't write deXORed hidden data"),
+            1 : 0;
     /* Sinon on utilise la méthode de protection des données du mélange
      * des octets. */
-    return data_scramble_write(infos->host.host, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
-        perror("EOF: Can't write descrambled hidden data"), 1 : 0;
+    return data_scramble_write(infos->host.host, infos->res, infos->passwd, infos->hidden_length,
+                               infos->mode) ? perror("EOF: Can't write descrambled hidden data"),
+        1 : 0;
     return 0;
 }
