@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -13,18 +11,24 @@
 
 #define SIG_RIFF 0x46464952
 
+/*
+ * Fonction recréée pour libérer la mémoire de la structure stegx_choices_s
+ **/
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
         free(com->insert_info);
     }
     free(com);
-
 }
+
+/*
+ * Teste la vérification du format PNG.
+ * */
 
 void test_file_png_v1(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;        
     FILE *f = fopen("../../../env/test/png/test8.png", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
     fclose(f);
@@ -32,7 +36,7 @@ void test_file_png_v1(void **state)
 
 void test_file_png_v2(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;          
     FILE *f = fopen("../../../env/test/png/test9.png", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
     fclose(f);
@@ -358,7 +362,6 @@ void test_metadata_big_png_without_passwd(void **state)
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest png_tests[] = {
 
-    // tests unitaires PNG
     cmocka_unit_test(test_file_png_v1),
     cmocka_unit_test(test_file_png_v2),
 

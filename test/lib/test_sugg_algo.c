@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -46,8 +44,8 @@ static int test_file_info__teardown(void **state)
     return 0;
 }
 
-/**
- * Tests BMP
+/*
+ * Tests BMP pour fill_host_info
  * ===================================================================================
  * */
 
@@ -112,8 +110,8 @@ void test_file_info_bmp_v3(void **state)
     fclose(infos->host.host);
 }
 
-/**
- * Tests PNG
+/*
+ * Tests PNG pour fill_host_info
  * =========================================================================================
  * */
 
@@ -150,8 +148,8 @@ void test_file_info_png_v2(void **state)
     fclose(infos->host.host);
 }
 
-/**
- * Tests FLV
+/*
+ * Tests FLV pour fill_host_info
  * =================================================================================
  * */
 
@@ -195,8 +193,8 @@ void test_file_info_flv_v2(void **state)
     fclose(infos->host.host);
 }
 
-/**
- * Tests WAVE
+/*
+ * Tests WAVE pour fill_host_info
  * =============================================================================
  */
 
@@ -263,7 +261,7 @@ static void test_file_info_wav__pcm_s16le(void **state)
     fclose(infos->host.host);
 }
 
-/**
+/* 
  * Tests généraux
  * =============================================================================
  */
@@ -316,7 +314,7 @@ void test_hidden_length(void **state)
     fclose(infos->hidden);
 }
 
-/**
+/*
  * Tests proposition des algos
  * ==================================================================================
  * */

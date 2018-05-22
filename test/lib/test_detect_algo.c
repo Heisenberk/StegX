@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -13,7 +11,7 @@
 
 uint32_t hidden_length = 0;
 
-/**
+/*
  * Test detectection de l'algo avec mot de passe.
  * =====================================================================
  * */
@@ -61,7 +59,7 @@ void insert_with_passwd(void **state)
 /* Teste la fonction stegx_detect_algo. Fais l'extration de la signature */
 void detect_with_passwd(void **state)
 {
-    (void)state;                /* Unused. */
+    (void)state;       
 
     /* Initialisation de l'extraction */
     info_s *infos_extract = calloc(1, sizeof(info_s));
@@ -138,7 +136,7 @@ void insert_without_passwd(void **state)
 /* Teste la fonction stegx_detect_algo. Fais l'extration de la signature */
 void detect_without_passwd(void **state)
 {
-    (void)state;                /* Unused. */
+    (void)state;          
     /* Initialisation de l'extraction */
     info_s *infos_extract = calloc(1, sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
@@ -165,7 +163,7 @@ void detect_without_passwd(void **state)
     free(infos_extract);
 }
 
-/**
+/*
  * MAIN
  * =====================================================================
  * */

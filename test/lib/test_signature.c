@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
@@ -12,7 +10,7 @@
 #include "insert.h"
 #include "common.h"
 
-/*setup des tests unitaire pour l'écriture de la signature */
+/* Setup des tests unitaire pour l'écriture de la signature */
 static int test_write_signature_setup(void **state)
 {
     info_s *infos = malloc(sizeof(info_s));
@@ -33,7 +31,7 @@ static int test_write_signature_setup(void **state)
     return 0;
 }
 
-/* teardown des tests unitaire pour l'écriture de la signature */
+/* Teardown des tests unitaire pour l'écriture de la signature */
 static int test_write_signature_teardown(void **state)
 {
     info_s *infos = *state;
@@ -45,7 +43,7 @@ static int test_write_signature_teardown(void **state)
     return 0;
 }
 
-/* test de la signature avec mot de passe */
+/* Test de la signature avec mot de passe */
 void test_write_signature_with_passwd(void **state)
 {
     info_s *infos = *state;

@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -13,6 +11,9 @@
 
 #define SIG_RIFF 0x46464952
 
+/*
+ * Fonction recréée pour libérer la mémoire de la structure stegx_choices_s
+ **/
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -22,14 +23,14 @@ void dest_stegx_info(stegx_choices_s * com)
 
 }
 
-/**
+/*
  * Teste la vérification du format BMP.
  * */
 
 /* pixels de 16 bits */
 void test_file_bmp_v1(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;   
     FILE *f = fopen("../../../env/test/bmp/test1.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
@@ -39,7 +40,7 @@ void test_file_bmp_v1(void **state)
 /* pixels de 16 bits */
 void test_file_bmp_v2(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;   
     FILE *f = fopen("../../../env/test/bmp/test2.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
@@ -49,7 +50,7 @@ void test_file_bmp_v2(void **state)
 /* pixels de 16 bits */
 void test_file_bmp_v3(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;   
     FILE *f = fopen("../../../env/test/bmp/test3.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
@@ -59,7 +60,7 @@ void test_file_bmp_v3(void **state)
  /* pixels de 24 bits */
 void test_file_bmp_v4(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;  
     FILE *f = fopen("../../../env/test/bmp/test4.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_UNCOMPRESSED);
@@ -69,7 +70,7 @@ void test_file_bmp_v4(void **state)
 /* pixels de 32 bits */
 void test_file_bmp_v5(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;   
     FILE *f = fopen("../../../env/test/bmp/test5.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
@@ -79,7 +80,7 @@ void test_file_bmp_v5(void **state)
 
 void test_file_bmp_v6(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state; 
     FILE *f = fopen("../../../env/test/bmp/test6.bmp", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_bmp(f), BMP_COMPRESSED);
@@ -92,6 +93,9 @@ void test_file_bmp_v6(void **state)
 void test_metadata_little_bmp_with_passwd(void **state)
 {
     (void)state;
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'insertion
+     */
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
         malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
@@ -108,6 +112,7 @@ void test_metadata_little_bmp_with_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
+	// Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -125,6 +130,9 @@ void test_metadata_little_bmp_with_passwd(void **state)
     dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
+	/* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'extraction
+     */
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
     choices_extract->host_path = malloc((strlen("./res1_test_meta.bmp") + 1) * sizeof(char));
     strcpy(choices_extract->host_path, "./res1_test_meta.bmp");
@@ -174,6 +182,9 @@ void test_metadata_little_bmp_with_passwd(void **state)
 void test_metadata_little_bmp_without_passwd(void **state)
 {
     (void)state;
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'insertion
+     */
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
         malloc((strlen("../../../env/test/bmp/test1.bmp") + 1) * sizeof(char));
@@ -189,6 +200,7 @@ void test_metadata_little_bmp_without_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
+	// Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -206,6 +218,9 @@ void test_metadata_little_bmp_without_passwd(void **state)
     dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'extraction
+     */
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
     choices_extract->host_path = malloc((strlen("./res2_test_meta.bmp") + 1) * sizeof(char));
     strcpy(choices_extract->host_path, "./res2_test_meta.bmp");
@@ -215,6 +230,7 @@ void test_metadata_little_bmp_without_passwd(void **state)
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
+	// Appel de chaque étape de l'extraction
     info_s *infos_extract = stegx_init(choices_extract);
 
     test = stegx_check_compatibility(infos_extract);
@@ -408,6 +424,7 @@ int main(void)
         cmocka_unit_test(test_file_bmp_v4),
         cmocka_unit_test(test_file_bmp_v5),
         cmocka_unit_test(test_file_bmp_v6),
+        
         cmocka_unit_test(test_metadata_little_bmp_with_passwd),
         cmocka_unit_test(test_metadata_little_bmp_without_passwd),
         cmocka_unit_test(test_metadata_big_bmp_with_passwd),

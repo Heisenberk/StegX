@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -13,6 +11,9 @@
 
 #define SIG_RIFF 0x46464952
 
+/*
+ * Fonction recréée pour libérer la mémoire de la structure stegx_choices_s
+ **/
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -28,6 +29,9 @@ void dest_stegx_info(stegx_choices_s * com)
 void test_eof_little_bmp_with_passwd(void **state)
 {
     (void)state;
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'insertion
+     */
     stegx_choices_s *choices_insert = malloc(sizeof(stegx_choices_s));
     choices_insert->host_path =
         malloc((strlen("../../../env/test/bmp/test9bis.bmp") + 1) * sizeof(char));
@@ -44,6 +48,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
+	// Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -61,6 +66,9 @@ void test_eof_little_bmp_with_passwd(void **state)
     dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+     * pour l'extraction
+     */
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
     choices_extract->host_path = malloc((strlen("./res1_test_eof.bmp") + 1) * sizeof(char));
     strcpy(choices_extract->host_path, "./res1_test_eof.bmp");
@@ -71,6 +79,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
+	// Appel de chaque étape de l'extraction
     info_s *infos_extract = stegx_init(choices_extract);
 
     test = stegx_check_compatibility(infos_extract);

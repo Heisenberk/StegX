@@ -18,9 +18,9 @@ d'une bibliothèque partagée intégrable dans d'autres projets de développemen
 Statut
 --------------------------------------------------------------------------------
 
-* Interface graphique : Quasi-terminée.
-* Interface en ligne de commande : Quasi-terminée.
-* Bibliothèque : En cours de commencement.
+* Interface graphique : Terminée.
+* Interface en ligne de commande : Terminée.
+* Bibliothèque : Quasi-terminée.
 
 
 ---

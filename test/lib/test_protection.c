@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
@@ -13,7 +11,7 @@
 #include "protection.h"
 #include "common.h"
 
-/* test de l'algorithme qui melange pour l'insertion et met dans l'ordre 
+/* Test de l'algorithme qui melange pour l'insertion et met dans l'ordre 
  * pour l'extraction */
 void test_protection(void **state)
 {

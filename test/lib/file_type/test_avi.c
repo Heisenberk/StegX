@@ -1,22 +1,19 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include "stegx.h"
 #include "common.h"
 
-/**
+/*
  * Teste la vérification du format AVI.
  * */
-
 void test_file_avi_v1(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state; 
     FILE *f = fopen("../../../env/test/flv/test13.flv", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_avi(f), UNKNOWN);
@@ -25,7 +22,7 @@ void test_file_avi_v1(void **state)
 
 void test_file_avi_v2(void **state)
 {
-    (void)state;                /* Unused */
+    (void)state;
     FILE *f = fopen("../../../env/test/avi/test14.avi", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_avi(f), AVI_UNCOMPRESSED);

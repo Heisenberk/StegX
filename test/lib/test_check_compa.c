@@ -1,17 +1,15 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
 #include "stegx.h"
 #include "common.h"
 
-/**
+/*
  * Setup et Teardown des tests.
  * =====================================================================
  *  */
@@ -42,11 +40,12 @@ static int test_file_compa__teardown(void **state)
     return 0;
 }
 
-/**
+/*
  * Tests sur la compatibilité des fichiers.
  * =====================================================================
  * */
 
+// Test sur un format BMP compressé
 void test_file_compa_v1(void **state)
 {
     info_s *infos = *state;
@@ -59,6 +58,7 @@ void test_file_compa_v1(void **state)
     fclose(infos->host.host);
 }
 
+// Test sur un format BMP non compressé
 void test_file_compa_v2(void **state)
 {
     info_s *infos = *state;
@@ -71,6 +71,7 @@ void test_file_compa_v2(void **state)
     fclose(infos->host.host);
 }
 
+// Test sur un format PNG
 void test_file_compa_v3(void **state)
 {
     info_s *infos = *state;
@@ -83,6 +84,7 @@ void test_file_compa_v3(void **state)
     fclose(infos->host.host);
 }
 
+// Test sur un format WAV non PCM
 void test_file_compa_v4(void **state)
 {
     info_s *infos = *state;
@@ -96,6 +98,7 @@ void test_file_compa_v4(void **state)
     fclose(infos->host.host);
 }
 
+// Test sur un format MP3
 void test_file_compa_v5(void **state)
 {
     info_s *infos = *state;
@@ -108,6 +111,7 @@ void test_file_compa_v5(void **state)
     fclose(infos->host.host);
 }
 
+// Test sur un format FLV
 void test_file_compa_v6(void **state)
 {
     info_s *infos = *state;
@@ -121,6 +125,7 @@ void test_file_compa_v6(void **state)
 
 }
 
+// Test sur un format AVI
 void test_file_compa_v7(void **state)
 {
     info_s *infos = *state;
@@ -134,6 +139,7 @@ void test_file_compa_v7(void **state)
 
 }
 
+// Test sur un format inconnu
 void test_file_compa_v8(void **state)
 {
     info_s *infos = *state;

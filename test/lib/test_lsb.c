@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -12,6 +10,9 @@
 #include "common.h"
 #include "algo/lsb.h"
 
+/*
+ * Fonction recréée pour libérer la mémoire de la structure stegx_choices_s
+ **/
 void dest_stegx_info(stegx_choices_s * com)
 {
     if (com->insert_info) {
@@ -353,7 +354,10 @@ void test_lsb_big_bmp_without_passwd(void **state)
     remove("./short.txt");
 }
 
-void test_protection_lsb_bmp_insert_pixels_egal_data(void **state)
+/* Test sur l'algorithme LSB insertion lorsque le nombre d'octets à cacher 
+ * correspond au nombre d'octets disponible pour l'insertion LSB
+ **/
+void test_protection_lsb_insert_pixels_egal_data(void **state)
 {
     (void)state;
     uint8_t *pixels = malloc(8 * sizeof(uint8_t));
@@ -377,7 +381,10 @@ void test_protection_lsb_bmp_insert_pixels_egal_data(void **state)
     free(pixels);
 }
 
-void test_protection_lsb_bmp_extract_pixels_egal_data(void **state)
+/* Test sur l'algorithme LSB extraction lorsque le nombre d'octets à cacher 
+ * correspond au nombre d'octets disponible pour l'extraction LSB
+ **/
+void test_protection_lsb_extract_pixels_egal_data(void **state)
 {
     (void)state;
     uint8_t *pixels = malloc(8 * sizeof(uint8_t));
@@ -399,7 +406,11 @@ void test_protection_lsb_bmp_extract_pixels_egal_data(void **state)
     free(data);
 }
 
-void test_protection_lsb_bmp_insert_pixels_sup_data(void **state)
+
+/* Test sur l'algorithme LSB insertion lorsque le nombre d'octets à cacher 
+ * est inférieur au nombre d'octets disponible pour l'insertion LSB
+ **/
+void test_protection_lsb_insert_pixels_sup_data(void **state)
 {
     (void)state;
     uint8_t *pixels = malloc(10 * sizeof(uint8_t));
@@ -421,13 +432,15 @@ void test_protection_lsb_bmp_insert_pixels_sup_data(void **state)
     assert_int_equal(pixels[7], 253);
     assert_int_equal(pixels[8], 255);   // non modifié
     assert_int_equal(pixels[9], 255);   // non modifié
-    //assert_int_equal(pixels[
 
     free(data);
     free(pixels);
 }
 
-void test_protection_lsb_bmp_extract_pixels_sup_data(void **state)
+/* Test sur l'algorithme LSB extraction lorsque le nombre d'octets à cacher 
+ * est inférieur au nombre d'octets disponible pour l'extraction LSB
+ **/
+void test_protection_lsb_extract_pixels_sup_data(void **state)
 {
     (void)state;
     uint8_t *pixels = malloc(8 * sizeof(uint8_t));
@@ -457,10 +470,10 @@ const struct CMUnitTest lsb_tests[] = {
     cmocka_unit_test(test_lsb_little_bmp_without_passwd),
     cmocka_unit_test(test_lsb_big_bmp_with_passwd),
     cmocka_unit_test(test_lsb_big_bmp_without_passwd),
-    cmocka_unit_test(test_protection_lsb_bmp_insert_pixels_egal_data),
-    cmocka_unit_test(test_protection_lsb_bmp_extract_pixels_egal_data),
-    cmocka_unit_test(test_protection_lsb_bmp_insert_pixels_sup_data),
-    cmocka_unit_test(test_protection_lsb_bmp_extract_pixels_sup_data),
+    cmocka_unit_test(test_protection_lsb_insert_pixels_egal_data),
+    cmocka_unit_test(test_protection_lsb_extract_pixels_egal_data),
+    cmocka_unit_test(test_protection_lsb_insert_pixels_sup_data),
+    cmocka_unit_test(test_protection_lsb_extract_pixels_sup_data),
 };
 
 int main(void)
