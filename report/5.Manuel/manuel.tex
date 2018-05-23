@@ -43,14 +43,19 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \subsection{Installation sous Linux}
 
-Deux choix sont possibles pour Linux :
+\underline{Installation standard sous un Debian-like :}
 
 \begin{itemize}
-\item Taper sur le terminal "git clone https://www.github.com/Heisenberk/StegX"
-ou obtenir le dossier StegX par clé USB ou par mail directement donné par 
-l'équipe de conception. 
-\item Télécharger le compilateur GCC, GTK+-3.0 et CMAKE (dernière version).
-\item cd StegX
+\item Installer l'application en utilisant une interface à APT (par exemple en
+    double cliquant dessus), ou en utilisant la commande `sudo apt-get install
+    ./StegX-xxx.deb` depuis le répertoire ou ce situe l'installateur.
+\end{itemize}
+
+\underline{Installation depuis les sources :}
+
+\begin{itemize}
+\item Télécharger le compilateur GCC, GTK+-3.0 et CMake (dernière version). Dans
+    le dossier racine du projet, exécuter les commandes suivantes :
 \item mkdir build 
 \item cd build
 \item cmake ..
@@ -61,6 +66,7 @@ l'équipe de conception.
 \vspace{0.5cm}
 
 \begin{itemize}
+\newpage
 \item make
 \end{itemize}
 
@@ -77,27 +83,22 @@ l'équipe de conception.
 \vspace{0.5cm}
 \includegraphics[scale=0.5]{pictures/install.png}
 
-\underline{OU BIEN}
-
-\begin{itemize}
-\item Dans la section `Release`, télécharger le fichier `StegX-xxx.deb`.
-\item Installer le en utilisant une interface à APT (par exemple en double cliquant
-dessus), ou en utilisant la commande `sudo apt-get install ./StegX-xxx.deb`
-depuis le répertoire de téléchargement.
-\end{itemize}
-
 \subsection{Désinstallation sous Linux}
 
 Pour désinstaller StegX, taper dans sur le terminal : 
+\underline{Après une installation standard sous un Debian-like :}
 \begin{itemize}
 \item sudo apt remove stegx
+\end{itemize}
+\underline{Après une installation depuis les sources :}
+\begin{itemize}
+\item sudo make uninstall
 \end{itemize}
 
 \subsection{Installation sous Windows}
 
 \begin{itemize}
-\item Aller sur https://www.github.com/Heisenberk/StegX/ et cliquer sur Release.
-\item Télécharger l'archive et cliquer dessus à la fin du téléchargement.
+\item Double cliquer sur StegX-x.x.x-win64.exe afin de lancer l'installateur.
 \end{itemize}
 
 \hspace{1cm}
@@ -114,7 +115,7 @@ Pour désinstaller StegX, taper dans sur le terminal :
 \vspace{1cm}
 
 \begin{itemize}
-\item Cliquer sur "J'accepte". 
+\item Cliquer sur "J'accepte" après avoir pris connaissance de la licence. 
 \end{itemize}
 
 \hspace{1cm}
@@ -130,8 +131,10 @@ Pour désinstaller StegX, taper dans sur le terminal :
 \vspace{1cm}
 
 \begin{itemize}
-\item Sélectionner le premier choix. 
-\item Cliquer sur "Suivant". 
+\item Sélectionner le deuxième ou le troisième choix si vous voulez pouvoir
+    lancer l'interface en ligne de commande en tapant "stegx" dans
+    l'interpréteur de commande de Windows. Sinon, sélectionner le premier
+    choix. Cliquer sur "Suivant". 
 \end{itemize}
 
 \hspace{1cm}
@@ -144,15 +147,6 @@ Pour désinstaller StegX, taper dans sur le terminal :
 
 \hspace{1cm}
 \includegraphics[scale=1]{pictures/taille.png}
-\vspace{1cm}
-
-\begin{itemize}
-\item Choisir les composants de l'application à installer (interface 
-en ligne de commande et/ou interface graphique). 
-\end{itemize}
-
-\hspace{1cm}
-\includegraphics[scale=1]{pictures/choix.png}
 \vspace{1cm}
 
 \begin{itemize}
@@ -174,7 +168,6 @@ en ligne de commande et/ou interface graphique).
 \includegraphics[scale=0.8]{pictures/installation.png}
 \vspace{1cm}
 
-\newpage
 \begin{itemize}
 \item Cliquer sur "Fermer". 
 \end{itemize}
@@ -192,8 +185,6 @@ sélectionner StegX et cliquer sur désinstaller.
 
 \hspace{3cm}
 \includegraphics[scale=0.6]{pictures/desinstall.png}
-\vspace{1cm}
-\newpage
 
 \section{Manuel du développeur}
 
@@ -305,7 +296,7 @@ L'analyse du fichier hôte et du fichier à cacher est terminée:
 \hspace{2cm}
 \includegraphics[scale=0.8]{pictures/insertion_2.png}
 \vspace{1cm}
-\newpage
+
 Un ou plusieurs algorithmes est proposé : 
 \begin{itemize}
 \item Choisir l'algorithme à utiliser pour la dissimulation.
@@ -337,7 +328,6 @@ Pour réaliser une extraction d'un fichier caché dans un fichier à analyser :
 
 Lorsque l'extraction est terminée, une fenêtre s'ouvre : 
 
-\vspace{0.5cm}
 \hspace{2.5cm}
 \includegraphics[scale=0.8]{pictures/extraction_3.png}
 \vspace{1cm}
