@@ -119,3 +119,43 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
     return 0;
 
 }
+
+
+
+int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
+{
+    srand(create_seed(passwd));
+    for (uint8_t b ; fread(&b, sizeof(b), 1, src) == 1 ;)
+        fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
+    return ferror(src);
+}
+
+
+void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len)
+{
+    srand(create_seed(passwd));
+    for (uint32_t i = 0 ; i < len ; i++)
+        src[i] ^= rand() % UINT8_MAX;
+}
+
+
+
+int data_scramble_write(FILE * src, FILE * res, const char * pass,
+        const uint32_t len, const mode_e m)
+{
+    uint8_t *data = malloc(len * sizeof(uint8_t));
+    if (!data)
+        return perror("EOF: Can't allocate memory for copy hidden file"), 1;
+    // Copie les données de fichier source dans data.
+    if (fread(data, sizeof(*data), len, src) != len)
+        return perror("EOF: Can't make a copy of hidden file"), 1;
+    // Mélange ou remet en ordre les octets dans data, et les XOR ou les déXOR.
+    if (m)
+        protect_data(data, len, pass, m), data_xor_write_tab(data, pass, len);
+    else
+        data_xor_write_tab(data, pass, len), protect_data(data, len, pass, m);
+    // Écriture des données dans le fichier resultat.
+    if (fwrite(data, sizeof(*data), len, res) != len)
+        return perror("EOF: Can't write hidden data"), 1;
+    return free(data), 0;
+}

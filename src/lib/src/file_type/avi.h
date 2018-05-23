@@ -50,4 +50,6 @@ int insert_metadata_avi(info_s * infos);
  */
 int extract_metadata_avi(info_s * infos);
 
+#define JUNK 1263424842
+
 #endif

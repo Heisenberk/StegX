@@ -44,6 +44,12 @@ static int read_signature(info_s * infos)
             return perror("BMP, PNG & WAVE: Can't move to StegX signature"), 1;
     } else if (infos->host.type == MP3) {
     } else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
+        fseek(infos->host.host,4,SEEK_SET);
+        uint32_t file_size;
+        if(!(fread(&file_size,sizeof(uint32_t),1,infos->host.host)))
+            return perror("AVI: can't read file_size"),1;
+        if (fseek(infos->host.host,file_size+8,SEEK_SET))
+            return perror ("AVI: Can't move to StegX signature"),1;
     } else if (infos->host.type == FLV) {
         if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
             return perror("FLV: Can't move to StegX signature"), 1;

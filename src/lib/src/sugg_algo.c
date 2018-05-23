@@ -290,13 +290,15 @@ int fill_host_info(info_s * infos)
             data_size = stegx_be32toh(data_size);
             //passage en 24 bits      
             data_size >>= 8;
-            //deplacement jusqu'au prochain previous tag size (data size + 6octets qui comportent d'autres informations non utiles) 
+            //deplacement jusqu'au prochain previous tag size (data size + 6 octets qui comportent d'autres informations non utiles) 
             fseek(infos->host.host, data_size + 6, SEEK_CUR);
             //lecture du previous tag size 
             fread(&prev_tag_size, sizeof(prev_tag_size), 1, infos->host.host);
             prev_tag_size = stegx_be32toh(prev_tag_size);
             infos->host.file_info.flv.file_size += prev_tag_size + 4;
         }
+        if(infos->mode == STEGX_MODE_INSERT && fread(&check_tags, sizeof(uint8_t), 1, infos->host.host))
+			return perror("Fichier flv ayant des données en fin de fichier. Fichier incompatible pour l'insertion."), 1;
         return 0;
     }
 

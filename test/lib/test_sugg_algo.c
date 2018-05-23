@@ -164,11 +164,11 @@ void test_file_info_flv_v1(void **state)
     /* Valeurs à trouver : */
     stegx_suggest_algo(infos);
     // NOMBRE DE VIDEO TAG :
-    assert_int_equal(infos->host.file_info.flv.nb_video_tag, 108);
+    assert_int_equal(infos->host.file_info.flv.nb_video_tag, 166);
     // NOMBRE DE METADATA TAG :
     assert_int_equal(infos->host.file_info.flv.nb_metadata_tag, 1);
     // TOTAL SIZE
-    assert_int_equal(infos->host.file_info.flv.file_size, 203258);
+    assert_int_equal(infos->host.file_info.flv.file_size, 439099);
 
     fclose(infos->host.host);
 }
