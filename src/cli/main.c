@@ -9,7 +9,6 @@ int main(int argc, char *argv[])
     // Initialisation de la structure publique correspondant aux choix de l'utilisateur
     stegx_choices_s *com = init_stegx_info();
     fill_info(com, argc, argv);
-    check_info(com);
 
     // Initialisation de la structure privée à partir de la structure publique
     info_s *infos = stegx_init(com);
