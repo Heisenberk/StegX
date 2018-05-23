@@ -1,10 +1,8 @@
-/* Inclusions minimales. */
 #include <stdlib.h>
 #include <stdio.h>
 #include <setjmp.h>
 #include "cmocka.h"
 
-/* Inclusions supplémentaires. */
 #include <errno.h>
 #include <unistd.h>
 #include <string.h>
@@ -12,7 +10,7 @@
 #include "stegx.h"
 #include "common.h"
 
-/**
+/*
  *  Test de l'algo End of Chunk pour les fichiers FLV ==================
  * */
  
@@ -81,12 +79,11 @@ void test_eoc_protection(void **state){
     remove("./short.txt");
 }
 
-/* Test sans l'algo de protection des données */
 void test_eoc_no_protection(void **state){
-	
+	(void)state;
 }
 
-/**
+/*
  * MAIN ================================================================
  * */
  
