@@ -586,7 +586,7 @@ little endian.
 \section{Comparaison entre l'estimation et l'implémentation}
 
 \small
-\hspace{-1cm}
+\hspace{-1.5cm}
 \begin{tabular}{|c|c|c|c|}
   \hline
   \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
@@ -606,14 +606,12 @@ little endian.
     Détection de l'algo & Estimation : 100 lignes & Estimation : 15 heures & AYOUB Pierre \& \\
    de stéganographie & Implémentation : 60 lignes & Implémentation : 15 heures & DELAUNAY Damien \\
   \hline
-  Dissimulation \& Extraction & Estimation : 250 lignes & Estimation : 40 heures & CAUMES Clément \& \\
-   fichiers images & Implémentation : X lignes & Implémentation : X heures & DOUDOUH Yassin \\
-  \hline
-  Dissimulation \& Extraction & Estimation : 250 lignes & Estimation : 40 heures & AYOUB Pierre \& \\
-   fichiers audios & Implémentation : X lignes & Implémentation : X heures & DELAUNAY Damien \\
-     \hline
-  Dissimulation \& Extraction & Estimation : 250 lignes & Estimation : 40 heures & BASKEVITCH Claire \& \\
-   fichiers vidéos & Implémentation : X lignes & Implémentation : X heures & BESSAC Tristan \\
+   & & & CAUMES Clément (image) \& \\
+   & & &  DOUDOUH Yassin (image) \& \\
+   Dissimulation \& Extraction & Estimation : 750 lignes & Estimation : 120 heures  & AYOUB Pierre (audio) \& \\
+   image, audio, vidéo & Implémentation : 1000 lignes & Implémentation : 160 heures & DELAUNAY Damien (audio) \& \\
+   & & & BASKEVITCH Claire (vidéo) \& \\
+   & & & BESSAC Tristan (vidéo) \\
   \hline
 \end{tabular}
 \normalsize
@@ -634,7 +632,17 @@ par le fait que, lors de l'élaboration du cahier des charges l'équipe StegX
 pensait que trouver les détails nécessaires à l'insertion (rôle de la fonction 
 \textit{fill\_host\_info}) devait se faire dans le module \textit{Proposition 
 des algorithmes} et non dans celui-ci.  
+\item Il y a une différence de 250 lignes entre l'estimation et l'implémentation 
+pour l'insertion et l'extraction. Cela s'explique par le fait que il s'agissait 
+de la partie la plus compliquée de tout le projet et il était délicat d'étudier 
+avec précision les normes des formats. En effet, c'est bien la spécification de 
+chaque format pris en charge par StegX qui explique cette différence puisqu'il 
+faut réussir à créer un algorithme commun à plusieurs formats. 
 \end{itemize}
+
+En conclusion, nous avons été plutôt proche de nos estimations avec une 
+différence de $9.189\%$ par rapport à nos approximations de départ établies 
+dans le cahier des charges. 
 
 \section{Bilan technique du produit et améliorations pour les versions futures}
 
