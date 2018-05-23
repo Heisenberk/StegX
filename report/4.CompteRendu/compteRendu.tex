@@ -476,7 +476,8 @@ L'équipe StegX a donc créé deux fonctions pour éviter la répétition de cod
 int data_xor_write_file (FILE* src, FILE* res, const char* passwd)
 \end{lstlisting}
 
-Elle va écrire les données XORés avec la suite générée par le mot de passe. 
+Elle va écrire les données dans src XORés avec la suite générée par le mot 
+de passe et l'écrire dans le fichier res. 
 \newline
 \underline{Entrées :}
 \begin{itemize}
@@ -492,7 +493,21 @@ fonction et 0 si tout se passe bien.
 \end{itemize}
 
 \begin{lstlisting}[language=c]
-int data_scramble_write (FILE* src, FILE* res, const char* passwd, 
+void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len);
+\end{lstlisting}
+
+Elle va modifier src en XORant avec la suite générée par le mot de passe. 
+\newline
+\underline{Entrées :}
+\begin{itemize}
+\item \textit{* src :} Tableau d'octets à modifier. 
+\item \textit{*passwd :} Mot de passe utilisé pour créer la graine. 
+\item \textit{len :} Longueur des données du tableau src. 
+\newline 
+\end{itemize}
+
+\begin{lstlisting}[language=c]
+int data_scramble_write (FILE* src, FILE* res, const char* pass, 
 	const uint32_t len, const mode_e m)
 \end{lstlisting}
 
@@ -503,7 +518,7 @@ passe.
 \begin{itemize}
 \item \textit{* src :} Fichier où lire les données à XORé. 
 \item \textit{* res :} Fichier où écrire les données à XORé. 
-\item \textit{*passwd :} Mot de passe utilisé pour créer la graine. 
+\item \textit{*pass :} Mot de passe utilisé pour créer la graine. 
 \item \textit{len :} Longueur des données à cacher/cachées. 
 \item \textit{m :} Mode d'utilisation (STEGX\_MODE\_INSERT ou STEGX\_MODE\_EXTRACT). 
 \end{itemize}
