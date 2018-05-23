@@ -42,24 +42,24 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \section{Introduction}
 
-La stéganographie est le but recherché lors de l'implémentation de StegX. 
-Elle consiste à dissimuler des données dans des fichiers de type image, 
-audio et vidéo. 
-Après avoir étudié en détail les algorithmes de stéganographie (dans le 
-cahier des charges), et analysé comment mettre en relation les différents 
-modules correspondant aux différentes fonctionnalités, il est maintenant 
-temps d'implémenter le logiciel.
-L'application StegX proposera à ses utilisateurs de manipuler une interface 
-graphique ou en ligne de commande afin de cacher des données dans d'autres 
-données (pour des formats pris en charge par StegX). De plus, StegX permettra 
-d'extraire des données d'un fichier que l'on considère déjà comme cachant 
-des données. Le logiciel proposera plusieurs algorithmes de stéganographie
-tels que EOF, LSB et Metadata. 
+La stéganographie est le domaine de recherche de StegX. Notre implémentation se
+veut pratique pour un utilisateur, gérant des formats divers et variés et de
+manière sécurisée.
+Après avoir étudié en détail les algorithmes de stéganographie dans le cahier
+des charges, puis analysé comment mettre en relation les différents modules
+correspondant aux différentes fonctionnalités, nous avons pu implémenter le
+logiciel.
+L'application StegX proposera à ses utilisateurs de manipuler une interface
+graphique ou en ligne de commande afin de cacher des données dans d'autres
+données, selon les formats pris en charge par StegX. De plus, ce dernier
+permettra d'extraire des données cachées dans un fichier si elles ont été
+cachées par notre logiciel. Le logiciel proposera plusieurs algorithmes de
+stéganographie différents afin d'assurer des méthodes diversifiées. 
 
-En plus de l'implémentation, il sera utile de présenter le fonctionnement 
-de l'architecture de l'application avec les explications techniques. 
-Une description des points délicats seront mis en valeur ainsi qu'un 
-bilan technique sur l'application et humain sur l'équipe de conception. 
+En plus de l'implémentation, il sera utile de présenter le fonctionnement de
+l'architecture de l'application avec les explications techniques. Une
+description des points délicats seront mis en évidence ainsi qu'un bilan
+technique sur l'application et un bilan humain sur l'équipe de conception. 
 
 \section{Architecture du produit}
 
@@ -67,11 +67,10 @@ bilan technique sur l'application et humain sur l'équipe de conception.
 \includegraphics[scale=0.55]{pictures/organigramme.png}
 \newpage
 
-L'étude des différentes propriétés de la stéganographie et la stéganalyse 
+L'étude des différentes propriétés de la stéganographie et de la stéganalyse 
 nous a mené vers cet organigramme. 
-Il permet de visualiser les étapes successives de la stéganographie 
-(insertion des données), ainsi que celle de la stéganalyse (extraction 
-des données). 
+Il permet de visualiser les étapes successives de l'insertion des données ainsi
+que celle de la l'extraction des données.
 
 Pour la dissimulation de données, il va d'abord y avoir la \textit{Vérification 
 de la compatibilité} (b) du fichier hôte, pour savoir si le format est bien 
@@ -99,10 +98,12 @@ graphique et en ligne de commande (a), proposées par StegX.
 
 \section{Description du fonctionnement}
 
-Pour montrer le fonctionnement de l'application, nous allons proposer un 
-exemple pour dissimulation et un autre pour l'extraction, correspondant 
-à une communication entre Alice et Bob, surveillée par Oscar. 
-Les données sont issues d'une réelle utilisation de StegX. 
+Cette section sera consacrée à l'étude du fonctionnement interne de notre
+application. Pour cela, nous allons aborder des points techniques. Ensuite, pour
+illustrer le fonctionnement de l'application, nous allons proposer un exemple de
+dissimulation et d'extraction de données, correspondant à une communication
+entre Alice et Bob, surveillée par Oscar. Les données sont issues d'une réelle
+utilisation de StegX. 
 
 \subsection{Prérequis}
 
@@ -119,39 +120,37 @@ les droits d'accès en lecture.
 
 \subsection{Fonctionnement des modules}
 
-\subsubsection{Fonctionnement du module Vérification de la compatibilité des 
-fichiers}
+\subsubsection{Vérification de la compatibilité des fichiers}
 
 Ce module est commun à l'insertion et l'extraction. Il correspond à la 
 recherche détaillée de la nature du fichier hôte. 
-Pour cela, il va y avoir une batterie de tests durant lesquels les
+Pour cela, il va y avoir une série de tests durant lesquels les
 signatures des différents formats proposés par l'application vont être recherchées. 
 Si l'une d'elle est reconnue, cela signifie qu'il s'agit du format en question. 
-A la fin de la batterie de tests, si le format n'a pas été reconnu, 
+A la fin de la série de tests, si le format n'a pas été reconnu, 
 l'application renvoie une erreur : en effet, elle ne peut pas utiliser ce 
 fichier là pour dissimuler ou extraire des données. 
 
-\subsubsection{Fonctionnement de Proposition des algorithmes de stéganographie}
+\subsubsection{Proposition des algorithmes de stéganographie}
 
 Dans ce module, l'application va lire en détails les particularités du fichier 
 hôte. En effet, dans le module précédent, nous avons trouvé le format. Il 
 faut maintenant lire le header du fichier pour l'interpréter correctement 
 par la suite. Lorsque les données spécifiques du fichier ont été trouvées, 
-une batterie de tests sur les différents algorithmes proposés par l'application
+une série de tests sur les différents algorithmes proposés par l'application
 permettra de déterminer quels algorithmes sont possibles avec la nature 
 du fichier hôte et la taille du fichier à cacher. 
-Après cette batterie de tests, la récupération du choix de l'utilisateur 
+Après cette série de tests, la récupération du choix de l'utilisateur 
 permettra de déterminer son choix d'algorithme à utiliser lors de l'insertion. 
 
-\subsubsection{Fonctionnement de Détection de l'algorithme de stéganographie}
+\subsubsection{Détection de l'algorithme de stéganographie}
 
-Ce module correspond à la lecture de la signature StegX. En fonction du 
-format du fichier à analyser, le décalage de la lecture de la signature StegX
-dans le fichier ne sera pas le même. Cette lecture sera déterminante pour 
-découvrir l'algorithme utilisé, le nom du fichier caché et la taille de 
-ce dernier. 
+Ce module correspond à la lecture de la signature StegX. En fonction du format
+du fichier à analyser, la position de la signature de StegX dans le fichier ne
+sera pas le même. Cette lecture sera déterminante pour découvrir l'algorithme
+utilisé, le nom du fichier caché et la taille de ce dernier. 
 
-\subsubsection{Fonctionnement de Insertion}
+\subsubsection{Insertion des données}
 
 Lorsque le fichier à cacher, l'algorithme de stéganographie à utiliser, 
 la nature du fichier hôte, le mot de passe (s'il y en a un) et l'emplacement 
@@ -164,7 +163,7 @@ octet du fichier à cacher. Si la taille le permet, les octets à cacher
 seront mélangés (grâce au mot de passe) afin de rendre impossible l'extraction 
 par une personne inconnue. 
 
-\subsubsection{Fonctionnement de Extraction}
+\subsubsection{Extraction des données}
 
 De la même manière que l'insertion, lorsque le nom du fichier caché, la taille 
 du fichier caché, l'algorithme, le mot de passe (s'il y en a un) et l'emplacement
@@ -174,9 +173,9 @@ pour XOR avec les octets extraits (si le fichier caché est trop gros).
 Si sa taille le permet, le fichier caché sera créé en remettant dans l'ordre 
 les octets extraits. 
 
-\subsection{Description technique de la signature StegX}
+\subsection{Description technique de la signature de StegX}
 
-La signature StegX est primordiale dans l'insertion puisqu'elle permet au 
+La signature de StegX est primordiale dans l'insertion puisqu'elle permet au 
 destinataire de pouvoir interpréter ce que l'émetteur a voulu lui communiquer. 
 Pour cela, cette signature doit avoir plusieurs champs : 
 \begin {enumerate}
@@ -214,20 +213,20 @@ non l'application qui doit l'extraire.
 
 % mettre un prerequis disant que soit cest XOR soit cest pur melange
 
-\subsubsection{Algorithme End Of File}
+\subsubsection{End Of File}
 
 Pour l'insertion des données, cet algorithme consiste à recopier le fichier 
 hôte dans le fichier résultat, suivi de la signature, suivi des octets 
 représentant le fichier à cacher. Cet algorithme fonctionne car les éditeurs 
 des formats pour lesquels l'algorithme est proposé n'interprètent pas les données 
-après la fin "officielle" du fichier. 
+après la fin << officielle >> du fichier. 
 
 Pour l'extraction des données, il faut aller à la fin officielle du fichier 
 à analyser. A cet endroit précis est écrit la signature StegX. Ainsi, 
 les informations sur le fichier caché sont interprétées. Puis, il y a une 
 lecture après cette signature, correspondant aux données cachées. 
 
-\subsubsection{Algorithme Least Significant Bit}
+\subsubsection{Least Significant Bit}
 
 Pour l'insertion des données, l'algorithme LSB va modifier les bits de 
 poids faible des différents octets des données de l'hôte. Selon la taille des
@@ -241,32 +240,30 @@ Pour l'extraction des données, la lecture de la fin du fichier permettra de
 lire la signature StegX. Ensuite, les octets de l'hôte seront lues afin d'extraire 
 les données cachées. 
 
-\subsubsection{Algorithme Metadata}
+\subsubsection{Metadata}
 
 Pour chaque format pris en charge par StegX qui propose cet algorithme, 
-Metadata diffère. En effet, l'étude approfondie du format du fichier est 
-nécessaire pour connaître les endroits du fichier où cacher des données. 
+ce dernier diffère. En effet, l'étude approfondie du format du fichier est 
+nécessaire pour connaître les endroits du fichier où cacher des métadonnées. 
 
 Pour l'insertion, il est nécessaire que la signature StegX soit écrite à 
 la fin du fichier afin que l'extraction puisse se dérouler correctement. 
 
-\subsubsection{Algorithme End Of Chunk}
+\subsubsection{End Of Chunk}
 
 Cet algorithme est uniquement proposé par le format FLV et consiste à 
 écrire après les différents chunks du fichier hôte. En effet, lors de 
-son interprétation, les chunks non reconnus sont ignorés. C'est donc une 
-variante de l'algorithme Metadata car on manipule les données pour que 
-les interpréteurs de format FLV les ignorent. 
+son interprétation, les chunks non reconnus sont ignorés.
 
-\subsubsection{Algorithme Junk Chunk}
+\subsubsection{Junk Chunk}
 
-L'algorithme Junk Chunk est seulement proposé par le format AVI. Il correspond 
-à la création d'un chunk Junk. Ce chunk est spécifique car il représente 
-un chunk poubelle dans lequel les données ne seront pas interprétées. 
+L'algorithme Junk Chunk est seulement proposé par le format AVI. Il correspond à
+la création d'un chunk poubelle. Ce chunk est spécifique au format car il
+représente un chunk dans lequel les données ne seront pas interprétées. 
 
-\subsection{Fonctionnement dans un exemple}
+\subsection{Fonctionnement par un exemple}
 
-\subsubsection{Fonctionnement de l'insertion des données par un exemple}
+\subsubsection{Insertion des données}
 
 Alice choisit de dissimuler le message dans une image qu'elle veut envoyer 
 à Bob à l'aide de l'interface graphique. 
@@ -309,7 +306,7 @@ Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun
 soupçon en voyant piece\_jointe.bmp qui semble être une image comme une 
 autre. 
 
-\subsubsection{Fonctionnement de l'extraction des données par un exemple}
+\subsubsection{Extraction des données}
 
 Bob reçoit sur le canal non sûr le fichier piece\_jointe.bmp et sait que 
 ce fichier contient des données cachées. Pour les extraire, Bob choisit 
@@ -342,55 +339,53 @@ contenu dans le fichier message.txt.
 
 \section{Description des points délicats de la programmation}
 
-\subsection{Lecture et écriture de fichiers \& endianness}
+\subsection{Lecture et écriture de fichiers, endianness}
 
 La première difficulté est arrivée lors de l'implémentation du module 
 \textit{Vérification de la compatibilité des fichiers}. En effet, il fallait 
 lire la signature des fichiers hôtes pour l'insertion et l'extraction. 
 
-Nous ne comprenions pas pourquoi sur certains formats le little-endian 
-était utilisé et sur d'autres il fallait utilisé le big-endian. 
-De plus, il fallait également convertir les octets lus dans l'endian de la 
-machine de l'utilisateur. L'équipe de conception a fait des recherches à 
-propos des processeurs little/big endian et les processeurs big-endian sont 
-des processeurs pour les systèmes embarqués. De ce fait, il fallait lire 
-les données des fichiers et les convertir en little endian. 
+Nous ne comprenions pas pourquoi, sur certains formats, le little endian était
+utilisé tandis que sur d'autres, le big endian était utilisé. De plus, il
+fallait également convertir les octets lus dans l'endian de la machine de
+l'utilisateur. L'équipe de conception a fait des recherches à propos des
+processeurs little/big endian et les processeurs fonctionnant en big endian sont
+principalement des processeurs pour les systèmes embarqués. Dans le cas des
+ordinateurs de bureau fonctionnement avec des processeur x86, le little endian
+est utilisé. De ce fait, il fallait lire les données des fichiers et les
+convertir en little endian. 
 
-Nous avons donc trouvé une solution : la création de fonctions de 
-conversion entre les deux endianness. L'équipe StegX pouvait utiliser la 
-librairie \textit{endian.h} mais l'application est multi-plateforme (Linux 
-et Windows) et cette librairie n'était pas standard. Le meilleur moyen était 
-donc de reproduire ces fonctions de conversion pour l'application 
+Nous avons donc trouvé une solution : la création de fonctions de conversion
+entre les deux endianness. L'équipe StegX pouvait utiliser la les fonctions
+fournies dans le header \textit{endian.h}, conforme à la norme POSIX du C.
+Cependant, notre application étant multi-plateforme (Linux et Windows), il nous
+fallait utiliser des fonctions conformes au C ANSI/ISO. Le meilleur moyen était
+donc de reproduire nous même ces fonctions de conversion pour l'application 
 \label{endian}. 
 
-\subsection{Etude des différents formats \& algorithme Metadata}
+\subsection{Étude des différents formats et algorithme Metadata}
 
-La deuxième difficulté rencontrée est celle de l'implémentation de 
-l'algorithme Metadata. La particularité de cet algorithme est le fait 
-qu'elle dépend du format du fichier hôte. C'est d'ailleurs avec la fonction 
-\textit{fill\_host\_info} que la structure-union était remplie et qu'on 
-distinguait les éléments importants du format en question.  
-Il faut donc étudier avec précision la nature des éléments qui composent
-ce format.  
+La deuxième difficulté rencontrée est celle de l'implémentation de l'algorithme
+Metadata. La particularité de cet algorithme est le fait qu'elle dépend du
+format du fichier hôte. C'est d'ailleurs avec la fonction
+\textit{fill\_host\_info} que la structure-union était remplie et qu'on
+distinguait les éléments importants du format en question.  Il fallait donc
+étudier avec précision la nature des éléments qui composent le format ciblé.  
 
 \subsection{Format MP3}
 
-Le format MP3 est sans nul doute le format le plus compliqué de ceux
-que l'équipe StegX s'est occupé. En effet, il s'agit d'un format compressé 
-utilisant des algorithmes de compression divers et complexes. 
-Pour ce format, il a fallu que le binôme composé de Pierre Ayoub et Damien 
-Delaunay, chargé de réaliser l'insertion et l'extraction des formats audio, 
-décordique les spécifications précises de plusieurs versions du format 
-(MPEG 1 Layer III, MPEG 2 Layer III), et de plusieurs versions de formats 
-de métadonnée (ID3 version 1 et ID3 version 2). 
-Une fois cela fait, il a fallu récupérer plusieurs fichiers échantillons 
-correspondant aux différents formats et versions afin de les analyser en 
-hexadécimal et en faire la lecture pour en comprendre le mécanisme. Ces 
-opérations ont été longues et pointilleuses et aucun algorithme ne pourra 
-être proposé dans la version de StegX rendue pour le 25 mai. 
-
-Il était peut-être trop ambicieux pour StegX de proposer un format aussi 
-complexe. 
+Le format MP3 est sans nul doute le format le plus compliqué de ceux que
+l'équipe StegX s'est occupé. En effet, il s'agit d'un format compressé utilisant
+des algorithmes de compression divers et complexes. Pour ce format, il a fallu
+que le binôme composé de Pierre Ayoub et Damien Delaunay, chargé de réaliser
+l'insertion et l'extraction des formats audio, décortique les spécifications
+précises de plusieurs versions du format (MPEG 1 Layer III, MPEG 2 Layer III),
+et de plusieurs versions de formats de métadonnée (ID3 version 1 et ID3 version
+2). Une fois cela fait, il a fallu récupérer plusieurs fichiers échantillons
+correspondant aux différents formats et versions afin de les analyser en
+hexadécimal et en faire la lecture pour en comprendre le mécanisme. Ces
+opérations ont été longues et pointilleuses et aucun algorithme ne pourra être
+proposé dans la version de StegX rendue pour le 25 mai. 
 
 \section{Changements mineurs des spécifications}
 
@@ -548,6 +543,7 @@ int sig_fseek(FILE* f, char * h, method_e m)
 \newline 
 \end{itemize}
 
+\newpage
 \subsection{Ajouts pour l'optimisation}
 
 Tout d'abord, par soucis d'optimisation afin d'éviter à un futur développeur 
@@ -587,7 +583,7 @@ endian en big endian.
 La deuxième fonction consiste à passer \textit{nb} de big endian en 
 little endian. 
 
-\section{Comparaison estimation - implémentation}
+\section{Comparaison entre l'estimation et l'implémentation}
 
 \small
 \hspace{-1cm}
@@ -640,19 +636,17 @@ pensait que trouver les détails nécessaires à l'insertion (rôle de la foncti
 des algorithmes} et non dans celui-ci.  
 \end{itemize}
 
-\section{Bilan technique du produit et Améliorations pour les versions futures}
+\section{Bilan technique du produit et améliorations pour les versions futures}
 
-Le produit StegX répond bien aux objectifs : faire de la stéganographie 
-et de la stéganalyse sur des fichiers de type image, audio et vidéo en 
-utilisant plusieurs algorithmes (LSB, EOF, Metadata). 
-Par ailleurs, StegX propose bien 2 interfaces : une en ligne de commande 
-et une autre graphique. 
-Avoir choisi le langage C a été le meilleur choix car ce langage nous a 
-permis de manipuler facilement les données binaires des fichiers en entrée. 
+Le produit StegX répond bien aux objectifs : faire de la stéganographie sur des
+fichiers de type image, audio et vidéo en utilisant plusieurs algorithmes. Par
+ailleurs, StegX propose bien 2 interfaces : une en ligne de commande et une
+autre graphique. Avoir choisi le langage C a été le meilleur choix car ce
+langage nous a permis de manipuler facilement les données binaires des fichiers
+en entrée. 
 
 En plus de répondre aux objectifs, l'équipe de conception s'est efforcée 
-à répondre aux nombreux besoins du client, qui doit rester la personne la 
-satisfaite du produit. 
+de répondre aux nombreux besoins du client. Chez StegX, le client est roi.
 
 En ce qui concerne les algorithmes proposés par StegX en fonction des 
 formats pris en charge, voici le bilan de ce que propose l'application : 
@@ -680,38 +674,32 @@ formats pris en charge, voici le bilan de ce que propose l'application :
 \end{tabular}
 \vspace{0.5cm}
 
-Concernant les améliorations à apporter pour l'application, cela aurait été 
-intéressant, pour les fichiers hôte (pour l'insertion et pour l'extraction)
-dont l'utilisateur n'a pas les droits de lecture, de modifier ces droits. 
-De plus, l'avantage de ce produit est le fait qu'il peut être constamment 
-en amélioration du fait que l'on peut gérer encore plus de formats et 
-sûrement d'autres algorithmes de stéganographie. 
+Un des avantages de notre logiciel est le fait qu'il peut être constamment améliorer,
+du fait que nous avons fait en sortie d'avoir une conception flexible et
+modulaire permettant de rajouter facilement de nouveaux formats pris en charges,
+ou bien de nouveau algorithmes.
 
 \section{Conclusion sur l'organisation interne au sein du projet}
 
-Durant le semestre 6 de la dernière année de licence informatique à Versailles, 
-l'équipe StegX s'est réunie pour créer une application en rapport à la 
-cryptographie. 
-De ce fait, tous les membres de l'équipe de conception se sont efforcés à
-travailler de façon professionnelle et ordonnée. En effet, ils leur tenaient 
-à coeur de mettre en application toute la méthodologie informatique acquise 
-durant la licence. 
-Par ailleurs, en raison de la grande charge de travail, il a fallu, dès le 
-début du projet, diviser la conception selon les trois différents types 
-dont StegX doit se charger (image, audio et vidéo). 
-Cette division de charge de travail impliquait que chacun devait réaliser 
-une partie de la conception. 
+Durant le semestre 6 de la dernière année de licence informatique à Versailles,
+l'équipe StegX s'est réunie pour créer une application en rapport à la
+cryptologie. De ce fait, tous les membres de l'équipe de conception se sont
+efforcés à travailler de façon professionnelle et ordonnée. En effet, ils leur
+tenaient à coeur de mettre en application toute la méthodologie informatique
+acquise durant la licence. Par ailleurs, en raison de la grande charge de
+travail, il a fallu dès le début du projet diviser la conception selon les
+trois différents types dont StegX doit se charger.
 
-Enfin, nous n'avions pas de chef de projet. Cette décision nous a été très 
-favorable du fait que chacun a eu la maturité de comprendre les enjeux de 
-ce grand projet. En effet, ces enjeux étaient grands et c'est pour cela 
-que le projet IN608 est la matière la plus travaillée du semestre. C'était 
-d'ailleurs le projet préféré de la licence car il était de très grande 
-envergure et dont l'équipe a proposé le sujet. 
+Enfin, nous n'avions pas de chef de projet. Cette décision nous a été très
+favorable du fait que chacun a eu la maturité de comprendre les enjeux de ce
+grand projet. En effet, ces enjeux étaient grands et c'est pour cela que le
+projet IN608 est la matière la plus travaillée du semestre. Cela aura été le
+projet le plus apprécié de la licence par toute l'équipe, car il était de très
+grande envergure et l'équipe a proposé son propre sujet. 
 
-Damien Delaunay a été absent durant plusieurs entretiens avec le client 
-en raison de graves problèmes familiaux. Cela ne l'a pas empêché de travailler 
-durant le semestre lors des réunions et les conférences entre les membres 
-de l'équipe StegX. 
+Enfin, notons que Damien Delaunay a été absent durant plusieurs entretiens avec
+le client en raison de graves problèmes familiaux. Cela ne l'a pas empêché de
+travailler durant le semestre lors des réunions et les conférences entre les
+membres de l'équipe StegX. 
 
 \end{document}
