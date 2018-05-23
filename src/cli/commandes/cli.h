@@ -45,12 +45,6 @@ void help();
 void unvalid_line(char *error_info);
 
 /**
- * @brief Vérifie les informations entrés par l'utilisateur 
- * @details Vérifie que l'utilisateur a bien indiqué les informations nécessaires pour la dissimulation ou l'extraction
- */
-void check_info(stegx_choices_s * com);
-
-/**
  * @brief libère la structure contenant les informations entrées en ligne de commande
  * @param com structure contenant les informations entrées en ligne de commande 
  */
