@@ -97,7 +97,6 @@ int extract_junk_chunk(info_s * infos)
      * des octets. */
     return data_scramble_write(infos->host.host, infos->res, infos->passwd, infos->hidden_length, infos->mode) ?
         perror("JUNK_CHUNK: Can't write descrambled hidden data"), 1 : 0;
-    return 0;
 }
 
 
