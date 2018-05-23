@@ -33,11 +33,11 @@ void test_file_avi_v2(void **state)
 int main(void)
 {
     /* Structure CMocka contenant la liste des tests. */
-    const struct CMUnitTest check_compatibility_tests[] = {
+    const struct CMUnitTest avi_tests[] = {
         cmocka_unit_test(test_file_avi_v1),
         cmocka_unit_test(test_file_avi_v2)
     };
 
     /* Exécute les tests. */
-    return cmocka_run_group_tests(check_compatibility_tests, NULL, NULL);
+    return cmocka_run_group_tests(avi_tests, NULL, NULL);
 }

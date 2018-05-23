@@ -59,7 +59,7 @@ void help()
          "Voici les différents algorithmes que propose l'application (si option de dissimulation sélectionnée) :\n"
          "\033[01m\033[32m--lsb\033[0m : least significant bit. Disponible pour BMP et PNG.\n"
          "\033[01m\033[32m--metadata\033[0m : Disponible pour BMP et PNG.\n" 
-         "\033[01m\033[32m--eof\033[0m : end of file. Disponible pour BMP, PNG, WAVE et FLV.\n"
+         "\033[01m\033[32m--eof\033[0m : end of file. Disponible pour BMP, PNG, WAVE et FLV. (par défaut si aucun algorithme n'a été sélectionné.\n"
          "\033[01m\033[32m--eoc\033[0m : End of Chunk. "
          "Cache les données à la fin de chaque chunk. Disponible pour le format FLV.\n"
          "\033[01m\033[32m--junk\033[0m : Junk-chunk. "
