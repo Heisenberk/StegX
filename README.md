@@ -20,7 +20,7 @@ Statut
 
 * Interface graphique : Terminée.
 * Interface en ligne de commande : Terminée.
-* Bibliothèque : Quasi-terminée.
+* Bibliothèque : Terminée.
 
 
 ---
@@ -104,13 +104,6 @@ répertoire racine de l'application, puis exécutez dans votre terminal `./stegx
 pour l'interface en ligne de commande ou `./stegx-gui` pour l'interface
 graphique.
 
-Aide
---------------------------------------------------------------------------------
-
-Pour obtenir de l'aide, consulter le manuel de l'interface graphique sous format
-PDF ou taper dans votre terminal `man stegx` pour lire le manuel de l'interface
-en ligne de commande sur **Unix** si l'installation à été effectuée par
-l'installateur.
 
 ---
 
