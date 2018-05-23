@@ -53,16 +53,17 @@ void help()
          "\033[01m\033[32m-o, --host [nom_fichier]\033[0m\n\t Le nom du fichier hote.\n\n"
          "\033[01m\033[32m-c, --hide [nom_fichier]\033[0m (si option de dissimulation sélectionnée)"
          "\n\t Le nom du fichier à cacher.\n\n"
-         "\033[01m\033[32m-r, --result [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat (pour l'insertion) ou le dossier où créer le résultat extrait (pour l'extraction).\n\n"
+         "\033[01m\033[32m-r, --result [nom_fichier]\033[0m\n\t Le nom du fichier où stocker le résultat (pour l'insertion) ou le dossier où stocker le fichier résultat (pour l'extraction).\n\n"
          "\033[01m\033[32m-p, --password [password]\033[0m (optionnel)\n\t Pour ajouter un mot de passe permettant "
          "de rajouter une protection à la dissimulation.\n\n"
          "Voici les différents algorithmes que propose l'application (si option de dissimulation sélectionnée) :\n"
-         "\033[01m\033[32m--lsb\033[0m : least significant bit. \n"
-         "\033[01m\033[32m--metadata\033[0m \n" "\033[01m\033[32m--eof\033[0m : end of file.\n"
-         "\033[01m\033[32m--eoc\033[0m : End of Chunk (seulement pour le format FLV)."
-         "Cache les données à la fin de chaque chunk.\n"
-         "\033[01m\033[32m--junk\033[0m : Junk-chunk (seulement pour le format AVI)."
-         "Cache les données dans des chunks poubelles\n");
+         "\033[01m\033[32m--lsb\033[0m : least significant bit. Disponible pour BMP et PNG.\n"
+         "\033[01m\033[32m--metadata\033[0m : Disponible pour BMP et PNG.\n" 
+         "\033[01m\033[32m--eof\033[0m : end of file. Disponible pour BMP, PNG, WAVE et FLV.\n"
+         "\033[01m\033[32m--eoc\033[0m : End of Chunk. "
+         "Cache les données à la fin de chaque chunk. Disponible pour le format FLV.\n"
+         "\033[01m\033[32m--junk\033[0m : Junk-chunk. "
+         "Cache les données dans des chunks \"poubelles\". Disponible pour le format AVI.\n");
     printf("\n");
     exit(0);
 }
