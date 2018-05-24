@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # S'il n'y a pas de cible uninstall présente, alors on lance la configuration.
 if (NOT TARGET uninstall)
     # Fichiers en entré.

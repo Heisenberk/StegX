@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Génération de la documentation du projet.
 
 # Répertoire contenant les variables de configuration.

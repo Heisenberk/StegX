@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 if (TARGET ${SRC_GUI_TARGET})
     # Liste des fichiers sources tests.
     file (GLOB_RECURSE TEST_FILES *${SRC_EXT})

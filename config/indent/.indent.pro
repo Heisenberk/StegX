@@ -1,3 +1,8 @@
+/**
+ * Auteur : Pierre AYOUB
+ * =============================================================================
+ */
+
 /* Use Linux coding style. */
 -linux
 /* Use spaces instead of tabs. */

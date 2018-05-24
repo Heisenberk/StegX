@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Liste des fichiers sources tests.
 file (GLOB_RECURSE TEST_FILES *${SRC_EXT})
 

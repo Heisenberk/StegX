@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Crée une liste de tout les dossiers contenant un header à partir du dossier
 # courant.
 macro (HEADER_DIRECTORIES return_list)

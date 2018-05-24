@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Formatage des sources du projet sur Unix.
 
 # Initialisation.

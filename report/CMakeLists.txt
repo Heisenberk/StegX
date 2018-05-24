@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Génération des rapports du projet.
 
 # Initialisation.

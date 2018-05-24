@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Commande de désinstallation.
 if (NOT EXISTS "@CMAKE_BINARY_DIR@/install_manifest.txt")
     if (@UNINSTALL_VERBOSE@ STREQUAL true)

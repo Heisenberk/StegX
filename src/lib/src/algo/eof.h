@@ -16,7 +16,7 @@
  * @param infos Structure représentant les informations concernant la dissimulation.
  * @return 0 si l'algorithme a bien ete inseré ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
- * @author Clément Caumes
+ * @author Clément Caumes et Pierre Ayoub
  */
 int insert_eof(info_s * infos);
 
@@ -25,7 +25,7 @@ int insert_eof(info_s * infos);
  * @param infos Structure représentant les informations concernant l'extraction.
  * @return 0 si l'algorithme a bien ete extrait ; sinon 1 en cas d'erreur et met à jour
  * \r{stegx_errno}.
- * @author Clément Caumes
+ * @author Clément Caumes et Pierre Ayoub
  */
 int extract_eof(info_s * infos);
 

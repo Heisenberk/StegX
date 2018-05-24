@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Inscrit sous forme de liste, dans "result", le nom des différents répertoires
 # contenus dans "curdir".
 macro (SUBDIRLIST result curdir)

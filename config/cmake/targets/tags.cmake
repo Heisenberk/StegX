@@ -1,3 +1,6 @@
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
 # Génération des tags des sources du projet sur Unix.
 
 # Initialisation.

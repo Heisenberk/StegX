@@ -29,6 +29,9 @@ if (CMOCKA_LIBRARY)
     set (FLAG_EXT flag)
     # Nom de la cible de test.
     set (TEST_TARGET check)
+# Auteur : Pierre AYOUB
+# ==============================================================================
+
     # Liste des répertoires contenant les tests.
     # SUBDIRLIST (TEST_ALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
     set (TEST_ALL_DIR ${SRC_LIB_DIR})
