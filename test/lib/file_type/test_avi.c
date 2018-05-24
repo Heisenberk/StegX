@@ -13,7 +13,7 @@
  * */
 void test_file_avi_v1(void **state)
 {
-    (void)state; 
+    (void)state;
     FILE *f = fopen("../../../env/test/flv/test13.flv", "r");
     assert_non_null(f);
     assert_int_equal(stegx_test_file_avi(f), UNKNOWN);

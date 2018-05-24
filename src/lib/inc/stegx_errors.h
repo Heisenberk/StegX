@@ -30,6 +30,7 @@ enum err_code {
     ERR_DETECT_ALGOS,           /*!< Erreur dans le sous-module Dectection des algorithmes de steganographie. */
     ERR_LENGTH_HIDDEN,          /*!< Erreur taille du fichier à cacher trop élevée */
     ERR_NEED_PASSWD,            /*!< Erreur l'application a besoin d'un mot de passe pour extraire les données. */
+    ERR_HIDDEN_FILE_EMPTY,      /*!< Erreur fichier caché/à cacher est vide. */
     ERR_OTHER                   /*!< Erreur quelconque. */
 };
 

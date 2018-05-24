@@ -192,4 +192,3 @@ int main(void)
     /* Exécute les tests. */
     return cmocka_run_group_tests(junk_chunk_tests, NULL, NULL);
 }
-

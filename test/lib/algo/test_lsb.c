@@ -406,7 +406,6 @@ void test_protection_lsb_extract_pixels_egal_data(void **state)
     free(data);
 }
 
-
 /* Test sur l'algorithme LSB insertion lorsque le nombre d'octets à cacher 
  * est inférieur au nombre d'octets disponible pour l'insertion LSB
  **/

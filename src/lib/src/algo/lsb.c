@@ -161,11 +161,13 @@ int insert_lsb(info_s * infos)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             mask_host = 0xFC;   // 11111100 en binaire
 
+            srand(create_seed(infos->passwd));
             // Cacher en LSB les donnees du fichier a cacher
             while (nb_cpy < (infos->hidden_length)) {
                 // Lecture de l'octet du fichier a cacher
                 if (fread(&byte_read_hidden, sizeof(uint8_t), 1, infos->hidden) == 0)
                     return perror("Can't read data hidden"), 2;
+                byte_read_hidden ^= rand() % UINT8_MAX;
 
                 // pour chaque paire de bits dans un octet (soit 4)
                 mask_hidden = 0xC0;     // 11000000 en binaire
@@ -276,6 +278,7 @@ int extract_lsb(info_s * infos)
             nb_cpy = 0;
             int i;
             uint8_t mask_host, byte_created;
+            srand(create_seed(infos->passwd));
 
             mask_host = 0x03;   // 00000011 en binaire
             // Extraire en LSB les donnees du fichier a cacher -> taille du fichier a cacher
@@ -296,6 +299,7 @@ int extract_lsb(info_s * infos)
                     byte_read_host <<= (-2 * i + 6);    // equation pour trouver le decalage a faire
                     byte_created = byte_created + byte_read_host;
                 }
+                byte_created ^= rand() % UINT8_MAX;
                 if (fwrite(&byte_created, sizeof(uint8_t), 1, infos->res) != 1)
                     return perror("Sig: Can't write data hidden extracted"), 1;
                 nb_cpy++;

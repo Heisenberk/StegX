@@ -15,7 +15,7 @@
 
 void test_file_png_v1(void **state)
 {
-    (void)state;        
+    (void)state;
     FILE *f = fopen("../../../env/test/png/test8.png", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
     fclose(f);
@@ -23,13 +23,11 @@ void test_file_png_v1(void **state)
 
 void test_file_png_v2(void **state)
 {
-    (void)state;          
+    (void)state;
     FILE *f = fopen("../../../env/test/png/test9.png", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_png(f), PNG);
     fclose(f);
 }
-
-
 
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest png_tests[] = {

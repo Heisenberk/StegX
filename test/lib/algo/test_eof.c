@@ -48,7 +48,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_EOF;
     int test;
 
-	// Appel de chaque étape de l'insertion
+    // Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -79,7 +79,7 @@ void test_eof_little_bmp_with_passwd(void **state)
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
-	// Appel de chaque étape de l'extraction
+    // Appel de chaque étape de l'extraction
     info_s *infos_extract = stegx_init(choices_extract);
 
     test = stegx_check_compatibility(infos_extract);

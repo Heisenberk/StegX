@@ -59,7 +59,7 @@ void insert_with_passwd(void **state)
 /* Teste la fonction stegx_detect_algo. Fais l'extration de la signature */
 void detect_with_passwd(void **state)
 {
-    (void)state;       
+    (void)state;
 
     /* Initialisation de l'extraction */
     info_s *infos_extract = calloc(1, sizeof(info_s));
@@ -136,7 +136,7 @@ void insert_without_passwd(void **state)
 /* Teste la fonction stegx_detect_algo. Fais l'extration de la signature */
 void detect_without_passwd(void **state)
 {
-    (void)state;          
+    (void)state;
     /* Initialisation de l'extraction */
     info_s *infos_extract = calloc(1, sizeof(info_s));
     infos_extract->mode = STEGX_MODE_EXTRACT;
