@@ -393,7 +393,7 @@ void test_propos_algos_v3(void **state)
     //EOF
     assert_int_equal(stegx_propos_algos[1], 1);
     //METADATA
-    assert_int_equal(stegx_propos_algos[2], 1);
+    assert_int_equal(stegx_propos_algos[2], 0);
     //EOC : end of chunk
     assert_int_equal(stegx_propos_algos[3], 1);
     //JUNK_CHUNK
@@ -420,7 +420,7 @@ void test_propos_algos_v4(void **state)
     //EOF
     assert_int_equal(stegx_propos_algos[1], 0);
     //METADATA
-    assert_int_equal(stegx_propos_algos[2], 1);
+    assert_int_equal(stegx_propos_algos[2], 0);
     //EOC : end of chunk
     assert_int_equal(stegx_propos_algos[3], 0);
     //JUNK_CHUNK

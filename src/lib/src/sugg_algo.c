@@ -70,8 +70,8 @@ static int can_use_lsb(info_s * infos)
 static int can_use_eof(info_s * infos)
 {
     assert(infos);
-    // Pour tous les formats proposés par StegX sauf AVI, on propose EOF.
-    return infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED ?
+    // Pour tous les formats proposés par StegX sauf AVI et MP3, on propose EOF.
+    return infos->host.type == MP3 || infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED ?
         1 : !IS_FILE_TYPE(infos->host.type);
 }
 
@@ -84,6 +84,7 @@ static int can_use_eof(info_s * infos)
 static int can_use_metadata(info_s * infos)
 {
     assert(infos);
+    /* On propose Metadata pour BMP & PNG seulement. */
     /* L'algorithme METADATA sur le format BMP consiste à insérer entre le 
      * header et le debut de l'image les données cachées. L'offset de l'image 
      * brute est écrit sur 4 octets et il ne faut pas dépasser cette taille 
@@ -92,14 +93,15 @@ static int can_use_metadata(info_s * infos)
         uint64_t length = infos->hidden_length + infos->host.file_info.bmp.header_size
             + infos->host.file_info.bmp.header_size;
         // Si cela depasse 4 octets on ne propose pas METADATA
-        if (length > BMP_METADATA_MAX) {
+        if (length > BMP_METADATA_MAX)
             return 1;
-        }
-        return 0;
+        else
+            return 0;
     }
-    // Pour tous les formats proposés par StegX sauf MP3 et WAVE, on propose Metadata.
-    return infos->host.type == WAV_PCM || infos->host.type == WAV_NO_PCM || infos->host.type == MP3 ?
-        1 : !IS_FILE_TYPE(infos->host.type);
+    else if (infos->host.type == PNG)
+        return 0;
+    else
+        return 1;
 }
 
 /** 
@@ -112,10 +114,7 @@ static int can_use_eoc(info_s * infos)
 {
     assert(infos);
     // Pour le format FLV, on propose EOC. Pour tous le reste, on ne propose pas EOC.
-    if (infos->host.type == FLV)
-        return 0;
-    else
-        return 1;
+    return infos->host.type == FLV ? 0 : 1;
 }
 
 /** 
@@ -128,10 +127,7 @@ static int can_use_junk_chunk(info_s * infos)
 {
     assert(infos);
     // Pour le format AVI, on propose Junk Chunk. Pour tous le reste, on ne propose pas Junk Chunk.
-    if ((infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED))
-        return 0;
-    else
-        return 1;
+    return (infos->host.type == AVI_COMPRESSED) || (infos->host.type == AVI_UNCOMPRESSED) ? 0 : 1;
 }
 
 int fill_host_info(info_s * infos)
