@@ -160,7 +160,7 @@ int fill_host_info(info_s * infos)
         // lecture du nombre de bits par pixel
         if (fseek(infos->host.host, BMP_DEF_PIX_LENGTH, SEEK_SET) == -1)
             return 1;
-        if (fread(&pixel_length, sizeof(uint32_t), 1, infos->host.host) != 1)
+        if (fread(&pixel_length, sizeof(uint16_t), 1, infos->host.host) != 1)
             return 1;
         infos->host.file_info.bmp.pixel_length = pixel_length;
 

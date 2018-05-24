@@ -113,7 +113,7 @@ if (WIN32)
 endif()
 # Flags de compilation généraux.
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g3 -Wall -Wextra")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_DEBUG} -O3 -DNDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -DNDEBUG -Wno-unused-result")
 
 # Lecture des sources.
 add_subdirectory (${SRC_DIR})
