@@ -32,69 +32,7 @@ int insert_eoc(info_s * infos)
     uint8_t *data;
     uint32_t *data2;
     int datab;
-<<<<<<< HEAD
-    
-    if ((fseek(infos->host.host, 0, SEEK_SET) == -1) || (fseek(infos->hidden,0,SEEK_SET) == -1)){
-        return perror("Can't do insertion EOC"), 1;}
-	
-	/* Initialise les tableaux pour le cas avec l'algorithme de protection des données et le cas sans */ 
-    if(infos->host.file_info.flv.nb_video_tag<256){
-    	data = malloc(infos->host.file_info.flv.nb_video_tag * sizeof(uint8_t));
-		if (!data)
-			return perror("Can't allocate memory Insertion"), 1;
-		for(uint32_t i=0;i<infos->host.file_info.flv.nb_video_tag;i++){
-			data[i]=i;
- 		}
-		protect_data(data,infos->host.file_info.flv.nb_video_tag,infos->passwd, STEGX_MODE_INSERT);
-		datab=0;
- 	}
- 	else {
-		data2 = malloc(infos->host.file_info.flv.nb_video_tag * sizeof(uint32_t));
-		for(uint32_t i=0;i<infos->host.file_info.flv.nb_video_tag;i++){
-			data2[i]=i;
-		}
-		datab=1;
- 	}
-	
-	//recopie header
-	for(int j=0;j<13;j++){
-		if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
-			return perror("Can't read Header"), 1;
-		if (fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res) == 0)
-			return perror("Can't write Header"), 1;
-	}
-    	    	
-	do{
-		//recherche video tag
-		fread(&tag_type, sizeof(uint8_t), 1, infos->host.host);
-		if (tag_type!=9){
-				fwrite(&tag_type, sizeof(uint8_t), 1, infos->res);
-				fread(&data_size, sizeof(data_size), 1, infos->host.host);
-				fwrite(&data_size, sizeof(uint32_t), 1, infos->res);
-				//passage en 24 bits      
-				data_size = stegx_be32toh(data_size) >> 8;
-				//recopie data + 6 octets
-				for(uint32_t j=0;j<data_size+6;j++){
-					fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
-					fwrite(&byte_cpy, sizeof(uint8_t), 1, infos->res);
-				}
-				//recopie prev tag size
-				fread(&prev_tag_size, sizeof(uint32_t), 1, infos->host.host);
-				fwrite(&prev_tag_size, sizeof(uint32_t), 1, infos->res);
-		}
-		else {
-			fwrite(&tag_type, sizeof(uint8_t), 1, infos->res);
-			fread(&data_size, sizeof(data_size), 1, infos->host.host);
-			
-			/* /!\ */
-			//l'octet de droite qui fait parti des datas
-			//passage en 24 bits      
-			data_size= stegx_be32toh(data_size); 
-			uint8_t tmp = data_size;
-			data_size>>= 8;
-			
-			uint32_t data_size_host=data_size;
-=======
+
 
     if ((fseek(infos->host.host, 0, SEEK_SET) == -1) || (fseek(infos->hidden, 0, SEEK_SET) == -1)) {
         return perror("Can't do insertion EOC"), 1;
@@ -183,7 +121,6 @@ int insert_eoc(info_s * infos)
             fwrite(&tmp3, sizeof(uint8_t), 1, infos->res);
             fwrite(&tmp2, sizeof(uint8_t), 1, infos->res);
             fwrite(&tmp, sizeof(uint8_t), 1, infos->res);
->>>>>>> afb61735a16fdc2941c6e121b33ce5a5d566b9d9
 
             //copie des data d'origine + 6 octets
             for (uint32_t j = 0; j < data_size_host + 6; j++) {
