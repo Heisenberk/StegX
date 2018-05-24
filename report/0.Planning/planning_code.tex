@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epsfig}
+\usepackage{array,multirow,makecell}
+\hypersetup{
+    colorlinks=true,
+    breaklinks=true,
+    urlcolor=red,
+}
+\parskip=5pt
+
+\title{Planning Implémentation }
+\author{AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, \\
+CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
+\date{Mercredi 18 Mars}
+
+\begin{document}
+\maketitle
+
+\section{Mercredi 25 Avril}
+\begin {itemize}
+\item Codage du module \textit{Interface en ligne de commande}.
+\item Codage du module \textit{Interface graphique}. 
+\end{itemize}
+
+\section{Mercredi 02 Mai}
+\begin {itemize}
+\item Codage du module \textit{Vérification de la compatibilité des fichiers}. 
+\end{itemize}
+
+\section{Mercredi 09 Mai}
+\begin {itemize}
+\item Codage du module \textit{Proposition des algorithmes de stéganographie}. 
+\item Codage du module \textit{Détection de l'algorithme de stéganographie}. 
+\end{itemize}
+
+\section{Mercredi 16 Mai}
+\begin {itemize}
+\item Codage du sous-module \textit{Dissimulation}. 
+\end{itemize}
+
+\section{Mercredi 23 Mai}
+\begin {itemize}
+\item Codage du sous-module \textit{Extraction}. 
+\end{itemize}
+
+\section{Elaboration globale des spécifications}
+
+\begin{tabular}{|c|c|c|c|}
+  \hline
+  \textbf{Division des} & \textbf{Sous-partie des} & \textbf{Fait} & \textbf{Vérifié} \\
+   \textbf{modules} & \textbf{modules} & \textbf{\checkmark} & \textbf{\checkmark} \\
+  \hline 
+  \multirow{2}*{Interfaces} & Interface en ligne de commande & &\\
+  \cline{2-4}
+  & Interface graphique & &\\
+  \hline
+   - & Vérification de la compatibilité des fichiers & &\\
+    \hline 
+   \multirow{2}*{Dissimulation de données} & Proposition des algorithmes de stéganographie & &\\
+   \cline{2-4}
+   & Insertion des données & &\\
+  \hline
+   \multirow{2}*{Extraction de données} & Détection de l'algorithme de stéganographie & &\\
+   \cline{2-4}
+   & Extraction & &\\
+   \hline    
+\end{tabular}
+
+\end{document}
+

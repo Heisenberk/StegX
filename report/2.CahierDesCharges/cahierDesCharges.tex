@@ -1,13 +1,20 @@
 \documentclass[11pt]{article}
-
+%\documentclass{book}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
-\usepackage{hyperref}
+\usepackage[linktocpage,colorlinks=false]{hyperref}
 \usepackage{graphicx}
 \usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{array}
+\usepackage{subfig}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \hypersetup{
     colorlinks=true,
     breaklinks=true,
@@ -25,7 +32,11 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 \maketitle
 \vspace{20em}
 \begin{center}\includegraphics{pictures/Application.png}\end{center}
+\newpage
 
+\tableofcontents
+
+\small
 \section{Préambule}
 
 \subsection{Définition des termes du sujet}
@@ -85,16 +96,16 @@ nous nous sommes réunis afin de réaliser ce type de projet.
 
 \section{Contraintes du projet}
 
-\subsection{Calendrier}
+%\subsection{Calendrier}
 
-Le calendrier est imposé et suit les étapes suivantes : 
+%Le calendrier est imposé et suit les étapes suivantes : 
 
-\begin{itemize}
-\item Le cahier des charges doit être remis le 14 mars.
-\item Le cahier des spécifications est à remettre le 18 avril.
-\item La remise du produit au client est le 25 mai.
-\item La présentation du produit au client sera le 1 juin.
-\end{itemize}
+%\begin{itemize}
+%\item Le cahier des charges doit être remis le 14 mars.
+%\item Le cahier des spécifications est à remettre le 18 avril.
+%\item La remise du produit au client est le 25 mai.
+%\item La présentation du produit au client sera le 1 juin.
+%\end{itemize}
 
 
 \subsection{Contraintes imposées}
@@ -104,9 +115,15 @@ Plusieurs contraintes sont imposées par le client :
 \begin{itemize}
 \item Le produit permettra à celui qui l'utilise de cacher des données dans des
     fichiers de différents types : les images, le son et la vidéo seront pris
-    en charge. Les formats seront choisis par le concepteurs de
-    l'application. 
-\item Le fichier à analyser est le fchier hôte : on sait à l'avance que celui-ci
+    en charge. 
+\item Les formats pris en charge par l'application pour le type image sont 
+le BMP et le PNG. Pour les formats de type audio, les concepteurs travailleront sur 
+le WAV-PCM et le MP3. Concernant le type video, l'AVI (non compressé) ainsi 
+que le FLV seron pris en charge. \newline
+Ces formats ont été choisis par le fait qu'ils sont très utilisés dans le
+monde multimédia ainsi qu'en stéganographie. 
+
+\item Le fichier à analyser est le fichier hôte : on sait à l'avance que celui-ci
     contient des données à extraire et il faut donc les prélever. 
 \item L'application aura une interface graphique : elle sera manipulée par les
     utilisateurs voulant découvrir un message envoyé par quelqu'un ayant
@@ -130,14 +147,14 @@ ensuite faire la tâche inverse pour les récupérer.
 
 \subsection{Exigences du client}
 
-L'application doit respectée deux exigences pour le client : elle doit permettre
+L'application doit respecter deux exigences pour le client : elle doit permettre
 à un utilisateur ne connaissant pas la stéganographie de pouvoir facilement
 utiliser toutes les fonctionnalités de l'application grâce à une interface
 graphique intuitive. De plus, une interface en ligne de commande doit être
 également proposée pour les utilisateurs sachant manipuler un programme dans un
-terminal. Cela permetra à ces utilisateurs plus exprimentés d'intégrer
-l'application dans des scripts et de l'utiliser conjointement à d'autre
-programme.
+terminal. 
+%Cela permettra à ces utilisateurs plus expérimentés d'intégrer
+%l'application dans des scripts.
 
 \section{Exigences non fonctionnelles}
 
@@ -168,52 +185,63 @@ pour garantir la sécurité de la transmission de celles-ci. Par ailleurs,
 l'article 30 de cette même loi oblige la déclaration de l'application si cette
 dernière est importée et/ou exportée. 
 
-\newpage
-
 \section{Modules du produit}
 
 \subsection{Organigramme}
 
-\includegraphics[scale=0.55]{pictures/Organigramme.png}
+\hspace{1cm}
+\includegraphics[scale=0.71]{pictures/organigramme.png}
 
 \paragraph{Liste des modules et de leurs fonctionnalités :}
 
 \begin{description}
-
+\small
 \item[a)] \textbf{Interface graphique / Interface en ligne de commande} :
     interfaces permettant à l'utilisateur de choisir parmi les deux
     fonctionnalités possibles de l'application. Il peut dissimuler des
     données dans un fichier (dont le type et le format sont pris en charge
     par l'application). Ou bien, il peut extraire les données cachées d'un
-    fichier. 
+    fichier. \newline
+    Il aura donc un mécanisme pour choisir le fichier hôte et le fichier 
+    à cacher (pour la dissimulation de données), et un mécanisme pour choisir le 
+    fichier contenant les données cachées à analyser (pour l'extraction de 
+    données cachées). 
+    
 
-\item[b)] \textbf{Compatibilité} : le format du fichier hôte (pour le module
-    \textit{Dissimulation de données}) ou le format du fichier à analyser (pour
-    le module \textit{Extraction de données cachées}), choisis par
-    l'utilisateur, est vérifié pour savoir s'il est bien pris en charge
-    par l'application. 
+\item[b)] \textbf{Vérification de la compatibilité des fichiers} : le format 
+	du fichier hôte (pour le module \textit{Dissimulation de données}) ou 
+	le format du fichier à analyser (pour le module \textit{Extraction de données 
+	cachées}), choisis par l'utilisateur, est vérifié pour savoir s'il est 
+	bien pris en charge par l'application. \newline
+	Il aura un mécanisme de lecture du fichier hôte : selon les formats 
+	pris en charge, il y aura une batterie de tests pour déterminer le 
+	format du fichier. 
 
 \item[c)] \textbf{Proposition des algorithmes de stéganographie} : en fonction
     du type et du format du fichier hôte, ainsi que de la taille des données à
-    cacher, un ou plusieurs algorithmes seront proposés. 
+    cacher, un mécanisme proposera un ou plusieurs algorithmes (avec ou sans 
+    sécurité supplémentaire). 
 
-\item[d)] \textbf{Détection de l'algorithme de stéganographie} : analyse du
-    fichier pour découvrir quel algorithme a été utilisé afin de les extraire
-    correctement par la suite. 
+\item[d)] \textbf{Détection de l'algorithme de stéganographie} : un mécanisme 
+	d'analyse du fichier permettra de découvrir quel algorithme a été utilisé 
+	afin de les extraire correctement par la suite. 
 
 \item[e)] \textbf{Insertion des données} : la copie des données du fichier hôte
     sera modifiée avec l'insertion des données à cacher à l'aide de l'algorithme
     choisi par l'utilisateur. 
 
 \item[f)] \textbf{Extraction} : les données cachées dans le fichier à analyser
-    sont extraites. 
+    sont extraites. Les algorithmes utilisés pour l'insertion des données 
+    et l'extraction seront expliqués dans la sous-section \textit{"Algorithmes 
+    de dissimulation et d'extraction en stéganographie"}
 
 \end{description}
 
 \paragraph{Liste des informations qui circulent entre les modules :}
 
+\begin{multicols}{2}
 \begin{description}
-
+\small
 \item[1)] 
 \begin{itemize}
 \item Utilisation de l'application (dissimulation ou extraction).
@@ -226,13 +254,13 @@ dernière est importée et/ou exportée.
 \begin{itemize}
 \item Nom du fichier hôte.
 \item Nom du fichier à cacher.
-\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
-    l'apparence du fichier hôte.
+%\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
+    %l'apparence du fichier hôte.
 \end{itemize}
 \item[3)] 
 \begin{itemize}
 \item Nom du fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \end{itemize}
 \item[4)] 
 \begin{itemize}
@@ -249,12 +277,12 @@ dernière est importée et/ou exportée.
 \begin{itemize}
 \item Fichier hôte.
 \item Fichier à cacher.
-\item Chemin du fichier à créer qui dissimulera les données à cacher.
+%\item Chemin du fichier à créer qui dissimulera les données à cacher.
 \end{itemize}
 \item[7)]
 \begin{itemize}
 \item Fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \end{itemize}
 \item[8)]
 \begin{itemize}
@@ -278,89 +306,166 @@ dernière est importée et/ou exportée.
 \end{itemize}
 \item[12)]
 \begin{itemize}
+\item Chemin du fichier à créer qui dissimulera les données à cacher et aura
+    l'apparence du fichier hôte.
+\end{itemize}
+\item[13)]
+\begin{itemize}
+\item Chemin du fichier résultant de l'extraction des données cachées.
+\end{itemize}
+\item[14)]
+\begin{itemize}
 \item Fichier hôte.
 \item Fichier à cacher.
-\item Chemin du fichier à créer lors de la dissimulation de données.
+%\item Chemin du fichier à créer lors de la dissimulation de données.
 \item Nom de l'algorithme de stéganographie utilisé.
 \item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
     ses données précédemment).
 \end{itemize}
-\item[13)]
+\item[15)]
 \begin{itemize}
 \item Fichier contenant les données cachées à analyser.
-\item Chemin du fichier résultant de l'extraction des données cachées.
+%\item Chemin du fichier résultant de l'extraction des données cachées.
 \item Nom de l'algorithme détecté.
 \item Mot de passe choisi par l'utilisateur (s'il a choisi l'option de protéger
     ses données précédemment).
 \end{itemize}
-\item[14)]
+\item[16)]
 \begin{itemize}
 \item Données de l'hôte où les données à cacher ont été insérées en utilisant
     l'algorithme de stéganographie.
 \end{itemize}
-\item[15)]
+\item[17)]
 \begin{itemize}
 \item Données cachées extraites du fichier hôte.
 \end{itemize}
 \end{description}
+  \ldots
+\end{multicols}
 
-\subsection{Algorithmes proposés}
+%\normalsize
+\small
+\subsection{Algorithmes de dissimulation et d'extraction en stéganographie}
 
 L'application permettra de cacher des données dans des fichiers de différents
-types (image, son, video). Plusieurs méthodes seront utilisées : 
+types (image, son, video). Pour le calcul de complexités, nous avons utilisé les symboles suivants : 
+$n$ pour la taille en octets du fichier caché (ou à cacher) et $m$ pour la taille 
+en octets du fichier hôte ne contenant pas les données cachées. 
 
 \subsubsection{Algorithme LSB (Least Significant Bit)}
 
 L'algorithme LSB permet de cacher des bits dans des octets tel qu'ils seront
 invisibles pour l'Homme. Il permet de cacher des données dans un fichier sans en
-altérer sa taille. Dans le cas de la stéganographie sur une image non compressé,
+altérer sa taille. Dans le cas de la stéganographie sur une image non compressée,
 chaque pixel d'une image correspond à un triplet de nombres dit triplet RGB. Ce
 triplet correspond aux composantes de couleurs Rouge-Vert-Bleu, prenant des
-valeurs allant de 0 à 255 si un pixel est codé sur 24 bits. Le but de cet
-algorithme est donc de cacher des bits dans cette image. Pour se faire, nous
-allons remplacer les 2 bits de poids faibles de chaque composante des pixels de
-l'image. En effet, à l'oeil nu, l'homme ne discernera jamais le changement
-minime de couleur induis par la modification.  Prenons un exemple de couleur
-$C_1$ dont le triplet est $(219,27,91)$. 
+valeurs allant de 0 à 255. Le but de cet algorithme est donc de cacher des bits 
+dans cette image. Pour se faire, nous allons remplacer les 2 bits de poids 
+faibles de chaque composante des pixels de l'image. En effet, à l'oeil nu, 
+l'homme ne discernera jamais le changement minime de couleur induit par la 
+modification. 
 
-R : $219_{10} = 11011011_2$ \qquad G : $27_{10} = 00011011_2$
-\qquad B : $91_{10} = 01011011_2$
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Dissimulation Algorithme LSB}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE  Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $b1 = $LECTURE 2 bits ($f1$)
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE $o1 = $CHANGEMENT\_BIT\_POIDS\_FAIBLE($o1$,$b1$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+\WHILE{(Fin de fichier $f2$ non atteinte)}
+\STATE $o1 =$LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+%\STATE ECRITURE suite d'octets ($f3$) $\rightarrow$ identification algo, nom fichier caché, taille données cachées
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Extraction Algorithme LSB}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\STATE Taille $\leftarrow$ 0
+\WHILE{(Taille < [taille bits fichier caché])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE $b1 = $2\_BITS\_POIDS\_FAIBLE($o1$)
+\STATE ECRITURE $b1$ ($f2$)
+\STATE Taille = Taille + 2
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
 
-Imaginons que la donnée à cacher dans le fichier composé de cet unique pixel de
-couleur $C_1$ correspond à la suite de bits $B = 000000_2$. Après modification
-des 2 bits de poids faibles de chaque composants du pixel, cela donne une
-autre couleur $C_2$ défini par le triplet suivant : 
+%Prenons un exemple de couleur
+%$C_1$ dont le triplet est $(219,27,91)$. 
 
-R : $216_{10} = 11011000_2$ \qquad G : $24_{10} = 00011000_2$
-\qquad B : $88_{10} = 01011000_2$
+%R : $219_{10} = 11011011_2$ \qquad G : $27_{10} = 00011011_2$
+%\qquad B : $91_{10} = 01011011_2$
 
-La figure suivantes illustres les deux couleurs $C_1$ et $C_2$ côte à côte,
-montrant ainsi qu'un humain ne pourra jamais détecter un changement de bit : 
+%Imaginons que la donnée à cacher dans le fichier composé de cet unique pixel de
+%couleur $C_1$ correspond à la suite de bits $B = 000000_2$. Après modification
+%des 2 bits de poids faibles de chaque composants du pixel, cela donne une
+%autre couleur $C_2$ défini par le triplet suivant : 
 
-\begin{figure}[h]
- \begin{minipage}{.46\linewidth}
-  \centering\epsfig{figure=pictures/219_27_91.png}
-  \caption{Couleur $C_1$}
- \end{minipage} \hfill
- \begin{minipage}{.46\linewidth}
-  \centering\epsfig{figure=pictures/216_24_88.png}
-  \caption{Couleur $C_2$}
- \end{minipage}
-\end{figure}
+%R : $216_{10} = 11011000_2$ \qquad G : $24_{10} = 00011000_2$
+%\qquad B : $88_{10} = 01011000_2$
+
+%La figure suivantes illustres les deux couleurs $C_1$ et $C_2$ côte à côte,
+%montrant ainsi qu'un humain ne pourra jamais détecter un changement de bit : 
+
+%\begin{figure}[h]
+% \begin{minipage}{.46\linewidth}
+%  \centering\epsfig{figure=pictures/219_27_91.png}
+%  \caption{Couleur $C_1$}
+% \end{minipage} \hfill
+% \begin{minipage}{.46\linewidth}
+%  \centering\epsfig{figure=pictures/216_24_88.png}
+%  \caption{Couleur $C_2$}
+% \end{minipage}
+%\end{figure}
+
+La complexité de la dissimulation se calcule de la manière suivante : 
+la première boucle TantQue a une complexité de $O(m-n)$, la deuxième $O(n)$. 
+\newline Donc la complexité de la dissimulation LSB est de $O(m-n)+O(n)=O(m-n+n)=O(m)$, 
+puisqu'on intégre directement les données cachées dans les données de l'hôte. 
+\newline La complexité de l'extraction LSB est, quant à elle, de $O(n)$.
 
 Cet algorithme peut également s'appliquer à d'autres types de fichiers. Pour le
 son non compressé, il est possible de très peu modifier l'amplitude de chaque
 échantillon de son, de telle manière que l'on peut y cacher des données sans
-altérer le son original pour la perception humaine. Pour la vidéo non compressé,
+altérer le son original pour la perception humaine. Pour la vidéo non compressée,
 un tel fichier est composé d'un enchaînement de multiples frames (images) et il
 est donc possible de manipuler les données pour pouvoir en cacher d'autres, de
 la même manière que pour les deux autres types de fichier cités précédemment.
 
-Pour la partie réception du fichier, il faut connaître combien de bits sont
-cachés  Il faudra donc calculer la taille maximale du message à cacher qui sera
-une puissance de 2. En effet, en fonction de la taille du fichier, un certain
-nombre de bits sera réservé pour connaître la taille des données à cacher. En
-fonction de ces informations, la suite de bits cachée sera donc formée.
+%Pour la partie réception du fichier, il faut connaître combien de bits sont
+%cachés. Il faudra donc calculer la taille maximale du message à cacher qui sera
+%une puissance de 2. En effet, en fonction de la taille du fichier, un certain
+%nombre de bits sera réservé pour connaître la taille des données à cacher. En
+%fonction de ces informations, la suite de bits cachée sera donc formée.
 
 \subsubsection{Algorithme EOF (End Of File)}
 
@@ -371,16 +476,72 @@ fichier. Le reste du fichier contient le contenu visible par l'utilisateur grâc
 à l'application appropriée. 
 
 Pour que l'application utilisée par l'utilisateur sache quand la lecture du
-fichier doit s'arrêter, certains formats de fichier continnent, à la toute fin,
+fichier doit s'arrêter, certains formats de fichier contiennent, à la toute fin,
 un octet représentant la fin du fichier (EOF). Si des données existent après ce
 EOF, elles ne seront pas interprétées par l'application. L'algorithme EOF est un
 algorithme très utilisé dans la stéganographie pour cacher des données : il
 consiste à écrire une suite de bits représentant les données à cacher
 directement à la fin du fichier hôte.
+En revanche, cet algorithme souffre de plusieurs faiblesses, notamment 
+le fait que la taille du fichier hôte se voit incrémenter de la taille 
+des données à cacher.
 
-En revanche, cet algorithme souffre de nombreuses faiblessses : les données
-cachées sont facilement identifiable dans une stéganalyse et la taille du
-fichier hôte se voit incrémenté de la taille des données à cacher.
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Dissimulation Algorithme EOF}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{(Fin de fichier $f2$ non atteinte)}
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ ($f3$)
+\ENDWHILE
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $o1 =$LECTURE octet ($f1$)
+\STATE ECRITURE $o1$ dans $f3$
+\ENDWHILE
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Extraction Algorithme EOF}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\STATE Taille $\leftarrow$ 0
+\STATE Placement curseur EOF "officiel" fichier à analyser
+\WHILE{(Taille < [taille octets fichier caché])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE ECRITURE $o1$ ($f2$)
+\STATE Taille = Taille + 1
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+
+Pour la dissimulation EOF, la première boucle TantQue a une complexité de $O(m)$, 
+la deuxième $O(n)$. \newline Donc sa complexité globale pour l'algorithme 
+EOF est de $O(m)+O(n)=O(m+n)$. \newline
+La complexité de l'extraction EOF dépend seulement de la taille du fichier 
+caché, soit $O(n)$.
 
 \subsubsection{Méthode manipulant les métadonnées}
 
@@ -391,20 +552,84 @@ image, on pourrait donner l'exemple des données représentant chaque pixel de
 l'image. 
 
 Mais souvent, en amont des données principales du fichier, il existe les
-métadonnées servant à décrire le fichier représenté. Par exemple, pour une
-image, il est utile de stocker la taille en pixels de l'image afin que la
-visionneuse d'image sache la représenter correctement. Il y a aussi des zones du
-fichier réservées à l'utilisateur afin qu'il y mette des << commentaires >>, par
-exemple pour représenter l'origine du fichier ou encore des informations sur la
-prise de vue dans le cas d'une photo. Les métadonnées sont affichés si
-l'utilisateur le demande, mais sont en général cachés par défaut.
+métadonnées servant à décrire le fichier représenté. Par exemple, il y a 
+des zones du fichier réservées à l'utilisateur afin qu'il y mette des 
+ "commentaires", par exemple pour représenter l'origine du fichier ou 
+encore des informations sur la prise de vue dans le cas d'une photo. 
+Les métadonnées sont affichées si l'utilisateur le demande, mais sont en 
+général cachées par défaut.
 
 De ce fait, les métadonnées sont très utilisées en stéganographie. Elles
-permettent d'insérer des données qui seront à premère vue invisible pour
+permettent d'insérer des données qui seront à première vue invisible pour
 l'utilisateur. Pour pouvoir cacher des données en manipulant les métadonnées,
 il faut donc analyser chaque format pris en charge par l'application afin de
 connaître les détails des différents morceaux de données présents dans le
 fichier. 
+
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Dissimulation Algorithme MetaData}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrées : fichier à cacher, fichier hôte
+\color{black}
+\STATE Ouverture fichier à cacher (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier hôte (LECTURE) $\rightarrow$ $f2$
+\STATE Ouverture fichier final (ECRITURE) $\rightarrow$ $f3$
+\WHILE{(Fin de fichier $f2$ non atteinte)}
+\STATE $o1 = $LECTURE octet ($f2$)
+\STATE ECRITURE $o1$ ($f3$)
+\IF{($o1 ==$ curseur où insérer MetaData)}
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE $o2 = $LECTURE octet ($f1$)
+\STATE ECRITURE $o2$  ($f3$)
+\ENDWHILE
+\ENDIF
+\ENDWHILE
+\STATE Fermeture fichiers $f1$, $f2$, $f3$
+\color{green}
+\STATE Sortie : fichier final
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+\begin{minipage}{.5\textwidth}
+\begin{algorithm}[H]
+\caption{Extraction Algorithme MetaData}
+\begin{algorithmic}
+\color{green}
+\STATE \footnotesize Entrée : fichier à analyser
+\color{black}
+\STATE Ouverture fichier à analyser (LECTURE) $\rightarrow$ $f1$
+\STATE Ouverture fichier extrait (ECRITURE) $\rightarrow$ $f2$
+\WHILE{(Fin de fichier $f1$ non atteinte)}
+\STATE Taille $\leftarrow$ 0
+\STATE $o1 = $LECTURE octet (f1)
+\IF{($o1 == $ [debut MetaData])}
+\WHILE{(Taille < [taille octets metadata])}
+\STATE $o1 = $LECTURE octet (f1)
+\STATE ECRITURE $o1$ ($f2$)
+\STATE Taille $\leftarrow$ Taille + 1
+\ENDWHILE
+\ENDIF
+\ENDWHILE
+\STATE Fermeture $f1$, $f2$
+\color{green}
+\STATE Sortie : fichier extrait
+\color{black}
+\end{algorithmic}
+\end{algorithm}
+\normalsize
+\end{minipage}
+
+Pour l'algorithme de dissimulation MetaData, nous avons une complexité de 
+$O(m_1+n+m_2)=O(m+n)$ avec $m=m_1+m_2$. En effet, on va recopier l'hôte 
+jusqu'à trouver l'emplacement où insérer les données cachées. On les insère, puis, on 
+continue à recopier le fichier hôte. \newline
+Pour l'extraction, sa complexité globale est de $O(m+n)$, avec $m+n$ la taille 
+du fichier hôte contenant les données cachées, car on va lire jusqu'à 
+la fin de ce fichier. 
 
 \subsubsection{Méthode de protection des données}
 
@@ -414,47 +639,121 @@ puis les lire en clair.
 Afin de renforcer la sécurité des communications utilisant le logiciel, 
 nous proposons une méthode de protection des données utilisant un mot de passe. 
 
-La méthode utilisée a pour but de cacher des données à des endroits différents
-à chaque mot de passe. 
-Elle consiste à utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
+La méthode utilisée a pour but de cacher les fractions de données à des pixels 
+différents à chaque fois (pour l'algorithme LSB) ou à mélanger les octets 
+à cacher (pour les algorithmes EOF et MetaData). 
+Elle va utiliser le mot de passe comme graine d'une suite pseudo-aléatoire. 
 Ainsi, l'expéditeur va choisir un mot de passe pour dissimuler les données. 
-Le destinataire utilisera le même mot de passe pour extraire les données cachées. 
+Le destinataire utilisera le même mot de passe pour extraire les données cachées.
 
-ALGORITHME A ECRIRE
+\begin{minipage}{.6\textwidth}
+Pour la dissimulation ainsi que pour l'extraction, la complexité de cet 
+algorithme est de $O(n)+O(n*n)=O(n+n^2)$ avec $n$ la taille
+du fichier en entrée. \newline 
+Pour le cas de l'algorithme EOF et MetaData, ce fichier en entrée correspond 
+au fichier à cacher. \newline
+Avec cette méthode de protection des données, la dissimulation EOF a une 
+complexité de $O(m)+O(n^2+n)+O(n)=O(m+n^2+n)$ avec $O(m)$ l'écriture du 
+fichier hôte, $O(n^2+n)$ la lecture des données cachées et le calcul pour 
+mélanger ces octets à cacher, $O(n)$ la recopie des données mélangées. 
+\newline
+Aussi, l'utilisation de cette méthode pour l'extraction EOF amène à une 
+complexité de $O(n^2+n)$ avec la lecture et le réarrangement 
+des données cachées. 
+\newline \newline
+Dans le même principe, la protection des données pour la dissimulation/extraction 
+MetaData change la complexité initiale de l'algorithme à $O(n^2+n)+O(m+n)=O(m+n^2+n)$. 
+\newline \newline
+Pour la dissimulation LSB utilisant la méthode de protection 
+des données, on a une complexité de $O(m+n+n*m+m)=O(2m+n+n*m)=O(m+n*m+n)$. Le premier $O(m)$ 
+correspond à la lecture du fichier hôte, $O(n)$ à la lecture du fichier à cacher, 
+$O(n*m)$ aux changements des octets aléatoires des données cachées dans le fichier hôte, 
+$O(m)$ à l'écriture des données résultantes. \newline
+De la même manière, pour son extraction, sa complexité sera la même. 
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+ 
+\end{minipage}
+\begin{minipage}{.4\textwidth}
+\begin{algorithm}[H]
+\caption{Méthode de protection des données}
+\begin{algorithmic}
+\footnotesize
+\STATE TABLEAU result {octet} [taille $f$]
+\STATE TABLEAU T STRUCT \{octet, bool\} [taille $f$]
+\STATE Ouverture fichier (ECRITURE) $\rightarrow$ $f$
+\FOR{(i=0 ; i<[taille $f$] ; i++)}
+\STATE $o1 = $LECTURE $f$
+\STATE T[i] $\leftarrow$ \{$o1$, $false$\}
+\ENDFOR
+\STATE Initialisation de la suite pseudo-aleatoire (mdp)
+\STATE tailleRestant $\leftarrow$ [taille $f$]+1
+\FOR{(i=0 ; i<[taille $f$] ; i++)}
+\STATE reste $\leftarrow$ 0
+\STATE curseur $\leftarrow$ 0
+\STATE rang $\leftarrow$ rand()\%(tailleRestant-1)
+\STATE curseur $\leftarrow$ recherche position \textit{rang} encore non vue 
+dans result en incrémentant pour chaque case non vue
+\color{red}
+\STATE result[curseur] $\leftarrow$ T.octet[i] /* pour la dissimulation */
+\color{black} OU \color{blue} result[i] $\leftarrow$ T.octet[curseur] /* pour l'extraction */
+\color{black}
+\STATE T.bool[curseur] $\leftarrow$ true
+\STATE tailleRestant $\leftarrow$ tailleRestant-1
+\ENDFOR
+\normalsize
+\end{algorithmic}
+\end{algorithm}
+\end{minipage}
 
 \subsection{Estimations des coûts}
+%\small
+\tiny
+\hspace{2cm}
 \begin{tabular}{|c|c|c|c|}
   \hline
-  \textbf{Module} & \textbf{Coût en nombre} & \textbf{Coût en} & \textbf{Personnel(s) en charge} \\
-   \textbf{de l'application} & \textbf{de lignes} & \textbf{temps} & \textbf{du module} \\
+  \textbf{Module de l'application} & \textbf{Coût en nombre de lignes} & \textbf{Coût en temps} & \textbf{Personnel(s) en charge} \\
   \hline
-  Stéganographie des & X & X & CAUMES Clément \& \\
+    Interface en ligne & 200 & 30 & BASKEVITCH Claire \& \\ 
+    de commande & lignes & heures & BESSAC Tristan \\
+  \hline
+  Interface & 400 & 30 & AYOUB Pierre \& \\
+  graphique & lignes & heures & DELAUNAY Damien \\
+  \hline
+  Vérification de la & 300 & 30 & CAUMES Clément \& \\
+   compatibilité des fichiers & lignes & heures & DOUDOUH Yassin \\
+  \hline
+    Proposition des algos & 100 & 15 & CAUMES Clément \& \\
+   de stéganographie & lignes & heures & DOUDOUH Yassin \\
+  \hline
+    Détection de l'algo & 100 & 15 & AYOUB Pierre \& \\
+   de stéganographie & lignes & heures & DELAUNAY Damien \\
+  \hline
+  Dissimulation \& Extraction & 250 & 40 & CAUMES Clément \& \\
    fichiers images & lignes & heures & DOUDOUH Yassin \\
   \hline
-  Stéganographie des & X & X & AYOUB Pierre \& \\
+  Dissimulation \& Extraction & 250 & 40 & AYOUB Pierre \& \\
    fichiers audios & lignes & heures & DELAUNAY Damien \\
-  \hline
-  Stéganographie des & X & X & BASKEVITCH Claire \& \\
+     \hline
+  Dissimulation \& Extraction & 250 & 40 & BASKEVITCH Claire \& \\
    fichiers vidéos & lignes & heures & BESSAC Tristan \\
   \hline
-    Interface en ligne & X & X & X \\ 
-    de commande & lignes & heures & \\
-  \hline
-  Interface graphique & X lignes & X heures & X \\
-  \hline
 \end{tabular}
+%\normalsize
+\small
 
 \section{Autres aspects du projet}
 
 \subsection{Solutions sur étagère déjà existantes}
 
 Plusieurs applications de stéganographie existent déjà, permettant de cacher des
-données dans différents formats de fichiers multimédia. Pourtant, parmis les 23
-applications de stéganographie que nous avons recensés, seulement une seule
+données dans différents formats de fichiers multimédia. Pourtant, parmi les 23
+applications de stéganographie que nous avons recensées, seulement une 
 propose de cacher des données à la fois dans des images, du son et de la vidéo.
 
 \subsection{Tâches à réaliser pour le développement de l'application}
 
+\footnotesize
 \begin {enumerate}
 \item Identification du produit : étude des volontés et des demandes du client
     (énoncé du projet 24/01/18).
@@ -471,34 +770,97 @@ propose de cacher des données à la fois dans des images, du son et de la vidé
     produit (soutenance 01/06/18).
 \end{enumerate}
 
+Toutes les tâches seront réalisées selon la méthode Gantt afin d'effectuer 
+efficacement et de façon ordonnée le projet. Cette méthode consiste en 
+l'ordonnancement précis des différentes tâches pour représenter l'avancement 
+du projet en continu. 
+\small
+
 \subsection{Améliorations pour les versions futures du projet}
 
 La stéganographie se distingue de la cryptographie par le fait que, dans l'un,
 le message caché est visible par tous si celui-ci est extrait ; tandis que, dans
-l'autre, le message est transmis en étant chiffré sur un canal non-sûr. 
-
+l'autre, le message est transmis en étant chiffré sur un canal non-sûr. \newline
 Pour une projection à long terme, dans d'éventuelles versions du logiciel, nous
 pourrions améliorer l'application en chiffrant les données cachées. En effet,
 lors de l'interception d'un éventuel fichier cachant des données, il faudra, en
 plus de les extraire, les déchiffrer : ce qui rend la tâche beaucoup plus longue
 pour celui qui intercepte le fichier et qui tente de récupérer ces données
-cachées. 
-
+cachées. \newline
 De plus, pour la versatilité de l'application, nous pourrions prendre en charge
 de nouveaux formats de fichiers. Cela permettrait d'augmenter la portée du
-logiciel. La manipulation de données compressées serait également une
-amélioration conséquente. 
+logiciel. 
 
-\subsection{Choix du langage et de l'interface}
+\subsection{Choix du langage et de l'interface} 
+Afin de réaliser cette étape cruciale de notre projet, nous avons tout 
+d’abord commencé par définir les besoins de notre application. La tâche 
+principale de notre programme consistera en la manipulation de données 
+binaires afin d’y cacher des données, à travers l’implémentation de divers 
+algorithmes. Plusieurs de ces algorithmes possèdent une méthode commune dans
+le but de cacher des données, mais diffèrent légèrement en fonction du 
+format du fichier hôte. En conséquence, nous devrons donc avoir un objet
+ou une structure décrivant ces différentes structures de fichier. Enfin, 
+nous avons besoin d’une bibliothèque nous permettant de créer une interface 
+graphique multiplateforme. 
 
-TODO.
+Au vu de la relative simplicité de la construction de nos structures de 
+données et de nos algorithmes, nous avons éliminé d’office le Java qui ne 
+nous permettait que de faire de l’orientée-objet pure et imposait un trop 
+haut niveau d’abstraction. Il nous restait deux langages candidats pour notre 
+application : le C et le C++. Nous avons donc défini les avantages de ces 
+deux langages afin de n'en sélectionner qu'un.
+
+Le C est un langage n’offrant que, de base, le paradigme de la programmation 
+procédurale. Par rapport aux autres langages couramment utilisés, le C étant 
+un langage plus bas niveau nous permet d’avoir un développement direct, 
+concis et performant. Ce langage n’offre pas beaucoup de concept de base, 
+mais cela est une bonne chose lors d’un développement plus bas niveau que 
+la plupart des applications ; c’est-à-dire les applications 
+d’écriture/lecture de bit et d’accès mémoire plutôt que de messages entre 
+différents objets qui coopères entre eux. En revanche, ce langage est plus 
+propice aux erreurs de développement que les autres.
+Le C++ est un langage multiparadigme. En effet, il propose à la fois une 
+programmation procédurale, portant en lui l’héritage du langage C, ainsi 
+qu'un paradigme orienté-objet. Parmi les avantages de l’orientée-objet, 
+nous pouvons tout d’abord citer l’encapsulation et l’abstraction apportée 
+par les classes. La généricité, l’héritage de classe, la surcharge et les 
+templates sont aussi des fonctionnalités importantes. 
+Enfin, la bibliothèque standard du C++ ainsi que la STL proposent d’emblée 
+une large variété de structures de données ainsi que d’algorithmes génériques. 
+Enfin, le C++, permettant une programmation procédurale, possède aussi la 
+plupart des avantages du C. Le C++ est donc un langage adapté à un développement 
+qui nécessite d’avoir certaines parties en orientée-objet, ainsi que d’autres 
+en procédurale.
+
+Après comparaison des apports du C++ (l’orientée-objet) par rapport à son 
+prédécesseur le C : nous avons émis les conclusions suivantes. Le C++ introduirait 
+un overhead relativement conséquent par rapport à ce que pourraient être nos 
+structures de données. Comme vu précédemment, les structures de données 
+stockant le format d’un fichier ne sont pas compliquées par principe, en 
+conséquence les structures de données du C nous semblent suffisantes. 
+De plus, toutes les fonctionnalités apportées par la STL ne nous sont 
+d’aucune utilité : nous n’allons pas utiliser de structures de données 
+compliquées à implémenter ou encore d’algorithmes de tri, pour ne citer 
+qu’eux. Concernant la généricité des algorithmes à implémenter par rapport 
+aux différences entre les formats des fichiers, nous avons imaginé des 
+solutions valables pour le C.
+Pour conclure, nous avons donc choisi le C car les possibilités offertes 
+par ce langage nous suffisaient. Choisir le C++ nous semble "s’encombrer" 
+de concepts et de principes non nécessaires dans le cadre de notre projet. 
+De plus, le choix du C nous permet d’utiliser la bibliothèque GTK+, 
+permettant de réaliser notre interface graphique. 
+\small
 
 \section{Conclusion}
 
 Après l'étude des demandes du client, nous mettrons en avant l'application
-\textbf{StegX}. Cette application sera implémentée par un groupe de six
-étudiants en Licence Informatique de l'Université de Versailles
-Saint-Quentin-en-Yvelines (UVSQ), ayant l'ambition d'obtenir un master en
+\textbf{StegX}. 
+Ainsi, ce logiciel aura deux modules : d'une part, il permettra de cacher 
+des fichiers de toute sorte de type Image, Audio et Video. 
+D'autre part, il offrira la possibilité à ces utilisateurs d'analyser des 
+fichiers contenant des données cachées afin d'extraire les données cachées. \newline
+Cette application sera implémentée par un groupe de six
+étudiants en Licence Informatique de l'UVSQ, ayant l'ambition d'obtenir un master en
 Cryptographie et Sécurité informatique (SeCReTs). 
 
 \newpage

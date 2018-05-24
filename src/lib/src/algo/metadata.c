@@ -1,0 +1,56 @@
+/** 
+ * @file metadata.c
+ * @brief Algorithme METADATA.
+ * @details Contient les fonctions concernant l'algorithme METADATA.
+ */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+
+#include "common.h"
+#include "stegx_common.h"
+#include "stegx_errors.h"
+
+int insert_metadata(info_s * infos)
+{
+    assert(infos);
+    assert(infos->mode == STEGX_MODE_INSERT);
+    assert(infos->algo == STEGX_ALGO_METADATA);
+    int insertion;
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
+        insertion = insert_metadata_bmp(infos);
+    } else if (infos->host.type == PNG) {
+        insertion = insert_metadata_png(infos);
+    } else if ((infos->host.type == AVI_UNCOMPRESSED) || (infos->host.type == AVI_COMPRESSED)) {
+        insertion = insert_metadata_avi(infos);
+    } else if (infos->host.type == FLV) {
+        insertion = insert_metadata_flv(infos);
+    } else {
+        stegx_errno = ERR_INSERT;
+        insertion = 1;
+    }
+    return insertion;
+}
+
+int extract_metadata(info_s * infos)
+{
+    assert(infos);
+    assert(infos->mode == STEGX_MODE_EXTRACT);
+    assert(infos->algo == STEGX_ALGO_METADATA);
+    int extraction;
+    if ((infos->host.type == BMP_COMPRESSED) || (infos->host.type == BMP_UNCOMPRESSED)) {
+        extraction = extract_metadata_bmp(infos);
+    } else if (infos->host.type == PNG) {
+        extraction = extract_metadata_png(infos);
+    } else if ((infos->host.type == AVI_UNCOMPRESSED) || (infos->host.type == AVI_COMPRESSED)) {
+        extraction = extract_metadata_avi(infos);
+    } else if (infos->host.type == FLV) {
+        extraction = extract_metadata_flv(infos);
+    } else {
+        stegx_errno = ERR_INSERT;
+        extraction = 1;
+    }
+    return extraction;
+}

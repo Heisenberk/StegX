@@ -1,18 +1,16 @@
-# Configuration files
+# Personal configuration files
 tags
-.gdbinit
+*.taghl
 
 # Generated files
-*.pdf
-*.out
-*.log
-*.aux
 build
 
 # Temporary files
 .fuse_hidden*
 *.swp
 
-# Output files (log)
-.gdb_history
-.valgrind.out
+# Backup files
+*~
+
+# Other
+TODO

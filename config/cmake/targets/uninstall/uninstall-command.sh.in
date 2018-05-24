@@ -1,0 +1,3 @@
+#!/bin/sh
+(cat "@CMAKE_BINARY_DIR@/install_manifest.txt" ; echo) | sudo sh -c 'while read i ; do rm -f "${i}" ; rmdir --ignore-fail-on-non-empty -p "${i%/*}" 2> /dev/null ; done'
+return 0

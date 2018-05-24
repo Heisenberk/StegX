@@ -1,0 +1,48 @@
+/**
+ * @file @INC_CONFIG_NAME@
+ * @brief Configuration par CMake
+ * @details Contient des variables et des définitions communes au programme
+ * définies par CMake au moment de la compilation ou de l'installation.
+ * @INC_CONFIG_WARN_MSG@
+ */
+
+#ifndef CONFIG_H_
+#define CONFIG_H_
+
+#include <unistd.h>
+
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
+/** Nom du programme. */
+static const char *program_name = "@PROJECT_NAME@";
+/** Version du programme. */
+static const char *program_ver = "Version @PROJECT_VERSION@";
+/** Description du programme. */
+static const char *program_desc = "@PROJECT_DESCRIPTION@";
+/** License du programme. */
+static const char *program_license = "@PROJECT_LICENSE_FULL_TEXT@";
+
+/**
+ * @brief Obtient le chemin vers le logo du programme.
+ * @return char* Pointeur vers la chaîne de caractère contenant le chemin du logo
+ * du programme s'il existe, NULL sinon.
+ */
+static const char* program_logo()
+{
+    static const int nb_paths = 4;
+    static const char *paths[] = {
+        "@ICON_INSTALL_DIR@/@ICON_INSTALL_NAME@",
+        "@DESKTOP_PATH@/@PROJECT_NAME_LC@-128x128.png",
+        "../@ICON_INSTALL_NAME@",
+        "./@ICON_INSTALL_NAME@"
+        };
+    for (int i = 0; i < nb_paths; i++) {
+        if (access(paths[i], F_OK) != -1)
+            return paths[i];
+    }
+    return NULL;
+}
+
+#pragma GCC diagnostic pop
+
+#endif /* CONFIG_H_ */
