@@ -13,6 +13,7 @@
 #include "stegx_errors.h"
 #include "../insert.h"
 #include "../protection.h"
+#include "../endian.h"
 
 int insert_eoc(info_s * infos)
 {
@@ -53,7 +54,7 @@ int insert_eoc(info_s * infos)
 		}
 		datab=1;
  	}
-
+	
 	//recopie header
 	for(int j=0;j<13;j++){
 		if (fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host) != 1)
@@ -134,8 +135,10 @@ int insert_eoc(info_s * infos)
 			fseek(infos->hidden, nb_block * data_per_vtag, SEEK_SET);
 			limit = (nb_block == infos->host.file_info.flv.nb_video_tag-1) ? 
 									data_per_vtag + reste : data_per_vtag;
+			srand(create_seed(infos->passwd));
 			for(uint32_t i=0;i<limit;i++){
 				fread(&byte_cpy,sizeof(uint8_t),1,infos->hidden);
+				byte_cpy ^= rand() % UINT8_MAX;
 				fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 
 			}
@@ -190,7 +193,7 @@ int extract_eoc(info_s * infos)
    if (fseek(infos->host.host, 0, SEEK_SET) == -1){
         return perror("Can't do extraction EOC"), 1;
 	}
-
+	
     /* Initialisation de protect data */
     if(infos->host.file_info.flv.nb_video_tag<256){
     	data = malloc(infos->host.file_info.flv.nb_video_tag * sizeof(uint8_t));
@@ -211,7 +214,7 @@ int extract_eoc(info_s * infos)
 			}
 			datab=1;
  		}
-	
+
 	do {
 		//saute de header
 		fseek(infos->host.host, 13, SEEK_SET);
@@ -264,9 +267,11 @@ int extract_eoc(info_s * infos)
 			write_data = data_per_vtag;
 		}
 		fseek(infos->host.host, data_jump, SEEK_CUR);
+		srand(create_seed(infos->passwd));
 		/* Recopie des données dans le fichhier resultat */
 		for(uint32_t i = 0; i < write_data; i++){
 			fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
+			byte_cpy ^= rand() % UINT8_MAX;
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 		}
 		

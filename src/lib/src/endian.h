@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 /** 
- * @brief Convertit val lue en little endian en big endian. 
+ * @brief Convertit un nombre en little endian vers le big endian. 
  * @param nb nombre a convertir.
  * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
  * @author Clément Caumes
@@ -19,8 +19,7 @@
 uint32_t stegx_htobe32(uint32_t nb);
 
 /** 
- * @brief Convertit val lue en big endian dans l'ordre des octets de la 
- * machine de l'utilisateur. 
+ * @brief Convertit un nombre en big endian dans l'endian de la machine. 
  * @param nb nombre a convertir.
  * @return renvoie un nombre compris entre 0x00 et 0xFFFFFFFF.
  * @author Clément Caumes
