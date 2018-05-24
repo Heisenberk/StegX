@@ -61,7 +61,7 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
  * fichier source.
  * @author Pierre Ayoub
  */
-int data_xor_write_file(FILE * src, FILE * res, const char * passwd);
+int data_xor_write_file(FILE * src, FILE * res, const char *passwd);
 
 /**
  * @brief Écrit des données XORées avec un mot de passe.
@@ -71,7 +71,7 @@ int data_xor_write_file(FILE * src, FILE * res, const char * passwd);
  * @param len Taille du tableau source.
  * @author Pierre Ayoub
  */
-void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len);
+void data_xor_write_tab(uint8_t * src, const char *passwd, const uint32_t len);
 
 /**
  * @brief Écrit des données mélangé ou remise en ordre avec un mot de passe.
@@ -83,7 +83,7 @@ void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len);
  * @return 0 si tout est ok, 1 s'il y a eu une erreur.
  * @author Pierre Ayoub
  */
-int data_scramble_write(FILE * src, FILE * res, const char * pass,
-        const uint32_t len, const mode_e m);
+int data_scramble_write(FILE * src, FILE * res, const char *pass,
+                        const uint32_t len, const mode_e m);
 
 #endif

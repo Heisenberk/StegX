@@ -11,10 +11,10 @@
 /*
  * Teste la vérification du format WAV.
  * */
- 
+
 void test_file_wav__wave_pcm_alaw_1(void **state)
 {
-    (void)state;     
+    (void)state;
     FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_1.wav", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_NO_PCM);
     fclose(f);
@@ -22,7 +22,7 @@ void test_file_wav__wave_pcm_alaw_1(void **state)
 
 void test_file_wav__wave_pcm_alaw_2(void **state)
 {
-    (void)state;       
+    (void)state;
     FILE *f = fopen("../../../env/test/wave/WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_NO_PCM);
     fclose(f);
@@ -30,7 +30,7 @@ void test_file_wav__wave_pcm_alaw_2(void **state)
 
 void test_file_wav__wave_pcm_s16le(void **state)
 {
-    (void)state;      
+    (void)state;
     FILE *f = fopen("../../../env/test/wave/WAVE_PCM(S16_LE)_Stereo_44,1kHz.wav", "r");
     assert_non_null(f), assert_int_equal(stegx_test_file_wav(f), WAV_PCM);
     fclose(f);

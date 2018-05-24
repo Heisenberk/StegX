@@ -120,28 +120,23 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
 
 }
 
-
-
-int data_xor_write_file(FILE * src, FILE * res, const char * passwd)
+int data_xor_write_file(FILE * src, FILE * res, const char *passwd)
 {
     srand(create_seed(passwd));
-    for (uint8_t b ; fread(&b, sizeof(b), 1, src) == 1 ;)
+    for (uint8_t b; fread(&b, sizeof(b), 1, src) == 1;)
         fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
     return ferror(src);
 }
 
-
-void data_xor_write_tab(uint8_t * src, const char * passwd, const uint32_t len)
+void data_xor_write_tab(uint8_t * src, const char *passwd, const uint32_t len)
 {
     srand(create_seed(passwd));
-    for (uint32_t i = 0 ; i < len ; i++)
+    for (uint32_t i = 0; i < len; i++)
         src[i] ^= rand() % UINT8_MAX;
 }
 
-
-
-int data_scramble_write(FILE * src, FILE * res, const char * pass,
-        const uint32_t len, const mode_e m)
+int data_scramble_write(FILE * src, FILE * res, const char *pass,
+                        const uint32_t len, const mode_e m)
 {
     uint8_t *data = malloc(len * sizeof(uint8_t));
     if (!data)

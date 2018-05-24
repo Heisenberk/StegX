@@ -48,7 +48,7 @@ void test_metadata_little_bmp_with_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
-	// Appel de chaque étape de l'insertion
+    // Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -66,7 +66,7 @@ void test_metadata_little_bmp_with_passwd(void **state)
     dest_stegx_info(choices_insert);
     stegx_clear(infos_insert);
 
-	/* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
+    /* Création d'une structure stegx_choices_s contenant les choix de l'utilisateur
      * pour l'extraction
      */
     stegx_choices_s *choices_extract = malloc(sizeof(stegx_choices_s));
@@ -136,7 +136,7 @@ void test_metadata_little_bmp_without_passwd(void **state)
     choices_insert->insert_info->algo = STEGX_ALGO_METADATA;
     int test;
 
-	// Appel de chaque étape de l'insertion
+    // Appel de chaque étape de l'insertion
     info_s *infos_insert = stegx_init(choices_insert);
 
     test = stegx_check_compatibility(infos_insert);
@@ -166,7 +166,7 @@ void test_metadata_little_bmp_without_passwd(void **state)
     choices_extract->mode = STEGX_MODE_EXTRACT;
     choices_extract->insert_info = NULL;
 
-	// Appel de chaque étape de l'extraction
+    // Appel de chaque étape de l'extraction
     info_s *infos_extract = stegx_init(choices_extract);
 
     test = stegx_check_compatibility(infos_extract);
@@ -670,11 +670,11 @@ void test_metadata_big_png_without_passwd(void **state)
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest metadata_tests[] = {
 
-	cmocka_unit_test(test_metadata_little_bmp_with_passwd),
+    cmocka_unit_test(test_metadata_little_bmp_with_passwd),
     cmocka_unit_test(test_metadata_little_bmp_without_passwd),
     cmocka_unit_test(test_metadata_big_bmp_with_passwd),
     cmocka_unit_test(test_metadata_big_bmp_without_passwd),
-    
+
     cmocka_unit_test(test_metadata_little_png_with_passwd),
     cmocka_unit_test(test_metadata_little_png_without_passwd),
     cmocka_unit_test(test_metadata_big_png_with_passwd),
@@ -687,4 +687,3 @@ int main(void)
     /* Exécute les tests. */
     return cmocka_run_group_tests(metadata_tests, NULL, NULL);
 }
-

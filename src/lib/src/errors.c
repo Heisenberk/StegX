@@ -34,6 +34,7 @@ void err_print(enum err_code err)
         "erreur dans le sous-module detection de l'algorithme de steganographie",
         /* ERR_LENGTH_HIDDEN */ "erreur taille du fichier a cacher trop importante",
         /* ERR_NEED_PASSWD */ "l'application a besoin d'un mot de passe pour extraire les données",
+        /* ERR_HIDDEN_FILE_EMPTY */ "le fichier caché/à cacher est vide",
         /* ERR_OTHER */ "erreur inconnu"
     };
 

@@ -71,8 +71,8 @@ static int can_use_eof(info_s * infos)
 {
     assert(infos);
     // Pour tous les formats proposés par StegX sauf AVI et MP3, on propose EOF.
-    return infos->host.type == MP3 || infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED ?
-        1 : !IS_FILE_TYPE(infos->host.type);
+    return infos->host.type == MP3 || infos->host.type == AVI_COMPRESSED
+        || infos->host.type == AVI_UNCOMPRESSED ? 1 : !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
@@ -97,8 +97,7 @@ static int can_use_metadata(info_s * infos)
             return 1;
         else
             return 0;
-    }
-    else if (infos->host.type == PNG)
+    } else if (infos->host.type == PNG)
         return 0;
     else
         return 1;
@@ -293,8 +292,12 @@ int fill_host_info(info_s * infos)
             prev_tag_size = stegx_be32toh(prev_tag_size);
             infos->host.file_info.flv.file_size += prev_tag_size + 4;
         }
-        if(infos->mode == STEGX_MODE_INSERT && fread(&check_tags, sizeof(uint8_t), 1, infos->host.host))
-			return perror("Fichier flv ayant des données en fin de fichier. Fichier incompatible pour l'insertion."), 1;
+        if (infos->mode == STEGX_MODE_INSERT
+            && fread(&check_tags, sizeof(uint8_t), 1, infos->host.host))
+            return
+                perror
+                ("Fichier flv ayant des données en fin de fichier. Fichier incompatible pour l'insertion."),
+                1;
         return 0;
     }
 
@@ -319,6 +322,8 @@ int stegx_suggest_algo(info_s * infos)
     if (fseek(infos->hidden, 0, SEEK_END))
         return stegx_errno = ERR_SUGG_ALGOS, perror("Can't move to the end of hidden file"), 1;
     uint64_t read_hidden_length = ftell(infos->hidden);
+    if (read_hidden_length == 0)
+        return stegx_errno = ERR_HIDDEN_FILE_EMPTY, 1;
     // Précaution overflow.
     if (read_hidden_length >= UINT32_MAX)
         return stegx_errno = ERR_LENGTH_HIDDEN, 1;
