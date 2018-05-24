@@ -30,7 +30,8 @@ if (CMOCKA_LIBRARY)
     # Nom de la cible de test.
     set (TEST_TARGET check)
     # Liste des répertoires contenant les tests.
-    SUBDIRLIST (TEST_ALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+    # SUBDIRLIST (TEST_ALL_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+    set (TEST_ALL_DIR ${SRC_LIB_DIR})
 
     # Listes des sous-cibles de test.
     foreach (dir ${TEST_ALL_DIR})
