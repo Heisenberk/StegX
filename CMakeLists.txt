@@ -15,7 +15,7 @@ endif()
 # Projet =======================================================================
 
 # Nom du projet et description.
-project (StegX VERSION 0.1
+project (StegX VERSION 1.0.0
     DESCRIPTION "Projet de Stéganographie pour l'UVSQ" 
     LANGUAGES C
     )
@@ -31,7 +31,7 @@ string (REPLACE "\"" "\\\"" PROJECT_LICENSE_FULL_TEXT "${PROJECT_LICENSE_FULL_TE
 
 # Modes de compilation.
 set (CMAKE_CONFIGURATION_TYPES Debug;Release)
-set (CMAKE_BUILD_TYPE Debug)
+set (CMAKE_BUILD_TYPE Release)
 
 # Configuration ================================================================
 
