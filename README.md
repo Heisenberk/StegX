@@ -15,12 +15,47 @@ données cachées peuvent ainsi être transmises par un canal non sécurisé san
 d'une interface graphique et d'une interface en ligne de commande, ainsi que
 d'une bibliothèque partagée intégrable dans d'autres projets de développement.
 
-Statut
+Fonctionnalités
 --------------------------------------------------------------------------------
 
-* Interface graphique : Terminée.
-* Interface en ligne de commande : Terminée.
-* Bibliothèque : Terminée.
+* _Formats et algorithmes pris en charge par l'application_ :
+  * **BMP** : LSB, EOF, Metadata.
+  * **PNG** : EOF, Metadata.
+  * **AVI** : Junk Chunk.
+  * **FLV** : EOF, EOC.
+  * **WAVE** : LSB, EOF.
+  * **MP3** : À venir dans une prochaine version (1er juin).
+
+* _Description, avantages et inconvénients des algorithmes_ :
+  * **LSB (Least Significant Bit)** : Cet algorithme consiste à modifier les
+    bits de poids faible des octets définissants les données du fichier.
+    Étant un bit de moindre importance, les données ne sont quasimment
+    pas affectées et la dissimulation est invisible pour l'homme (sur
+    une image ou du son par exemple). De manière générale, cet
+    algorithme consiste à modifier des bits de moindres importances (par
+    exemple dans un header). Il a comme avantage d'être très discret et
+    de ne pas augmenter la taille du fichier hôte. Cependant, pour cacher
+    un fichier d'une grande taille, il faudra également un fichier hôte
+    d'une taille conséquente.
+  * **EOF** : Cet algorithme consiste à cacher les données du fichier à
+    cacher à la fin du fichier hôte, de tel manière que les données
+    cachées ne soient pas interprétées par les logiciels lisant le
+    fichier hôte. L'algorithme à comme avantage d'être simple, rapide et
+    de ne pas imposer de limite de taille. Cependant, cet algorithme
+    n'est pas discret et augmente la taille du fichier hôte
+    proportionnelement à la taille du fichier à cacher.
+  * **Metadata** : Cet algorithme ajoute des métadonnées contenant les
+    données à cacher au fichier hôte, en suivant les standards propre à
+    chaque format de fichier. Cette méthode est plus discrète qu'EOF,
+    mais augmente toujours la taille du fichier hôte proportionnellement
+    à la taille du fichier à chacher.
+  * **EOC** : Variante d'EOF, le fichier à cacher est découpé et cacher à la
+    fin de certains chunks (blocs de base constituant les données du
+    fichier hôte). Cette méthode est aussi plus discrète qu'EOF.
+  * **Junk Chunk** : Algorithme ayant comme principe la création de chunk
+    poubelle. Ce sont des morceaux de données non-interprétées par les
+    logiciels lisant le fichier hôte car les données ne respecte pas le
+    format intiale et sont invalides.
 
 
 ---
@@ -104,6 +139,13 @@ répertoire racine de l'application, puis exécutez dans votre terminal `./stegx
 pour l'interface en ligne de commande ou `./stegx-gui` pour l'interface
 graphique.
 
+Aide
+--------------------------------------------------------------------------------
+
+Pour afficher l'aide de l'interface en ligne de commande, taper la
+commande `stegx -h`. Pour avoir une aide sur l'interface graphique,
+consulter le manuel d'utilisation produit lors de la génération des
+rapports en PDF. 
 
 ---
 
