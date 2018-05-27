@@ -47,18 +47,6 @@ static uint32_t mp3_id3v2_size_unsyncsafe(const uint32_t s)
     return (0x0000007F & s) | ((0x00007F00 & s) >> 1) | ((0x007F0000 & s) >> 2) | ((0x7F000000 & s) >> 3);
 }
 
-static int mp3_id3v2_hdr_is_unsync(const uint8_t flags)
-{
-    assert(!(0x0F & flags) && "L'entier doit être un flag ID3v2");
-    return (0x80 & flags) >> 7;
-}
-
-static int mp3_id3v2_hdr_get_version(const uint32_t hdr)
-{
-    assert(mp3_id3v2_hdr_test(hdr) && "Le header doit être un header ID3v2");
-    return 0x000000FF & hdr;
-}
-
 static int mp3_id3v2_tag_seek(FILE * f)
 {
     assert(f && ftell(f) == 4 && "Les 4 premiers octets du fichier (header ID3v2) doivent êtres lus");
@@ -78,12 +66,6 @@ static int mp3_mpeg_hdr_get_version(const uint32_t hdr)
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
     static const int ver[4] = {0, 0, 2, 1};
     return ver[(hdr & 0x180000) >> 19];
-}
-
-static int mp3_mpeg_hdr_is_protec(const uint32_t hdr)
-{
-    assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
-    return !((hdr & 0x010000) >> 16);
 }
 
 static int mp3_mpeg_hdr_is_padding(const uint32_t hdr)
