@@ -34,19 +34,41 @@
 /** Taille d'un header de tag ID3v2. */
 #define TAG_ID3V2_HEADER_SIZE 10
 
-// TODO : Rajouter doc.
-
+/**
+ * @brief Test si le header est un header ID3v2.
+ * @param hdr Header à tester.
+ * @return 0 si le header est incorrect, sinon 1 si le header est valide.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_id3v2_hdr_test(const uint32_t hdr)
 {
     return (hdr & MASK_ID3) == SIG_ID3V2;
 }
 
+/**
+ * @brief Retire la sécurité de synchronisation de la taille d'un tag ID3v2.
+ * @param s Taille lu du tag.
+ * @return Taille réelle du tag.
+ * @req "s" doit être un entier "syncsafe".
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static uint32_t mp3_id3v2_size_unsyncsafe(const uint32_t s)
 {
     assert(!(0x80808080 & s) && "L'entier doit être un entier syncsafe");
     return (0x0000007F & s) | ((0x00007F00 & s) >> 1) | ((0x007F0000 & s) >> 2) | ((0x7F000000 & s) >> 3);
 }
 
+/**
+ * @brief Saute le tag ID3v2 actuel.
+ * @param f Fichier MP3.
+ * @return Valeur de retour de fseek().
+ * @req Le fichier f doit être ouvert en lecture. Lors du déplacement, il est
+ * considéré que la signature du tag vient d'être lu, le curseur de lecture
+ * est donc à "debut_du_fichier + sizeof(sig)".
+ * @sideeffect Le curseur de lecture du fichier est modifié pour sauter le
+ * tag.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_id3v2_tag_seek(FILE * f)
 {
     assert(f && ftell(f) == 4 && "Les 4 premiers octets du fichier (header ID3v2) doivent êtres lus");
@@ -61,6 +83,13 @@ static int mp3_id3v2_tag_seek(FILE * f)
     return fseek(f, mp3_id3v2_size_unsyncsafe(stegx_be32toh(size)) + TAG_ID3V2_HEADER_SIZE, SEEK_SET);
 }
 
+/**
+ * @brief Obtient la version de la norme MPEG du header d'une frame MP3.
+ * @param hdr Header MPEG.
+ * @return 1 ou 2 si la version est reconnu, sinon retourne 0.
+ * @req Le header doit être un header MPEG.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_mpeg_hdr_get_version(const uint32_t hdr)
 {
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
@@ -68,12 +97,26 @@ static int mp3_mpeg_hdr_get_version(const uint32_t hdr)
     return ver[(hdr & 0x180000) >> 19];
 }
 
+/**
+ * @brief Permet de savoir si une frame MP3 contient du padding.
+ * @param hdr Header MPEG de la frame.
+ * @return 1 si la frame contient du padding, 0 sinon.
+ * @req Le header doit être un header MPEG.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_mpeg_hdr_is_padding(const uint32_t hdr)
 {
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
     return (hdr & 0x00000200) >> 9;
 }
 
+/**
+ * @brief Obtient la fréquence d'échantillonage d'une frame MP3.
+ * @param hdr Header MPEG de la frame.
+ * @return La fréquence d'échantillonage en Hz si elle est reconnu, sinon 0.
+ * @req Le header doit être un header MPEG.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_mpeg_hdr_get_samprate(const uint32_t hdr)
 {
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
@@ -81,6 +124,14 @@ static int mp3_mpeg_hdr_get_samprate(const uint32_t hdr)
     return samp[mp3_mpeg_hdr_get_version(hdr)][(hdr & 0x00000C00) >> 10];
 }
 
+/**
+ * @brief Obtient la débit binaire d'une frame MP3.
+ * @param hdr Header MPEG de la frame.
+ * @return Le débit binaire en Kbps (10^3 bits par seconde) si il est reconnu,
+ * sinon 0.
+ * @req Le header doit être un header MPEG.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_mpeg_hdr_get_bitrate(const uint32_t hdr)
 {
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
@@ -90,6 +141,13 @@ static int mp3_mpeg_hdr_get_bitrate(const uint32_t hdr)
     return bit[mp3_mpeg_hdr_get_version(hdr)][(hdr & 0x0000F000) >> 12];
 }
 
+/**
+ * @brief Obtient la taille d'une frame MP3.
+ * @param hdr Header MPEG de la frame.
+ * @return Taille d'une frame MP3 (header + données).
+ * @req Le header doit être un header MPEG.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
 static int mp3_mpeg_hdr_get_size(const uint32_t hdr)
 {
     assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
@@ -125,7 +183,6 @@ long int mp3_mpeg_fr_find_first(FILE * f)
 
 int mp3_id3v1_hdr_test(const uint32_t hdr)
 {
-    assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
     return (hdr & MASK_ID3) == SIG_ID3V1;
 }
 
@@ -144,4 +201,3 @@ type_e stegx_test_file_mp3(FILE * file)
     sig = stegx_be32toh(sig);
     return mp3_id3v2_hdr_test(sig) || mp3_mpeg_hdr_test(sig) ? MP3 : UNKNOWN;
 }
-
