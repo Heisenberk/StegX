@@ -303,11 +303,34 @@ int fill_host_info(info_s * infos)
         return 0;
     }
 
-    /* Structures AVI et MP3 : structures vides. */
-    else if (infos->host.type == MP3
-             || infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
+    /* Fichier MP3. */
+    else if (infos->host.type == MP3) {
+        uint32_t hdr = 0;
+        long int * n = &(infos->host.file_info.mp3.fr_nb);
+        long int * f = &(infos->host.file_info.mp3.fr_frst_adr);
+        FILE * h = infos->host.host;
+        /* Déplacement et stockage de l'adresse du header de la première frame du MP3 (pour le "LSB"). */
+        if ((*f = mp3_mpeg_fr_find_first(h)) == -1 || fseek(h, *f, SEEK_SET))
+            return perror("MP3 fill_host_info: Can't find first MPEG 1/2 Layer III frame"), 1;
+        /* Dénombrement du nombre de frame (pour "can_use_lsb"). */
+        for (*n = 0 ; (fread(&hdr, sizeof(hdr), 1, h) == 1) && mp3_mpeg_hdr_test(hdr = stegx_be32toh(hdr)); (*n)++) {
+            if (mp3_mpeg_fr_seek(hdr, h))
+                return perror("MP3 fill_host_info: Can't skip current MP3 MPEG frame"), 1;
+        }
+        if (ferror(h))
+            return perror("MP3 fill_host_info: Can't read frame header"), 1;
+        /* Curseur sur un tag ID3v1 => saut au-dessus du tag. */
+        if (mp3_id3v1_hdr_test(hdr) && mp3_id3v1_tag_seek(h))
+            return perror("MP3 fill_host_info: Can't skip over ID3v1 tag at the end of file"), 1;
+        /* Stockage de la fin officielle du fichier (pour EOF). */
+        if ((infos->host.file_info.mp3.eof = ftell(h)) == -1)
+            return perror("MP3 fill_host_info: Can't get end-of-file address"), 1;
         return 0;
     }
+
+    /* Structure AVI : structure vide. */
+    else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED)
+        return 0;
     /* Format non reconnu => erreur. */
     else
         return 1;
