@@ -140,20 +140,6 @@ permettra de déterminer son choix d'algorithme à utiliser lors de l'insertion.
 Dans cet exemple, Alice choisit l'algorithme EOF. 
 \end{itemize}
 
-\subsection{Détection de l'algorithme de stéganographie}
-
-Ce module correspond à la lecture de la signature StegX que nous expliquerons 
-par la suite. En fonction du format
-du fichier à analyser, la position de la signature de StegX dans le fichier ne
-sera pas la même. Cette lecture sera déterminante pour découvrir l'algorithme
-utilisé, le nom du fichier caché et la taille de ce dernier. 
-
-Lorsque Bob fera l'extraction, lors de la détection de l'algorithme, la 
-structure spécifique de \textit{infos.host.file\_info.bmp}
-et déduira les mêmes champs que Alice lors de l'insertion. En effet, 
-il va y avoir une lecture approfondie du fichier. Ensuite, la signature 
-StegX, qui a été écrite lors de l'insertion, sera lue.
-
 \subsection{Insertion des données}
 
 Lorsque le fichier à cacher, l'algorithme de stéganographie à utiliser, 
@@ -179,6 +165,19 @@ sécurisé.
 Oscar, qui espionne les communications entre Bob et Alice, n'aura aucun 
 soupçon en voyant piece\_jointe.bmp qui semble être une image comme une 
 autre. 
+
+\subsection{Détection de l'algorithme de stéganographie}
+
+Ce module correspond à la lecture de la signature StegX que nous expliquerons 
+par la suite. En fonction du format
+du fichier à analyser, la position de la signature de StegX dans le fichier ne
+sera pas la même. Cette lecture sera déterminante pour découvrir l'algorithme
+utilisé, le nom du fichier caché et la taille de ce dernier. 
+
+Lors de la détection de l'algorithme, Bob déduira les mêmes champs de 
+\textit{infos.host.file\_info.bmp} que Alice lors de l'insertion. En effet, 
+il va y avoir une lecture approfondie du fichier. Ensuite, la signature 
+StegX, qui a été écrite lors de l'insertion, sera lue.
 
 \subsection{Extraction des données}
 
@@ -267,7 +266,7 @@ données après la fin << officielle >> du fichier.
 Pour l'extraction des données, il faut aller à la fin officielle du fichier 
 à analyser pour lire les données cachées. 
 
-Il sera proposé pour les formats BMP, PNG, WAV et FLV.
+Il sera proposé pour les formats BMP, PNG, MP3, WAV et FLV.
 
 L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
 taille pour le fichier à cacher. L'inconvénient est le fait que la taille 
