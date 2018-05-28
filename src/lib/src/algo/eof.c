@@ -108,6 +108,16 @@ int insert_eof(info_s * infos)
 		if (ferror(infos->host.host))
             return perror("EOF: Can't read a copy of the host file"), 1;
     }
+    // Format MP3.
+    if (infos->host.type == MP3) {
+        // Recopie du fichier hôte. Utilisation de la taille et d'un compteur pour ne pas copier des données indésirables
+        // qui serait à la fin du fichier.
+        for (unsigned int cnt = 0, size = infos->host.file_info.mp3.eof, b;
+                fread(&b, sizeof(uint8_t), 1, infos->host.host) == 1 && cnt < size; cnt++)
+            fwrite(&b, sizeof(uint8_t), 1, infos->res);
+        if (ferror(infos->host.host) || ferror(infos->res))
+            return perror("EOF MP3: Can't copy the host file"), 1;
+    }
 
     /* Écriture de la signature. */
     if (write_signature(infos))
@@ -145,6 +155,9 @@ int extract_eof(info_s * infos)
 		if (fseek(infos->host.host, infos->host.file_info.flv.file_size, SEEK_SET))
 			return perror("EOF: Can't jump to StegX signature"), 1;
     }
+    // Format MP3.
+    if (infos->host.type == MP3 && fseek(infos->host.host, infos->host.file_info.mp3.eof, SEEK_SET))
+        return perror("EOF MP3: Can't jump to StegX signature"), 1;
 
     /* Saut de la signature. */
     if (sig_fseek(infos->host.host, infos->hidden_name, infos->method))
