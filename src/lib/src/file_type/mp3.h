@@ -13,7 +13,7 @@
 
 #include "common.h"
 
-/** Nombre de bit modifiable à souhait dans un header MPEG 1/2 Layer III. */
+/** Nombre de bit modifiable en LSB dans un header MPEG 1/2 Layer III. */
 #define MP3_HDR_NB_BITS_MODIF 3
 
 /**
@@ -22,7 +22,8 @@
 struct mp3 {
     long int fr_frst_adr; /*!< Adresse du header de la première frame MPEG 1/2 Layer III. */
     long int fr_nb;       /*!< Nombre de frame MPEG 1/2 Layer III. */
-    long int eof;         /*!< Adresse de la fin du fichier officiel (sans signature et données cachées). */
+    long int eof;         /*!< Adresse de la fin du fichier officiel (sans signature et données
+                               cachées, après la dernière frame ou après le TAG ID3v1). */
 };
 
 /** Type du format MP3. */
@@ -49,6 +50,22 @@ int mp3_mpeg_hdr_test(uint32_t hdr);
  * @author Pierre Ayoub, Damien Delaunay
  */
 int mp3_mpeg_fr_seek(uint32_t hdr, FILE * f);
+
+/**
+ * @brief Écris la frame MP3 actuelle.
+ * @param hdr Header de la frame MP3 à écrire.
+ * @param src Fichier MP3 source.
+ * @param dst Fichier de destination.
+ * @return -1 sur une erreur, sinon 0.
+ * @req Les fichiers src et dst doivent êtres ouverts en lecture. Lors de
+ * l'écriture, il est considéré que le header de la frame à déjà été lu puis
+ * écrit, les curseurs de lecture et d'écriture sont donc à "debut_de_la_frame +
+ * sizeof(hdr)".
+ * @sideeffect Les curseurs de lecture du fichier src et d'écriture du fichier
+ * dst sont modifiés pour lire puis écrire la frame.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
+int mp3_mpeg_fr_write(uint32_t hdr, FILE * src, FILE * dst);
 
 /**
  * @brief Trouve la première frame MPEG 1/2 Layer III.
@@ -81,6 +98,21 @@ int mp3_id3v1_hdr_test(uint32_t hdr);
  * @author Pierre Ayoub, Damien Delaunay
  */
 int mp3_id3v1_tag_seek(FILE * f);
+
+/**
+ * @brief Écris le tag ID3v1 actuel.
+ * @param src Fichier MP3 source.
+ * @param dst Fichier de destination.
+ * @return -1 sur une erreur, sinon 0.
+ * @req Les fichiers src et dst doivent êtres ouverts en lecture. Lors de
+ * l'écriture, il est considéré que le header du tag à déjà été lu puis
+ * écrit, les curseurs de lecture et d'écriture sont donc à "debut_du_tag +
+ * sizeof(hdr)".
+ * @sideeffect Les curseurs de lecture du fichier src et d'écriture du fichier
+ * dst sont modifiés pour lire puis écrire la frame.
+ * @author Pierre Ayoub, Damien Delaunay
+ */
+int mp3_id3v1_tag_write(FILE * src, FILE * dst);
 
 /**
  * @brief Test si le fichier est un fichier MP3.

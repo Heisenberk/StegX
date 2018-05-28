@@ -166,6 +166,17 @@ int mp3_mpeg_fr_seek(const uint32_t hdr, FILE * f)
     return fseek(f, mp3_mpeg_hdr_get_size(hdr) - sizeof(hdr), SEEK_CUR);
 }
 
+int mp3_mpeg_fr_write(uint32_t hdr, FILE * src, FILE * dst)
+{
+    assert(mp3_mpeg_hdr_test(hdr) && "Le header doit être un header MPEG 1/2 Layer III");
+    assert(src && dst);
+    uint8_t buf[BUFSIZ]; // Copie efficace avec un buffer.
+    int s = mp3_mpeg_hdr_get_size(hdr) - sizeof(hdr);
+    while (s && fread(buf, sizeof(*buf), s < BUFSIZ ? s : BUFSIZ, src))
+        s -= fwrite(buf, sizeof(*buf), s < BUFSIZ ? s : BUFSIZ, dst);
+    return ferror(src) || ferror(dst) ? -1 : 0;
+}
+
 long int mp3_mpeg_fr_find_first(FILE * f)
 {
     assert(f);
@@ -190,6 +201,15 @@ int mp3_id3v1_tag_seek(FILE * f)
 {
     assert(f);
     return fseek(f, TAG_ID3V1_SIZE - sizeof(uint32_t), SEEK_CUR);
+}
+
+int mp3_id3v1_tag_write(FILE * src, FILE * dst)
+{
+    assert(src && dst);
+    uint8_t buf[TAG_ID3V1_SIZE]; // Copie efficace avec un buffer.
+    int s = TAG_ID3V1_SIZE - sizeof(uint32_t);
+    fread(buf, sizeof(*buf), s, src), fwrite(buf, sizeof(*buf), s, dst);
+    return ferror(src) || ferror(dst) ? -1 : 0;
 }
 
 type_e stegx_test_file_mp3(FILE * file)

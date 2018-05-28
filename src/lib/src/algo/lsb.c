@@ -128,18 +128,18 @@ int insert_lsb(info_s * infos)
     assert(infos);
     assert(infos->mode == STEGX_MODE_INSERT);
     assert(infos->algo == STEGX_ALGO_LSB);
-    uint32_t nb_cpy = 0;        //nb doctets recopies
-    uint8_t byte_read_hidden, byte_read_host;
-    uint8_t mask_host, mask_hidden;
-    int i;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
         return perror("Can't make jump host file"), 1;
     if (fseek(infos->hidden, 0, SEEK_SET) == -1)
         return perror("Can't make jump hidden file"), 1;
 
     // pour le format BMP et WAVE
-    assert(infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM);
+    assert(infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM || infos->host.type == MP3);
     if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
+        uint32_t nb_cpy = 0;        //nb doctets recopies
+        uint8_t byte_read_hidden, byte_read_host;
+        uint8_t mask_host, mask_hidden;
+        int i;
 
         // Recopie du header dans le fichier resultat -> taille du header de l'hote
         while (nb_cpy < (infos->host.file_info.bmp.header_size)) {
@@ -248,6 +248,56 @@ int insert_lsb(info_s * infos)
         }
         return 0;
     }
+
+    /* Insertion en LSB sur le format MP3. */
+    if (infos->host.type == MP3) {
+        /* Initialisation. */
+        FILE * h = infos->host.host, * r = infos->res; // Fichier hôte et fichier résultant.
+        mp3_s * hs = &(infos->host.file_info.mp3);     // Structure du fichier hôte.
+        static const uint32_t hdr_mask[MP3_HDR_NB_BITS_MODIF] = {0xFFFFFFFB, 0xFFFFFFF7, 0xFFFFFEFF}; // Masque à appliquer au header où cacher un bit.
+        static const uint32_t b_shift[MP3_HDR_NB_BITS_MODIF] = {2, 3, 8}; // Offset à appliqué au bit à cacher.
+
+        /* Recopie du header ID3v2 du fichier hôte s'il y en à un. */
+        uint8_t buf[BUFSIZ], b = 0; // Buffer, octet temporaire lu.
+        for (int s = hs->fr_frst_adr; s && fread(buf, sizeof(*buf), s < BUFSIZ ? s : BUFSIZ, h);)
+            s -= fwrite(buf, sizeof(*buf), s < BUFSIZ ? s : BUFSIZ, r);
+        if (ferror(h) || ferror(r))
+            return perror("insert_lsb MP3: Can't copy the header of the MP3 file"), 1;
+
+        assert(ftell(h) == hs->fr_frst_adr);
+        /* Lecture successive des headers de chaque frame. "b_cnt" et "hdr_cnt" sont
+         * respectivement les compteurs de bit caché de l'octet venant d'être lu
+         * et du header venant d'être lu.*/
+        uint32_t hdr = 0; // Header lu.
+        for (uint32_t hdr_cnt = 0, b_cnt = 0; fread(&hdr, sizeof(hdr), 1, h) && mp3_mpeg_hdr_test(hdr = stegx_be32toh(hdr)); hdr_cnt = 0) {
+            /* S'il ne reste plus de données déjà lues à cacher, on relis. Si on peux relire, on remet le compteur égal à 8 bits à cacher.
+             * Tant qu'il reste des bits à caché dans l'octet lu et qu'on à pas saturé le header du MP3, on cache. */
+            while ((b_cnt = !b_cnt ? fread(&b, sizeof(b), 1, infos->hidden) * 8 : b_cnt) && hdr_cnt < MP3_HDR_NB_BITS_MODIF) {
+                hdr &= hdr_mask[hdr_cnt];
+                hdr |= (b & 1) << b_shift[hdr_cnt];
+                b >>= 1, b_cnt--, hdr_cnt++;
+            }
+            /* On écrit le header éventuellement modifié puis les données de la frame. */
+            if (!fwrite((hdr = stegx_htobe32(hdr), &hdr), sizeof(hdr), 1, r) || mp3_mpeg_fr_write(stegx_be32toh(hdr), h, r))
+                return perror("insert_lsb MP3: Can't write current MPEG header and frame"), 1;
+        }
+        if (ferror(h))
+            return perror("insert_lsb MP3: Can't read frame header"), 1;
+
+        /* Curseur sur un tag ID3v1 => écris le tag. */
+        if (mp3_id3v1_hdr_test(stegx_be32toh(hdr))) {
+            if (!fwrite(&hdr, sizeof(hdr), 1, r) || mp3_id3v1_tag_write(h, r))
+                return perror("insert_lsb MP3: Can't write ID3v1 tag at the end of file"), 1;
+        } 
+
+        assert(ftell(h) == hs->eof);
+        assert(feof(infos->hidden));
+        /* Écriture de la signature et fin du LSB. */
+        if (write_signature(infos))
+            return stegx_errno = ERR_INSERT, 1;
+        return 0;
+    }
+
     // si les formats ne sont pas corrects erreur 
     return 1;
 }
