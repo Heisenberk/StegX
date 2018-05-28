@@ -13,6 +13,9 @@
 
 #include "common.h"
 
+/** Nombre de bit modifiable à souhait dans un header MPEG 1/2 Layer III. */
+#define MP3_HDR_NB_BITS_MODIF 3
+
 /**
  * @brief Structure du format MP3.
  */
