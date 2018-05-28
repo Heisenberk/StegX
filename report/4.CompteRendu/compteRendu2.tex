@@ -39,11 +39,11 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 \section{Introduction}
 
 Le client nous a autorisé à rendre une nouvelle version de StegX le 1er
-juin puisque celle du 25 mai ne proposait pas d'algorithmes pour le format 
-MP3. En effet, le format MP3 est un format très compliqué étant compressé. 
+juin puisque celle du 25 mai ne proposait pas d'algorithme pour le format 
+MP3. En effet, le MP3 est un format très compliqué étant compressé. 
 Pour la version du 25 mai, Pierre Ayoub et Damien Delaunay avait réussi à 
 étudier les versions du format (MPEG 1 Layer III, MPEG 2 Layer III) et de 
-formats de métadonnée (ID3 version 1 et ID3 version 2). 
+format de métadonnée (ID3 version 1 et ID3 version 2). 
 
 Ces études approfondies ont mené à modifier certains choix dans les spécifications 
 en raison de la difficulté de ce format. 
@@ -52,9 +52,102 @@ en raison de la difficulté de ce format.
 
 \subsection{Structure MP3}
 
+\begin{lstlisting}[language=c]
+struct mp3 {
+    long int fr_frst_adr; 
+    long int fr_nb;       
+    long int eof;      
+};
+\end{lstlisting}
+
+Cette structure comporte 3 champs : 
+\begin{itemize}
+\item \textit{fr\_frst\_adr} est l'adresse du header de la première frame 
+MPEG 1/2 Layer III. 
+\item \textit{fr\_nb} est le nombre de frame MPEG 1/2 Layer III.
+\item \textit{eof} est l'adresse de la fin du fichier officiel (sans signature et données cachées).
+\end{itemize}
+
+Cette structure n'a pas pu être déduite lors des spécifications puisque 
+l'étude détaillée du format était trop bas niveau à cette période du projet. 
+En effet, la stéganographie sur le format MP3 est très expérimentale puisque 
+ce format est très complexe. 
+
 \subsection{Ajouts de fonctions pour éviter la répétition de code}
+
+Pour réaliser correctement le remplissage de la structure afin d'éviter la
+repétition de code lors des algorithmes proposés par le format MP3, 
+nous avons créé plusieurs fonctions internes au format : 
+
+\begin{lstlisting}[language=c]
+int mp3_mpeg_hdr_test(uint32_t hdr);
+\end{lstlisting}
+
+Cette fonction teste si le header hdr est un header MPEG 1/2 Layer III.
+Elle renvoie 0 si le header est incorrect et 1 si le header est valide. 
+\newline
+\begin{lstlisting}[language=c]
+int mp3_mpeg_fr_seek(uint32_t hdr, FILE * f);
+\end{lstlisting}
+
+Cette fonction va sauter la frame MP3 actuelle contenue dans le fichier f
+et dont hdr est le header de la frame MP3 à sauter. Elle renvoie la valeur 
+de retour de fseek. 
+\newline
+
+\begin{lstlisting}[language=c]
+long int mp3_mpeg_fr_find_first(FILE * f);
+\end{lstlisting}
+
+Cette fonction trouve la première frame MPEG 1/2 Layer III dans le fichier f
+MP3. Elle retourne l'adresse du header de la première frame si elle est 
+trouvée, sinon -1. 
+\newline
+
+\begin{lstlisting}[language=c]
+int mp3_id3v1_hdr_test(uint32_t hdr);
+\end{lstlisting}
+
+Cette fonction test si le header hdr est un header ID3v1. Elle renvoie 0 
+si le header est incorrect sinon 1 si le header est valide. 
+
+\begin{lstlisting}[language=c]
+int mp3_id3v1_tag_seek(FILE * f);
+\end{lstlisting}
+
+Cette fonction saute le tag ID3v1 actuel dans le fichier MP3 f. Elle renvoie 
+la valeur de retour de fseek. 
 
 \section{Bilan technique du produit pour la version du 1er juin}
 
+En ce qui concerne les algorithmes proposés par StegX en fonction des 
+formats pris en charge, voici le bilan de ce que propose l'application 
+après la version du 1er juin: 
+\newline
+
+\begin{tabular}{|l|c|c|c|c|c|}
+  \hline
+  \multirow{2}*{\textbf{Format pris en charge par l'application}} & \multicolumn{5}{c|}{\textbf{Algorithmes proposés}} \\
+   \cline{2-6}
+    & \textbf{LSB} & \textbf{EOF} & \textbf{Metadata} 
+    &\textbf{EOC} & \textbf{Junk Chunk} \\
+  \hline
+  \textbf{BMP} (Clément Caumes \& Yassin Doudouh) & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{\checkmark} &  & \\
+  \hline      
+  \textbf{PNG} (Clément Caumes \& Yassin Doudouh) &  & \textbf{\checkmark} & \textbf{\checkmark} & & \\
+  \hline
+  \textbf{WAV} (Pierre Ayoub \& Damien Delaunay) & \textbf{\checkmark} & \textbf{\checkmark} & & & \\
+  \hline 
+  \textbf{MP3} (Pierre Ayoub \& Damien Delaunay) & & \color{red}{\textbf{\checkmark}} & & & \\
+  \hline 
+  \textbf{AVI} (Claire Baskevitch \& Tristan Bessac) & & & & & \textbf{\checkmark}\\
+  \hline
+  \textbf{FLV} (Claire Baskevitch \& Tristan Bessac) & & \textbf{\checkmark} & & \textbf{\checkmark} & \\
+  \hline
+\end{tabular}
+\vspace{0.5cm}
+
+On peut remarquer que la ligne pour le format MP3 est remplie. StegX propose 
+maintenant de la stéganographie sur les formats MP3. 
 
 \end{document}
