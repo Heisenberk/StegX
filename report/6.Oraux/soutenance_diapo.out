@@ -1,0 +1,12 @@
+\BOOKMARK [2][]{Outline0.1}{Introduction et d\351finitions}{}% 1
+\BOOKMARK [2][]{Outline0.2}{Fonctionnement}{}% 2
+\BOOKMARK [3][]{Outline0.2.1.4}{Description g\351n\351rale des modules}{Outline0.2}% 3
+\BOOKMARK [3][]{Outline0.2.2.13}{Signature StegX}{Outline0.2}% 4
+\BOOKMARK [2][]{Outline0.3}{Description des algorithmes de st\351ganographie}{}% 5
+\BOOKMARK [3][]{Outline0.3.1.14}{Least Significant Bit \(LSB\)}{Outline0.3}% 6
+\BOOKMARK [3][]{Outline0.3.2.15}{End Of File \(EOF\)}{Outline0.3}% 7
+\BOOKMARK [3][]{Outline0.3.3.16}{Metadata}{Outline0.3}% 8
+\BOOKMARK [3][]{Outline0.3.4.17}{End Of Chunk \(EOC\)}{Outline0.3}% 9
+\BOOKMARK [3][]{Outline0.3.5.18}{Junk Chunk}{Outline0.3}% 10
+\BOOKMARK [2][]{Outline0.4}{Probl\350mes et points d\351licats rencontr\351s}{}% 11
+\BOOKMARK [2][]{Outline0.5}{Bilan logiciel et humain}{}% 12

@@ -16,6 +16,7 @@
 #include "../insert.h"
 #include "../protection.h"
 #include "../endian.h"
+#include "../rand.h"
 
 /** Signature PNG */
 #define SIG_PNG 0x0A1A0A0D474E5089
@@ -85,10 +86,10 @@ int insert_metadata_png(info_s * infos)
      * du seed (grace au mot de passe)
      **/
     if (infos->hidden_length > LENGTH_FILE_MAX) {
-        srand(create_seed(infos->passwd));
+        stegx_srand(create_seed(infos->passwd));
         uint8_t random;
         for (length = 0; length < infos->hidden_length; length++) {
-            random = rand() % UINT8_MAX;
+            random = stegx_rand() % UINT8_MAX;
             data[length] = data[length] ^ random;       //XOR avec le nombre pseudo aleatoire generé
         }
     }
@@ -221,10 +222,10 @@ int extract_metadata_png(info_s * infos)
      * du seed (grace au mot de passe)
      **/
     if (infos->hidden_length > LENGTH_FILE_MAX) {
-        srand(create_seed(infos->passwd));
+        stegx_srand(create_seed(infos->passwd));
         uint8_t random;
         for (length = 0; length < infos->hidden_length; length++) {
-            random = rand() % UINT8_MAX;
+            random = stegx_rand() % UINT8_MAX;
             data[length] = data[length] ^ random;       //XOR avec le nombre pseudo aleatoire generé
         }
     }

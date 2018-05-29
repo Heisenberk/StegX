@@ -10,10 +10,13 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-/**
- * Variable globale représentant la seed pour la suite pseudo aléatoire.
+/** 
+ * @brief Cree un seed a partir d'un mot de passe. 
+ * @param passwd Mot de passe a partir duquel on veut creer un seed.
+ * @return unsigned int représentant le seed a creer. 
+ * @author Pierre Ayoub
  */
-unsigned int stegx_seed=0;
+unsigned int create_seed(const char *passwd);
 
 /** 
  * @brief Initialise la seed de la suite pseudo aléatoire. 

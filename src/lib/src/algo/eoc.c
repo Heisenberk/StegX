@@ -14,6 +14,7 @@
 #include "../insert.h"
 #include "../protection.h"
 #include "../endian.h"
+#include "../rand.h"
 
 int insert_eoc(info_s * infos)
 {
@@ -135,10 +136,10 @@ int insert_eoc(info_s * infos)
 			fseek(infos->hidden, nb_block * data_per_vtag, SEEK_SET);
 			limit = (nb_block == infos->host.file_info.flv.nb_video_tag-1) ? 
 									data_per_vtag + reste : data_per_vtag;
-			srand(create_seed(infos->passwd));
+			stegx_srand(create_seed(infos->passwd));
 			for(uint32_t i=0;i<limit;i++){
 				fread(&byte_cpy,sizeof(uint8_t),1,infos->hidden);
-				byte_cpy ^= rand() % UINT8_MAX;
+				byte_cpy ^= stegx_rand() % UINT8_MAX;
 				fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
             }
             //lecture previous tagsize
@@ -266,11 +267,11 @@ int extract_eoc(info_s * infos)
 			write_data = data_per_vtag;
 		}
 		fseek(infos->host.host, data_jump, SEEK_CUR);
-		srand(create_seed(infos->passwd));
+		stegx_srand(create_seed(infos->passwd));
 		/* Recopie des données dans le fichhier resultat */
 		for(uint32_t i = 0; i < write_data; i++){
 			fread(&byte_cpy, sizeof(uint8_t), 1, infos->host.host);
-			byte_cpy ^= rand() % UINT8_MAX;
+			byte_cpy ^= stegx_rand() % UINT8_MAX;
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 		}
 		

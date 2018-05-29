@@ -17,19 +17,7 @@
 #include "stegx_common.h"
 #include "stegx_errors.h"
 #include "protection.h"
-
-unsigned int create_seed(const char *passwd)
-{
-    unsigned int srand_nb = 0;
-    int j = 0;
-    char carac = passwd[j];
-    do {
-        srand_nb = (srand_nb + carac) % UINT_MAX;
-        j++;
-        carac = passwd[j];
-    } while (carac != '\0');
-    return srand_nb;
-}
+#include "rand.h"
 
 int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode_e mode)
 {
@@ -52,7 +40,7 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
     }
 
     // Création de la seed pour la generation pseudo aleatoires de nombres
-    srand(create_seed(passwd));
+    stegx_srand(create_seed(passwd));
 
     /* 
      * hidden_length_recalcul : Nombre d'éléments du tableau data au fur 
@@ -67,7 +55,7 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
     for (i = 0; i < hidden_length; i++) {
         l = m = 0;
         // on choisit au hasard le n-ieme élément a cacher
-        rang = rand() % (hidden_length_recalcul - 1);   //-1 (au dernier tour rang vaudra 1)
+        rang = stegx_rand() % (hidden_length_recalcul - 1);   //-1 (au dernier tour rang vaudra 1)
 
         // Cas spécial : si rang == 0 on cherche le prochain element non rangé dans result
         if (rang == 0) {
@@ -122,17 +110,17 @@ int protect_data(uint8_t * tab, uint32_t hidden_length, const char *passwd, mode
 
 int data_xor_write_file(FILE * src, FILE * res, const char *passwd)
 {
-    srand(create_seed(passwd));
+    stegx_srand(create_seed(passwd));
     for (uint8_t b; fread(&b, sizeof(b), 1, src) == 1;)
-        fwrite((b ^= rand() % UINT8_MAX, &b), sizeof(b), 1, res);
+        fwrite((b ^= stegx_rand() % UINT8_MAX, &b), sizeof(b), 1, res);
     return ferror(src);
 }
 
 void data_xor_write_tab(uint8_t * src, const char *passwd, const uint32_t len)
 {
-    srand(create_seed(passwd));
+    stegx_srand(create_seed(passwd));
     for (uint32_t i = 0; i < len; i++)
-        src[i] ^= rand() % UINT8_MAX;
+        src[i] ^= stegx_rand() % UINT8_MAX;
 }
 
 int data_scramble_write(FILE * src, FILE * res, const char *pass,

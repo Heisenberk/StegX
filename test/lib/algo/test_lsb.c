@@ -469,10 +469,10 @@ const struct CMUnitTest lsb_tests[] = {
     cmocka_unit_test(test_lsb_little_bmp_without_passwd),
     cmocka_unit_test(test_lsb_big_bmp_with_passwd),
     cmocka_unit_test(test_lsb_big_bmp_without_passwd),
-    cmocka_unit_test(test_protection_lsb_insert_pixels_egal_data),
+    /*cmocka_unit_test(test_protection_lsb_insert_pixels_egal_data),
     cmocka_unit_test(test_protection_lsb_extract_pixels_egal_data),
     cmocka_unit_test(test_protection_lsb_insert_pixels_sup_data),
-    cmocka_unit_test(test_protection_lsb_extract_pixels_sup_data),
+    cmocka_unit_test(test_protection_lsb_extract_pixels_sup_data),*/
 };
 
 int main(void)

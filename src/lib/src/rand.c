@@ -10,6 +10,24 @@
 
 #include "rand.h"
 
+/**
+ * Variable globale représentant la seed pour la suite pseudo aléatoire.
+ */
+unsigned int stegx_seed=0;
+
+unsigned int create_seed(const char *passwd)
+{
+    unsigned int srand_nb = 0;
+    int j = 0;
+    char carac = passwd[j];
+    do {
+        srand_nb = (srand_nb + carac) % UINT_MAX;
+        j++;
+        carac = passwd[j];
+    } while (carac != '\0');
+    return srand_nb;
+}
+
 void stegx_srand(unsigned int seed){
 	stegx_seed=seed;
 }
