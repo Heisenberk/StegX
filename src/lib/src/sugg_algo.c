@@ -320,12 +320,17 @@ int fill_host_info(info_s * infos)
         }
         if (ferror(h))
             return perror("MP3 fill_host_info: Can't read frame header"), 1;
-        /* Curseur sur un tag ID3v1 => saut au-dessus du tag. */
+
+        /* Curseur sur un tag ID3v1 => saut au-dessus du tag et fin du fichier définitive. */
         if (mp3_id3v1_hdr_test(hdr) && mp3_id3v1_tag_seek(h))
             return perror("MP3 fill_host_info: Can't skip over ID3v1 tag at the end of file"), 1;
-        /* Stockage de la fin officielle du fichier (pour EOF). */
+        /* Stockage de la fin du fichier (pour EOF). */
         if ((infos->host.file_info.mp3.eof = ftell(h)) == -1)
             return perror("MP3 fill_host_info: Can't get end-of-file address"), 1;
+        /* Curseur n'était pas sur un tag ID3v1 et la fin du fichier n'as pas
+         * été lu => on à lu 4 octets de données en trop (exemple, la signature). */
+        if (!mp3_id3v1_hdr_test(hdr) && !feof(h))
+            infos->host.file_info.mp3.eof -= sizeof(hdr);
         return 0;
     }
 
