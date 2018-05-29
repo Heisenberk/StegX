@@ -306,14 +306,14 @@ int extract_lsb(info_s * infos)
     assert(infos);
     assert(infos->mode == STEGX_MODE_EXTRACT);
     assert(infos->algo == STEGX_ALGO_LSB);
-    uint32_t header_size;
-    uint32_t nb_cpy;
-    uint8_t byte_read_host;
     if (fseek(infos->host.host, 0, SEEK_SET) == -1)
-        return perror("Can't make extraction LSB"), 1;
+        return perror("extract_lsb: Can't jump to the beginning of the host file"), 1;
 
     // pour les formats BMP et WAVE
     if (infos->host.type == BMP_UNCOMPRESSED || infos->host.type == WAV_PCM) {
+        uint32_t header_size;
+        uint32_t nb_cpy;
+        uint8_t byte_read_host;
         header_size = infos->host.file_info.bmp.header_size;
 
         // déplacement jusqu'au debut de l'image brute
@@ -379,6 +379,48 @@ int extract_lsb(info_s * infos)
             return 0;
         }
     }
+
+    /* Extraction en LSB sur le format MP3. */
+    if (infos->host.type == MP3) {
+        /* Initialisation. */
+        FILE * h = infos->host.host, * r = infos->res; // Fichier hôte et fichier résultant.
+        mp3_s * hs = &(infos->host.file_info.mp3);     // Structure du fichier hôte.
+        static const uint32_t hdr_mask[MP3_HDR_NB_BITS_MODIF] = {0xFFFFFFFB, 0xFFFFFFF7, 0xFFFFFEFF}; // Masque à appliquer au header où cacher un bit.
+        static const uint32_t b_shift[MP3_HDR_NB_BITS_MODIF] = {2, 3, 8}; // Offset à appliqué au bit à cacher.
+
+        /* Saut du header ID3v2 du fichier hôte s'il y en à un. */
+        if (fseek(h, hs->fr_frst_adr, SEEK_SET))
+            return perror("extract_lsb: Can't jump over ID3v2 tag"), -1;
+
+        assert(ftell(h) == hs->fr_frst_adr);
+        /* Lecture successive des headers de chaque frame tant qu'on à pas fini
+         * d'écrire la taille du fichier qui était caché dans le fichier
+         * résultat. "s" correspond à la taille actuellement écrite dans le
+         * fichier resultat. "hdr" est le header lu. "b_cnt" et "hdr_cnt" sont
+         * respectivement les compteurs des bits à traiter et traités de l'octet
+         * et du header venant d'être lu.*/
+        uint8_t b = 0; // Octet reconstitué à écrire dans le résultat.
+        for (uint32_t s = 0, hdr = 0, hdr_cnt = 0, b_cnt = 8; fread(&hdr, sizeof(hdr), 1, h) && s < infos->hidden_length; hdr_cnt = 0) {
+            hdr = stegx_be32toh(hdr);
+            /* Tant que l'on à pas lu les bits caché du header en cours. */
+            while (hdr_cnt < MP3_HDR_NB_BITS_MODIF) {
+                /* Si notre octet est complètement reconstitué. */
+                if (!b_cnt) {
+                    b_cnt = fwrite(&b, sizeof(b), 1, r) * 8;
+                    b = 0, s++;
+                }
+                b |= ((hdr & ~hdr_mask[hdr_cnt]) >> b_shift[hdr_cnt]) << (8 - b_cnt);
+                b_cnt--, hdr_cnt++;
+            }
+            /* On saute la frame quand on à récupéré tout les bits du header. */
+            if (mp3_mpeg_fr_seek(hdr, h))
+                return perror("insert_lsb MP3: Can't skip current MP3 MPEG frame"), 1;
+        }
+        if (ferror(h) || ferror(r))
+            return perror("insert_lsb MP3: Can't read the host file or write the res file"), 1;
+        return 0;
+    }
+
     // si le format du fichier n'est pas correct -> renvoie une erreur
     return 1;
 }
