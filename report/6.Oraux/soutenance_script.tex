@@ -82,9 +82,7 @@ dans le fichier à analyser.
 Tous ces modules et sous-modules seront coordonnées grâce aux interfaces 
 graphique et en ligne de commande (a), proposées par StegX. 
 
-\section{Fonctionnement}
-
-\subsection{Présentation du fonctionnement}
+\section{Présentation du fonctionnement}
 
 Nous allons maintenant décrire le fonctionnement interne de notre
 application en illustrant par un exemple de dissimulation et d'extraction 
@@ -98,11 +96,134 @@ Tout d'abord, elle choisit les entrées de la dissimulation : le fichier
 de passe pour augmenter la sécurité de la dissimulation. \newline
 Dans cet exemple : 
 \begin{itemize}
-\item le fichier à cacher est /home/user/Bureau/message.txt de taille 2.2 kB. 
-\item le fichier hôte est /home/user/Images/photo.bmp de taille 21.1 MB. 
-\item le chemin du fichier à créer est /home/user/Documents/piece\_jointe.bmp
+\item le fichier à cacher est message.txt. 
+\item le fichier hôte est photo.bmp. 
+\item le chemin du fichier à créer est piece\_jointe.bmp
 \item le mot de passe est "alicebob" (communiqué à Bob sur un canal sûr).
 \end{itemize}
+
+\section{Algorithmique \& Stéganographie}
+
+\subsection{Présentation}
+
+L'application de stéganographie va proposer à l'utilisateur une suite 
+d'algorithmes (selon le format du fichier hôte) : 
+LSB, EOF, Metadata, EOC, Junk Chunk. 
+
+De plus, pour chaque algorithme, on utilise 2 méthodes différentes selon 
+la taille du fichier hôte et/ou du fichier à cacher. 
+
+Le grand nombre d'algorithmes ainsi que la nécessité d'obtenir certaines 
+informations pour l'extraction impose la création d'une signature. 
+
+\subsection{Description de la signature StegX}
+
+La signature de StegX est primordiale dans l'insertion puisqu'elle permet au 
+destinataire de pouvoir interpréter ce que l'émetteur a voulu lui communiquer. 
+Pour cela, cette signature doit avoir plusieurs champs : 
+\begin {enumerate}
+\item Identificateur de la méthode (1 octet). Cet octet ne 
+peut prendre que deux valeurs possibles : la méthode avec ou sans mot de 
+passe. Si l'émetteur choisit un mot de passe, StegX récupèrera ce mot de 
+passe pour réaliser l'insertion de façon sécurisée. Le destinataire devra 
+choisir le même mot de passe pour extraire les données correctement. 
+Si par contre, l'émetteur ne choisit pas de mot de passe, StegX va en choisir 
+un au hasard et faire les mêmes manipulations qu'avec un mot de passe. 
+Le mot de passe par défaut devra donc être écrit dans la signature afin que 
+le destinataire puisse extraire. 
+\item Identificateur de l'algorithme (1 octet) : cette variable représente 
+l'algorithme utilisé par l'émetteur pour que le récepteur extrait correctement 
+les données. 
+\item Taille du fichier caché (4 octets) : ce nombre représente en octets 
+la taille du fichier caché dans le fichier hôte. Il a une taille maximale 
+de $2^{32}$ octets, soit 4 GB. Ce nombre est écrit en little endian. 
+\item Taille du nom du fichier caché (1 octet) : cet octet représente le 
+nombre de caractères du nom du fichier caché sans compter le caractère de 
+fin '$\backslash$0'.
+\item Nom du fichier caché (entre 1 et 255 octets) : représente le nom du 
+fichier caché. Ce nom va être XOR avec le mot de passe (par défaut ou choisi
+par l'utilisateur) : ainsi, si le récepteur choisit un mot de passe différent, 
+il ne pourra même pas connaître le nom du fichier caché. 
+\item Mot de passe (64 octets) : représente le mot de passe par défaut choisi 
+aléatoirement par l'application. Si la méthode est avec mot de passe, 
+ce champ n'existe pas car c'est le destinataire qui doit le connaître et 
+non l'application qui doit l'extraire. 
+\end{enumerate}
+
+\subsection{Least Significant Bit}
+
+Pour l'insertion des données, l'algorithme LSB va modifier les bits de 
+poids faible des différents octets des données de l'hôte. Selon la taille des
+données à cacher et la taille du fichier hôte, les données cachées pourront 
+être dispersées dans les octets de l'hôte. Sinon, on exercera un XOR avec 
+la suite pseudo-aléatoire générée à partir du mot de passe. 
+
+Il sera proposé pour les formats BMP (non compressé) et WAV (PCM).
+
+L'avantage de cet algorithme est le fait que cela n'augmente pas la 
+taille du fichier hôte (à part pour l'ajout de la signature). 
+L'inconvénient est que le fait que le fichier a caché doit être assez petit 
+pour pouvoir le cacher intégralement dans l'hôte. De plus, la modification 
+des bits de poids faible peut être vu (BMP) ou entendu (WAV) par l'homme. 
+
+\subsection{End Of File}
+
+Pour l'insertion des données, cet algorithme consiste à recopier le fichier 
+hôte dans le fichier résultat, suivi des octets représentant le fichier 
+à cacher. Cet algorithme fonctionne car les éditeurs 
+des formats pour lesquels l'algorithme est proposé n'interprètent pas les 
+données après la fin << officielle >> du fichier. 
+
+Pour l'extraction des données, il faut aller à la fin officielle du fichier 
+à analyser pour lire les données cachées. 
+
+Il sera proposé pour les formats BMP, PNG, MP3, WAV et FLV.
+
+L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
+taille pour le fichier à cacher. L'inconvénient est le fait que la taille 
+du fichier résultat sera égale à la taille de l'hôte, plus la taille de la 
+signature, plus la taille du fichier à cacher. 
+
+\subsection{Metadata}
+
+Pour chaque format pris en charge par StegX qui propose cet algorithme, 
+ce dernier diffère. En effet, l'étude approfondie du format du fichier est 
+nécessaire pour connaître les endroits du fichier où cacher des métadonnées. 
+Cela sera dans ces espaces que les données seront cachées. 
+
+Pour l'insertion, il est nécessaire que la signature StegX soit écrite à 
+la fin du fichier afin que l'extraction puisse se dérouler correctement. 
+
+L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
+taille pour le fichier à cacher. L'inconvénient est le fait qu'il augmente 
+(comme pour EOF) la taille du fichier hôte.  
+
+Il sera proposé pour les formats BMP et PNG. 
+
+\subsection{End Of Chunk}
+
+Cet algorithme est uniquement proposé par le format FLV et consiste à 
+écrire après les différents chunks du fichier hôte. En effet, lors de 
+son interprétation, cela ne modifiera pas la vidéo d'origine. 
+
+L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
+taille pour le fichier à cacher. Par contre, l'inconvénient de cet algorithme 
+est le fait que cela peut créer des distorsions sur le fichier vidéo où 
+l'interprétation pour certains logiciels multimédia peut être fait sur ces 
+données cachées. 
+
+\subsection{Junk Chunk}
+
+L'algorithme Junk Chunk est seulement proposé par le format AVI. Il correspond 
+à la création d'un chunk poubelle. Ce chunk est spécifique au format car il
+représente un chunk dans lequel les données ne seront pas interprétées par 
+les logiciels multimédia. 
+
+L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
+taille pour le fichier à cacher.  L'inconvénient est le fait qu'il augmente 
+(comme pour EOF) la taille du fichier hôte.  
+
+\section{Description des modules}
 
 \subsection{Vérification de la compatibilité des fichiers}
 
@@ -197,120 +318,6 @@ effectuée par Bob.
 Les données cachées extraites seront écrites dans le fichier
 /user/home/Bureau/message.txt. Bob pourra ainsi lire le message de Alice 
 contenu dans le fichier message.txt. 
-
-\section{Description de la signature StegX}
-
-La signature de StegX est primordiale dans l'insertion puisqu'elle permet au 
-destinataire de pouvoir interpréter ce que l'émetteur a voulu lui communiquer. 
-Pour cela, cette signature doit avoir plusieurs champs : 
-\begin {enumerate}
-\item Identificateur de la méthode (1 octet). Cet octet ne 
-peut prendre que deux valeurs possibles : la méthode avec ou sans mot de 
-passe. Si l'émetteur choisit un mot de passe, StegX récupèrera ce mot de 
-passe pour réaliser l'insertion de façon sécurisée. Le destinataire devra 
-choisir le même mot de passe pour extraire les données correctement. 
-Si par contre, l'émetteur ne choisit pas de mot de passe, StegX va en choisir 
-un au hasard et faire les mêmes manipulations qu'avec un mot de passe. 
-Le mot de passe par défaut devra donc être écrit dans la signature afin que 
-le destinataire puisse extraire. 
-\item Identificateur de l'algorithme (1 octet) : cette variable représente 
-l'algorithme utilisé par l'émetteur pour que le récepteur extrait correctement 
-les données. 
-\item Taille du fichier caché (4 octets) : ce nombre représente en octets 
-la taille du fichier caché dans le fichier hôte. Il a une taille maximale 
-de $2^{32}$ octets, soit 4 GB. Ce nombre est écrit en little endian. 
-\item Taille du nom du fichier caché (1 octet) : cet octet représente le 
-nombre de caractères du nom du fichier caché sans compter le caractère de 
-fin '$\backslash$0'.
-\item Nom du fichier caché (entre 1 et 255 octets) : représente le nom du 
-fichier caché. Ce nom va être XOR avec le mot de passe (par défaut ou choisi
-par l'utilisateur) : ainsi, si le récepteur choisit un mot de passe différent, 
-il ne pourra même pas connaître le nom du fichier caché. 
-\item Mot de passe (64 octets) : représente le mot de passe par défaut choisi 
-aléatoirement par l'application. Si la méthode est avec mot de passe, 
-ce champ n'existe pas car c'est le destinataire qui doit le connaître et 
-non l'application qui doit l'extraire. 
-\end{enumerate}
-
-\section{Description des algorithmes de stéganographie}
-
-\subsection{Présentation}
-
-Voici le coeur de l'application StegX avec les différents algorithmes que 
-proposent le logiciel. 
-
-\subsection{Least Significant Bit}
-
-Pour l'insertion des données, l'algorithme LSB va modifier les bits de 
-poids faible des différents octets des données de l'hôte. Selon la taille des
-données à cacher et la taille du fichier hôte, les données cachées pourront 
-être dispersées dans les octets de l'hôte. Sinon, on exercera un XOR avec 
-la suite pseudo-aléatoire générée à partir du mot de passe. 
-
-Il sera proposé pour les formats BMP (non compressé) et WAV (PCM).
-
-L'avantage de cet algorithme est le fait que cela n'augmente pas la 
-taille du fichier hôte (à part pour l'ajout de la signature). 
-L'inconvénient est que le fait que le fichier a caché doit être assez petit 
-pour pouvoir le cacher intégralement dans l'hôte. De plus, la modification 
-des bits de poids faible peut être vu (BMP) ou entendu (WAV) par l'homme. 
-
-\subsection{End Of File}
-
-Pour l'insertion des données, cet algorithme consiste à recopier le fichier 
-hôte dans le fichier résultat, suivi des octets représentant le fichier 
-à cacher. Cet algorithme fonctionne car les éditeurs 
-des formats pour lesquels l'algorithme est proposé n'interprètent pas les 
-données après la fin << officielle >> du fichier. 
-
-Pour l'extraction des données, il faut aller à la fin officielle du fichier 
-à analyser pour lire les données cachées. 
-
-Il sera proposé pour les formats BMP, PNG, MP3, WAV et FLV.
-
-L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
-taille pour le fichier à cacher. L'inconvénient est le fait que la taille 
-du fichier résultat sera égale à la taille de l'hôte, plus la taille de la 
-signature, plus la taille du fichier à cacher. 
-
-\subsection{Metadata}
-
-Pour chaque format pris en charge par StegX qui propose cet algorithme, 
-ce dernier diffère. En effet, l'étude approfondie du format du fichier est 
-nécessaire pour connaître les endroits du fichier où cacher des métadonnées. 
-Cela sera dans ces espaces que les données seront cachées. 
-
-Pour l'insertion, il est nécessaire que la signature StegX soit écrite à 
-la fin du fichier afin que l'extraction puisse se dérouler correctement. 
-
-L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
-taille pour le fichier à cacher. L'inconvénient est le fait qu'il augmente 
-(comme pour EOF) la taille du fichier hôte.  
-
-Il sera proposé pour les formats BMP et PNG. 
-
-\subsection{End Of Chunk}
-
-Cet algorithme est uniquement proposé par le format FLV et consiste à 
-écrire après les différents chunks du fichier hôte. En effet, lors de 
-son interprétation, cela ne modifiera pas la vidéo d'origine. 
-
-L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
-taille pour le fichier à cacher. Par contre, l'inconvénient de cet algorithme 
-est le fait que cela peut créer des distorsions sur le fichier vidéo où 
-l'interprétation pour certains logiciels multimédia peut être fait sur ces 
-données cachées. 
-
-\subsection{Junk Chunk}
-
-L'algorithme Junk Chunk est seulement proposé par le format AVI. Il correspond 
-à la création d'un chunk poubelle. Ce chunk est spécifique au format car il
-représente un chunk dans lequel les données ne seront pas interprétées par 
-les logiciels multimédia. 
-
-L'avantage de cet algorithme est le fait qu'il n'y a pas de limite de 
-taille pour le fichier à cacher.  L'inconvénient est le fait qu'il augmente 
-(comme pour EOF) la taille du fichier hôte.  
 
 \section{Problèmes et points délicats rencontrés}
 
