@@ -266,17 +266,16 @@ int insert_lsb(info_s * infos)
 
         assert(ftell(h) == hs->fr_frst_adr);
         /* Lecture successive des headers de chaque frame. "b_cnt" et "hdr_cnt" sont
-         * respectivement les compteurs de bit caché de l'octet venant d'être lu
+         * respectivement les compteurs des bits à traiter et traités de l'octet
          * et du header venant d'être lu.*/
         uint32_t hdr = 0; // Header lu.
         for (uint32_t hdr_cnt = 0, b_cnt = 0; fread(&hdr, sizeof(hdr), 1, h) && mp3_mpeg_hdr_test(hdr = stegx_be32toh(hdr)); hdr_cnt = 0) {
-            /* S'il ne reste plus de données déjà lues à cacher, on relis. Si on peux relire, on remet le compteur égal à 8 bits à cacher.
-             * Tant qu'il reste des bits à caché dans l'octet lu et qu'on à pas saturé le header du MP3, on cache. */
-            while ((b_cnt = !b_cnt ? fread(&b, sizeof(b), 1, infos->hidden) * 8 : b_cnt) && hdr_cnt < MP3_HDR_NB_BITS_MODIF) {
-                hdr &= hdr_mask[hdr_cnt];
-                hdr |= (b & 1) << b_shift[hdr_cnt];
-                b >>= 1, b_cnt--, hdr_cnt++;
-            }
+            /* S'il ne reste plus de données déjà lues à cacher, on relis. Si on peux relire, on remet le compteur "b_cnt" égal à 8 bits à cacher.
+             * Tant qu'il reste des bits à caché dans l'octet lu et qu'on à pas saturé le header du MP3, on cache. On relis si besoin le fichier
+             * à cacher pour saturer le header du MP3 jusqu'à ce qu'on ai tout lu. */
+            for (; (b_cnt = !b_cnt ? fread(&b, sizeof(b), 1, infos->hidden) * 8 : b_cnt)
+                    && hdr_cnt < MP3_HDR_NB_BITS_MODIF; b >>= 1, b_cnt--, hdr_cnt++)
+                hdr = (hdr & hdr_mask[hdr_cnt]) | ((b & 1) << b_shift[hdr_cnt]);
             /* On écrit le header éventuellement modifié puis les données de la frame. */
             if (!fwrite((hdr = stegx_htobe32(hdr), &hdr), sizeof(hdr), 1, r) || mp3_mpeg_fr_write(stegx_be32toh(hdr), h, r))
                 return perror("insert_lsb MP3: Can't write current MPEG header and frame"), 1;
@@ -285,8 +284,8 @@ int insert_lsb(info_s * infos)
             return perror("insert_lsb MP3: Can't read frame header"), 1;
 
         /* Curseur sur un tag ID3v1 => écris le tag. */
-        if (mp3_id3v1_hdr_test(stegx_be32toh(hdr))) {
-            if (!fwrite(&hdr, sizeof(hdr), 1, r) || mp3_id3v1_tag_write(h, r))
+        if (mp3_id3v1_hdr_test(hdr)) {
+            if (!fwrite((hdr = stegx_htobe32(hdr), &hdr), sizeof(hdr), 1, r) || mp3_id3v1_tag_write(h, r))
                 return perror("insert_lsb MP3: Can't write ID3v1 tag at the end of file"), 1;
         } 
 
