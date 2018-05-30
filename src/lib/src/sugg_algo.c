@@ -15,6 +15,7 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "rand.h"
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
@@ -348,13 +349,13 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
         return stegx_errno = ERR_SUGG_ALGOS, 1;
     /* Si l'utilisateur n'a pas choisi de mot de passe, on en crée un par défaut aléatoirement. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        srand(time(NULL));
+        stegx_srand(time(NULL));
         free(infos->passwd);
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
             return perror("Can't allocate memory for password string"), 1;
         // Génération de symboles ASCII >= 32 et <= 126.
         for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
-            infos->passwd[i] = 32 + (rand() % 95);
+            infos->passwd[i] = 32 + (stegx_rand() % 95);
     }
 
     assert(algo_choosen >= STEGX_ALGO_LSB && algo_choosen < STEGX_NB_ALGO);

@@ -14,6 +14,7 @@
 #include "stegx_errors.h"
 #include "protection.h"
 #include "insert.h"
+#include "rand.h"
 
 int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, uint32_t data_length,
                      char *passwd, mode_e mode)
@@ -35,7 +36,7 @@ int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, u
         }
     }
     // Création de la seed pour la generation pseudo aleatoires de nombres
-    srand(create_seed(passwd));
+    stegx_srand(create_seed(passwd));
 
     /* 
      * hidden_length_recalcul : Nombre d'éléments du tableau data au fur 
@@ -59,7 +60,7 @@ int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, u
             l = m = 0;
             // on recherche un octet (composante de couleur où cacher les 2 bits) au hasard
             assert(hidden_length_recalcul != 1);
-            rang = rand() % (hidden_length_recalcul - 1);       //-1 (au dernier tour rang vaudra 1)
+            rang = stegx_rand() % (hidden_length_recalcul - 1);       //-1 (au dernier tour rang vaudra 1)
             // Cas spécial : si rang == 0 on cherche le prochain element non modifié
             if (rang == 0) {
                 while (done[m] == 1) {
@@ -161,13 +162,13 @@ int insert_lsb(info_s * infos)
             || (infos->host.file_info.bmp.data_size > LENGTH_FILE_MAX)) {
             mask_host = 0xFC;   // 11111100 en binaire
 
-            srand(create_seed(infos->passwd));
+            stegx_srand(create_seed(infos->passwd));
             // Cacher en LSB les donnees du fichier a cacher
             while (nb_cpy < (infos->hidden_length)) {
                 // Lecture de l'octet du fichier a cacher
                 if (fread(&byte_read_hidden, sizeof(uint8_t), 1, infos->hidden) == 0)
                     return perror("Can't read data hidden"), 2;
-                byte_read_hidden ^= rand() % UINT8_MAX;
+                byte_read_hidden ^= stegx_rand() % UINT8_MAX;
 
                 // pour chaque paire de bits dans un octet (soit 4)
                 mask_hidden = 0xC0;     // 11000000 en binaire
@@ -278,7 +279,7 @@ int extract_lsb(info_s * infos)
             nb_cpy = 0;
             int i;
             uint8_t mask_host, byte_created;
-            srand(create_seed(infos->passwd));
+            stegx_srand(create_seed(infos->passwd));
 
             mask_host = 0x03;   // 00000011 en binaire
             // Extraire en LSB les donnees du fichier a cacher -> taille du fichier a cacher
@@ -299,7 +300,7 @@ int extract_lsb(info_s * infos)
                     byte_read_host <<= (-2 * i + 6);    // equation pour trouver le decalage a faire
                     byte_created = byte_created + byte_read_host;
                 }
-                byte_created ^= rand() % UINT8_MAX;
+                byte_created ^= stegx_rand() % UINT8_MAX;
                 if (fwrite(&byte_created, sizeof(uint8_t), 1, infos->res) != 1)
                     return perror("Sig: Can't write data hidden extracted"), 1;
                 nb_cpy++;
