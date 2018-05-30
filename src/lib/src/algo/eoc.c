@@ -109,6 +109,7 @@ int insert_eoc(info_s * infos)
                 else
                     data_size += data_per_vtag;
             }
+            data_size++;
             /* data_size ne peut pas faire plus de 3 octets */
             if (data_size > 0xFFFFFF)
                 return perror("Can't write data, hidden file to big."), 1;
@@ -137,6 +138,11 @@ int insert_eoc(info_s * infos)
 			limit = (nb_block == infos->host.file_info.flv.nb_video_tag-1) ? 
 									data_per_vtag + reste : data_per_vtag;
 			stegx_srand(create_seed(infos->passwd));
+			
+			//ajout d'un octet pour éviter les distortions
+			byte_cpy=28;
+			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
+
 			for(uint32_t i=0;i<limit;i++){
 				fread(&byte_cpy,sizeof(uint8_t),1,infos->hidden);
 				byte_cpy ^= stegx_rand() % UINT8_MAX;
@@ -154,7 +160,9 @@ int insert_eoc(info_s * infos)
             /* previous_tag_size ne peut pas faire plus de 4 octets */
             if (data_size > 0xFFFFFFFF)
                 return perror("Can't write data, hidden file to big."), 1;
+             prev_tag_size++;
             prev_tag_size = stegx_htobe32(prev_tag_size);
+           
             fwrite(&prev_tag_size, sizeof(uint32_t), 1, infos->res);
             cpt_video_tag += 1;
         }
@@ -181,7 +189,7 @@ int extract_eoc(info_s * infos)
     uint8_t byte_cpy;
     uint32_t data_size;
     uint8_t tag_type;
-    uint32_t cpt_video_tag = 0;
+    uint32_t cpt_video_tag = -1;
     uint32_t nb_block = 0;
     uint32_t data_jump;
     uint32_t write_data;
@@ -214,21 +222,22 @@ int extract_eoc(info_s * infos)
 			}
 			datab=1;
  		}
-
+ 	//saute de header
+ 	fseek(infos->host.host, 13, SEEK_SET);
 	do {
-		//saute de header
-		fseek(infos->host.host, 13, SEEK_SET);
-		cursor = 0;
+		
 		
 		if(datab){
 			while(data2[cursor] != nb_block)
 				cursor++;
-			cpt_video_tag = -1;
+						
 			/* Recherche du tag vidéo numéro cursor */
 			while(cursor != cpt_video_tag){
+				
 				fread(&tag_type, sizeof(uint8_t), 1, infos->host.host);
-				if(tag_type == 9)
+				if(tag_type == 9){
 					cpt_video_tag++;
+				}
 				fread(&data_size, sizeof(uint32_t), 1, infos->host.host);
 				//passage en 24 bits      
 				data_size = stegx_be32toh(data_size) >> 8;
@@ -239,7 +248,9 @@ int extract_eoc(info_s * infos)
 			}
 		}
 		else {
-			
+				//on revient à la fin du header
+				fseek(infos->host.host, 13, SEEK_SET);
+				cursor = 0;
 				while(data[cursor] != nb_block)
 				cursor++;
 			cpt_video_tag = -1;
@@ -266,6 +277,7 @@ int extract_eoc(info_s * infos)
 			data_jump = data_size - data_per_vtag + 6;
 			write_data = data_per_vtag;
 		}
+		
 		fseek(infos->host.host, data_jump, SEEK_CUR);
 		stegx_srand(create_seed(infos->passwd));
 		/* Recopie des données dans le fichhier resultat */
@@ -276,6 +288,7 @@ int extract_eoc(info_s * infos)
 		}
 		
 		nb_block++;
+		fseek(infos->host.host,4,SEEK_CUR);
 	}while(nb_block < infos->host.file_info.flv.nb_video_tag);
 	if (datab)
 		free(data2);
