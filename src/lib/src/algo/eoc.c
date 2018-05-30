@@ -139,7 +139,7 @@ int insert_eoc(info_s * infos)
 									data_per_vtag + reste : data_per_vtag;
 			stegx_srand(create_seed(infos->passwd));
 			
-
+			//ajout d'un octet pour éviter les distortions
 			byte_cpy=28;
 			fwrite(&byte_cpy,sizeof(uint8_t),1,infos->res);
 
@@ -222,28 +222,20 @@ int extract_eoc(info_s * infos)
 			}
 			datab=1;
  		}
-
+ 	//saute de header
  	fseek(infos->host.host, 13, SEEK_SET);
 	do {
-		//saute de header
-		
 		
 		
 		if(datab){
 			while(data2[cursor] != nb_block)
 				cursor++;
-			printf("c %u\n",cursor);
-			//sleep(3);
-			printf("n %u\n",nb_block );
-			
+						
 			/* Recherche du tag vidéo numéro cursor */
 			while(cursor != cpt_video_tag){
 				
-				printf("cpt %u\n",cpt_video_tag);
-				
 				fread(&tag_type, sizeof(uint8_t), 1, infos->host.host);
 				if(tag_type == 9){
-					printf("wtf\n");
 					cpt_video_tag++;
 				}
 				fread(&data_size, sizeof(uint32_t), 1, infos->host.host);
@@ -256,7 +248,7 @@ int extract_eoc(info_s * infos)
 			}
 		}
 		else {
-
+				//on revient à la fin du header
 				fseek(infos->host.host, 13, SEEK_SET);
 				cursor = 0;
 				while(data[cursor] != nb_block)
