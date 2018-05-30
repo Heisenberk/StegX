@@ -15,6 +15,11 @@
 #include "protection.h"
 #include "insert.h"
 
+/** MP3 : masque à appliquer au header où cacher un bit. */
+static const uint32_t mp3_mask[MP3_HDR_NB_BITS_MODIF] = {0xFFFFFFFB, 0xFFFFFFF7, 0xFFFFFEFF};
+/** MP3 : offset à appliquer au bit à caché / déjà caché en fonction du masque. */
+static const uint32_t mp3_shift[MP3_HDR_NB_BITS_MODIF] = {2, 3, 8};
+
 int protect_data_lsb(uint8_t * pixels, uint32_t pixels_length, uint8_t * data, uint32_t data_length,
                      char *passwd, mode_e mode)
 {
@@ -254,8 +259,6 @@ int insert_lsb(info_s * infos)
         /* Initialisation. */
         FILE * h = infos->host.host, * r = infos->res; // Fichier hôte et fichier résultant.
         mp3_s * hs = &(infos->host.file_info.mp3);     // Structure du fichier hôte.
-        static const uint32_t hdr_mask[MP3_HDR_NB_BITS_MODIF] = {0xFFFFFFFB, 0xFFFFFFF7, 0xFFFFFEFF}; // Masque à appliquer au header où cacher un bit.
-        static const uint32_t b_shift[MP3_HDR_NB_BITS_MODIF] = {2, 3, 8}; // Offset à appliqué au bit à cacher.
         srand(create_seed(infos->passwd));
 
         /* Recopie du header ID3v2 du fichier hôte s'il y en à un. */
@@ -274,11 +277,12 @@ int insert_lsb(info_s * infos)
             /* S'il ne reste plus de données déjà lues à cacher, on relis. Si on peux relire, on remet le compteur "b_cnt" égal à 8 bits à cacher.
              * Tant qu'il reste des bits à caché dans l'octet lu et qu'on à pas saturé le header du MP3, on cache. On relis si besoin le fichier
              * à cacher pour saturer le header du MP3 jusqu'à ce qu'on ai tout lu. */
-            while ((b_cnt = !b_cnt ? fread(&b, sizeof(b), 1, infos->hidden) * 8 : b_cnt) && hdr_cnt < MP3_HDR_NB_BITS_MODIF) {
+            for (; (b_cnt = !b_cnt ? fread(&b, sizeof(b), 1, infos->hidden) * 8 : b_cnt) && hdr_cnt < MP3_HDR_NB_BITS_MODIF;
+                    b >>= 1, b_cnt--, hdr_cnt++) {
+                /* Si on vient de lire un octet du fichier à cacher. */
                 if (b_cnt == 8)
                     b ^= rand() % UINT8_MAX;
-                hdr = (hdr & hdr_mask[hdr_cnt]) | ((b & 1) << b_shift[hdr_cnt]);
-                b >>= 1, b_cnt--, hdr_cnt++;
+                hdr = (hdr & mp3_mask[hdr_cnt]) | ((b & 1) << mp3_shift[hdr_cnt]);
             }
             /* On écrit le header éventuellement modifié puis les données de la frame. */
             if (!fwrite((hdr = stegx_htobe32(hdr), &hdr), sizeof(hdr), 1, r) || mp3_mpeg_fr_write(stegx_be32toh(hdr), h, r))
@@ -389,8 +393,6 @@ int extract_lsb(info_s * infos)
         /* Initialisation. */
         FILE * h = infos->host.host, * r = infos->res; // Fichier hôte et fichier résultant.
         mp3_s * hs = &(infos->host.file_info.mp3);     // Structure du fichier hôte.
-        static const uint32_t hdr_mask[MP3_HDR_NB_BITS_MODIF] = {0xFFFFFFFB, 0xFFFFFFF7, 0xFFFFFEFF}; // Masque à appliquer au header où cacher un bit.
-        static const uint32_t b_shift[MP3_HDR_NB_BITS_MODIF] = {2, 3, 8}; // Offset à appliqué au bit à cacher.
         srand(create_seed(infos->passwd));
 
         /* Saut du header ID3v2 du fichier hôte s'il y en à un. */
@@ -408,15 +410,13 @@ int extract_lsb(info_s * infos)
         for (uint32_t s = 0, hdr = 0, hdr_cnt = 0, b_cnt = 8; fread(&hdr, sizeof(hdr), 1, h) && s < infos->hidden_length; hdr_cnt = 0) {
             hdr = stegx_be32toh(hdr);
             /* Tant que l'on à pas lu les bits caché du header en cours. */
-            while (hdr_cnt < MP3_HDR_NB_BITS_MODIF) {
+            for (; hdr_cnt < MP3_HDR_NB_BITS_MODIF; b_cnt--, hdr_cnt++) {
                 /* Si notre octet est complètement reconstitué. */
-                if (!b_cnt) {
+                for (; !b_cnt ; b = 0, s++) {
                     b ^= rand() % UINT8_MAX;
                     b_cnt = fwrite(&b, sizeof(b), 1, r) * 8;
-                    b = 0, s++;
                 }
-                b |= ((hdr & ~hdr_mask[hdr_cnt]) >> b_shift[hdr_cnt]) << (8 - b_cnt);
-                b_cnt--, hdr_cnt++;
+                b |= ((hdr & ~mp3_mask[hdr_cnt]) >> mp3_shift[hdr_cnt]) << (8 - b_cnt);
             }
             /* On saute la frame quand on à récupéré tout les bits du header. */
             if (mp3_mpeg_fr_seek(hdr, h))
