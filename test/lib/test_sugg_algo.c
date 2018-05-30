@@ -11,6 +11,8 @@
 #include "stegx.h"
 #include "common.h"
 
+#define TEST_DIR "../../../env/test/"
+
 /* Setup des tests unitaires pour les formats de fichiers */
 static int test_file_info__setup(void **state)
 {
@@ -264,6 +266,84 @@ static void test_file_info_wav__pcm_s16le(void **state)
 }
 
 /**
+ * Tests MP3
+ * =============================================================================
+ */
+
+static void test_file_info_mp3(void **state)
+{
+    /* Initialisation. */
+    info_s *infos = *state;
+    infos->host.type = MP3;
+
+    /* Test sur tout types différents de MP3. */
+
+    /* MP3 ID3v1. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v1_Stereo_44,1kHz_160kbps.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x0);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 455);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x3A046);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v1 avec données à la fin. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v1_Stereo_44,1kHz_160kbps_EOF.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x0);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 455);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x3A046);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.3 n°1. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_1.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x395);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 5744);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x494800);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.3 n°1 avec données à la fin. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_1_EOF.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x395);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 5744);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x494800);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.3 n°2. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_2.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x8E5);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 6928);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x58676E);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.4 n°1. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.4_Mono_44,1kHz_64kbps.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x2D);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 94);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x4CE9);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.4 n°2. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.4_Unsync_Stereo_44,1kHz_192kbps.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x8F5);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 2209);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x152AC0);
+    assert_false(fclose(infos->host.host));
+
+    /* MP3 ID3v2.4 n°2 avec des données à la fin. */
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.4_Unsync_Stereo_44,1kHz_192kbps_EOF.mp3", "rb");
+    assert_non_null(infos->host.host), stegx_suggest_algo(infos);
+    assert_int_equal(infos->host.file_info.mp3.fr_frst_adr, 0x8F5);
+    assert_int_equal(infos->host.file_info.mp3.fr_nb, 2209);
+    assert_int_equal(infos->host.file_info.mp3.eof, 0x152AC0);
+    assert_false(fclose(infos->host.host));
+}
+
+/**
  * Tests généraux
  * =============================================================================
  */
@@ -432,6 +512,37 @@ void test_propos_algos_v4(void **state)
     fclose(infos->hidden);
 }
 
+/* Test sur du MP3. */
+void test_propos_algos_v5(void **state)
+{
+    info_s *infos = *state;
+    infos->host.type = MP3;
+    infos->host.host = fopen(TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_2.mp3", "rb");
+    assert_non_null(infos->host.host);
+
+    /* Valeurs à trouver */
+    infos->hidden = fopen(TEST_DIR"others/short.txt", "rb"), assert_non_null(infos->hidden);
+    stegx_suggest_algo(infos);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_LSB], 1);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_EOF], 1);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_METADATA], 0);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_EOC], 0);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_JUNK_CHUNK], 0);
+    assert_false(fclose(infos->hidden));
+
+    /* Valeurs à trouver */
+    infos->hidden = fopen(TEST_DIR"bmp/test4.bmp", "rb"), assert_non_null(infos->hidden);
+    stegx_suggest_algo(infos);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_LSB], 0);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_EOF], 1);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_METADATA], 0);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_EOC], 0);
+    assert_int_equal(stegx_propos_algos[STEGX_ALGO_JUNK_CHUNK], 0);
+    assert_false(fclose(infos->hidden));
+
+    assert_false(fclose(infos->host.host));
+}
+
 /* Test la taille par défaut du mot de passe lorsque la méthode sans
  * mot de passe a été choisit par l'utilisateur. */
 void test_passwd_default_length(void **state)
@@ -482,7 +593,8 @@ int main(void)
         cmocka_unit_test(test_propos_algos_v1),
         cmocka_unit_test(test_propos_algos_v2),
         cmocka_unit_test(test_propos_algos_v3),
-        cmocka_unit_test(test_propos_algos_v4)
+        cmocka_unit_test(test_propos_algos_v4),
+        cmocka_unit_test(test_propos_algos_v5)
     };
 
     /* Liste des tests de chaque format. */
@@ -498,6 +610,8 @@ int main(void)
         cmocka_unit_test(test_file_info_wav__pcm_alaw_1),
         cmocka_unit_test(test_file_info_wav__pcm_alaw_2),
         cmocka_unit_test(test_file_info_wav__pcm_s16le),
+        //Liste des tests pour le MP3
+        cmocka_unit_test(test_file_info_mp3),
         //Liste des tests pour le FLV
         cmocka_unit_test(test_file_info_flv_v1),
         cmocka_unit_test(test_file_info_flv_v2)
