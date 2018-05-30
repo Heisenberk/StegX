@@ -1,7 +1,9 @@
-  \documentclass{beamer}
+ \documentclass{beamer}
   \usepackage[utf8]{inputenc}
   \usetheme{Warsaw}
   \graphicspath{images/}
+  \usepackage{amsmath} 
+  \usepackage{amssymb}
 
   \title{Stéganographie \& Stéganalyse : Soutenance}
   \author{StegX}
@@ -16,6 +18,32 @@
   
   \section{Introduction et définitions}
   
+    \subsection{Commande du client}
+  
+  \begin{frame}
+   \begin{block}{Demande du client}
+   
+	Réaliser un logiciel de stéganographie permettant à des
+	personnes lambdas de communiquer sans que l'on soupçonne que leurs
+	communications soient en réalité compromettantes. 
+   
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+    \item Cacher des données dans des fichiers
+        de type image, audio et vidéo. 
+    \item Faire l'extraction automatique des données cachées du 
+        fichier à analyser.
+    \item Gestion de plusieurs formats et diversité dans les algorithmes proposés.
+    \item Proposition d'une bibliothèque partagée par
+        deux interfaces différentes, une graphique et une en ligne de commande.
+	\end{itemize}
+	\end{block}
+
+  \end{frame}
+  
+  
+  \subsection{Définitions}
+  
   \begin{frame}
   \hspace{5cm}
   \includegraphics[scale=0.7]{pictures/definition1.png}
@@ -26,11 +54,9 @@
   \includegraphics[scale=0.7]{pictures/definition2.png}
   \end{frame}
   
-  
-  \section{Fonctionnement} 
-  
-  \subsection{Description générale des modules}
-  
+
+  \section{Fonctionnement global} 
+    
   \begin{frame}
   \hspace{1.5cm}
   \includegraphics[scale=0.35]{pictures/organigramme_vide.png}
@@ -47,16 +73,8 @@
   \end{frame}
   
   \begin{frame} %1
-	\begin{block}{Description des modules}
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item \textcolor{gray} {Vérification de la compatibilité des fichiers.}
-	\item \textcolor{gray} {Proposition des algorithmes de stéganographie.}
-	\item \textcolor{gray} {Insertion des données.}
-	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
-	\item \textcolor{gray} {Extraction des données.}
-	\end{itemize}
-	\end{block}
+	\hspace{1.7cm}
+    \includegraphics[scale=0.5]{pictures/alice_bob.png}
 	
 	\begin{exampleblock}{Exemple} 
 	Alice choisit de cacher \textcolor{red}{message.txt} dans un fichier 
@@ -66,106 +84,25 @@
 	\end{exampleblock}
   \end{frame}
   
-  \begin{frame} %1
-	\begin{block}{Description des modules}
+  \section{Algorithmique \& Stéganographie}
+    \begin{frame} %3
+	\begin{block}{Algorithmes de stéganographie}
 	\begin{itemize}
 	\setbeamertemplate{itemize item}[circle]
-	\item \textcolor{red}{Vérification de la compatibilité des fichiers.}
-	\item \textcolor{gray} {Proposition des algorithmes de stéganographie.}
-	\item \textcolor{gray} {Insertion des données.}
-	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
-	\item \textcolor{gray} {Extraction des données.}
+	\item Least Significant Bit (LSB)
+	\item End Of File (EOF)
+	\item Metadata
+	\item End Of Chunk (EOC)
+	\item Junk Chunk 
 	\end{itemize}
 	\end{block}
 	
-	\begin{exampleblock}{Exemple} 
-	Avec la vérification de la compatibilité des fichiers, il s'agit d'un 
-	format \textcolor{red}{BMP non compressé}.  
-	\end{exampleblock}
-  \end{frame}
-  
-  \begin{frame} %2
-	\begin{block}{Description des modules}
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item Vérification de la compatibilité des fichiers.
-	\item \textcolor{red}{Proposition des algorithmes de stéganographie.}
-	\item \textcolor{gray} {Insertion des données.}
-	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
-	\item \textcolor{gray} {Extraction des données.}
-	\end{itemize}
-	\end{block}
-	
-	\begin{exampleblock}{Exemple} 
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item Grâce au module Proposition des algorithmes de stéganographie, les 
-	spécificités du format de piece\_jointe.bmp ont été déduites. 
-	\item Les algorithmes \textcolor{red}{EOF}, \textcolor{red}{LSB} et 
-	\textcolor{red}{Metadata} sont proposés. 
-	\item Alice choisit l'algorithme \textcolor{red}{EOF}. 
-	\end{itemize}
-	
-	\end{exampleblock}
-  \end{frame}
-  
-  \begin{frame} %3
-	\begin{block}{Description des modules}
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item Vérification de la compatibilité des fichiers.
-	\item Proposition des algorithmes de stéganographie.
-	\item \textcolor{red} {Insertion des données.}
-	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
-	\item \textcolor{gray} {Extraction des données.}
-	\end{itemize}
-	\end{block}
-	
-	\begin{exampleblock}{Exemple} 
-	Après que Alice ait fini la dissimulation, Bob va déduire les spécificités
-	du fichier piece\_jointe.bmp et déduire les informations sur le fichier 
-	caché message.txt. 
-	\end{exampleblock}
-  \end{frame}
-  
-  \begin{frame} %4
-	\begin{block}{Description des modules}
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item Vérification de la compatibilité des fichiers.
-	\item Proposition des algorithmes de stéganographie.
-	\item Insertion des données.
-	\item \textcolor{red} {Détection de l'algorithme de stéganographie.}
-	\item \textcolor{gray} {Extraction des données.}
-	\end{itemize}
-	\end{block}
-	
-	\begin{exampleblock}{Exemple} 
-	Lors de l'insertion de Alice, l'algorithme EOF sera utilisé où 
-	les données de l'hôte, la signature StegX suivies des données du fichier 
-	à cacher seront écrites dans piece\_jointe.bmp. 
-	\end{exampleblock}
-  \end{frame}
-  
-  \begin{frame} %5
-	\begin{block}{Description des modules}
-	\begin{itemize}
-	\setbeamertemplate{itemize item}[circle]
-	\item Vérification de la compatibilité des fichiers.
-	\item Proposition des algorithmes de stéganographie.
-	\item Insertion des données.
-	\item Détection de l'algorithme de stéganographie.
-	\item \textcolor{red}{Extraction des données.}
-	\end{itemize}
-	\end{block}
-	
-	\begin{exampleblock}{Exemple} 
-	L'algorithme EOF sera utilisé pour extraire les  données du fichier 
-	caché de message.txt. 
-	\end{exampleblock}
-  \end{frame}
-  	
+	\begin{alertblock}{Besoin} 
+	Nécessité d'obtenir les informations de l'insertion pendant l'extraction
+	impose une "signature".
+	\end{alertblock}
 
+  \end{frame}
   
   \subsection{Signature StegX}
   
@@ -186,12 +123,10 @@
   \includegraphics[scale=0.55]{pictures/signature_6.png}
   \end{frame}
 
-  
-  
-  \section{Description des algorithmes de stéganographie} %OK
+  \subsection{Description des algorithmes de stéganographie} %OK
   
 	% LSB OK
-	\subsection{Least Significant Bit (LSB)}
+	\subsubsection{Least Significant Bit (LSB)}
 	\begin{frame}
   
 	\begin{block}{Least Significant Bit}
@@ -217,7 +152,7 @@
 	\end{frame}
   
     % EOF OK
-    \subsection{End Of File (EOF)}
+    \subsubsection{End Of File (EOF)}
     \begin{frame}
     
 	\begin{block}{End Of File}
@@ -243,7 +178,7 @@
     \end{frame}
     
     % METADATA OK
-	\subsection{Metadata}
+	\subsubsection{Metadata}
     \begin{frame}
     
 	\begin{block}{Metadata}
@@ -269,7 +204,7 @@
     \end{frame}
     
     %EOC OK
-    \subsection{End Of Chunk (EOC)}
+    \subsubsection{End Of Chunk (EOC)}
     \begin{frame}
     
 	\begin{block}{End Of Chunk}
@@ -296,7 +231,7 @@
     \end{frame}
   
 	%Junk Chunk OK
-    \subsection{Junk Chunk}
+    \subsubsection{Junk Chunk}
     \begin{frame}
     
 	\begin{block}{Junk Chunk}
@@ -320,9 +255,114 @@
     \includegraphics[scale=0.08]{pictures/avi-512.png}
     
     \end{frame}
-     
+    
+    \section{Fonctionnement modulaire}
+    
+    \subsection{Vérification de la compatibilité des fichiers}
+    \begin{frame} %1
+	\begin{block}{Description des modules}
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item \textcolor{red}{Vérification de la compatibilité des fichiers.}
+	\item \textcolor{gray} {Proposition des algorithmes de stéganographie.}
+	\item \textcolor{gray} {Insertion des données.}
+	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
+	\item \textcolor{gray} {Extraction des données.}
+	\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Exemple} 
+	Avec la vérification de la compatibilité des fichiers, il s'agit d'un 
+	format \textcolor{red}{BMP non compressé}.  
+	\end{exampleblock}
+  \end{frame}
   
+  \subsection{Proposition des algorithmes de stéganographie}
+  \begin{frame} %2
+	\begin{block}{Description des modules}
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item Vérification de la compatibilité des fichiers.
+	\item \textcolor{red}{Proposition des algorithmes de stéganographie.}
+	\item \textcolor{gray} {Insertion des données.}
+	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
+	\item \textcolor{gray} {Extraction des données.}
+	\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Exemple} 
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item Grâce au module Proposition des algorithmes de stéganographie, les 
+	spécificités du format de piece\_jointe.bmp ont été déduites. 
+	\item Les algorithmes \textcolor{red}{EOF}, \textcolor{red}{LSB} et 
+	\textcolor{red}{Metadata} sont proposés. 
+	\item Alice choisit l'algorithme \textcolor{red}{EOF}. 
+	\end{itemize}
+	
+	\end{exampleblock}
+  \end{frame}
   
+  \subsection{Insertion des données}
+  \begin{frame} %3
+	\begin{block}{Description des modules}
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item Vérification de la compatibilité des fichiers.
+	\item Proposition des algorithmes de stéganographie.
+	\item \textcolor{red} {Insertion des données.}
+	\item \textcolor{gray} {Détection de l'algorithme de stéganographie.}
+	\item \textcolor{gray} {Extraction des données.}
+	\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Exemple} 
+	Après que Alice ait fini la dissimulation, Bob va déduire les spécificités
+	du fichier piece\_jointe.bmp et déduire les informations sur le fichier 
+	caché message.txt. 
+	\end{exampleblock}
+  \end{frame}
+  
+	\subsection{Détection de l'algorithme de stéganographie}
+  \begin{frame} %4
+	\begin{block}{Description des modules}
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item Vérification de la compatibilité des fichiers.
+	\item Proposition des algorithmes de stéganographie.
+	\item Insertion des données.
+	\item \textcolor{red} {Détection de l'algorithme de stéganographie.}
+	\item \textcolor{gray} {Extraction des données.}
+	\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Exemple} 
+	Lors de l'insertion de Alice, l'algorithme EOF sera utilisé où 
+	les données de l'hôte, la signature StegX suivies des données du fichier 
+	à cacher seront écrites dans piece\_jointe.bmp. 
+	\end{exampleblock}
+  \end{frame}
+  
+  \subsection{Extraction des données}
+  \begin{frame} %5
+	\begin{block}{Description des modules}
+	\begin{itemize}
+	\setbeamertemplate{itemize item}[circle]
+	\item Vérification de la compatibilité des fichiers.
+	\item Proposition des algorithmes de stéganographie.
+	\item Insertion des données.
+	\item Détection de l'algorithme de stéganographie.
+	\item \textcolor{red}{Extraction des données.}
+	\end{itemize}
+	\end{block}
+	
+	\begin{exampleblock}{Exemple} 
+	L'algorithme EOF sera utilisé pour extraire les  données du fichier 
+	caché de message.txt. 
+	\end{exampleblock}
+  \end{frame}
+  	
+
   \section{Problèmes et points délicats rencontrés} 
   
   \begin{frame}
@@ -381,5 +421,3 @@
 	\end{frame}
   
   \end{document}
-  
-
