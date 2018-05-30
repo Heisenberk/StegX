@@ -99,6 +99,22 @@ info_s *stegx_init(stegx_choices_s * choices)
     if ((s->host.host != stdin) && !(s->host.host = fopen(choices->host_path, "rb")))
         return perror(NULL), stegx_errno = ERR_HOST, NULL;
 
+    /* Si on a une entrée sur stdin, il faut la stocker dans un fichier
+     * temporaire car on ne peux pas faire de fseek() sur un flux. */
+    if (s->hidden == stdin || s->host.host == stdin) {
+        FILE * tmp = NULL;
+        /* Ouverture en lecture / écriture du fichier temporaire. */
+        if (!(tmp = fopen("/tmp/stegx", "w+b")))
+            return perror("Can't create a temporary file in /tmp"), NULL;
+        /* Copie efficace de stdin vers le fichier temporaire. */
+        uint8_t buf[BUFSIZ];
+        for (int i = 0; (i = fread(buf, sizeof(*buf), BUFSIZ, stdin)) ;)
+            fwrite(buf, sizeof(*buf), i, tmp);
+        fseek(tmp, 0, SEEK_SET);
+        s->hidden = s->hidden == stdin ? tmp : s->hidden;
+        s->host.host = s->host.host == stdin ? tmp : s->host.host;
+    }
+
     assert(s->mode == STEGX_MODE_INSERT || s->mode == STEGX_MODE_EXTRACT);
     assert(s->algo >= STEGX_ALGO_LSB && s->algo < STEGX_NB_ALGO);
     assert(s->method == STEGX_WITHOUT_PASSWD || s->method == STEGX_WITH_PASSWD);
