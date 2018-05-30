@@ -39,19 +39,26 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \section{Introduction}
 
+\subsection{Commande du client}
+
+Pour le projet S6 de Licence informatique, un client nous a demandé de 
+réaliser un logiciel de stéganographie permettant à des
+personnes lambdas de communiquer sans que l'on soupçonne que leurs
+communications soient en réalité compromettantes. 
+Il voulait aussi que l'application propose plusieurs algorithmes, sur 
+plusieurs formats différents. 
+   
+
+\subsection{Définitions des termes du sujet}
+
 La stéganographie est l'art de la dissimulation, appliquée en informatique en
 cachant des données dans d'autres données. Cette dissimulation se fait
 généralement au sein de fichiers multimédias. La stéganographie se différencie
 de la cryptographie, qui correspond à chiffrer un message afin qu'il soit
-illisible par une personne différente de l'émetteur et du destinataire. En
-effet, un message chiffré en cryptographie sera visible par tous mais illisible,
-tandis qu'un message caché dans un fichier $f$ en stéganographie ne sera vu que
-si un inconnu sait que $f$ contient un message et connaît l'algorithme pour
-l'interpréter. 
+illisible par une personne différente de l'émetteur et du destinataire. 
 
 La stéganalyse, quant à elle, est la recherche de données cachées dans des
-fichiers suspects. Si ces données sont identifiées, il faut ensuite réussir à
-les extraire pour les lire. Il s'agit donc de la méthode inverse à la
+fichiers suspects et l'extraction. Il s'agit donc de la méthode inverse à la
 stéganographie. 
 
 Le but du projet était de réaliser un logiciel de stéganographie permettant à des
@@ -91,9 +98,6 @@ par Oscar. Les données sont issues d'une réelle utilisation de StegX.
 
 Alice choisit de dissimuler le message dans une image qu'elle veut envoyer 
 à Bob à l'aide de l'interface graphique. 
-Tout d'abord, elle choisit les entrées de la dissimulation : le fichier 
-à cacher, le fichier hôte ainsi que le chemin du fichier à créer et un mot 
-de passe pour augmenter la sécurité de la dissimulation. \newline
 Dans cet exemple : 
 \begin{itemize}
 \item le fichier à cacher est message.txt. 
