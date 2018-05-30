@@ -118,6 +118,32 @@ int mp3_id3v1_tag_seek(FILE * f);
 Cette fonction saute le tag ID3v1 actuel dans le fichier MP3 f. Elle renvoie 
 la valeur de retour de fseek. 
 
+\subsection{Ajouts dûs à la résolution d'un bug}
+
+Lors de la préparation de la démonstration, nous voulions montrer l'aspect 
+multiplateforme de l'application. 
+Ainsi, nous avons remarqué que, lorsque l'on fait une insertion sur un 
+système d'exploitation, l'extraction doit se faire sur le même système
+d'exploitation (pas forcément sur la même machine). 
+Ce bug est dû au fait que la suite pseudo aléatoire générée sur Linux n'est 
+pas la même que sur Windows. 
+De ce fait, il a fallu créer nos propres fonctions de randomisation pour que 
+la suite pseudo-aléatoire soit la même pour n'importe quelle système d'exploitation : 
+
+\begin{lstlisting}[language=c]
+void stegx_srand(unsigned int seed);
+\end{lstlisting}
+
+Cette fonction va initialiser la graine de la suite pseudo aléatoire du 
+système. \textit{seed} correspond au nombre où la graine sera initialisée.
+\newline 
+
+\begin{lstlisting}[language=c]
+int stegx_rand();
+\end{lstlisting}
+
+Cette fonction va renvoyer un entier pseudo-aléatoirement. 
+
 \section{Bilan technique du produit pour la version du 1er juin}
 
 En ce qui concerne les algorithmes proposés par StegX en fonction des 
