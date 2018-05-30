@@ -102,7 +102,7 @@ void test_file_compa_v4(void **state)
 void test_file_compa_v5(void **state)
 {
     info_s *infos = *state;
-    infos->host.host = fopen("../../../env/test/mp3/MP3_Mono_44,1kHz_64kbps.mp3", "r"),
+    infos->host.host = fopen("../../../env/test/mp3/MP3_ID3v2.4_Mono_44,1kHz_64kbps.mp3", "r"),
         assert_non_null(infos->host.host);
 
     assert_int_equal(stegx_check_compatibility(infos), 0);
