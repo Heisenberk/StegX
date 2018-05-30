@@ -38,15 +38,20 @@ CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
 
 \section{Introduction}
 
-Le client nous a autorisé à rendre une nouvelle version de StegX le 1er
-juin puisque celle du 25 mai ne proposait pas d'algorithme pour le format 
-MP3. En effet, le MP3 est un format très compliqué étant compressé. 
-Pour la version du 25 mai, Pierre Ayoub et Damien Delaunay avait réussi à 
+L'équipe StegX a profité de la semaine jusqu'au 1er juin pour améliorer 
+l'application. De ce fait, sachant que le client ne proposait aucun format 
+à s'occuper, les développeurs ont voulu ajouter le format MP3. 
+Pourtant, le MP3 est un format très compliqué étant compressé. 
+
+Pour la version du 25 mai, Pierre Ayoub et Damien Delaunay avaient réussi à 
 étudier les versions du format (MPEG 1 Layer III, MPEG 2 Layer III) et de 
 format de métadonnée (ID3 version 1 et ID3 version 2). 
+Et ils ne leur restaient plus qu'à implémenter un ou plusieurs algorithmes 
+pour le format MP3. 
+De ce fait, MP3 propose désormais les algorithmes EOF et LSB. 
 
-Ces études approfondies ont mené à modifier certains choix dans les spécifications 
-en raison de la difficulté de ce format. 
+Les études approfondies sur le MP3 ont mené à modifier certains choix dans 
+les spécifications en raison de la grande difficulté de ce format. 
 
 \section{Changements des spécifications}
 
@@ -81,42 +86,48 @@ nous avons créé plusieurs fonctions internes au format :
 
 \begin{lstlisting}[language=c]
 int mp3_mpeg_hdr_test(uint32_t hdr);
+int mp3_id3v2_hdr_test(uint32_t hdr);
 \end{lstlisting}
 
-Cette fonction teste si le header hdr est un header MPEG 1/2 Layer III.
-Elle renvoie 0 si le header est incorrect et 1 si le header est valide. 
+Ces fonctions testent si le header hdr est un header MPEG 1/2 Layer III
+ou un header ID3v2.
+Elles renvoient 0 si le header est incorrect et 1 si le header est valide. 
 \newline
+
 \begin{lstlisting}[language=c]
 int mp3_mpeg_fr_seek(uint32_t hdr, FILE * f);
-\end{lstlisting}
-
-Cette fonction va sauter la frame MP3 actuelle contenue dans le fichier f
-et dont hdr est le header de la frame MP3 à sauter. Elle renvoie la valeur 
-de retour de fseek. 
-\newline
-
-\begin{lstlisting}[language=c]
 long int mp3_mpeg_fr_find_first(FILE * f);
+int mp3_mpeg_hdr_get_version(const uint32_t hdr);
+int mp3_mpeg_hdr_is_padding(const uint32_t hdr);
+int mp3_mpeg_hdr_get_samprate(const uint32_t hdr);
+int mp3_mpeg_hdr_get_bitrate(const uint32_t hdr);
+int mp3_mpeg_hdr_get_size(const uint32_t hdr);
+int mp3_mpeg_fr_write(uint32_t hdr, FILE * src, FILE * dst);
 \end{lstlisting}
 
-Cette fonction trouve la première frame MPEG 1/2 Layer III dans le fichier f
-MP3. Elle retourne l'adresse du header de la première frame si elle est 
-trouvée, sinon -1. 
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs MPEG. 
 \newline
 
 \begin{lstlisting}[language=c]
 int mp3_id3v1_hdr_test(uint32_t hdr);
-\end{lstlisting}
-
-Cette fonction test si le header hdr est un header ID3v1. Elle renvoie 0 
-si le header est incorrect sinon 1 si le header est valide. 
-
-\begin{lstlisting}[language=c]
 int mp3_id3v1_tag_seek(FILE * f);
+int mp3_id3v1_tag_write(FILE * src, FILE * dst);
 \end{lstlisting}
 
-Cette fonction saute le tag ID3v1 actuel dans le fichier MP3 f. Elle renvoie 
-la valeur de retour de fseek. 
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs IDv1. 
+\newline
+\begin{lstlisting}[language=c]
+uint32_t mp3_id3v2_size_unsyncsafe(const uint32_t s);
+int mp3_id3v2_tag_seek(FILE * f);
+\end{lstlisting}
+
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs IDv2. 
+\newline \newline
+Le listing détaillé de ces fonctions est 
+présent dans les fichiers \textit{mp3.h/.c}.
 
 \subsection{Ajouts dûs à la résolution d'un bug}
 
