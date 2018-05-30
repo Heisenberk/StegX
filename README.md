@@ -24,7 +24,7 @@ Fonctionnalités
   * **AVI** : Junk Chunk.
   * **FLV** : EOF, EOC.
   * **WAVE** : LSB, EOF.
-  * **MP3** : À venir dans une prochaine version (1er juin).
+  * **MP3** : LSB, EOF.
 
 * _Description, avantages et inconvénients des algorithmes_ :
   * **LSB (Least Significant Bit)** : Cet algorithme consiste à modifier les

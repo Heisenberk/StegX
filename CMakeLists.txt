@@ -15,7 +15,7 @@ endif()
 # Projet =======================================================================
 
 # Nom du projet et description.
-project (StegX VERSION 1.0.0
+project (StegX VERSION 1.1.0
     DESCRIPTION "Projet de Stéganographie pour l'UVSQ" 
     LANGUAGES C
     )

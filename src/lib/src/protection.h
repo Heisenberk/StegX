@@ -25,14 +25,6 @@
 #define LENGTH_FILE_MAX 50000
 
 /** 
- * @brief Cree un seed a partir d'un mot de passe. 
- * @param passwd Mot de passe a partir duquel on veut creer un seed.
- * @return unsigned int représentant le seed a creer. 
- * @author Pierre Ayoub
- */
-unsigned int create_seed(const char *passwd);
-
-/** 
  * @brief Fait le mélange ou réarrange les octets selon l'algorithme de 
  * protection des données. 
  * @details Pour l'insertion, à partir du mot de passe, est créé un seed. 

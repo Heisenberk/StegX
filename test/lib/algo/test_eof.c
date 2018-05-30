@@ -9,6 +9,8 @@
 #include "stegx.h"
 #include "common.h"
 
+#define TEST_DIR "../../../env/test/"
+
 #define SIG_RIFF 0x46464952
 
 /*
@@ -1282,6 +1284,129 @@ void test_eof_big_flv_without_passwd(void **state)
     remove("./WAVE_PCM(ALAW_16)_Mono_44,1kHz_2.wav");
 }
 
+/* Test d'un EOF sur deux MP3 avec et sans mot de passe. */
+void test_eof_mp3(void **state)
+{
+    /* Initialisation. */
+    (void) state; /* Unused. */
+    stegx_choices_s choices_insert, choices_extract;
+    stegx_info_insert_s choices_insert_info;
+    info_s * infos_insert = NULL, * infos_extract = NULL;
+    int eof = 0, size = 0;
+    FILE * fstego = NULL, * forig = NULL;
+    FILE * fsrc = NULL, * fdst = NULL;
+
+    /* Fichier en ID3v1. */
+
+    /* Initialisation insertion. */
+    choices_insert.host_path = TEST_DIR"mp3/MP3_ID3v1_Stereo_44,1kHz_160kbps.mp3";
+    choices_insert.res_path = "test_eof_mp3";
+    choices_insert.passwd = "stegx";
+    choices_insert.mode = STEGX_MODE_INSERT;
+    choices_insert.insert_info = &choices_insert_info;
+    choices_insert.insert_info->hidden_path = TEST_DIR"others/short.txt";
+    choices_insert.insert_info->algo = STEGX_ALGO_EOF;
+    /* Insertion. */
+    assert_non_null(infos_insert = stegx_init(&choices_insert));
+    assert_false(stegx_check_compatibility(infos_insert));
+    assert_false(stegx_suggest_algo(infos_insert));
+    assert_false(stegx_choose_algo(infos_insert, choices_insert.insert_info->algo));
+    assert_false(stegx_insert(infos_insert));
+    eof = infos_insert->host.file_info.mp3.eof;
+    stegx_clear(infos_insert);
+
+    /* Vérifie que le fichier stégo n'as pas été altéré. */
+    assert_non_null(fstego = fopen("test_eof_mp3", "rb"));
+    assert_non_null(forig = fopen(TEST_DIR"mp3/MP3_ID3v1_Stereo_44,1kHz_160kbps.mp3", "rb"));
+    for (int i = 0, bsrc = 0, bdst = 0; i < eof; i++)
+    {
+        fread(&bdst, sizeof(uint8_t), 1, fstego);
+        fread(&bsrc, sizeof(uint8_t), 1, forig);
+        assert_int_equal(bsrc, bdst);
+    }
+    assert_false(fclose(fstego)), assert_false(fclose(forig));
+
+    /* Initialisation extraction. */
+    choices_extract.host_path = "test_eof_mp3";
+    choices_extract.res_path = "./";
+    choices_extract.passwd = "stegx";
+    choices_extract.mode = STEGX_MODE_EXTRACT;
+    choices_extract.insert_info = NULL;
+    /* Extraction. */
+    assert_non_null(infos_extract = stegx_init(&choices_extract));
+    assert_false(stegx_check_compatibility(infos_extract));
+    assert_false(stegx_detect_algo(infos_extract));
+    assert_false(stegx_extract(infos_extract, choices_extract.res_path));
+    stegx_clear(infos_extract);
+
+    /* Comparaison du fichier caché original avec le fichier extrait. */
+    size = 0;
+    assert_non_null(fsrc = fopen(TEST_DIR"others/short.txt", "rb"));
+    assert_non_null(fdst = fopen("short.txt", "rb"));
+    for (uint8_t bsrc, bdst; fread(&bdst, sizeof(bdst), 1, fdst); size++)
+        fread(&bsrc, sizeof(bsrc), 1, fsrc), assert_int_equal(bsrc, bdst);
+    assert_int_equal(size, 27);
+
+    /* Nettoyage. */
+    assert_false(remove("test_eof_mp3")), assert_false(remove("short.txt"));
+    assert_false(fclose(fsrc)); assert_false(fclose(fdst));
+
+    /* Fichier en ID3v2.3. */
+
+    /* Initialisation insertion. */
+    choices_insert.host_path = TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_1.mp3";
+    choices_insert.res_path = "test_eof_mp3";
+    choices_insert.passwd = NULL;
+    choices_insert.mode = STEGX_MODE_INSERT;
+    choices_insert.insert_info = &choices_insert_info;
+    choices_insert.insert_info->hidden_path = TEST_DIR"bmp/test9bis.bmp";
+    choices_insert.insert_info->algo = STEGX_ALGO_EOF;
+    /* Insertion. */
+    assert_non_null(infos_insert = stegx_init(&choices_insert));
+    assert_false(stegx_check_compatibility(infos_insert));
+    assert_false(stegx_suggest_algo(infos_insert));
+    assert_false(stegx_choose_algo(infos_insert, choices_insert.insert_info->algo));
+    assert_false(stegx_insert(infos_insert));
+    eof = infos_insert->host.file_info.mp3.eof;
+    stegx_clear(infos_insert);
+
+    /* Vérifie que le fichier stégo n'as pas été altéré. */
+    assert_non_null(fstego = fopen("test_eof_mp3", "rb"));
+    assert_non_null(forig = fopen(TEST_DIR"mp3/MP3_ID3v2.3_Stereo_44,1kHz_256kbps_1.mp3", "rb"));
+    for (int i = 0, bsrc = 0, bdst = 0; i < eof; i++)
+    {
+        fread(&bdst, sizeof(uint8_t), 1, fstego);
+        fread(&bsrc, sizeof(uint8_t), 1, forig);
+        assert_int_equal(bsrc, bdst);
+    }
+    assert_false(fclose(fstego)), assert_false(fclose(forig));
+
+    /* Initialisation extraction. */
+    choices_extract.host_path = "test_eof_mp3";
+    choices_extract.res_path = "./";
+    choices_extract.passwd = NULL;
+    choices_extract.mode = STEGX_MODE_EXTRACT;
+    choices_extract.insert_info = NULL;
+    /* Extraction. */
+    assert_non_null(infos_extract = stegx_init(&choices_extract));
+    assert_false(stegx_check_compatibility(infos_extract));
+    assert_false(stegx_detect_algo(infos_extract));
+    assert_false(stegx_extract(infos_extract, choices_extract.res_path));
+    stegx_clear(infos_extract);
+
+    /* Comparaison du fichier caché original avec le fichier extrait. */
+    size = 0;
+    assert_non_null(fsrc = fopen(TEST_DIR"bmp/test9bis.bmp", "rb"));
+    assert_non_null(fdst = fopen("test9bis.bmp", "rb"));
+    for (uint8_t bsrc, bdst; fread(&bdst, sizeof(bdst), 1, fdst); size++)
+        fread(&bsrc, sizeof(bsrc), 1, fsrc), assert_int_equal(bsrc, bdst);
+    assert_int_equal(size, 35906);
+
+    /* Nettoyage. */
+    assert_false(remove("test_eof_mp3")), assert_false(remove("test9bis.bmp"));
+    assert_false(fclose(fsrc)); assert_false(fclose(fdst));
+}
+
 /* Structure CMocka contenant la liste des tests. */
 const struct CMUnitTest eof_tests[] = {
     cmocka_unit_test(test_eof_little_bmp_with_passwd),
@@ -1301,6 +1426,8 @@ const struct CMUnitTest eof_tests[] = {
     cmocka_unit_test(test_eof_big_wav_without_passwd),
     cmocka_unit_test(test_eof_big_flv_with_passwd),
     cmocka_unit_test(test_eof_big_flv_without_passwd),
+
+    cmocka_unit_test(test_eof_mp3)
 };
 
 int main(void)

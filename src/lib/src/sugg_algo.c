@@ -15,6 +15,7 @@
 #include "common.h"
 #include "stegx_common.h"
 #include "stegx_errors.h"
+#include "rand.h"
 
 /** 
  * @brief Teste si l'on peut utiliser l'algorithme LSB pour la dissimulation. 
@@ -57,6 +58,10 @@ static int can_use_lsb(info_s * infos)
         if ((infos->hidden_length * 8) <= nb_bits_modif)
             return 0;
     }
+    /* Si le fichier hote est un fichier MP3. */
+    else if (infos->host.type == MP3 &&
+            (infos->host.file_info.mp3.fr_nb * MP3_HDR_NB_BITS_MODIF >= infos->hidden_length * 8))
+        return 0;
     /* Sinon, on ne peux pas utiliser LSB. */
     return 1;
 }
@@ -70,9 +75,8 @@ static int can_use_lsb(info_s * infos)
 static int can_use_eof(info_s * infos)
 {
     assert(infos);
-    // Pour tous les formats proposés par StegX sauf AVI et MP3, on propose EOF.
-    return infos->host.type == MP3 || infos->host.type == AVI_COMPRESSED
-        || infos->host.type == AVI_UNCOMPRESSED ? 1 : !IS_FILE_TYPE(infos->host.type);
+    // Pour tous les formats proposés par StegX sauf AVI, on propose EOF.
+    return infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED ? 1 : !IS_FILE_TYPE(infos->host.type);
 }
 
 /** 
@@ -301,11 +305,39 @@ int fill_host_info(info_s * infos)
         return 0;
     }
 
-    /* Structures AVI et MP3 : structures vides. */
-    else if (infos->host.type == MP3
-             || infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED) {
+    /* Fichier MP3. */
+    else if (infos->host.type == MP3) {
+        uint32_t hdr = 0;
+        long int * n = &(infos->host.file_info.mp3.fr_nb);
+        long int * f = &(infos->host.file_info.mp3.fr_frst_adr);
+        FILE * h = infos->host.host;
+        /* Déplacement et stockage de l'adresse du header de la première frame du MP3 (pour le "LSB"). */
+        if ((*f = mp3_mpeg_fr_find_first(h)) == -1 || fseek(h, *f, SEEK_SET))
+            return perror("MP3 fill_host_info: Can't find first MPEG 1/2 Layer III frame"), 1;
+        /* Dénombrement du nombre de frame (pour "can_use_lsb"). */
+        for (*n = 0 ; (fread(&hdr, sizeof(hdr), 1, h) == 1) && mp3_mpeg_hdr_test(hdr = stegx_be32toh(hdr)); (*n)++) {
+            if (mp3_mpeg_fr_seek(hdr, h))
+                return perror("MP3 fill_host_info: Can't skip current MP3 MPEG frame"), 1;
+        }
+        if (ferror(h))
+            return perror("MP3 fill_host_info: Can't read frame header"), 1;
+
+        /* Curseur sur un tag ID3v1 => saut au-dessus du tag et fin du fichier définitive. */
+        if (mp3_id3v1_hdr_test(hdr) && mp3_id3v1_tag_seek(h))
+            return perror("MP3 fill_host_info: Can't skip over ID3v1 tag at the end of file"), 1;
+        /* Stockage de la fin du fichier (pour EOF). */
+        if ((infos->host.file_info.mp3.eof = ftell(h)) == -1)
+            return perror("MP3 fill_host_info: Can't get end-of-file address"), 1;
+        /* Curseur n'était pas sur un tag ID3v1 et la fin du fichier n'as pas
+         * été lu => on à lu 4 octets de données en trop (exemple, la signature). */
+        if (!mp3_id3v1_hdr_test(hdr) && !feof(h))
+            infos->host.file_info.mp3.eof -= sizeof(hdr);
         return 0;
     }
+
+    /* Structure AVI : structure vide. */
+    else if (infos->host.type == AVI_COMPRESSED || infos->host.type == AVI_UNCOMPRESSED)
+        return 0;
     /* Format non reconnu => erreur. */
     else
         return 1;
@@ -348,13 +380,13 @@ int stegx_choose_algo(info_s * infos, algo_e algo_choosen)
         return stegx_errno = ERR_SUGG_ALGOS, 1;
     /* Si l'utilisateur n'a pas choisi de mot de passe, on en crée un par défaut aléatoirement. */
     if (infos->method == STEGX_WITHOUT_PASSWD) {
-        srand(time(NULL));
+        stegx_srand(time(NULL));
         free(infos->passwd);
         if (!(infos->passwd = calloc((LENGTH_DEFAULT_PASSWD + 1), sizeof(char))))
             return perror("Can't allocate memory for password string"), 1;
         // Génération de symboles ASCII >= 32 et <= 126.
         for (int i = 0; i < LENGTH_DEFAULT_PASSWD; i++)
-            infos->passwd[i] = 32 + (rand() % 95);
+            infos->passwd[i] = 32 + (stegx_rand() % 95);
     }
 
     assert(algo_choosen >= STEGX_ALGO_LSB && algo_choosen < STEGX_NB_ALGO);

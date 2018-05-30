@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+%\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[top=1.8cm, bottom=1.8cm, left=1.8cm, right=1.8cm]{geometry}
+\usepackage[linktocpage,colorlinks=false]{hyperref}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{subfig}
+\usepackage{multicol}
+\usepackage{caption}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{array,multirow,makecell}
+\hypersetup{
+    colorlinks=true,
+    breaklinks=true,
+    urlcolor=red,
+}
+\parskip=5pt
+
+\title{\huge{\textbf Ajouts du compte rendu version du 1{er} juin}}
+\author{AYOUB Pierre, BASKEVITCH Claire, BESSAC Tristan, \\
+CAUMES Clément, DELAUNAY Damien, DOUDOUH Yassin}
+\date{Mercredi 1 Juin 2018}
+
+\begin{document}
+
+\maketitle
+\vspace{20em}
+\begin{center}\includegraphics{pictures/Application.png}\end{center}
+\newpage
+
+\section{Introduction}
+
+L'équipe StegX a profité de la semaine jusqu'au 1er juin pour améliorer 
+l'application. De ce fait, sachant que le client ne proposait aucun format 
+à s'occuper, les développeurs ont voulu ajouter le format MP3. 
+Pourtant, le MP3 est un format très compliqué étant compressé. 
+
+Pour la version du 25 mai, Pierre Ayoub et Damien Delaunay avaient réussi à 
+étudier les versions du format (MPEG 1 Layer III, MPEG 2 Layer III) et de 
+format de métadonnée (ID3 version 1 et ID3 version 2). 
+Et ils ne leur restaient plus qu'à implémenter un ou plusieurs algorithmes 
+pour le format MP3. 
+De ce fait, MP3 propose désormais les algorithmes EOF et LSB. 
+
+Les études approfondies sur le MP3 ont mené à modifier certains choix dans 
+les spécifications en raison de la grande difficulté de ce format. 
+
+\section{Changements des spécifications}
+
+\subsection{Structure MP3}
+
+\begin{lstlisting}[language=c]
+struct mp3 {
+    long int fr_frst_adr; 
+    long int fr_nb;       
+    long int eof;      
+};
+\end{lstlisting}
+
+Cette structure comporte 3 champs : 
+\begin{itemize}
+\item \textit{fr\_frst\_adr} est l'adresse du header de la première frame 
+MPEG 1/2 Layer III. 
+\item \textit{fr\_nb} est le nombre de frame MPEG 1/2 Layer III.
+\item \textit{eof} est l'adresse de la fin du fichier officiel (sans signature et données cachées).
+\end{itemize}
+
+Cette structure n'a pas pu être déduite lors des spécifications puisque 
+l'étude détaillée du format était trop bas niveau à cette période du projet. 
+En effet, la stéganographie sur le format MP3 est très expérimentale puisque 
+ce format est très complexe. 
+
+\subsection{Ajouts de fonctions pour éviter la répétition de code}
+
+Pour réaliser correctement le remplissage de la structure afin d'éviter la
+repétition de code lors des algorithmes proposés par le format MP3, 
+nous avons créé plusieurs fonctions internes au format : 
+
+\begin{lstlisting}[language=c]
+int mp3_mpeg_hdr_test(uint32_t hdr);
+int mp3_id3v2_hdr_test(uint32_t hdr);
+\end{lstlisting}
+
+Ces fonctions testent si le header hdr est un header MPEG 1/2 Layer III
+ou un header ID3v2.
+Elles renvoient 0 si le header est incorrect et 1 si le header est valide. 
+\newline
+
+\begin{lstlisting}[language=c]
+int mp3_mpeg_fr_seek(uint32_t hdr, FILE * f);
+long int mp3_mpeg_fr_find_first(FILE * f);
+int mp3_mpeg_hdr_get_version(const uint32_t hdr);
+int mp3_mpeg_hdr_is_padding(const uint32_t hdr);
+int mp3_mpeg_hdr_get_samprate(const uint32_t hdr);
+int mp3_mpeg_hdr_get_bitrate(const uint32_t hdr);
+int mp3_mpeg_hdr_get_size(const uint32_t hdr);
+int mp3_mpeg_fr_write(uint32_t hdr, FILE * src, FILE * dst);
+\end{lstlisting}
+
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs MPEG. 
+\newline
+
+\begin{lstlisting}[language=c]
+int mp3_id3v1_hdr_test(uint32_t hdr);
+int mp3_id3v1_tag_seek(FILE * f);
+int mp3_id3v1_tag_write(FILE * src, FILE * dst);
+\end{lstlisting}
+
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs IDv1. 
+\newline
+\begin{lstlisting}[language=c]
+uint32_t mp3_id3v2_size_unsyncsafe(const uint32_t s);
+int mp3_id3v2_tag_seek(FILE * f);
+\end{lstlisting}
+
+Ces fonctions concernent les tests internes au format MP3 et font les tests 
+en rapport aux blocs IDv2. 
+\newline \newline
+Le listing détaillé de ces fonctions est 
+présent dans les fichiers \textit{mp3.h/.c}.
+
+\subsection{Ajouts dûs à la résolution d'un bug}
+
+Lors de la préparation de la démonstration, nous voulions montrer l'aspect 
+multiplateforme de l'application. 
+Ainsi, nous avons remarqué que, lorsque l'on fait une insertion sur un 
+système d'exploitation, l'extraction doit se faire sur le même système
+d'exploitation (pas forcément sur la même machine). 
+Ce bug est dû au fait que la suite pseudo aléatoire générée sur Linux n'est 
+pas la même que sur Windows. 
+De ce fait, il a fallu créer nos propres fonctions de randomisation pour que 
+la suite pseudo-aléatoire soit la même pour n'importe quelle système d'exploitation : 
+
+\begin{lstlisting}[language=c]
+void stegx_srand(unsigned int seed);
+\end{lstlisting}
+
+Cette fonction va initialiser la graine de la suite pseudo aléatoire du 
+système. \textit{seed} correspond au nombre où la graine sera initialisée.
+\newline 
+
+\begin{lstlisting}[language=c]
+int stegx_rand();
+\end{lstlisting}
+
+Cette fonction va renvoyer un entier pseudo-aléatoirement. 
+
+\section{Bilan technique du produit pour la version du 1er juin}
+
+En ce qui concerne les algorithmes proposés par StegX en fonction des 
+formats pris en charge, voici le bilan de ce que propose l'application 
+après la version du 1er juin: 
+\newline
+
+\begin{tabular}{|l|c|c|c|c|c|}
+  \hline
+  \multirow{2}*{\textbf{Format pris en charge par l'application}} & \multicolumn{5}{c|}{\textbf{Algorithmes proposés}} \\
+   \cline{2-6}
+    & \textbf{LSB} & \textbf{EOF} & \textbf{Metadata} 
+    &\textbf{EOC} & \textbf{Junk Chunk} \\
+  \hline
+  \textbf{BMP} (Clément Caumes \& Yassin Doudouh) & \textbf{\checkmark} & \textbf{\checkmark} & \textbf{\checkmark} &  & \\
+  \hline      
+  \textbf{PNG} (Clément Caumes \& Yassin Doudouh) &  & \textbf{\checkmark} & \textbf{\checkmark} & & \\
+  \hline
+  \textbf{WAV} (Pierre Ayoub \& Damien Delaunay) & \textbf{\checkmark} & \textbf{\checkmark} & & & \\
+  \hline 
+  \textbf{MP3} (Pierre Ayoub \& Damien Delaunay) & \color{red}{\textbf{\checkmark}} & \color{red}{\textbf{\checkmark}} & & & \\
+  \hline 
+  \textbf{AVI} (Claire Baskevitch \& Tristan Bessac) & & & & & \textbf{\checkmark}\\
+  \hline
+  \textbf{FLV} (Claire Baskevitch \& Tristan Bessac) & & \textbf{\checkmark} & & \textbf{\checkmark} & \\
+  \hline
+\end{tabular}
+\vspace{0.5cm}
+
+On peut remarquer que la ligne pour le format MP3 est remplie. StegX propose 
+maintenant de la stéganographie sur les formats MP3. 
+
+\end{document}
