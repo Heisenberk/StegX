@@ -17,8 +17,20 @@
   \end{frame}
   
   \section{Introduction et définitions}
+    
+  \subsection{Définitions}
   
-    \subsection{Commande du client}
+  \begin{frame}
+  \hspace{5cm}
+  \includegraphics[scale=0.7]{pictures/definition1.png}
+  \end{frame}
+  
+  \begin{frame}
+  \hspace{5cm}
+  \includegraphics[scale=0.7]{pictures/definition2.png}
+  \end{frame}
+  
+      \subsection{Commande du client}
   
   \begin{frame}
    \begin{block}{Demande du client}
@@ -39,19 +51,6 @@
 	\end{itemize}
 	\end{block}
 
-  \end{frame}
-  
-  
-  \subsection{Définitions}
-  
-  \begin{frame}
-  \hspace{5cm}
-  \includegraphics[scale=0.7]{pictures/definition1.png}
-  \end{frame}
-  
-  \begin{frame}
-  \hspace{5cm}
-  \includegraphics[scale=0.7]{pictures/definition2.png}
   \end{frame}
   
 
@@ -316,9 +315,9 @@
 	\end{block}
 	
 	\begin{exampleblock}{Exemple} 
-	Après que Alice ait fini la dissimulation, Bob va déduire les spécificités
-	du fichier piece\_jointe.bmp et déduire les informations sur le fichier 
-	caché message.txt. 
+	Lors de l'insertion de Alice, l'algorithme EOF sera utilisé où 
+	les données de l'hôte, la signature StegX suivies des données du fichier 
+	à cacher seront écrites dans piece\_jointe.bmp. 
 	\end{exampleblock}
   \end{frame}
   
@@ -335,10 +334,10 @@
 	\end{itemize}
 	\end{block}
 	
-	\begin{exampleblock}{Exemple} 
-	Lors de l'insertion de Alice, l'algorithme EOF sera utilisé où 
-	les données de l'hôte, la signature StegX suivies des données du fichier 
-	à cacher seront écrites dans piece\_jointe.bmp. 
+		\begin{exampleblock}{Exemple} 
+	Après que Alice ait fini la dissimulation, Bob va déduire les spécificités
+	du fichier piece\_jointe.bmp et déduire les informations sur le fichier 
+	caché message.txt. 
 	\end{exampleblock}
   \end{frame}
   
@@ -360,8 +359,26 @@
 	caché de message.txt. 
 	\end{exampleblock}
   \end{frame}
-  	
-
+  
+  \section{Sécurité de l'application}
+  \begin{frame}
+	\begin{alertblock}{Problème} 
+	Si Oscar connaît la stéganographie, il peut utiliser un éditeur 
+	hexadécimal en voir en clair les données cachées.
+	\end{alertblock}
+	
+	\begin{exampleblock}{Solution} 
+	L'utilisation d'une méthode de protection des données est ajoutée : 
+	 \begin{itemize}
+	 \setbeamertemplate{itemize item}[circle]
+	\item Données à cacher XORées avec une suite pseudo-aléatoire générée
+	à partir du mot de passe (chiffrement par substitution polyalphabétique).
+	\item Données à cacher mélangées (chiffrement par transposition).
+	\end{itemize}
+	\end{exampleblock}
+  \end{frame}
+  
+  
   \section{Problèmes et points délicats rencontrés} 
   
   \begin{frame}
@@ -387,8 +404,6 @@
 	
 	\end{frame}
   
-  
-  
   \section{Bilan logiciel et humain}
   
   \begin{frame}
@@ -402,7 +417,7 @@
 	sont proposés. \checkmark
 	\item Réaliser deux interfaces : ligne de commande et graphique. \checkmark
 \setbeamertemplate{itemize item}[triangle]
-	\item Futures améliorations : nouveaux formats et nouveaux algorithmes. 
+	\item Futures améliorations : nouveaux formats et algorithmes. 
 
 \end{itemize}
 	
