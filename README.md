@@ -149,6 +149,16 @@ rapports en PDF.
 
 ---
 
+Bugs
+================================================================================
+
+* L'application crash si on tente d'accéder à un fichier dont on n'a pas les
+  droits.
+* L'application crash sur Windows si on tente d'accéder à un fichier avec un
+  espace dans le nom.
+
+---
+
 Développement
 ================================================================================
 
